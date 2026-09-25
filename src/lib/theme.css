@@ -1,0 +1,56 @@
+@theme {
+  /* Surfaces */
+  --color-canvas: #0d0d0d;
+  --color-surface: #111111;
+  --color-row: #151515;
+  --color-field: #161616;
+  --color-hover: #1a1a1a;
+  --color-tonal: #1f1f1f;
+  --color-tonal-hover: #292929;
+  --color-menu: #1c1c1c;
+  --color-menu-active: #262626;
+  --color-track: #2a2a2a;
+  --color-footer: #0b0b0b;
+  --color-dialog: #161616;
+
+  /* Text */
+  --color-fg: #f2f2f2;
+  --color-fg-2: #b4b4b4;
+  --color-fg-3: #a8a8a8;
+  --color-muted: #8f8f8f;
+  --color-subtle: #7c7c7c;
+  --color-off: #6b6b6b;
+
+  /* Accent */
+  --color-accent: #ffe54e;
+  --color-accent-hover: #fff1a0;
+  --color-accent-press: #e6cc3f;
+  --color-on-accent: #0d0d0d;
+
+  /* Danger */
+  --color-danger: #ff8f80;
+  --color-danger-bg: #2a1a1a;
+  --color-danger-bg-hover: #3a2020;
+
+  /* Type */
+  --font-sans: 'Geist', 'Segoe UI', system-ui, sans-serif;
+  --font-display: 'Cal Sans', 'Geist', system-ui, sans-serif;
+  --font-mono: 'Geist Mono', Consolas, monospace;
+
+  /* Shape and depth */
+  --radius-gl: 2px;
+  --shadow-menu: 0 12px 32px rgb(0 0 0 / 0.5);
+  --shadow-dialog: 0 24px 64px rgb(0 0 0 / 0.6);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+  }
+  :where(button, input, select, a, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+}
