@@ -34,6 +34,11 @@ export class Installation {
         if (reIndex) {
             this.reIndex()
         }
+
+        const path = await join(this.installationPath, name)
+        const res = await mkdir(path)
+
+        return res
     }
 
     async reIndex() {
