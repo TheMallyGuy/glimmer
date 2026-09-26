@@ -33,6 +33,7 @@ specta-typescript = "0.0.12"
 zip = "8.6.0"
 tauri-plugin-log = "2"
 md5 = "0.8.1"
+tauri-plugin-store = "2"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
