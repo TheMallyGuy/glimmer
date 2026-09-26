@@ -13,9 +13,11 @@
     "windows": [
       {
         "title": "glimmer",
-        "width": 1128,
-        "height": 700,
-        "decorations": false
+        "width": 562,
+        "height": 322,
+        "maximizable": false,
+        "decorations": false,
+        "center": true
       }
     ],
     "security": {
