@@ -25,5 +25,11 @@ export default defineConfig(() => ({
       ignored: ["**/src-tauri/**"]
     }
   },
-  resolve: { alias: { $lib: resolve("./src/lib") } }
+  resolve: {
+    alias: {
+      $lib: resolve("./src/lib"),
+      $ts: resolve("./src/ts"),
+
+    }
+  }
 }));
