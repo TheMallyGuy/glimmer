@@ -11,16 +11,19 @@ interface InstallEntry {
 export class Installation {
     installationPath = "";
     installedVersions: InstallEntry[] = [];
+    reIndexVar = false
     private indexFile = ""
+    constructor(reIndexVar: boolean) { }
 
-    static async create(): Promise<Installation> {
-        const i = new Installation();
+    static async create(reIndex = true): Promise<Installation> {
+        const i = new Installation(reIndex);
         i.installationPath = await join(await appDataDir(), "versions");
         i.indexFile = await join(i.installationPath, "index.json")
+        i.reIndexVar = await reIndex
         return i;
     }
 
-    async listInstallations(reIndex = true): Promise<InstallEntry[]> {
+    async listInstallations(reIndex = this.reIndexVar): Promise<InstallEntry[]> {
         debug("listing all installations")
         if (reIndex) {
             await this.reIndex()
