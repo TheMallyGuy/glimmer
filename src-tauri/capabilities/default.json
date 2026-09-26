@@ -28,6 +28,28 @@
       ]
     },
     {
+      "identifier": "fs:allow-read-text-file",
+      "allow": [
+        {
+          "path": "$APPDATA"
+        },
+        {
+          "path": "$APPDATA/**/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-write-text-file",
+      "allow": [
+        {
+          "path": "$APPDATA"
+        },
+        {
+          "path": "$APPDATA/**/*"
+        }
+      ]
+    },
+    {
       "identifier": "fs:allow-mkdir",
       "allow": [
         {
@@ -85,6 +107,7 @@
         }
       ]
     },
-    "log:default"
+    "log:default",
+    "store:default"
   ]
 }
