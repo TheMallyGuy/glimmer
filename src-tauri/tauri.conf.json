@@ -13,8 +13,9 @@
     "windows": [
       {
         "title": "glimmer",
-        "width": 800,
-        "height": 600
+        "width": 1128,
+        "height": 700,
+        "decorations": false
       }
     ],
     "security": {

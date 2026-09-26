@@ -1,0 +1,374 @@
+import { join } from '@tauri-apps/api/path';
+import { writeFile } from '@tauri-apps/plugin-fs';
+import { joinUrl } from '../../utils';
+import { commands } from '../../bindings';
+import { fetch } from '@tauri-apps/plugin-http';
+import { debug, error, info } from '@tauri-apps/plugin-log';
+
+type WindowBinaryType = "WindowsStudio64" | "WindowsPlayer"
+
+interface ClientVersionResponse {
+    version: string;
+    clientVersionUpload: string;
+    bootstrapperVersion: string;
+}
+
+export interface PackageEntry {
+    fileName: string;
+    md5: string;
+    compressedSize: number;
+    uncompressedSize: number;
+}
+
+export interface ParsedManifest {
+    manifestVersion: string;
+    packages: PackageEntry[];
+}
+
+export class Downloader {
+    private readonly clientSettingsUrl = 'https://clientsettings.roblox.com/v2/client-version';
+    readonly extractRoots = {
+        player: {
+            "RobloxApp.zip": "",
+            "redist.zip": "",
+            "shaders.zip": "shaders/",
+            "ssl.zip": "ssl/",
+
+            "WebView2.zip": "",
+            "WebView2RuntimeInstaller.zip": "WebView2RuntimeInstaller/",
+
+            "content-avatar.zip": "content/avatar/",
+            "content-configs.zip": "content/configs/",
+            "content-fonts.zip": "content/fonts/",
+            "content-sky.zip": "content/sky/",
+            "content-sounds.zip": "content/sounds/",
+            "content-textures2.zip": "content/textures/",
+            "content-models.zip": "content/models/",
+
+            "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
+            "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
+            "content-terrain.zip": "PlatformContent/pc/terrain/",
+            "content-textures3.zip": "PlatformContent/pc/textures/",
+
+            "extracontent-luapackages.zip": "ExtraContent/LuaPackages/",
+            "extracontent-translations.zip": "ExtraContent/translations/",
+            "extracontent-models.zip": "ExtraContent/models/",
+            "extracontent-textures.zip": "ExtraContent/textures/",
+            "extracontent-places.zip": "ExtraContent/places/"
+        },
+
+        studio: {
+            "RobloxStudio.zip": "",
+            "RibbonConfig.zip": "RibbonConfig/",
+            "redist.zip": "",
+            "Libraries.zip": "",
+            "LibrariesQt5.zip": "",
+
+            "WebView2.zip": "",
+            "WebView2RuntimeInstaller.zip": "",
+
+            "shaders.zip": "shaders/",
+            "ssl.zip": "ssl/",
+
+            "Qml.zip": "Qml/",
+            "Plugins.zip": "Plugins/",
+            "StudioFonts.zip": "StudioFonts/",
+            "BuiltInPlugins.zip": "BuiltInPlugins/",
+            "ApplicationConfig.zip": "ApplicationConfig/",
+            "BuiltInStandalonePlugins.zip": "BuiltInStandalonePlugins/",
+
+            "content-qt_translations.zip": "content/qt_translations/",
+            "content-sky.zip": "content/sky/",
+            "content-fonts.zip": "content/fonts/",
+            "content-avatar.zip": "content/avatar/",
+            "content-models.zip": "content/models/",
+            "content-sounds.zip": "content/sounds/",
+            "content-configs.zip": "content/configs/",
+            "content-api-docs.zip": "content/api_docs/",
+            "content-textures2.zip": "content/textures/",
+            "content-studio_svg_textures.zip": "content/studio_svg_textures/",
+
+            "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
+            "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
+            "content-terrain.zip": "PlatformContent/pc/terrain/",
+            "content-textures3.zip": "PlatformContent/pc/textures/",
+
+            "extracontent-translations.zip": "ExtraContent/translations/",
+            "extracontent-luapackages.zip": "ExtraContent/LuaPackages/",
+            "extracontent-textures.zip": "ExtraContent/textures/",
+            "extracontent-scripts.zip": "ExtraContent/scripts/",
+            "extracontent-models.zip": "ExtraContent/models/",
+            "studiocontent-models.zip": "StudioContent/models/",
+            "studiocontent-textures.zip": "StudioContent/textures/"
+        }
+    };
+
+    baseUrl: string = "";
+
+    private constructor(private baseUrls: string[]) { }
+
+    static async create(baseUrls: string[]): Promise<Downloader> {
+        const d = new Downloader(baseUrls);
+        d.baseUrl = await d.bestRegion(baseUrls);
+        return d;
+    }
+
+    async bestRegion(baseUrls: string[]): Promise<string> {
+        debug("begging to test regions urls")
+        const best: [string, number][] = [];
+
+        for (const url of baseUrls) {
+            try {
+                const start = performance.now();
+                const response = await fetch(url);
+                const elapsed = performance.now() - start;
+
+                if (response.status == 403) { // this is expected
+                    debug(`tested ${url} -> ${elapsed}`)
+                    best.push([url, elapsed]);
+                }
+            } catch {
+                // unreachable URL, skip it
+            }
+        }
+
+        if (best.length === 0) {
+            error("No reachable base URLs")
+            throw new Error("No reachable base URLs");
+        }
+
+        best.sort((a, b) => a[1] - b[1]);
+        return best[0][0];
+    }
+
+    /**
+     * extract downloaded packages into dist
+     * @param src - source of the packages downloaded
+     * @param dist - dest
+    */
+    async extractPackages(
+        src: string,
+        dist: string,
+        binaryType: WindowBinaryType,
+        onProgress?: (done: number, total: number, filename: string) => void
+    ) {
+        info("begging to extract packages")
+
+        const root = binaryType === "WindowsStudio64" ? this.extractRoots.studio : this.extractRoots.player;
+        const entries = Object.entries(root);
+
+        let done = 0;
+        for (const [filename, url] of entries) {
+            debug(`extracting ${filename} to ${url}`)
+
+            await commands.extractZip(await join(src, filename), await join(dist, url));
+            done++;
+            onProgress?.(done, entries.length, filename);
+        }
+    }
+
+    async parsePkgManifest(raw: string): Promise<ParsedManifest> {
+        const lines = raw
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter((line) => line.length > 0);
+
+        if (lines.length === 0) {
+            throw new Error("Empty manifest");
+        }
+
+        const manifestVersion = lines[0];
+        const rest = lines.slice(1);
+
+        if (rest.length % 4 !== 0) {
+            error(`Malformed manifest: expected entries in groups of 4 lines, got ${rest.length} remaining lines`)
+            throw new Error(
+                `Malformed manifest: expected entries in groups of 4 lines, got ${rest.length} remaining lines`
+            );
+        }
+
+        const packages: PackageEntry[] = [];
+
+        for (let i = 0; i < rest.length; i += 4) {
+            const [fileName, md5, compressedSizeStr, uncompressedSizeStr] = rest.slice(
+                i,
+                i + 4
+            );
+
+            const compressedSize = Number(compressedSizeStr);
+            const uncompressedSize = Number(uncompressedSizeStr);
+
+            if (!Number.isFinite(compressedSize) || !Number.isFinite(uncompressedSize)) {
+                error(`Malformed size fields for entry "${fileName}": ${compressedSizeStr}, ${uncompressedSizeStr}`)
+                throw new Error(
+                    `Malformed size fields for entry "${fileName}": ${compressedSizeStr}, ${uncompressedSizeStr}`
+                );
+            }
+
+            packages.push({
+                fileName,
+                md5,
+                compressedSize,
+                uncompressedSize,
+            });
+        }
+
+        return { manifestVersion, packages };
+    }
+
+    async fetchLatestVersion(binaryType: WindowBinaryType, channel: string = "LIVE"): Promise<string> {
+        const url = `${this.clientSettingsUrl}/${binaryType}/channel/${channel}`;
+
+        try {
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                error(`Failed to fetch version info: ${response.status} ${response.statusText}`)
+                throw new Error(`Failed to fetch version info: ${response.status} ${response.statusText}`);
+            }
+
+            const versionData: ClientVersionResponse = await response.json();
+
+            if (!versionData.clientVersionUpload) {
+                error('Invalid version response: missing clientVersionUpload')
+                throw new Error('Invalid version response: missing clientVersionUpload');
+            }
+
+            return versionData.clientVersionUpload;
+        } catch (errorr) {
+            if (errorr instanceof SyntaxError) {
+                error('Failed to parse version response: Invalid JSON')
+                throw new Error('Failed to parse version response: Invalid JSON');
+            }
+            error(`Version fetch failed: ${errorr instanceof Error ? errorr.message : 'Unknown error'}`)
+            throw new Error(`Version fetch failed: ${errorr instanceof Error ? errorr.message : 'Unknown error'}`);
+        }
+    }
+
+    async fetchManifest(version: string): Promise<ParsedManifest> {
+        const url = joinUrl(this.baseUrl, `${version}-rbxPkgManifest.txt`);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            error(`Failed to fetch rbxPkgManifest for ${version}: ${response.status} ${response.statusText}`)
+            throw new Error(`Failed to fetch rbxPkgManifest for ${version}: ${response.status} ${response.statusText}`);
+        }
+
+        const raw = await response.text();
+        return this.parsePkgManifest(raw);
+    }
+
+    async writeXml(dest: string) {
+        const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+\t<ContentFolder>content</ContentFolder>
+\t<BaseUrl>http://www.roblox.com</BaseUrl>
+</Settings>`;
+
+        await writeFile(await join(dest, "AppSettings.xml"), new TextEncoder().encode(xml));
+        debug('wrote AppSettings.xml')
+    }
+
+    /**
+     * download a single package zip from this.baseUrl into destDir
+     * @param version - client version, e.g. "version-0123456789abcdef"
+     * @param pkg - the manifest entry to download
+     * @param destDir - directory to write the package into
+     */
+    async downloadPackage(
+        version: string,
+        pkg: PackageEntry,
+        destDir: string,
+        onChunk?: (receivedBytes: number, totalBytes: number) => void
+    ): Promise<string> {
+        info("beginning to download package")
+        const url = joinUrl(this.baseUrl, `${version}-${pkg.fileName}`);
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            error(`Failed to download ${pkg.fileName}: ${response.status} ${response.statusText}`)
+            throw new Error(`Failed to download ${pkg.fileName}: ${response.status} ${response.statusText}`);
+        }
+
+        const chunks: Uint8Array[] = [];
+        let receivedBytes = 0;
+
+        if (response.body) {
+            const reader = response.body.getReader();
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+
+                chunks.push(value);
+                receivedBytes += value.byteLength;
+                onChunk?.(receivedBytes, pkg.compressedSize);
+            }
+        } else {
+            const buf = new Uint8Array(await response.arrayBuffer());
+            chunks.push(buf);
+            receivedBytes = buf.byteLength;
+            onChunk?.(receivedBytes, pkg.compressedSize);
+        }
+
+        const bytes = new Uint8Array(receivedBytes);
+        let offset = 0;
+        for (const chunk of chunks) {
+            bytes.set(chunk, offset);
+            offset += chunk.byteLength;
+        }
+
+        const dest = await join(destDir, pkg.fileName);
+        await writeFile(dest, bytes);
+
+        return dest;
+    }
+
+    /**
+     * download every package listed in a parsed manifest into destDir, with up to
+     * `concurrency` packages downloading at once
+     */
+    async downloadPackagesParallel(
+        version: string,
+        manifest: ParsedManifest,
+        destDir: string,
+        concurrency: number = 4,
+        onProgress?: (done: number, total: number, pkg: PackageEntry, percent: number) => void
+    ): Promise<string[]> {
+        info(`beginning to download packages with parallel with params : ${version}, ${destDir}, ${concurrency}`)
+
+        const total = manifest.packages.length;
+        const paths: string[] = new Array(total);
+        const receivedByIndex: number[] = new Array(total).fill(0);
+        const totalBytes = manifest.packages.reduce((sum, pkg) => sum + pkg.compressedSize, 0);
+
+        let done = 0;
+        let nextIndex = 0;
+
+        const worker = async () => {
+            while (true) {
+                const index = nextIndex++;
+                if (index >= total) return;
+
+                const pkg = manifest.packages[index];
+
+                paths[index] = await this.downloadPackage(version, pkg, destDir, (receivedBytes) => {
+                    receivedByIndex[index] = receivedBytes;
+                    const bytesDone = receivedByIndex.reduce((sum, b) => sum + b, 0);
+                    const percent = totalBytes > 0 ? Math.round((bytesDone / totalBytes) * 100) : 100;
+                    onProgress?.(done, total, pkg, percent);
+                });
+
+                receivedByIndex[index] = pkg.compressedSize;
+                done++;
+            }
+        };
+
+        const workers = Array.from({ length: Math.min(concurrency, total) }, () => worker());
+        await Promise.all(workers);
+
+        info(`download packages with parallel completed with params : ${version}, ${destDir}, ${concurrency}`)
+
+        return paths;
+    }
+}

@@ -15,6 +15,7 @@ name = "glimmer_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
+tauri-helper = "0.1.4"
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
@@ -22,6 +23,15 @@ tauri = { version = "2", features = [] }
 tauri-plugin-opener = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+tauri-plugin-dialog = "2.7.3"
+tauri-plugin-http = "2"
+tauri-helper = "0.1.4"
+tauri-plugin-fs = "2"
+specta = "2.0.0-rc.25"
+tauri-specta = { version = "2.0.0-rc.25", features = ["derive", "typescript"] }
+specta-typescript = "0.0.12"
+zip = "8.6.0"
+tauri-plugin-log = "2"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
@@ -31,3 +41,8 @@ lto = true
 opt-level = 3
 panic = "abort"
 strip = true
+
+[workspace]
+members = [
+    ".",
+]
