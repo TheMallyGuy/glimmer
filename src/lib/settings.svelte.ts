@@ -1,47 +1,24 @@
-import { newFlag, type Flag } from '$lib/flags';
+import { goto } from '$app/navigation';
+import { appState } from '$lib/appState.svelte';
+import { Configuration } from '$ts/configuration';
 
 // global state for everything
 
-export const settings = $state({
-  discord: true,
-  join: true,
-  fonts: false,
-  sound: true,
-  cursor: false,
-  theme: true,
-  compact: false,
-  update: true,
-  close: true,
-  desktop: true,
-  startmenu: true,
-});
-
+/** Window-local preferences that aren't part of the saved app state. */
 export const prefs = $state({
-  lighting: 'Future',
-  fps: 'unlimited',
   target: 'player',
   query: '',
 });
 
-export const fastFlags = $state({
-  list: [
-    newFlag('DFIntTaskSchedulerTargetFps', '144'),
-    newFlag('FFlagDebugGraphicsPreferD3D11', 'True'),
-  ] as Flag[],
-});
-
-export function save() {
-  // TODO: persist settings, prefs and fastFlags.list
-  console.log('save', $state.snapshot({ settings, prefs, flags: fastFlags.list }));
+export async function save() {
+  const configuration = await Configuration.create();
+  await configuration.saveRaw(JSON.stringify($state.snapshot(appState)));
 }
 
 export function discard() {
-  // TODO: reload the last saved values
-  console.log('discard');
+  goto('../');
 }
 
-export function launch(target: string) {
+export async function launch(target: string) {
   save();
-  // TODO: invoke your Tauri launch command, e.g. invoke('launch', { target })
-  console.log('launch', target);
 }
