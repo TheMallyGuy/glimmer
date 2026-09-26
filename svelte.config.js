@@ -12,6 +12,10 @@ const config = {
     adapter: adapter({
       fallback: "index.html",
     }),
+    alias: {
+      $ts: "src/ts",
+      "$ts/*": "src/ts/*",
+    },
   },
 };
 
