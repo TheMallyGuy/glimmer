@@ -1,9 +1,20 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { getCurrentWindow } from '@tauri-apps/api/window';
-  import { listen, type UnlistenFn } from '@tauri-apps/api/event';
-  import { sizeWindow } from '$lib/window';
-  import { cn } from '$lib';
+  import { onMount, onDestroy } from "svelte";
+  import { getCurrentWindow } from "@tauri-apps/api/window";
+  import { listen, type UnlistenFn } from "@tauri-apps/api/event";
+  import { appCacheDir, join } from "@tauri-apps/api/path";
+  import { mkdir, remove } from "@tauri-apps/plugin-fs";
+  import { sizeWindow } from "$lib/window";
+  import { cn } from "$lib";
+  import { Downloader } from "$ts/roblox/installation/download";
+  import {
+    Installation,
+    type InstallEntry,
+  } from "$ts/roblox/installation/installation";
+  import { appState } from "$lib/appState.svelte";
+  import { commands } from "$ts/bindings";
+
+  const PLAYER_EXE = "RobloxPlayerBeta.exe";
 
   interface LaunchProgress {
     status: string;
@@ -12,8 +23,7 @@
     error?: string;
   }
 
-  // Wire these to the launch events. progress: 0–100, or null while unknown.
-  let status = $state('Checking for updates');
+  let status = $state("Checking for updates");
   let progress = $state<number | null>(null);
   let error = $state<string | null>(null);
 
@@ -22,21 +32,130 @@
   const appWindow = getCurrentWindow();
   let unlisten: UnlistenFn | undefined;
 
-  onMount(() => {
+  /** downloads, extracts and installs a client version, then marks it active */
+  async function downloadAndInstall(
+    d: Downloader,
+    i: Installation,
+    version: string,
+  ) {
+    status = "Fetching manifest";
+    progress = null;
+    const manifest = await d.fetchManifest(version);
+
+    const packagesDir = await join(
+      await appCacheDir(),
+      "glimmer-downloads",
+      version,
+    );
+    await mkdir(packagesDir, { recursive: true });
+    await i.createNewInstallation(version);
+    const distDir = await join(i.installationPath, version);
+
+    status = `Downloading client (0/${manifest.packages.length})`;
+    progress = 0;
+    await d.downloadPackagesParallel(
+      version,
+      manifest,
+      packagesDir,
+      appState.installations.parallelDownloader.value,
+      (done, total, _pkg, percent) => {
+        status = `Downloading client (${done}/${total})`;
+        progress = percent;
+      },
+    );
+
+    status = `Extracting client (0/${manifest.packages.length})`;
+    progress = 0;
+    await d.extractPackages(
+      packagesDir,
+      distDir,
+      "WindowsPlayer",
+      (done, total) => {
+        status = `Extracting client (${done}/${total})`;
+        progress = Math.round((done / total) * 100);
+      },
+    );
+
+    status = "Finishing installation";
+    progress = null;
+    await d.writeXml(distDir);
+    await remove(packagesDir, { recursive: true });
+
+    await i.reIndex();
+    await i.setActiveVersion(version);
+    progress = null;
+  }
+
+  /** spawn RobloxPlayerBeta.exe from an installed version's folder */
+  async function launchInstall(installPath: string) {
+    const exePath = await join(installPath, PLAYER_EXE);
+    const result = await commands.launch(exePath, []);
+
+    if (result.status === "error") {
+      throw new Error(result.error);
+    }
+  }
+
+  async function checkAndLaunch() {
+    const BASE_URLS = [
+      "https://setup-cfly.rbxcdn.com/",
+      "https://setup-aws.rbxcdn.com/",
+      "https://setup-ak.rbxcdn.com/",
+      "https://setup.rbxcdn.com/",
+    ];
+
+    try {
+      const d = await Downloader.create(BASE_URLS);
+      const i = await Installation.create();
+
+      const existingInstallations: InstallEntry[] = await i.listInstallations();
+
+      if (existingInstallations.length === 0) {
+        const latest = await d.fetchLatestVersion("WindowsPlayer");
+        await downloadAndInstall(d, i, latest);
+        status = `Launching ${latest}`;
+        await launchInstall(await join(i.installationPath, latest));
+      } else {
+        const active = i.getActiveVersion() ?? existingInstallations[0];
+
+        if (appState.installations.disableRobloxUpgrade) {
+          status = `Launching ${active.version}`;
+          await launchInstall(active.path);
+        } else {
+          const latest = await d.fetchLatestVersion("WindowsPlayer");
+          const upToDate = existingInstallations.find(
+            (ver) => ver.version == latest,
+          );
+
+          if (upToDate) {
+            status = `Launching ${upToDate.version}`;
+            await launchInstall(upToDate.path);
+          } else {
+            await downloadAndInstall(d, i, latest);
+            status = `Launching ${latest}`;
+            await launchInstall(await join(i.installationPath, latest));
+          }
+        }
+      }
+
+      // launched successfully: close just this window, not the whole app
+      await appWindow.close();
+    } catch (e) {
+      if (e instanceof Error) {
+        error = e.message;
+      } else if (typeof e === "string") {
+        error = e;
+      } else {
+        error = "Something went wrong. Please try again.";
+      }
+    }
+  }
+
+  onMount(async () => {
     sizeWindow(671, 329);
     appWindow.setResizable(false);
-
-    // TODO: Rust side doesn't emit this yet - wire the launch command up to emit
-    // 'launch-progress' events shaped like LaunchProgress.
-    listen<LaunchProgress>('launch-progress', (event) => {
-      status = event.payload.status;
-      progress = event.payload.progress;
-      error = event.payload.error ?? null;
-
-      if (event.payload.done && !error) {
-        appWindow.close();
-      }
-    }).then((fn) => (unlisten = fn));
+    await checkAndLaunch();
+    getCurrentWindow().close();
   });
 
   onDestroy(() => unlisten?.());
@@ -46,15 +165,14 @@
       appWindow.close();
       return;
     }
-    // TODO: invoke a Tauri command to cancel the in-progress launch, e.g. invoke('cancel_launch')
     appWindow.close();
   }
 
   function retry() {
     error = null;
     progress = null;
-    status = 'Checking for updates';
-    // TODO: invoke the launch command again, e.g. invoke('launch', { target })
+    status = "Checking for updates";
+    checkAndLaunch();
   }
 </script>
 
@@ -86,12 +204,15 @@
       class="h-11 cursor-pointer rounded-gl border-0 bg-transparent px-4 text-sm text-fg-3 hover:bg-hover hover:text-fg"
       onclick={cancel}
     >
-      {error ? 'Close' : 'Cancel'}
+      {error ? "Close" : "Cancel"}
     </button>
   </div>
 
   <!-- Logo -->
-  <div data-tauri-drag-region class="relative flex grow items-center justify-center">
+  <div
+    data-tauri-drag-region
+    class="relative flex grow items-center justify-center"
+  >
     <img
       src="/glimmer-logo.svg"
       alt="Glimmer"
@@ -103,11 +224,18 @@
 
   <!-- Status row -->
   <div class="relative flex items-baseline gap-4 px-7 pb-5" aria-live="polite">
-    <p class={cn('m-0 grow truncate text-sm', error ? 'text-danger' : 'text-fg-3')}>
+    <p
+      class={cn(
+        "m-0 grow truncate text-sm",
+        error ? "text-danger" : "text-fg-3",
+      )}
+    >
       {error ?? `${status}…`}
     </p>
     {#if progress !== null && !error}
-      <span class="font-display text-[22px] font-normal tracking-[0.01em] text-fg tabular-nums">
+      <span
+        class="font-display text-[22px] font-normal tracking-[0.01em] text-fg tabular-nums"
+      >
         {Math.round(progress)}%
       </span>
     {/if}
@@ -123,10 +251,15 @@
     class="relative h-0.5 w-full overflow-hidden bg-progress-track"
   >
     {#if progress === null && !error}
-      <div class="splash-indeterminate absolute inset-y-0 w-1/4 bg-accent motion-reduce:left-0 motion-reduce:animate-none"></div>
+      <div
+        class="splash-indeterminate absolute inset-y-0 w-1/4 bg-accent motion-reduce:left-0 motion-reduce:animate-none"
+      ></div>
     {:else}
       <div
-        class={cn('h-full transition-[width] duration-200 ease-out motion-reduce:transition-none', error ? 'bg-danger' : 'bg-accent')}
+        class={cn(
+          "h-full transition-[width] duration-200 ease-out motion-reduce:transition-none",
+          error ? "bg-danger" : "bg-accent",
+        )}
         style:width="{error ? 100 : progress}%"
       ></div>
     {/if}

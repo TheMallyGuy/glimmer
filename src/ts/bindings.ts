@@ -4,21 +4,23 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
-	/**
-	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
-	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
-	 */
-	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
+	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
 	/**
 	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
 	 *  don't need to be loaded into memory all at once
 	 */
 	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
-	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
+	/**
+	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
+	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
+	 */
+	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
+	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
+	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
+	/**  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes */
+	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
 	/**  hash raw bytes with md5, returning the lowercase hex digest */
 	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
-	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
 };
 
 /* Tauri Specta runtime */

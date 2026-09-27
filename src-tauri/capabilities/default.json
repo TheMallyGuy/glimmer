@@ -4,7 +4,8 @@
   "description": "Capability for the main window",
   "windows": [
     "main",
-    "settings"
+    "settings",
+    "splash"
   ],
   "permissions": [
     "core:default",
@@ -53,6 +54,17 @@
     },
     {
       "identifier": "fs:allow-mkdir",
+      "allow": [
+        {
+          "path": "$HOME"
+        },
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
+    },
+    {
+      "identifier": "fs:allow-remove",
       "allow": [
         {
           "path": "$HOME"

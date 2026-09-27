@@ -2,7 +2,7 @@ import { appDataDir, join } from "@tauri-apps/api/path";
 import { exists, mkdir, readDir, readTextFile, writeFile } from "@tauri-apps/plugin-fs";
 import { debug, info } from "@tauri-apps/plugin-log";
 
-interface InstallEntry {
+export interface InstallEntry {
     version: string;
     path: string;
     active: boolean;
@@ -40,7 +40,7 @@ export class Installation {
         }
 
         const path = await join(this.installationPath, name)
-        const res = await mkdir(path)
+        const res = await mkdir(path, { recursive: true })
 
         return res
     }
@@ -60,10 +60,20 @@ export class Installation {
 
         for (const version of versions) {
             if (!version.isDirectory) continue;
+
+            const path = await join(this.installationPath, version.name);
+            // AppSettings.xml is written last by the downloader, so its presence means
+            // the install actually finished; skip stray/partial folders otherwise
+            const isComplete = await exists(await join(path, "AppSettings.xml"));
+            if (!isComplete) {
+                debug(`skipping incomplete install ${version.name}`)
+                continue;
+            }
+
             debug(`found ${version.name}`)
             this.installedVersions.push({
                 version: version.name,
-                path: await join(this.installationPath, version.name),
+                path,
                 active: version.name === previousActive
             });
         }

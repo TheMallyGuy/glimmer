@@ -2,6 +2,7 @@ import { getCurrentWindow } from '@tauri-apps/api/window';
 import { appState } from '$lib/appState.svelte';
 import { Configuration } from '$ts/configuration';
 import { openChooserWindow } from '$ts/windows/chooser';
+import { openSplashWindow } from '$ts/windows/splash';
 
 // global state for everything
 
@@ -23,5 +24,6 @@ export async function discard() {
 
 export async function launch(target: string) {
   await save();
+  await openSplashWindow()
   await getCurrentWindow().close();
 }

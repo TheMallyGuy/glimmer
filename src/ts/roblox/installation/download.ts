@@ -27,6 +27,11 @@ export interface ParsedManifest {
 
 export class Downloader {
     private readonly clientSettingsUrl = 'https://clientsettings.roblox.com/v2/client-version';
+    // name each binary type is logged under in DeployHistory.txt
+    private readonly deployHistoryNames: Record<WindowBinaryType, string> = {
+        WindowsPlayer: "WindowsPlayer",
+        WindowsStudio64: "Studio64",
+    };
     readonly extractRoots = {
         player: {
             "RobloxApp.zip": "",
@@ -243,6 +248,39 @@ export class Downloader {
             error(`Version fetch failed: ${errorr instanceof Error ? errorr.message : 'Unknown error'}`)
             throw new Error(`Version fetch failed: ${errorr instanceof Error ? errorr.message : 'Unknown error'}`);
         }
+    }
+
+    /**
+     * Finds the version before the current latest one in Roblox's deploy history log,
+     * e.g. to roll back to it. Throws if fewer than two distinct versions are logged.
+     */
+    async fetchPreviousVersion(binaryType: WindowBinaryType, channel: string = "LIVE"): Promise<string> {
+        const channelPath = channel === "LIVE" ? this.baseUrl : joinUrl(this.baseUrl, `channel/${channel}`);
+        const url = joinUrl(channelPath, "DeployHistory.txt");
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            error(`Failed to fetch deploy history: ${response.status} ${response.statusText}`)
+            throw new Error(`Failed to fetch deploy history: ${response.status} ${response.statusText}`);
+        }
+
+        const history = await response.text();
+
+        // trailing space stops "Studio" from also matching "Studio64"
+        const name = this.deployHistoryNames[binaryType];
+        const re = new RegExp(`New ${name} (version-[0-9a-f]+)`, "g");
+        const versions = [...history.matchAll(re)].map((m) => m[1]);
+
+        const distinct: string[] = [];
+        for (let i = versions.length - 1; i >= 0; i--) {
+            const v = versions[i];
+            if (!distinct.includes(v)) distinct.push(v);
+            if (distinct.length === 2) return v;
+        }
+
+        error(`Couldn't find a previous ${binaryType} version in ${url}`)
+        throw new Error(`Couldn't find a previous ${binaryType} version in ${url}`);
     }
 
     async fetchManifest(version: string): Promise<ParsedManifest> {
