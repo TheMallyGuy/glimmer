@@ -14,6 +14,7 @@
   import { prefs, launch } from "$lib/settings.svelte";
   import { sizeWindow } from "$lib/window";
   import { openSettingsWindow } from "$ts/windows/settings";
+  import { Installation } from "$ts/roblox/installation/installation";
 
   const DISCORD_INVITE = "https://discord.gg/UX5E9ppKFg";
 
@@ -27,9 +28,19 @@
   const LaunchIcon = $derived(current.icon);
 
   let targetButtons: HTMLButtonElement[] = $state([]);
+  let bottomVerionText = $state("");
 
-  onMount(() => {
+  onMount(async () => {
     sizeWindow(560, 320);
+
+    const i = await Installation.create();
+    await i.listInstallations();
+
+    const ver = i.getActiveVersion();
+
+    if (ver) {
+      bottomVerionText = `LIVE · ${ver.version}`
+    }
   });
 
   function onTargetKey(e: KeyboardEvent, i: number) {
@@ -165,7 +176,7 @@
           </button>
         {/each}
       </div>
-      <span class="ml-auto text-xs text-muted">LIVE · [version hash here]</span>
+      <span class="ml-auto text-xs text-muted">{bottomVerionText}</span>
     </div>
   </main>
 </div>
