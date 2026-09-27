@@ -24,7 +24,8 @@
     "@tauri-apps/plugin-process": "2.4.0",
     "@tauri-apps/plugin-store": "2",
     "svelte-dnd-action": "^0.9.79",
-    "tailwind-merge": "^3.7.0"
+    "tailwind-merge": "^3.7.0",
+    "tauri-plugin-drpc": "^1.0.3"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.10",
@@ -38,5 +39,8 @@
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
     "vite": "npm:rolldown-vite@latest"
+  },
+  "patchedDependencies": {
+    "tauri-plugin-drpc@1.0.3": "patches/tauri-plugin-drpc@1.0.3.patch"
   }
 }
