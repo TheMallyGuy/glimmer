@@ -2,9 +2,8 @@
   import { onMount, onDestroy } from 'svelte';
   import { getCurrentWindow } from '@tauri-apps/api/window';
   import { listen, type UnlistenFn } from '@tauri-apps/api/event';
-  import { Button, cn } from '$lib';
-  import { settings } from '$lib/settings.svelte';
   import { sizeWindow } from '$lib/window';
+  import { cn } from '$lib';
 
   interface LaunchProgress {
     status: string;
@@ -13,14 +12,15 @@
     error?: string;
   }
 
-  let status = $state('Downloading client…');
+  // Wire these to the launch events. progress: 0–100, or null while unknown.
+  let status = $state('Checking for updates');
   let progress = $state<number | null>(null);
   let error = $state<string | null>(null);
 
+  const GRID_OPACITY = 0.2;
+
   const appWindow = getCurrentWindow();
   let unlisten: UnlistenFn | undefined;
-
-  const pct = $derived(progress === null ? null : Math.round(progress));
 
   onMount(() => {
     sizeWindow(671, 329);
@@ -34,7 +34,7 @@
       error = event.payload.error ?? null;
 
       if (event.payload.done && !error) {
-        if (settings.close) appWindow.close();
+        appWindow.close();
       }
     }).then((fn) => (unlisten = fn));
   });
@@ -50,64 +50,85 @@
     appWindow.close();
   }
 
-  function tryAgain() {
+  function retry() {
     error = null;
     progress = null;
-    status = 'Downloading client…';
+    status = 'Checking for updates';
     // TODO: invoke the launch command again, e.g. invoke('launch', { target })
   }
 </script>
 
 <div
   data-tauri-drag-region
-  class="relative flex h-screen w-screen flex-col overflow-hidden bg-canvas"
-  style="background-image: linear-gradient(180deg, var(--color-tonal) 0px, var(--color-canvas) 78px, var(--color-canvas) 100%)"
+  class="relative flex h-screen w-screen flex-col overflow-hidden bg-canvas text-fg"
+  style="background-image: linear-gradient(180deg, #1f1f1f 0px, #0d0d0d 78px, #0d0d0d 100%);"
 >
+  <!-- Grid overlay -->
   <div
+    aria-hidden="true"
     class="pointer-events-none absolute inset-0"
-    style="background-image: linear-gradient(to right, rgb(255 255 255 / 0.2) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / 0.2) 1px, transparent 1px); background-size: 45.12px 47px;"
+    style="background-image: linear-gradient(to right, rgb(255 255 255 / {GRID_OPACITY}) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / {GRID_OPACITY}) 1px, transparent 1px); background-size: 45.12px 47px;"
   ></div>
 
+  <!-- Top row -->
   <div class="relative flex justify-end gap-1 p-2">
-    <Button variant="ghost" onclick={cancel}>{error ? 'Close' : 'Cancel'}</Button>
     {#if error}
-      <Button variant="secondary" onclick={tryAgain}>Try again</Button>
+      <button
+        type="button"
+        class="h-11 cursor-pointer rounded-gl border-0 bg-tonal px-4 text-sm text-fg hover:bg-tonal-hover"
+        onclick={retry}
+      >
+        Try again
+      </button>
+    {/if}
+    <button
+      type="button"
+      class="h-11 cursor-pointer rounded-gl border-0 bg-transparent px-4 text-sm text-fg-3 hover:bg-hover hover:text-fg"
+      onclick={cancel}
+    >
+      {error ? 'Close' : 'Cancel'}
+    </button>
+  </div>
+
+  <!-- Logo -->
+  <div data-tauri-drag-region class="relative flex grow items-center justify-center">
+    <img
+      src="/glimmer-logo.svg"
+      alt="Glimmer"
+      width="199"
+      height="44"
+      class="pointer-events-none block h-11 w-[199px]"
+    />
+  </div>
+
+  <!-- Status row -->
+  <div class="relative flex items-baseline gap-4 px-7 pb-5" aria-live="polite">
+    <p class={cn('m-0 grow truncate text-sm', error ? 'text-danger' : 'text-fg-3')}>
+      {error ?? `${status}…`}
+    </p>
+    {#if progress !== null && !error}
+      <span class="font-display text-[22px] font-normal tracking-[0.01em] text-fg tabular-nums">
+        {Math.round(progress)}%
+      </span>
     {/if}
   </div>
 
-  <div data-tauri-drag-region class="relative flex grow flex-col items-center justify-center gap-6">
-    <img src="/glimmer-logo.svg" alt="Glimmer" width="199" class="pointer-events-none h-auto" />
-
-    <div class="flex w-[320px] flex-col gap-2">
-      <div class="flex items-baseline justify-between gap-4" aria-live="polite">
-        <span class={cn('text-sm', error ? 'text-danger' : 'text-fg-3')}>{error ?? status}</span>
-        <span class="font-display text-sm font-normal tracking-[0.01em] text-fg tabular-nums">
-          {pct !== null ? `${pct}%` : ''}
-        </span>
-      </div>
-
+  <!-- Progress line: flush with the bottom edge -->
+  <div
+    role="progressbar"
+    aria-label="Launch progress"
+    aria-valuemin={0}
+    aria-valuemax={100}
+    aria-valuenow={progress ?? undefined}
+    class="relative h-0.5 w-full overflow-hidden bg-progress-track"
+  >
+    {#if progress === null && !error}
+      <div class="splash-indeterminate absolute inset-y-0 w-1/4 bg-accent motion-reduce:left-0 motion-reduce:animate-none"></div>
+    {:else}
       <div
-        role="progressbar"
-        aria-label="Launch progress"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={pct ?? undefined}
-        class="relative h-1 w-full overflow-hidden rounded-gl bg-progress-track"
-      >
-        {#if pct !== null}
-          <div
-            class={cn('h-full transition-[width] motion-reduce:transition-none', error ? 'bg-danger' : 'bg-accent')}
-            style="width: {pct}%"
-          ></div>
-        {:else}
-          <div
-            class={cn(
-              'absolute inset-y-0 left-0 w-1/4 animate-progress-indeterminate motion-reduce:animate-none',
-              error ? 'bg-danger' : 'bg-accent'
-            )}
-          ></div>
-        {/if}
-      </div>
-    </div>
+        class={cn('h-full transition-[width] duration-200 ease-out motion-reduce:transition-none', error ? 'bg-danger' : 'bg-accent')}
+        style:width="{error ? 100 : progress}%"
+      ></div>
+    {/if}
   </div>
 </div>
