@@ -3,7 +3,8 @@
   "identifier": "default",
   "description": "Capability for the main window",
   "windows": [
-    "main"
+    "main",
+    "settings"
   ],
   "permissions": [
     "core:default",
@@ -16,6 +17,7 @@
     "core:window:allow-set-size",
     "core:window:allow-set-resizable",
     "core:window:allow-center",
+    "core:webview:allow-create-webview-window",
     {
       "identifier": "fs:allow-write-file",
       "allow": [
@@ -108,6 +110,9 @@
       ]
     },
     "log:default",
-    "store:default"
+    "store:default",
+    "core:app:allow-exit",
+    "dialog:default",
+    "process:default"
   ]
 }
