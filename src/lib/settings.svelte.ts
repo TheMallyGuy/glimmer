@@ -1,6 +1,7 @@
-import { goto } from '$app/navigation';
+import { getCurrentWindow } from '@tauri-apps/api/window';
 import { appState } from '$lib/appState.svelte';
 import { Configuration } from '$ts/configuration';
+import { openChooserWindow } from '$ts/windows/chooser';
 
 // global state for everything
 
@@ -15,10 +16,12 @@ export async function save() {
   await configuration.saveRaw(JSON.stringify($state.snapshot(appState)));
 }
 
-export function discard() {
-  goto('../');
+export async function discard() {
+  await openChooserWindow();
+  await getCurrentWindow().close();
 }
 
 export async function launch(target: string) {
-  save();
+  await save();
+  await getCurrentWindow().close();
 }
