@@ -15,3 +15,7 @@ export type { DropdownOption } from './components/Dropdown.svelte';
 export type { SplitOption } from './components/SplitButton.svelte';
 export * from './flags';
 export { cn } from './utils';
+export { default as TextField } from './components/TextField.svelte';
+export { default as InspiredBanner } from './components/InspiredBanner.svelte';
+export { default as Menu } from './components/Menu.svelte';
+export type { MenuItem } from './components/Menu.svelte';
