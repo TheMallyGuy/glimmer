@@ -30,12 +30,8 @@ export class FastFlagManager {
     }
 
     async disableFlags() {
-        if (!await exists(this.clientSettingsDir)) {
-            await mkdir(this.clientSettingsDir, { recursive: true })
+        if (await exists(this.clientAppSettingsPath)) {
+            await remove(this.clientAppSettingsPath)
         }
-
-        await remove(
-            this.clientAppSettingsPath,
-        )
     }
 }
