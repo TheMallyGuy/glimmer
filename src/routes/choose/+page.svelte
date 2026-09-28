@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import { openUrl } from "@tauri-apps/plugin-opener";
   import {
@@ -14,7 +14,9 @@
   import { prefs, launch } from "$lib/settings.svelte";
   import { sizeWindow } from "$lib/window";
   import { openSettingsWindow } from "$ts/windows/settings";
-  import { Installation } from "$ts/roblox/installation/installation";
+  import { installationsState } from "$lib/installations.svelte";
+  import { watchInstallations } from "$ts/roblox/installation/watcher";
+  import type { UnlistenFn } from "@tauri-apps/api/event";
 
   const DISCORD_INVITE = "https://discord.gg/UX5E9ppKFg";
 
@@ -28,20 +30,22 @@
   const LaunchIcon = $derived(current.icon);
 
   let targetButtons: HTMLButtonElement[] = $state([]);
-  let bottomVerionText = $state("");
+
+  const activeVersion = $derived(
+    installationsState.versions.find((v) => v.active),
+  );
+  const bottomVerionText = $derived(
+    activeVersion ? `LIVE · ${activeVersion.version}` : "",
+  );
+
+  let stopWatching: UnlistenFn | undefined;
 
   onMount(async () => {
     sizeWindow(560, 320);
-
-    const i = await Installation.create();
-    await i.listInstallations();
-
-    const ver = i.getActiveVersion();
-
-    if (ver) {
-      bottomVerionText = `LIVE · ${ver.version}`
-    }
+    stopWatching = await watchInstallations();
   });
+
+  onDestroy(() => stopWatching?.());
 
   function onTargetKey(e: KeyboardEvent, i: number) {
     if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key))

@@ -51,27 +51,56 @@ pub fn run() {
         .expect("failed to export typescript bindings");
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(
             tauri_plugin_log::Builder::new()
-                .level(tauri_plugin_log::log::LevelFilter::Info)
+                .level(if cfg!(debug_assertions) {
+                    tauri_plugin_log::log::LevelFilter::Debug
+                } else {
+                    tauri_plugin_log::log::LevelFilter::Info
+                })
                 .build(),
         )
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
+        .manage(LogWatcherRegistry::default())
+        .manage(commands::DiscordRpcState::default())
+        .manage(commands::DiscordRpcDebugState::default())
         .setup(|app| {
-            let open_selector = MenuItem::with_id(
-                app,
-                "open_selector",
-                "Open selector",
-                true,
-                None::<&str>,
-            )?;
+            // as early as possible, before any window (even the hidden
+            // background one) is created — see start_discord_rpc_at_boot's
+            // own doc comment for why timing matters here
+            commands::start_discord_rpc_at_boot(app.handle());
+
+            let open_selector =
+                MenuItem::with_id(app, "open_selector", "Open selector", true, None::<&str>)?;
             let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&open_selector, &quit])?;
+
+            // watch Roblox's logs for the whole lifetime of the app, not just
+            // while a particular window (e.g. splash) happens to be open
+            let logs_dir = app.path().local_data_dir()?.join("Roblox").join("logs");
+            if let Err(e) = commands::watch_latest_log(
+                app.handle().clone(),
+                app.state::<LogWatcherRegistry>(),
+                logs_dir.to_string_lossy().to_string(),
+            ) {
+                tauri_plugin_log::log::error!("failed to start log watcher: {e}");
+            }
+
+            // Tauri can't run frontend JS without a webview, so a hidden window
+            // that's never shown or closed is the only way to keep a frontend
+            // event listener alive independent of splash/main/choose closing
+            WebviewWindowBuilder::new(app, "background", WebviewUrl::App("/background".into()))
+                .visible(false)
+                .skip_taskbar(true)
+                .decorations(false)
+                .inner_size(1.0, 1.0)
+                .build()?;
 
             TrayIconBuilder::new()
                 .icon(app.default_window_icon().unwrap().clone())

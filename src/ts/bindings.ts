@@ -4,23 +4,64 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
-	/**
-	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
-	 *  don't need to be loaded into memory all at once
-	 */
-	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
+	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
+	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
+	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
+	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
+	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
 	/**
 	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
 	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
 	 */
 	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
-	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
-	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
-	/**  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes */
-	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
 	/**  hash raw bytes with md5, returning the lowercase hex digest */
 	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
+	/**  `true` if the debug connection is currently open */
+	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
+	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
+	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
+	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
+	/**
+	 *  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes.
+	 *  also watches the spawned process in the background and emits "roblox-exited"
+	 *  once it closes, so the frontend can clear Discord RPC's presence.
+	 */
+	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
+	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
+	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
+	/**  stop watching a log directory previously passed to `watch_latest_log` */
+	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
+	/**
+	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
+	 *  don't need to be loaded into memory all at once
+	 */
+	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
+	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
+	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
+};
+
+/* Types */
+export type DiscordActivityButton = {
+	label: string,
+	url: string,
+};
+
+export type DiscordActivityPayload = {
+	details: string | null,
+	state: string | null,
+	startTimestamp: number | null,
+	endTimestamp: number | null,
+	largeImageKey: string | null,
+	largeImageText: string | null,
+	smallImageKey: string | null,
+	smallImageText: string | null,
+	buttons: DiscordActivityButton[] | null,
+	partyId: string | null,
+	partySize: number | null,
+	partyMax: number | null,
+	joinSecret: string | null,
+	spectateSecret: string | null,
+	matchSecret: string | null,
 };
 
 /* Tauri Specta runtime */

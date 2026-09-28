@@ -5,7 +5,8 @@
   "windows": [
     "main",
     "settings",
-    "splash"
+    "splash",
+    "background"
   ],
   "permissions": [
     "core:default",
@@ -112,7 +113,25 @@
           "url": "https://setup.rbxcdn.com"
         },
         {
-          "url": "https://clientsettings.roblox.com"
+          "url": "https://users.roproxy.com/"
+        },
+        {
+          "url": "https://clientsettings.roproxy.com"
+        },
+        {
+          "url": "https://apis.roproxy.com"
+        },
+        {
+          "url": "https://games.roproxy.com"
+        },
+        {
+          "url": "https://thumbnails.roproxy.com"
+        },
+        {
+          "url": "https://glimmer-thumb.vercel.app"
+        },
+        {
+          "url": "https://ipwho.is"
         }
       ],
       "deny": [
@@ -125,6 +144,7 @@
     "store:default",
     "core:app:allow-exit",
     "dialog:default",
-    "process:default"
+    "process:default",
+    "notification:default"
   ]
 }

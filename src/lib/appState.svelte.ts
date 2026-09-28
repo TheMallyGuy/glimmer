@@ -12,7 +12,13 @@ export const appState = $state({
         discordRpc: {
             enabled: false,
             shareAccount: false,
-            join: false
+            join: false,
+            largeImagePreset: 'icon',
+            customImage: {
+                svgUrl: '',
+                overlay: 'white',
+                size: '512'
+            }
         },
         closeCrashHandler: {
             enabled: false
@@ -43,8 +49,40 @@ export const appState = $state({
     }
 });
 
+export interface GameState {
+    userId?: number,
+    gameId?: number,
+    gameServer?: string,
+    serverIp?: string,
+    serverUptime?: string
+}
+
+export const gameState: GameState = $state({
+    userId: 0,
+    gameId: 0,
+    gameServer: "",
+    serverIp: "",
+    serverUptime: "",
+})
+
+export function setGameState(inf: GameState) {
+    Object.assign(gameState, inf)
+}
+
+
+function deepMerge(target: Record<string, unknown>, source: Record<string, unknown>) {
+    for (const key in source) {
+        const value = source[key];
+        if (value && typeof value === 'object' && !Array.isArray(value) && typeof target[key] === 'object' && target[key] !== null && !Array.isArray(target[key])) {
+            deepMerge(target[key] as Record<string, unknown>, value as Record<string, unknown>);
+        } else {
+            target[key] = value;
+        }
+    }
+}
+
 export async function loadAppState() {
     const c = await Configuration.create();
     const text = await c.getAsText();
-    if (text) Object.assign(appState, JSON.parse(text));
+    if (text) deepMerge(appState, JSON.parse(text));
 }

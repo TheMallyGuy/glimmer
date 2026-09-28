@@ -36,6 +36,8 @@ md5 = "0.8.1"
 tauri-plugin-store = "2.5.0"
 app-finder = "0.1.0"
 tauri-plugin-process = "2"
+discord-rich-presence = "0.2.5"
+tauri-plugin-notification = "2"
 
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
