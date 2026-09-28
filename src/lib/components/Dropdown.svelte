@@ -114,7 +114,7 @@
     onclick={() => (open ? hide() : show())}
     onkeydown={onTriggerKey}
   >
-    <span class={cn('truncate', !selected && 'text-muted')}>{selected?.label ?? placeholder}</span>
+    <span class={cn('min-w-0 truncate', !selected && 'text-muted')}>{selected?.label ?? placeholder}</span>
     <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-muted group-disabled:text-[#4a4a4a]" />
   </button>
 
@@ -139,8 +139,8 @@
           onpointerenter={() => (active = i)}
           onclick={() => choose(i)}
         >
-          {opt.label}
-          <span class={cn('flex text-accent', opt.value === value ? 'opacity-100' : 'opacity-0')}>
+          <span class="min-w-0 truncate">{opt.label}</span>
+          <span class={cn('flex shrink-0 text-accent', opt.value === value ? 'opacity-100' : 'opacity-0')}>
             <Check size={16} strokeWidth={1.75} aria-hidden="true" />
           </span>
         </li>
