@@ -26,7 +26,7 @@ export interface ParsedManifest {
 }
 
 export class Downloader {
-    private readonly clientSettingsUrl = 'https://clientsettings.roblox.com/v2/client-version';
+    private readonly clientSettingsUrl = 'https://clientsettings.roproxy.com/v2/client-version';
     // name each binary type is logged under in DeployHistory.txt
     private readonly deployHistoryNames: Record<WindowBinaryType, string> = {
         WindowsPlayer: "WindowsPlayer",

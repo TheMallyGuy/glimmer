@@ -30,8 +30,9 @@ export class Installation {
         }
 
         const index = await readTextFile(this.indexFile)
+        this.installedVersions = JSON.parse(index)
 
-        return JSON.parse(index)
+        return this.installedVersions
     }
 
     async createNewInstallation(name: string, reIndex = true) {
@@ -54,7 +55,9 @@ export class Installation {
         }
 
         const versions = await readDir(this.installationPath);
-        const previousActive = this.installedVersions.find((v) => v.active)?.version;
+        const previousActive =
+            this.installedVersions.find((v) => v.active)?.version
+            ?? await this.readPersistedActiveVersion();
 
         this.installedVersions = [];
 
@@ -104,6 +107,17 @@ export class Installation {
 
         await this.writeIndex();
         info(`set active version to ${version}`)
+    }
+
+    /** read whichever version index.json currently has marked active, without touching in-memory state */
+    private async readPersistedActiveVersion(): Promise<string | undefined> {
+        try {
+            const raw = await readTextFile(this.indexFile);
+            const entries: InstallEntry[] = JSON.parse(raw);
+            return entries.find((v) => v.active)?.version;
+        } catch {
+            return undefined;
+        }
     }
 
     private async writeIndex() {
