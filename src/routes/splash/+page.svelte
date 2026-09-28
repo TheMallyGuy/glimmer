@@ -13,6 +13,8 @@
   } from "$ts/roblox/installation/installation";
   import { appState } from "$lib/appState.svelte";
   import { loadMods, applyMods, backupNewVersion } from "$lib/mods.svelte";
+  import { FastFlagManager } from "$ts/roblox/flags";
+  import { flagsToObject } from "$lib/flags";
   import { commands } from "$ts/bindings";
 
   const PLAYER_EXE = "RobloxPlayerBeta.exe";
@@ -98,6 +100,7 @@
   /** spawn RobloxPlayerBeta.exe from an installed version's folder */
   async function launchInstall(installPath: string) {
     const launchStatus = status;
+
     status = "Applying mods";
     await loadMods();
     try {
@@ -105,6 +108,20 @@
     } catch (e) {
       console.error("failed to apply mods before launch:", e);
     }
+
+    const ffm = await FastFlagManager.create(installPath);
+
+    if (appState.fastflags.enabled) {
+      status = "Applying flags";
+      try {
+        await ffm.apply(flagsToObject(appState.fastflags.flags));
+      } catch (e) {
+        console.error("failed to apply fast flags before launch:", e);
+      }
+    } else {
+      await ffm.disableFlags();
+    }
+
     status = launchStatus;
 
     const exePath = await join(installPath, PLAYER_EXE);

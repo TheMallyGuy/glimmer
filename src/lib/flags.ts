@@ -41,3 +41,20 @@ export function flagsToObject(flags: Flag[]): Record<string, string> {
 
   return out;
 }
+
+export function getFlagValue(flags: Flag[], name: string): string | undefined {
+  return flags.find((f) => f.name === name)?.value;
+}
+
+
+export function setFlagValue(flags: Flag[], name: string, value: string | undefined) {
+  const existing = flags.find((f) => f.name === name);
+
+  if (value === undefined) {
+    if (existing) flags.splice(flags.indexOf(existing), 1);
+    return;
+  }
+
+  if (existing) existing.value = value;
+  else flags.push(newFlag(name, value));
+}

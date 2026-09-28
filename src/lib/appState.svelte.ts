@@ -45,6 +45,7 @@ export const appState = $state({
         }
     },
     fastflags: {
+        enabled: true,
         flags: [] as Flag[] // flags go here
     }
 });
