@@ -1,8 +1,7 @@
-import { appDataDir } from "@tauri-apps/api/path";
-import { join } from "node:path";
+import { appDataDir, join } from "@tauri-apps/api/path";
 import { Installation } from "../installation/installation";
 import { debug, info, warn } from "@tauri-apps/plugin-log";
-import { exists, mkdir, readDir, rename, writeFile } from "@tauri-apps/plugin-fs";
+import { exists, mkdir, readDir, remove, rename, writeFile } from "@tauri-apps/plugin-fs";
 
 interface ModEntry {
     name: string;
@@ -13,6 +12,7 @@ interface ModEntry {
 export class ModificationManager {
     modificationPath = ""
     modificationVerPath = ""
+    activeVersionName = ""
     modificationPathIndexPath = ""
     modificationPathIndex: ModEntry[] = []
     reIndexVar = false
@@ -38,7 +38,7 @@ export class ModificationManager {
     async newMod(name: string): Promise<string> {
         await this.reIndex()
 
-        const isExist = await exists(join(this.modificationPath, name))
+        const isExist = await exists(await join(this.modificationPath, name))
 
         if (isExist) {
             throw new Error(`Mod with name ${name} already exist.`)
@@ -82,6 +82,24 @@ export class ModificationManager {
         return newPath
     }
 
+    async deleteMod(name: string): Promise<void> {
+        await this.reIndex()
+
+        const path = await join(this.modificationPath, name)
+        const isExist = await exists(path)
+
+        if (!isExist) {
+            throw new Error(`Mod with name ${name} doesn't exist.`)
+        }
+
+        await remove(path, { recursive: true })
+
+        this.modificationPathIndex = this.modificationPathIndex.filter((m) => m.name !== name)
+        await this.writeIndex()
+
+        info(`deleted mod ${name}`)
+    }
+
     async reIndex() {
         info("reindexing installations")
         const isExists = await exists(this.modificationPath);
@@ -96,7 +114,7 @@ export class ModificationManager {
         this.modificationPathIndex = [];
 
         for (const mod of mods) {
-            if (!mod.isDirectory) continue;
+            if (!mod.isDirectory || mod.name.startsWith(".")) continue;
             debug(`found ${mod.name}`)
             this.modificationPathIndex.push({
                 name: mod.name,
@@ -117,11 +135,13 @@ export class ModificationManager {
         );
     }
 
-    private async refreshActiveVersion() {
-        const activeVersion = await this.installation.getActiveVersion()
+    async refreshActiveVersion() {
+        await this.installation.listInstallations()
+        const activeVersion = this.installation.getActiveVersion()
 
         if (activeVersion) {
-            this.modificationVerPath = await join(await appDataDir(), "version", activeVersion?.version);
+            this.modificationVerPath = activeVersion.path;
+            this.activeVersionName = activeVersion.version;
         } else {
             warn("warning: theres no active version, skipping modificationPath")
         }

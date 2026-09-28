@@ -65,6 +65,17 @@
       ]
     },
     {
+      "identifier": "fs:allow-copy-file",
+      "allow": [
+        {
+          "path": "$HOME"
+        },
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
+    },
+    {
       "identifier": "fs:allow-remove",
       "allow": [
         {
@@ -77,6 +88,17 @@
     },
     {
       "identifier": "fs:allow-exists",
+      "allow": [
+        {
+          "path": "$HOME"
+        },
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
+    },
+    {
+      "identifier": "opener:allow-open-path",
       "allow": [
         {
           "path": "$HOME"

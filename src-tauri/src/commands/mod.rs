@@ -15,3 +15,6 @@ pub use log_watcher::*;
 
 pub mod discord_rpc;
 pub use discord_rpc::*;
+
+pub mod mods;
+pub use mods::*;

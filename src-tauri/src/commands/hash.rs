@@ -39,7 +39,7 @@ pub fn md5_dir(dir: String) -> Result<Vec<(String, String)>, String> {
     Ok(hashes)
 }
 
-fn hash_file(path: &Path) -> io::Result<String> {
+pub(crate) fn hash_file(path: &Path) -> io::Result<String> {
     let mut file = File::open(path)?;
     let mut context = md5::Context::new();
     let mut buffer = [0u8; CHUNK_SIZE];
