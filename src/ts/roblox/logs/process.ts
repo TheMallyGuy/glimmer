@@ -1,5 +1,4 @@
 import { error, info } from "@tauri-apps/plugin-log";
-import { splashState } from "$lib/splash.svelte";
 import { appState, gameState, setGameState } from "$lib/appState.svelte";
 import type { LogLineEvent } from "./watcher";
 import { setActivity } from "../discordRpc";
@@ -180,8 +179,6 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
 ];
 
 export function processLogLine({ line }: LogLineEvent) {
-    splashState.lastLogLine = line;
-
     for (const { name, pattern, handler } of rules) {
         const match = pattern.exec(line);
         if (match) {
