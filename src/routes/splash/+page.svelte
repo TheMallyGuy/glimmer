@@ -154,11 +154,13 @@
   onMount(async () => {
     sizeWindow(671, 329);
     appWindow.setResizable(false);
+
     await checkAndLaunch();
-    getCurrentWindow().close();
   });
 
-  onDestroy(() => unlisten?.());
+  onDestroy(() => {
+    unlisten?.();
+  });
 
   function cancel() {
     if (error) {
