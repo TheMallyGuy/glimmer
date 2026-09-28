@@ -4,43 +4,43 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
-	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
+	/**  stop watching a log directory previously passed to `watch_latest_log` */
+	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
 	/**
 	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
 	 *  don't need to be loaded into memory all at once
 	 */
 	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
+	revertFiles: (destDir: string, backupDir: string, paths: string[]) => typedError<number, string>(__TAURI_INVOKE("revert_files", { destDir, backupDir, paths })),
+	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
+	/**  hash raw bytes with md5, returning the lowercase hex digest */
+	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
+	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
+	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
+	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
 	/**
 	 *  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes.
 	 *  also watches the spawned process in the background and emits "roblox-exited"
 	 *  once it closes, so the frontend can clear Discord RPC's presence.
 	 */
 	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
-	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
-	/**  stop watching a log directory previously passed to `watch_latest_log` */
-	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
-	applyMod: (modDir: string, destDir: string, backupDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir, backupDir })),
-	/**  `true` if the debug connection is currently open */
-	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
-	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
-	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
-	/**  hash raw bytes with md5, returning the lowercase hex digest */
-	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
-	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
-	revertFiles: (destDir: string, backupDir: string, paths: string[]) => typedError<number, string>(__TAURI_INVOKE("revert_files", { destDir, backupDir, paths })),
-	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
-	backupInstall: (destDir: string, backupDir: string) => typedError<number, string>(__TAURI_INVOKE("backup_install", { destDir, backupDir })),
-	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
 	/**
 	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
 	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
 	 */
 	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
-	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
-	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
-	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
+	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
+	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
+	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
+	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
+	/**  `true` if the debug connection is currently open */
+	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
 	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
+	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
+	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
+	applyMod: (modDir: string, destDir: string, backupDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir, backupDir })),
+	backupInstall: (destDir: string, backupDir: string) => typedError<number, string>(__TAURI_INVOKE("backup_install", { destDir, backupDir })),
+	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
 };
 
 /* Types */
