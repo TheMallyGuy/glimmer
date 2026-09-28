@@ -81,6 +81,58 @@ pub async fn revert_files(
     .map_err(|e| format!("revert_files task panicked: {}", e))?
 }
 
+#[tauri::command]
+#[specta::specta]
+#[auto_collect_command]
+pub async fn backup_install(dest_dir: String, backup_dir: String) -> Result<u32, String> {
+    tauri::async_runtime::spawn_blocking(move || {
+        let dest = Path::new(&dest_dir);
+        let backup = Path::new(&backup_dir);
+
+        if !dest.is_dir() {
+            return Ok(0);
+        }
+
+        let mut backed_up = 0u32;
+        snapshot_tree(dest, backup, &mut backed_up).map_err(|e| {
+            format!(
+                "Failed to back up '{}' to '{}': {}",
+                dest_dir, backup_dir, e
+            )
+        })?;
+
+        Ok(backed_up)
+    })
+    .await
+    .map_err(|e| format!("backup_install task panicked: {}", e))?
+}
+
+fn snapshot_tree(src: &Path, backup: &Path, count: &mut u32) -> io::Result<()> {
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let from = entry.path();
+
+        if from.is_dir() {
+            let sub = backup.join(entry.file_name());
+            snapshot_tree(&from, &sub, count)?;
+            continue;
+        }
+
+        let backup_path = backup.join(entry.file_name());
+        if backup_path.is_file() {
+            continue; // never clobber an existing backup with the current (possibly-modded) file
+        }
+
+        if let Some(parent) = backup_path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+        fs::copy(&from, &backup_path)?;
+        *count += 1;
+    }
+
+    Ok(())
+}
+
 fn copy_tree(
     src_root: &Path,
     src: &Path,

@@ -12,6 +12,7 @@
     type InstallEntry,
   } from "$ts/roblox/installation/installation";
   import { appState } from "$lib/appState.svelte";
+  import { loadMods, applyMods, backupNewVersion } from "$lib/mods.svelte";
   import { commands } from "$ts/bindings";
 
   const PLAYER_EXE = "RobloxPlayerBeta.exe";
@@ -83,11 +84,29 @@
 
     await i.reIndex();
     await i.setActiveVersion(version);
+
+    status = "Backing up mod originals";
+    try {
+      await backupNewVersion();
+    } catch (e) {
+      console.error("failed to back up new version for mods:", e);
+    }
+
     progress = null;
   }
 
   /** spawn RobloxPlayerBeta.exe from an installed version's folder */
   async function launchInstall(installPath: string) {
+    const launchStatus = status;
+    status = "Applying mods";
+    await loadMods();
+    try {
+      await applyMods();
+    } catch (e) {
+      console.error("failed to apply mods before launch:", e);
+    }
+    status = launchStatus;
+
     const exePath = await join(installPath, PLAYER_EXE);
     const result = await commands.launch(exePath, []);
 

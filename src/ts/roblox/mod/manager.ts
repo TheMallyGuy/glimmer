@@ -2,6 +2,7 @@ import { appDataDir, join } from "@tauri-apps/api/path";
 import { Installation } from "../installation/installation";
 import { debug, info, warn } from "@tauri-apps/plugin-log";
 import { exists, mkdir, readDir, remove, rename, writeFile } from "@tauri-apps/plugin-fs";
+import { commands } from "../../bindings";
 
 interface ModEntry {
     name: string;
@@ -133,6 +134,29 @@ export class ModificationManager {
             this.modificationPathIndexPath,
             new TextEncoder().encode(JSON.stringify(this.modificationPathIndex))
         );
+    }
+
+    /** where a stock backup of the active version's files lives, scoped per version */
+    async backupPath(): Promise<string> {
+        return join(this.modificationPath, ".originals", this.activeVersionName);
+    }
+
+
+    async backupCurrentVersion(): Promise<number> {
+        if (!this.modificationVerPath) {
+            warn("no active version to back up, skipping");
+            return 0;
+        }
+
+        const backupDir = await this.backupPath();
+        const result = await commands.backupInstall(this.modificationVerPath, backupDir);
+
+        if (result.status === "error") {
+            throw new Error(result.error);
+        }
+
+        info(`backed up ${result.data} file(s) from ${this.activeVersionName}`);
+        return result.data;
     }
 
     async refreshActiveVersion() {

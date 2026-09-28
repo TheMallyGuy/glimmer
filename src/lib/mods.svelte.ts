@@ -1,3 +1,9 @@
+import { join } from '@tauri-apps/api/path';
+import { openPath } from '@tauri-apps/plugin-opener';
+import { load, type Store } from '@tauri-apps/plugin-store';
+import { warn } from '@tauri-apps/plugin-log';
+import { ModificationManager } from '$ts/roblox/mod/manager';
+import { Applier } from '$ts/roblox/mod/apply';
 import type { CommunityMod } from '$ts/roblox/mod/community';
 import { sourceNames } from '$ts/roblox/mod/community';
 
@@ -5,12 +11,6 @@ export interface Mod {
   id: string;
   name: string;
   enabled: boolean;
-}
-
-function uid() {
-  return typeof crypto !== 'undefined' && 'randomUUID' in crypto
-    ? crypto.randomUUID()
-    : Math.random().toString(36).slice(2);
 }
 
 /** Installed mods, highest priority first. */
@@ -29,12 +29,84 @@ export const prebuilt = $state({
   deathSound: null as string | null,
 });
 
-export async function loadMods() {
-  // TODO: read the mods folder, e.g. mods.list = await invoke<Mod[]>('list_mods');
+let manager: ModificationManager | null = null;
+let applier: Applier | null = null;
+let configStore: Store | null = null;
+
+async function getManager(): Promise<ModificationManager> {
+  if (!manager) manager = await ModificationManager.create(true, true);
+  return manager;
 }
 
+async function getConfig(): Promise<Store> {
+  if (!configStore) configStore = await load('mods.json');
+  return configStore;
+}
+
+/** a mod's disk folder name doubles as its id, since that's the only stable identity on disk */
+export async function loadMods() {
+  const m = await getManager();
+  await m.reIndex();
+
+  const config = await getConfig();
+  const order = (await config.get<string[]>('order')) ?? [];
+  const enabled = (await config.get<Record<string, boolean>>('enabled')) ?? {};
+
+  const diskNames = new Set(m.modificationPathIndex.map((e) => e.name));
+  const orderedNames = [
+    ...order.filter((n) => diskNames.has(n)),
+    ...[...diskNames].filter((n) => !order.includes(n)),
+  ];
+
+  mods.list = orderedNames.map((name) => ({
+    id: name,
+    name,
+    enabled: enabled[name] ?? true,
+  }));
+
+  await saveConfig(); // drop stale entries for mods no longer on disk
+}
+
+/** save order + enabled state, without touching the active installation's files */
+async function saveConfig() {
+  const config = await getConfig();
+  await config.set('order', mods.list.map((m) => m.name));
+
+  const enabled: Record<string, boolean> = {};
+  for (const mod of mods.list) enabled[mod.name] = mod.enabled;
+  await config.set('enabled', enabled);
+
+  await config.save();
+}
+
+/** copy enabled mods' files into the active install, in priority order */
+export async function applyMods() {
+  const m = await getManager();
+  if (!applier) applier = await Applier.create(m);
+  const order = mods.list.filter((mo) => mo.enabled).map((mo) => mo.name);
+  await applier.apply(order);
+}
+
+/**
+ * snapshot the currently active install as the stock backup mods revert to. call this right
+ * after a version finishes installing/upgrading, so a fresh version always has its own
+ * complete backup up front rather than only building one lazily as mods happen to touch files.
+ */
+export async function backupNewVersion() {
+  const m = await getManager();
+  await m.refreshActiveVersion();
+  await m.backupCurrentVersion();
+}
+
+/** save state, then copy enabled mods' files into the active install in priority order */
 async function persist() {
-  // TODO: save order and enabled state, e.g. await invoke('save_mods', { mods: $state.snapshot(mods.list) });
+  await saveConfig();
+
+  try {
+    await applyMods();
+  } catch (err) {
+    warn(`could not apply mods to the active install: ${err}`);
+  }
 }
 
 export function nameTaken(name: string, exceptId?: string) {
@@ -43,8 +115,11 @@ export function nameTaken(name: string, exceptId?: string) {
 }
 
 export async function createMod(name: string) {
-  const mod: Mod = { id: uid(), name: name.trim(), enabled: true };
-  // TODO: await invoke('create_mod', { name: mod.name });
+  const trimmed = name.trim();
+  const m = await getManager();
+  await m.newMod(trimmed);
+
+  const mod: Mod = { id: trimmed, name: trimmed, enabled: true };
   mods.list.unshift(mod);
   await persist();
   return mod;
@@ -53,8 +128,13 @@ export async function createMod(name: string) {
 export async function renameMod(id: string, name: string) {
   const mod = mods.list.find((m) => m.id === id);
   if (!mod) return;
-  // TODO: await invoke('rename_mod', { from: mod.name, to: name.trim() });
-  mod.name = name.trim();
+
+  const trimmed = name.trim();
+  const m = await getManager();
+  await m.renameMod(mod.name, trimmed);
+
+  mod.name = trimmed;
+  mod.id = trimmed;
   await persist();
 }
 
@@ -73,7 +153,8 @@ export function restoreMod(mod: Mod, index: number) {
 
 /** Deletes a removed mod's files for good. */
 export async function commitDelete(mod: Mod) {
-  // TODO: await invoke('delete_mod', { name: mod.name });
+  const m = await getManager();
+  await m.deleteMod(mod.name);
   await persist();
 }
 
@@ -102,8 +183,9 @@ export async function reorderMods(newOrder: Mod[]) {
 }
 
 export async function openModFolder(mod?: Mod) {
-  // TODO: open the mods folder (or this mod's folder), e.g. with @tauri-apps/plugin-opener
-  console.log('open folder', mod?.name ?? 'mods');
+  const m = await getManager();
+  const path = mod ? await join(m.modificationPath, mod.name) : m.modificationPath;
+  await openPath(path);
 }
 
 export async function installCommunityMod(mod: CommunityMod) {
@@ -111,10 +193,9 @@ export async function installCommunityMod(mod: CommunityMod) {
   installs[mod.id] = 'installing';
 
   try {
-    // TODO: download mod.download and extract it.
+    // TODO: download mod.download and extract it into the new mod's folder.
     // Themes (mod.kind === 'theme') go to your bootstrapper themes folder,
     // mods go to a new mod folder named below.
-    // e.g. await invoke('install_mod', { url: mod.download, name, kind: mod.kind });
     const name = `[${sourceNames[mod.source].replace(' library', '')}] ${mod.name}`;
     if (mod.kind === 'mod' && !nameTaken(name)) await createMod(name);
     installs[mod.id] = 'installed';

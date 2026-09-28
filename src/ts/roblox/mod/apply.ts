@@ -39,7 +39,7 @@ export class Applier {
             throw new Error("No active installation to apply mods to.");
         }
 
-        const backupDir = await join(this.manager.modificationPath, ".originals", this.manager.activeVersionName);
+        const backupDir = await this.manager.backupPath();
 
         const previousPaths = Object.values(this.appliedIndex).flat().map((e) => e.path);
         if (previousPaths.length) {
