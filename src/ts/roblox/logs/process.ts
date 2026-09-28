@@ -23,8 +23,19 @@ async function notify(options: { title: string, body: string }) {
 async function getLargeImage(placeId: number): Promise<string | undefined> {
     const discordRpc = appState.integrations.discordRpc;
 
-    if (discordRpc.largeImagePreset === "thumbnail") {
-        return (await getGameThumbnail(placeId)) ?? (await getCustomGameIcon(placeId));
+    if (discordRpc.largeImagePreset === "gisl") {
+        return getCustomGameIcon(placeId, {
+            svgUrl: "https://raw.githubusercontent.com/TheMallyGuy/something-repo/refs/heads/main/games%20is%20life.svg",
+            overlay: "black",
+            size: 500,
+        });
+    }
+    if (discordRpc.largeImagePreset === "interview") {
+        return getCustomGameIcon(placeId, {
+            svgUrl: "https://raw.githubusercontent.com/TheMallyGuy/something-repo/refs/heads/main/my%20bad%20g.svg",
+            overlay: "black",
+            size: 500,
+        });
     }
     if (discordRpc.largeImagePreset === "custom") {
         return getCustomGameIcon(placeId, {

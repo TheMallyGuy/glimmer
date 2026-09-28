@@ -4,7 +4,8 @@
 
   const largeImagePresets = [
     { value: "icon", label: "Game icon" },
-    { value: "thumbnail", label: "Game thumbnail" },
+    { value: "gisl", label: "GAME IS LIFE!!!11" },
+    { value: "interview", label: "i accidentally said [GAME NAME] in a job interview" },
     { value: "custom", label: "Custom" },
   ];
 </script>
@@ -34,7 +35,7 @@
   </SettingRow>
   <SettingRow
     title="Discord Rich Presence"
-    description="Show what you are playing on your profile."
+    description="Show off what you're playing on Roblox!"
   >
     {#snippet control()}
       <Switch
@@ -71,7 +72,7 @@
   {/if}
   <SettingRow
     title="Show account on Discord"
-    description="Needs Discord Rich Presence turned on."
+    description="Discord Rich Presence is required turned on"
     disabled={!appState.integrations.discordRpc.enabled}
   >
     {#snippet control()}
@@ -84,7 +85,7 @@
   </SettingRow>
   <SettingRow
     title="Allow friends to join"
-    description="Needs Discord Rich Presence turned on."
+    description="Discord Rich Presence is required turned on"
     disabled={!appState.integrations.discordRpc.enabled}
   >
     {#snippet control()}
@@ -102,7 +103,7 @@
 <SettingGroup label="System">
   <SettingRow
     title="Close crash handler"
-    description="Kills Roblox crash handler on launch."
+    description="Kills Roblox crash handler on launch"
   >
     {#snippet control()}
       <Switch
@@ -113,7 +114,7 @@
   </SettingRow>
   <SettingRow
     title="Trim memory when not focused"
-    description="Free memory while the client is in the background."
+    description="Free memory while the client is in the background. [8damon/TASX-Roblox-Optimizer/]"
   >
     {#snippet control()}
       <Switch
@@ -124,7 +125,7 @@
   </SettingRow>
   <SettingRow
     title="Disable system tray icon"
-    description="Disable Roblox's system tray icon."
+    description="Disable Roblox's that annoying system tray icon"
   >
     {#snippet control()}
       <Switch
