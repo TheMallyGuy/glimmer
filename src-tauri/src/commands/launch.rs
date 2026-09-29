@@ -24,10 +24,6 @@ pub fn launch(app: AppHandle, exe_path: String, args: Vec<String>) -> Result<(),
     let mut cmd = Command::new(path);
     cmd.args(&args)
         .current_dir(path.parent().unwrap_or(Path::new(".")))
-        // don't inherit our stdio: if ours is a piped/captured handle (e.g. running
-        // under `tauri dev`), Roblox writing to it with nobody reading blocks once
-        // the pipe buffer fills, which stalls the client until it self-reports as
-        // timed out. a bare double-click gets fresh handles and never hits this.
         .stdin(Stdio::null())
         .stdout(Stdio::null())
         .stderr(Stdio::null());

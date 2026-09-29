@@ -17,6 +17,7 @@
   import { flagsToObject } from "$lib/flags";
   import { commands } from "$ts/bindings";
   import { _ } from "svelte-i18n";
+  import { delay } from "$ts/utils";
 
   const PLAYER_EXE = "RobloxPlayerBeta.exe";
 
@@ -55,7 +56,9 @@
     await i.createNewInstallation(version);
     const distDir = await join(i.installationPath, version);
 
-    status = $_("splash.downloadingClient", { values: { done: 0, total: manifest.packages.length } });
+    status = $_("splash.downloadingClient", {
+      values: { done: 0, total: manifest.packages.length },
+    });
     progress = 0;
     await d.downloadPackagesParallel(
       version,
@@ -68,7 +71,9 @@
       },
     );
 
-    status = $_("splash.extractingClient", { values: { done: 0, total: manifest.packages.length } });
+    status = $_("splash.extractingClient", {
+      values: { done: 0, total: manifest.packages.length },
+    });
     progress = 0;
     await d.extractPackages(
       packagesDir,
@@ -156,7 +161,9 @@
         const active = i.getActiveVersion() ?? existingInstallations[0];
 
         if (appState.installations.disableRobloxUpgrade) {
-          status = $_("splash.launching", { values: { version: active.version } });
+          status = $_("splash.launching", {
+            values: { version: active.version },
+          });
           await launchInstall(active.path);
         } else {
           const latest = await d.fetchLatestVersion("WindowsPlayer");
@@ -165,7 +172,9 @@
           );
 
           if (upToDate) {
-            status = $_("splash.launching", { values: { version: upToDate.version } });
+            status = $_("splash.launching", {
+              values: { version: upToDate.version },
+            });
             await launchInstall(upToDate.path);
           } else {
             await downloadAndInstall(d, i, latest);
@@ -173,6 +182,11 @@
             await launchInstall(await join(i.installationPath, latest));
           }
         }
+      }
+
+      if (appState.integrations.closeCrashHandler.enabled) {
+        await delay(5000);
+        await commands.closeCrashHandler();
       }
 
       // launched successfully: close just this window, not the whole app
