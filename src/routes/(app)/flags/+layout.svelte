@@ -14,8 +14,8 @@
 
 <SettingGroup>
   <SettingRow
-    title="Apply Fast Flags on launch"
-    description="Write these flags to the active install's ClientAppSettings.json before Roblox starts."
+    title="Enable Fast Flags"
+    description="apply fast flag i guess"
   >
     {#snippet control()}
       <Switch
