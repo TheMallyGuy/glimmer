@@ -18,6 +18,7 @@
   import { commands } from "$ts/bindings";
   import { _ } from "svelte-i18n";
   import { delay } from "$ts/utils";
+  import { app } from "@tauri-apps/api";
 
   const PLAYER_EXE = "RobloxPlayerBeta.exe";
 
@@ -128,6 +129,11 @@
       await ffm.disableFlags();
     }
 
+    commands.setFullscreenProp(
+      appState.integrations.disableFullscreenOptimization.enabled,
+      await join(installPath, 'RobloxPlayerBeta.exe')
+    );
+
     status = launchStatus;
 
     const exePath = await join(installPath, PLAYER_EXE);
@@ -155,7 +161,9 @@
       if (existingInstallations.length === 0) {
         const latest = await d.fetchLatestVersion("WindowsPlayer");
         await downloadAndInstall(d, i, latest);
+
         status = $_("splash.launching", { values: { version: latest } });
+
         await launchInstall(await join(i.installationPath, latest));
       } else {
         const active = i.getActiveVersion() ?? existingInstallations[0];
@@ -164,6 +172,7 @@
           status = $_("splash.launching", {
             values: { version: active.version },
           });
+
           await launchInstall(active.path);
         } else {
           const latest = await d.fetchLatestVersion("WindowsPlayer");
@@ -175,10 +184,13 @@
             status = $_("splash.launching", {
               values: { version: upToDate.version },
             });
+
             await launchInstall(upToDate.path);
           } else {
             await downloadAndInstall(d, i, latest);
+
             status = $_("splash.launching", { values: { version: latest } });
+
             await launchInstall(await join(i.installationPath, latest));
           }
         }
