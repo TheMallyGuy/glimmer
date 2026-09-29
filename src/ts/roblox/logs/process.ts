@@ -1,5 +1,5 @@
 import { error, info } from "@tauri-apps/plugin-log";
-import { appState, gameState, setGameState } from "$lib/appState.svelte";
+import { appState, gameState, setGameState, loadAppState } from "$lib/appState.svelte";
 import type { LogLineEvent } from "./watcher";
 import { setActivity } from "../discordRpc";
 import { getGameInfo, getGameThumbnail, getUserHeadShot, getUserName } from "../generalRobloxApis";
@@ -92,6 +92,12 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
             const [, gameId, place, position] = m;
             info(`game join: gameId=${gameId} place=${place} position=${position}`);
             const placeId = Number(place);
+
+            // the background window loads appState once at startup and this handler
+            // can run long after, so re-read it fresh here -- otherwise settings saved
+            // later (e.g. a custom Discord RPC image URL) never reach this window.
+            await loadAppState();
+
             const gameInfo = await getGameInfo(placeId)
 
             activeSession = {
