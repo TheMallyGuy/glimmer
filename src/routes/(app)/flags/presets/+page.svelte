@@ -2,6 +2,7 @@
   import { SettingGroup, SettingRow, Switch, Dropdown, TextField } from "$lib";
   import { appState } from "$lib/appState.svelte";
   import { getFlagValue, setFlagValue } from "$lib/flags";
+  import { _ } from "svelte-i18n";
 
   const flags = appState.fastflags.flags;
 
@@ -34,7 +35,7 @@
     { value: "8", label: "x8" },
   ];
   const textureItems = [
-    { value: "-1", label: "Default" },
+    { value: "-1", label: $_("common.default") },
     { value: "0", label: "0" },
     { value: "1", label: "1" },
     { value: "2", label: "2" },
@@ -42,10 +43,10 @@
     { value: "4", label: "4" },
   ];
   const graphicsApiItems = [
-    { value: "default", label: "Default" },
-    { value: "d3d11", label: "Direct3D 11" },
-    { value: "vulkan", label: "Vulkan" },
-    { value: "opengl", label: "OpenGL" },
+    { value: "default", label: $_("common.default") },
+    { value: "d3d11", label: $_("flagsPresets.graphicsApiDirect3D11") },
+    { value: "vulkan", label: $_("flagsPresets.graphicsApiVulkan") },
+    { value: "opengl", label: $_("flagsPresets.graphicsApiOpenGL") },
   ];
 
   const altEnterFullscreen = $derived(
@@ -109,26 +110,26 @@
 </script>
 
 <div class="flex flex-col gap-0.5">
-  <SettingGroup label="Geometry">
+  <SettingGroup label={$_("flagsPresets.geometryGroup")}>
     <SettingRow
-      title="Low mesh quality"
-      description="Switch to lower-detail CSG meshes sooner, at every distance."
+      title={$_("flagsPresets.lowMeshQuality")}
+      description={$_("flagsPresets.lowMeshQualityDescription")}
     >
       {#snippet control()}
         <Switch
-          label="Low mesh quality"
+          label={$_("flagsPresets.lowMeshQuality")}
           checked={lowMeshQuality}
           onchange={setLowMeshQuality}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title="Pause voxelizer"
-      description="Stop terrain/CSG voxelization while it's running."
+      title={$_("flagsPresets.pauseVoxelizer")}
+      description={$_("flagsPresets.pauseVoxelizerDescription")}
     >
       {#snippet control()}
         <Switch
-          label="Pause voxelizer"
+          label={$_("flagsPresets.pauseVoxelizer")}
           checked={pauseVoxelizer}
           onchange={(v) =>
             setFlagValue(flags, VOXELIZER_KEY, v ? "true" : "false")}
@@ -137,14 +138,14 @@
     </SettingRow>
   </SettingGroup>
 
-  <SettingGroup label="Rendering">
+  <SettingGroup label={$_("flagsPresets.renderingGroup")}>
     <SettingRow
-      title="Preferred graphics API"
-      description="Force a specific rendering backend instead of Roblox's own choice."
+      title={$_("flagsPresets.preferredGraphicsApi")}
+      description={$_("flagsPresets.preferredGraphicsApiDescription")}
     >
       {#snippet control()}
         <Dropdown
-          label="Preferred graphics API"
+          label={$_("flagsPresets.preferredGraphicsApi")}
           size="sm"
           width="160px"
           options={graphicsApiItems}
@@ -153,10 +154,10 @@
         />
       {/snippet}
     </SettingRow>
-    <SettingRow title="MSAA samples" description="Anti-aliasing sample count.">
+    <SettingRow title={$_("flagsPresets.msaaSamples")} description={$_("flagsPresets.msaaSamplesDescription")}>
       {#snippet control()}
         <Dropdown
-          label="MSAA samples"
+          label={$_("flagsPresets.msaaSamples")}
           size="sm"
           width="120px"
           options={msaaItems}
@@ -166,12 +167,12 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title="Texture quality override"
-      description="Force a texture quality level instead of Roblox's automatic setting."
+      title={$_("flagsPresets.textureQualityOverride")}
+      description={$_("flagsPresets.textureQualityOverrideDescription")}
     >
       {#snippet control()}
         <Dropdown
-          label="Texture quality override"
+          label={$_("flagsPresets.textureQualityOverride")}
           size="sm"
           width="140px"
           options={textureItems}
@@ -181,36 +182,36 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title="Gray sky"
-      description="Replace the sky with flat gray, for debugging or lower-end GPUs."
+      title={$_("flagsPresets.graySky")}
+      description={$_("flagsPresets.graySkyDescription")}
     >
       {#snippet control()}
         <Switch
-          label="Gray sky"
+          label={$_("flagsPresets.graySky")}
           checked={graySky}
           onchange={(v) => setFlagValue(flags, SKY_KEY, v ? "true" : "false")}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title="Disable DPI scaling"
-      description="Render at 1:1 pixel scale, ignoring Windows display scaling."
+      title={$_("flagsPresets.disableDpiScaling")}
+      description={$_("flagsPresets.disableDpiScalingDescription")}
     >
       {#snippet control()}
         <Switch
-          label="Disable DPI scaling"
+          label={$_("flagsPresets.disableDpiScaling")}
           checked={disableDpiScale}
           onchange={(v) => setFlagValue(flags, DPI_KEY, v ? "true" : "false")}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title="Render quality level override"
-      description="Force render manager (FRM) quality level, 0 for automatic."
+      title={$_("flagsPresets.renderQualityLevelOverride")}
+      description={$_("flagsPresets.renderQualityLevelOverrideDescription")}
     >
       {#snippet control()}
         <TextField
-          label="Render quality level override"
+          label={$_("flagsPresets.renderQualityLevelOverride")}
           class="w-[120px]"
           value={frmQualityOverride}
           oninput={(e) =>
@@ -220,14 +221,14 @@
     </SettingRow>
   </SettingGroup>
 
-  <SettingGroup label="Grass">
+  <SettingGroup label={$_("flagsPresets.grassGroup")}>
     <SettingRow
-      title="Max grass render distance"
-      description="Studs from the camera grass keeps rendering out to."
+      title={$_("flagsPresets.maxGrassDistance")}
+      description={$_("flagsPresets.maxGrassDistanceDescription")}
     >
       {#snippet control()}
         <TextField
-          label="Max grass render distance"
+          label={$_("flagsPresets.maxGrassDistance")}
           class="w-[120px]"
           value={maxGrassDistance}
           oninput={(e) =>
@@ -236,12 +237,12 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title="Min grass render distance"
-      description="Studs from the camera grass always renders within."
+      title={$_("flagsPresets.minGrassDistance")}
+      description={$_("flagsPresets.minGrassDistanceDescription")}
     >
       {#snippet control()}
         <TextField
-          label="Min grass render distance"
+          label={$_("flagsPresets.minGrassDistance")}
           class="w-[120px]"
           value={minGrassDistance}
           oninput={(e) =>
@@ -250,12 +251,12 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title="Grass movement reduced-motion factor"
-      description="Scales down how much grass sways; higher is stiller."
+      title={$_("flagsPresets.grassMotionFactor")}
+      description={$_("flagsPresets.grassMotionFactorDescription")}
     >
       {#snippet control()}
         <TextField
-          label="Grass movement reduced-motion factor"
+          label={$_("flagsPresets.grassMotionFactor")}
           class="w-[120px]"
           value={grassMotionFactor}
           oninput={(e) =>
@@ -265,14 +266,14 @@
     </SettingRow>
   </SettingGroup>
 
-  <SettingGroup label="Window">
+  <SettingGroup label={$_("flagsPresets.windowGroup")}>
     <SettingRow
-      title="Handle Alt+Enter fullscreen manually"
-      description="Let Roblox itself handle the Alt+Enter fullscreen toggle."
+      title={$_("flagsPresets.handleAltEnter")}
+      description={$_("flagsPresets.handleAltEnterDescription")}
     >
       {#snippet control()}
         <Switch
-          label="Handle Alt+Enter fullscreen manually"
+          label={$_("flagsPresets.handleAltEnter")}
           checked={altEnterFullscreen}
           onchange={(v) =>
             setFlagValue(flags, ALT_ENTER_KEY, v ? "true" : "false")}
