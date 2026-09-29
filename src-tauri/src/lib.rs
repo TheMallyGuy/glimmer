@@ -19,7 +19,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(specta_collect_commands!())
 }
 
-/// focus the chooser window if it's already open, otherwise create it
+// focus the chooser window if it's already open, otherwise create it
 fn open_selector_window(app: &AppHandle) {
     if let Some(win) = app.get_webview_window("main") {
         let _ = win.unminimize();
@@ -38,6 +38,19 @@ fn open_selector_window(app: &AppHandle) {
         .build();
 }
 
+fn focus_existing_instance(app: &AppHandle) {
+    for label in ["main", "splash"] {
+        if let Some(win) = app.get_webview_window(label) {
+            let _ = win.unminimize();
+            let _ = win.show();
+            let _ = win.set_focus();
+            return;
+        }
+    }
+
+    open_selector_window(app);
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = specta_builder();
@@ -51,6 +64,11 @@ pub fn run() {
         .expect("failed to export typescript bindings");
 
     tauri::Builder::default()
+        // must be registered first: it's what lets a second launch hand off to this
+        // one instead of starting a whole separate process
+        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            focus_existing_instance(app);
+        }))
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_dialog::init())
@@ -71,9 +89,6 @@ pub fn run() {
         .manage(commands::DiscordRpcState::default())
         .manage(commands::DiscordRpcDebugState::default())
         .setup(|app| {
-            // as early as possible, before any window (even the hidden
-            // background one) is created — see start_discord_rpc_at_boot's
-            // own doc comment for why timing matters here
             commands::start_discord_rpc_at_boot(app.handle());
 
             let open_selector =
@@ -81,9 +96,8 @@ pub fn run() {
             let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&open_selector, &quit])?;
 
-            // watch Roblox's logs for the whole lifetime of the app, not just
-            // while a particular window (e.g. splash) happens to be open
             let logs_dir = app.path().local_data_dir()?.join("Roblox").join("logs");
+
             if let Err(e) = commands::watch_latest_log(
                 app.handle().clone(),
                 app.state::<LogWatcherRegistry>(),
@@ -92,9 +106,6 @@ pub fn run() {
                 tauri_plugin_log::log::error!("failed to start log watcher: {e}");
             }
 
-            // Tauri can't run frontend JS without a webview, so a hidden window
-            // that's never shown or closed is the only way to keep a frontend
-            // event listener alive independent of splash/main/choose closing
             WebviewWindowBuilder::new(app, "background", WebviewUrl::App("/background".into()))
                 .visible(false)
                 .skip_taskbar(true)
@@ -109,7 +120,8 @@ pub fn run() {
                 .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| match event.id.as_ref() {
                     "open_selector" => open_selector_window(app),
-                    "quit" => app.exit(0),
+
+                    "quit" => std::process::exit(0),
                     _ => {}
                 })
                 .on_tray_icon_event(|tray, event| {
@@ -119,7 +131,7 @@ pub fn run() {
                         ..
                     } = event
                     {
-                        open_selector_window(tray.app_handle());
+                        focus_existing_instance(tray.app_handle());
                     }
                 })
                 .build(app)?;
@@ -130,8 +142,6 @@ pub fn run() {
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(|_app_handle, event| {
-            // keep running in the tray after every window closes; only the
-            // tray's Quit item (app.exit) should actually end the process
             if let tauri::RunEvent::ExitRequested { api, .. } = event {
                 api.prevent_exit();
             }
