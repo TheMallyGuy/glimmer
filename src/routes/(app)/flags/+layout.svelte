@@ -3,30 +3,31 @@
   import { page } from "$app/state";
   import { SettingGroup, SettingRow, Switch, cn } from "$lib";
   import { appState } from "$lib/appState.svelte";
+  import { _ } from "svelte-i18n";
 
   let { children }: { children: Snippet } = $props();
 
   const views = [
-    { href: "/flags/editor", label: "Editor" },
-    { href: "/flags/presets", label: "Presets" },
+    { href: "/flags/editor", label: $_("flagsLayout.viewEditor") },
+    { href: "/flags/presets", label: $_("flagsLayout.viewPresets") },
   ];
 </script>
 
 <SettingGroup>
   <SettingRow
-    title="Enable Fast Flags"
-    description="apply fast flag i guess"
+    title={$_("flagsLayout.enableFastFlags")}
+    description={$_("flagsLayout.enableFastFlagsDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Apply Fast Flags on launch"
+        label={$_("flagsLayout.applyOnLaunch")}
         bind:checked={appState.fastflags.enabled}
       />
     {/snippet}
   </SettingRow>
 </SettingGroup>
 
-<nav aria-label="Fast Flag views" class="my-5 flex gap-1">
+<nav aria-label={$_("flagsLayout.flagViewsNav")} class="my-5 flex gap-1">
   {#each views as view (view.href)}
     {@const current = page.url.pathname.startsWith(view.href)}
     <a

@@ -16,6 +16,7 @@
   import { FastFlagManager } from "$ts/roblox/flags";
   import { flagsToObject } from "$lib/flags";
   import { commands } from "$ts/bindings";
+  import { _ } from "svelte-i18n";
 
   const PLAYER_EXE = "RobloxPlayerBeta.exe";
 
@@ -26,7 +27,7 @@
     error?: string;
   }
 
-  let status = $state("Checking for updates");
+  let status = $state($_("splash.checkingForUpdates"));
   let progress = $state<number | null>(null);
   let error = $state<string | null>(null);
 
@@ -41,7 +42,7 @@
     i: Installation,
     version: string,
   ) {
-    status = "Fetching manifest";
+    status = $_("splash.fetchingManifest");
     progress = null;
     const manifest = await d.fetchManifest(version);
 
@@ -54,7 +55,7 @@
     await i.createNewInstallation(version);
     const distDir = await join(i.installationPath, version);
 
-    status = `Downloading client (0/${manifest.packages.length})`;
+    status = $_("splash.downloadingClient", { values: { done: 0, total: manifest.packages.length } });
     progress = 0;
     await d.downloadPackagesParallel(
       version,
@@ -62,24 +63,24 @@
       packagesDir,
       appState.installations.parallelDownloader.value,
       (done, total, _pkg, percent) => {
-        status = `Downloading client (${done}/${total})`;
+        status = $_("splash.downloadingClient", { values: { done, total } });
         progress = percent;
       },
     );
 
-    status = `Extracting client (0/${manifest.packages.length})`;
+    status = $_("splash.extractingClient", { values: { done: 0, total: manifest.packages.length } });
     progress = 0;
     await d.extractPackages(
       packagesDir,
       distDir,
       "WindowsPlayer",
       (done, total) => {
-        status = `Extracting client (${done}/${total})`;
+        status = $_("splash.extractingClient", { values: { done, total } });
         progress = Math.round((done / total) * 100);
       },
     );
 
-    status = "Finishing installation";
+    status = $_("splash.finishingInstallation");
     progress = null;
     await d.writeXml(distDir);
     await remove(packagesDir, { recursive: true });
@@ -87,7 +88,7 @@
     await i.reIndex();
     await i.setActiveVersion(version);
 
-    status = "Backing up mod originals";
+    status = $_("splash.backingUpModOriginals");
     try {
       await backupNewVersion();
     } catch (e) {
@@ -101,7 +102,7 @@
   async function launchInstall(installPath: string) {
     const launchStatus = status;
 
-    status = "Applying mods";
+    status = $_("splash.applyingMods");
     await loadMods();
     try {
       await applyMods();
@@ -112,7 +113,7 @@
     const ffm = await FastFlagManager.create(installPath);
 
     if (appState.fastflags.enabled) {
-      status = "Applying flags";
+      status = $_("splash.applyingFlags");
       try {
         await ffm.apply(flagsToObject(appState.fastflags.flags));
       } catch (e) {
@@ -149,13 +150,13 @@
       if (existingInstallations.length === 0) {
         const latest = await d.fetchLatestVersion("WindowsPlayer");
         await downloadAndInstall(d, i, latest);
-        status = `Launching ${latest}`;
+        status = $_("splash.launching", { values: { version: latest } });
         await launchInstall(await join(i.installationPath, latest));
       } else {
         const active = i.getActiveVersion() ?? existingInstallations[0];
 
         if (appState.installations.disableRobloxUpgrade) {
-          status = `Launching ${active.version}`;
+          status = $_("splash.launching", { values: { version: active.version } });
           await launchInstall(active.path);
         } else {
           const latest = await d.fetchLatestVersion("WindowsPlayer");
@@ -164,11 +165,11 @@
           );
 
           if (upToDate) {
-            status = `Launching ${upToDate.version}`;
+            status = $_("splash.launching", { values: { version: upToDate.version } });
             await launchInstall(upToDate.path);
           } else {
             await downloadAndInstall(d, i, latest);
-            status = `Launching ${latest}`;
+            status = $_("splash.launching", { values: { version: latest } });
             await launchInstall(await join(i.installationPath, latest));
           }
         }
@@ -182,7 +183,7 @@
       } else if (typeof e === "string") {
         error = e;
       } else {
-        error = "Something went wrong. Please try again.";
+        error = $_("splash.genericError");
       }
     }
   }
@@ -209,7 +210,7 @@
   function retry() {
     error = null;
     progress = null;
-    status = "Checking for updates";
+    status = $_("splash.checkingForUpdates");
     checkAndLaunch();
   }
 </script>
@@ -234,7 +235,7 @@
         class="h-11 cursor-pointer rounded-gl border-0 bg-tonal px-4 text-sm text-fg hover:bg-tonal-hover"
         onclick={retry}
       >
-        Try again
+        {$_("common.tryAgain")}
       </button>
     {/if}
     <button
@@ -242,7 +243,7 @@
       class="h-11 cursor-pointer rounded-gl border-0 bg-transparent px-4 text-sm text-fg-3 hover:bg-hover hover:text-fg"
       onclick={cancel}
     >
-      {error ? "Close" : "Cancel"}
+      {error ? $_("common.close") : $_("common.cancel")}
     </button>
   </div>
 
@@ -282,7 +283,7 @@
   <!-- Progress line: flush with the bottom edge -->
   <div
     role="progressbar"
-    aria-label="Launch progress"
+    aria-label={$_("splash.launchProgress")}
     aria-valuemin={0}
     aria-valuemax={100}
     aria-valuenow={progress ?? undefined}

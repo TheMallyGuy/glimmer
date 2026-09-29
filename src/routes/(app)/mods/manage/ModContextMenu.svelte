@@ -1,6 +1,7 @@
 <script lang="ts">
     import { Menu, type MenuItem } from "$lib";
     import type { Mod } from "$lib/mods.svelte";
+    import { _ } from "svelte-i18n";
 
     interface Props {
         open?: boolean;
@@ -34,16 +35,16 @@
         if (!mod) return [];
         const m = mod;
         return [
-            { label: "Rename", shortcut: "F2", onselect: () => onRename(m) },
-            { label: "Open folder", onselect: () => onOpenFolder(m) },
+            { label: $_("modContextMenu.rename"), shortcut: "F2", onselect: () => onRename(m) },
+            { label: $_("modContextMenu.openFolder"), onselect: () => onOpenFolder(m) },
             {
-                label: "Move to top",
+                label: $_("modContextMenu.moveToTop"),
                 separator: true,
                 onselect: () => onMoveTop(m),
             },
-            { label: "Move to bottom", onselect: () => onMoveBottom(m) },
+            { label: $_("modContextMenu.moveToBottom"), onselect: () => onMoveBottom(m) },
             {
-                label: "Delete",
+                label: $_("modContextMenu.delete"),
                 shortcut: "Del",
                 danger: true,
                 separator: true,
@@ -53,4 +54,4 @@
     });
 </script>
 
-<Menu bind:open {x} {y} {items} label="Mod actions" {returnFocus} />
+<Menu bind:open {x} {y} {items} label={$_("modContextMenu.modActions")} {returnFocus} />

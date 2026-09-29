@@ -26,35 +26,36 @@
   import { installationsState } from "$lib/installations.svelte";
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
+  import { _ } from "svelte-i18n";
 
   let { children }: { children: Snippet } = $props();
 
   const tabs: Tab[] = [
-    { id: "integrations", label: "Integrations", icon: Plug },
-    { id: "mods", label: "Mods", icon: Package },
-    { id: "flags", label: "Fast Flags", icon: Flag },
-    { id: "installations", label: "Installations", icon: HardDriveDownload },
-    { id: "about", label: "About", icon: Info },
+    { id: "integrations", label: $_("appLayout.tabIntegrations"), icon: Plug },
+    { id: "mods", label: $_("appLayout.tabMods"), icon: Package },
+    { id: "flags", label: $_("appLayout.tabFastFlags"), icon: Flag },
+    { id: "installations", label: $_("appLayout.tabInstallations"), icon: HardDriveDownload },
+    { id: "about", label: $_("appLayout.tabAbout"), icon: Info },
   ];
 
   const titles: Record<string, [string, string]> = {
     integrations: [
-      "Integrations",
-      "Do stuff that the Roblox Client can't do!",
+      $_("appLayout.tabIntegrations"),
+      $_("appLayout.integrationsBlurb"),
     ],
     mods: [
-      "Mods",
-      "Swap client assets. Changes apply the next time the client launches",
+      $_("appLayout.tabMods"),
+      $_("appLayout.modsBlurb"),
     ],
     flags: [
-      "Fast Flags",
-      "Modify Roblox's fastflags",
+      $_("appLayout.tabFastFlags"),
+      $_("appLayout.flagsBlurb"),
     ],
     installations: [
-      "Installations",
-      "Configure how Roblox should be downloaded",
+      $_("appLayout.tabInstallations"),
+      $_("appLayout.installationsBlurb"),
     ],
-    about: ["About", "Version, licenses and credits."],
+    about: [$_("appLayout.tabAbout"), $_("appLayout.aboutBlurb")],
   };
 
   const section = $derived(page.url.pathname.split("/")[1] || "mods");
@@ -91,16 +92,16 @@
         class="pointer-events-none"
       />
       <div data-tauri-drag-region class="h-full grow"></div>
-      <SearchField label="Search all settings" bind:value={prefs.query} />
+      <SearchField label={$_("appLayout.searchAllSettings")} bind:value={prefs.query} />
       <IconButton
-        label="Minimize"
+        label={$_("common.minimize")}
         variant="ghost"
         onclick={() => appWindow.minimize()}
       >
         <Minus size={14} strokeWidth={1.5} />
       </IconButton>
       <IconButton
-        label="Close"
+        label={$_("common.close")}
         variant="ghost"
         onclick={() => appWindow.close()}
       >
@@ -111,7 +112,7 @@
       {tabs}
       value={section}
       onchange={(id) => goto(`/${id}`)}
-      label="Settings sections"
+      label={$_("appLayout.settingsSections")}
       class="px-[18px]"
     />
   </header>
@@ -130,22 +131,22 @@
 
   <footer class="flex h-16 shrink-0 items-center gap-1 bg-footer pr-6 pl-8">
     <span class="grow text-xs text-muted">{bottomVerionText}</span>
-    <Button variant="ghost" onclick={discard}>Discard</Button>
-    <Button onclick={save}>Save</Button>
+    <Button variant="ghost" onclick={discard}>{$_("common.discard")}</Button>
+    <Button onclick={save}>{$_("common.save")}</Button>
     <SplitButton
       class="ml-1"
-      label="Save and launch"
+      label={$_("appLayout.saveAndLaunch")}
       bind:value={prefs.target}
       options={[
         {
           value: "player",
-          label: "Player",
-          description: "Launch the game",
+          label: $_("common.player"),
+          description: $_("appLayout.launchGame"),
         },
         {
           value: "studio",
-          label: "Studio",
-          description: "Open Studio with your mods applied",
+          label: $_("common.studio"),
+          description: $_("appLayout.launchStudioDescription"),
         },
       ]}
       onclick={launch}

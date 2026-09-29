@@ -1,5 +1,6 @@
 <script lang="ts">
   import { cn } from '../utils';
+  import { _ } from 'svelte-i18n';
 
   interface Props {
     /** Font size of the line; the logo scales with it. */
@@ -28,7 +29,7 @@
     className
   )}
 >
-  Inspired from
+  {$_('inspiredBanner.inspiredFrom')}
   <img
     src={logo}
     alt=""

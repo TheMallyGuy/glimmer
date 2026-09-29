@@ -20,6 +20,7 @@
         commitDelete,
         type Mod,
     } from "$lib/mods.svelte";
+    import { _ } from "svelte-i18n";
 
     onMount(loadMods);
 
@@ -49,8 +50,8 @@
     }
 
     function validate(name: string, id?: string) {
-        if (!name) return "Needs a name";
-        if (nameTaken(name, id)) return "Name already used";
+        if (!name) return $_("modsManage.needsAName");
+        if (nameTaken(name, id)) return $_("modsManage.nameAlreadyUsed");
         return "";
     }
 
@@ -73,12 +74,12 @@
         editingId = null;
         if (isNew) {
             const mod = await createMod(name);
-            announce(`Created ${name}.`);
+            announce($_("modsManage.announceCreated", { values: { name } }));
             await tick();
             nameButtons[mod.id]?.focus();
         } else if (current) {
             await renameMod(current.id, name);
-            announce(`Renamed to ${name}.`);
+            announce($_("modsManage.announceRenamed", { values: { name } }));
             finish(current.id);
         }
     }
@@ -113,7 +114,7 @@
         if (!removed) return;
         undo = removed;
         undoTimer = setTimeout(flushUndo, 6000);
-        announce(`Deleted ${mod.name}. Press Undo to bring it back.`);
+        announce($_("modsManage.announceDeleted", { values: { name: mod.name } }));
         await tick();
         if (next) nameButtons[next.id]?.focus();
     }
@@ -130,7 +131,7 @@
         const { mod, index } = undo;
         restoreMod(mod, index);
         undo = null;
-        announce(`Restored ${mod.name}.`);
+        announce($_("modsManage.announceRestored", { values: { name: mod.name } }));
         await tick();
         nameButtons[mod.id]?.focus();
     }
@@ -181,7 +182,7 @@
         if (from < 0 || to < 0 || to >= mods.list.length || from === to) return;
         const name = mods.list[from].name;
         await moveMod(from, to);
-        announce(`Moved ${name} to position ${to + 1} of ${mods.list.length}.`);
+        announce($_("modsManage.announceMoved", { values: { name, position: to + 1, total: mods.list.length } }));
     }
 
     async function onHandleKey(e: KeyboardEvent, i: number) {
@@ -211,12 +212,11 @@
     <div class="flex items-center gap-1">
         <p class="m-0 grow text-[13px] text-muted">
             {#if mods.list.length}
-                {mods.list.length}
-                {mods.list.length === 1 ? "mod" : "mods"}, {enabledCount} on
+                {$_("modsManage.modCount", { values: { count: mods.list.length } })}, {$_("modsManage.enabledSuffix", { values: { enabledCount } })}
             {/if}
         </p>
         <Button variant="ghost" size="sm" onclick={() => openModFolder()}>
-            <FolderOpen size={16} strokeWidth={1.75} aria-hidden="true" /> Open folder
+            <FolderOpen size={16} strokeWidth={1.75} aria-hidden="true" /> {$_("modsManage.openFolder")}
         </Button>
         <Button
             variant="primary"
@@ -224,22 +224,22 @@
             onclick={startNew}
             disabled={editingId === "new"}
         >
-            <Plus size={16} strokeWidth={1.75} aria-hidden="true" /> New mod
+            <Plus size={16} strokeWidth={1.75} aria-hidden="true" /> {$_("modsManage.newMod")}
         </Button>
     </div>
 
     {#if mods.list.length === 0 && editingId !== "new"}
         <div class="flex flex-col items-start gap-3 bg-row px-[18px] py-8">
             <p class="m-0 text-sm text-muted">
-                No mods yet. Create one, or install one from Community!
+                {$_("modsManage.emptyNoMods")}
             </p>
             <div class="flex gap-1">
-                <Button size="sm" onclick={startNew}>Create a mod</Button>
+                <Button size="sm" onclick={startNew}>{$_("modsManage.createAMod")}</Button>
                 <Button
                     variant="ghost"
                     size="sm"
                     onclick={() => goto("/mods/community")}
-                    >Browse community mods</Button
+                    >{$_("modsManage.browseCommunityMods")}</Button
                 >
             </div>
         </div>
@@ -267,21 +267,20 @@
     {#if undo}
         <div class="flex h-11 items-center gap-3 bg-tonal pr-1 pl-[18px]">
             <span class="min-w-0 grow truncate text-sm text-fg-2"
-                >Deleted {undo.mod.name}</span
+                >{$_("modsManage.deleted", { values: { name: undo.mod.name } })}</span
             >
             <Button
                 variant="ghost"
                 size="sm"
                 class="text-accent hover:enabled:text-accent"
-                onclick={undoDelete}>Undo</Button
+                onclick={undoDelete}>{$_("modsManage.undo")}</Button
             >
         </div>
     {/if}
 
     {#if mods.list.length}
         <p class="m-0 text-[13px] text-muted">
-            Tip: Top of the list wins when two mods change the same file. Click a
-            name to rename it, or right-click a mod for more!
+            {$_("modsManage.tip")}
         </p>
     {/if}
 

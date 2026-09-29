@@ -7,6 +7,7 @@
         type DndEvent,
     } from "svelte-dnd-action";
     import { mods, setEnabled, type Mod } from "$lib/mods.svelte";
+    import { _ } from "svelte-i18n";
 
     interface Props {
         editingId: string | null;
@@ -58,16 +59,16 @@
     onconsider={onDndConsider}
     onfinalize={onDndFinalize}
     class="m-0 flex list-none flex-col gap-0.5 p-0"
-    aria-label="Your mods, highest priority first"
+    aria-label={$_("modList.yourModsList")}
 >
     {#if editingId === "new"}
         <li class="flex h-12 items-center gap-2 bg-tonal pr-2 pl-9">
             <input
                 bind:this={editInput}
                 bind:value={draft}
-                aria-label="New mod name"
+                aria-label={$_("modList.newModName")}
                 aria-invalid={editError ? true : undefined}
-                placeholder="Mod name, then press Enter"
+                placeholder={$_("modList.newModNamePlaceholder")}
                 autocomplete="off"
                 spellcheck="false"
                 class={cn(
@@ -101,7 +102,7 @@
                 bind:this={handles[i]}
                 type="button"
                 use:dragHandle
-                aria-label="Reorder {mod.name}. Use the up and down arrow keys."
+                aria-label={$_("modList.reorderMod", { values: { name: mod.name } })}
                 class="flex h-8 w-6 shrink-0 cursor-grab items-center justify-center rounded-gl border-0 bg-transparent text-subtle opacity-0 group-hover:opacity-100 hover:text-fg-2 focus-visible:opacity-100 active:cursor-grabbing"
                 onkeydown={(e) => onHandleKey(e, i)}
             >
@@ -109,7 +110,7 @@
             </button>
 
             <Switch
-                label="Enable {mod.name}"
+                label={$_("modList.enableMod", { values: { name: mod.name } })}
                 checked={mod.enabled}
                 onchange={(v) => setEnabled(mod.id, v)}
             />
@@ -118,7 +119,7 @@
                 <input
                     bind:this={editInput}
                     bind:value={draft}
-                    aria-label="Rename {mod.name}"
+                    aria-label={$_("modList.renameMod", { values: { name: mod.name } })}
                     aria-invalid={editError ? true : undefined}
                     autocomplete="off"
                     spellcheck="false"
@@ -139,7 +140,7 @@
                 <button
                     bind:this={nameButtons[mod.id]}
                     type="button"
-                    title="Click to rename"
+                    title={$_("modList.clickToRename")}
                     class={cn(
                         "ml-1 h-8 min-w-0 grow cursor-text truncate rounded-gl border-0 bg-transparent px-2 text-left text-[15px] font-medium hover:bg-tonal",
                         mod.enabled ? "text-fg" : "text-off",
@@ -153,7 +154,7 @@
 
             {#if !editing}
                 <IconButton
-                    label="More for {mod.name}"
+                    label={$_("modList.moreForMod", { values: { name: mod.name } })}
                     variant="ghost"
                     size="sm"
                     aria-haspopup="menu"

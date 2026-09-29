@@ -3,17 +3,18 @@
     import { page } from "$app/state";
     import { InspiredBanner, cn } from "$lib";
     import { mods } from "$lib/mods.svelte";
+    import { _ } from "svelte-i18n";
 
     let { children }: { children: Snippet } = $props();
 
     const views = $derived([
-        { href: "/mods/manage", label: "Your mods", count: mods.list.length },
-        { href: "/mods/prebuilt", label: "Built-in" },
-        { href: "/mods/community", label: "Community" },
+        { href: "/mods/manage", label: $_("modsLayout.yourMods"), count: mods.list.length },
+        { href: "/mods/prebuilt", label: $_("modsLayout.builtIn") },
+        { href: "/mods/community", label: $_("modsLayout.community") },
     ]);
 </script>
 
-<nav aria-label="Mod views" class="mb-5 flex gap-1">
+<nav aria-label={$_("modsLayout.modViewsNav")} class="mb-5 flex gap-1">
 
     {#each views as view (view.href)}
 

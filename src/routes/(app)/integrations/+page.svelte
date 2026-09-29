@@ -1,58 +1,59 @@
 <script lang="ts">
   import { SettingGroup, SettingRow, Switch, Dropdown } from "$lib";
   import { appState } from "$lib/appState.svelte";
+  import { _ } from "svelte-i18n";
 
   const largeImagePresets = [
-    { value: "icon", label: "Game icon" },
-    { value: "gisl", label: "GAME IS LIFE!!!11" },
-    { value: "interview", label: "i accidentally said [GAME NAME] in a job interview" },
-    { value: "custom", label: "Custom" },
+    { value: "icon", label: $_("integrations.presetGameIcon") },
+    { value: "gisl", label: $_("integrations.presetGameIsLife") },
+    { value: "interview", label: $_("integrations.presetJobInterview") },
+    { value: "custom", label: $_("integrations.presetCustom") },
   ];
 </script>
 
 <SettingGroup>
   <SettingRow
-    title="Activity watching"
-    description="Let Glimmer see what you're playing right now."
+    title={$_("integrations.activityWatching")}
+    description={$_("integrations.activityWatchingDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Activity watching"
+        label={$_("integrations.activityWatching")}
         bind:checked={appState.integrations.activityWatching.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title="Server location notifier"
-    description="Notify the current server's location."
+    title={$_("integrations.serverLocationNotifier")}
+    description={$_("integrations.serverLocationNotifierDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Server location notifier"
+        label={$_("integrations.serverLocationNotifier")}
         bind:checked={appState.integrations.serverLocNotifer.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title="Discord Rich Presence"
-    description="Show off what you're playing on Roblox!"
+    title={$_("integrations.discordRichPresence")}
+    description={$_("integrations.discordRichPresenceDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Discord Rich Presence"
+        label={$_("integrations.discordRichPresence")}
         bind:checked={appState.integrations.discordRpc.enabled}
       />
     {/snippet}
   </SettingRow>
   {#if appState.integrations.discordRpc.enabled}
     <SettingRow
-      title="Large image preset"
-      description="What shows as the big image on your profile."
+      title={$_("integrations.largeImagePreset")}
+      description={$_("integrations.largeImagePresetDescription")}
       class="pl-9"
     >
       {#snippet control()}
         <Dropdown
-          label="Large image preset"
+          label={$_("integrations.largeImagePreset")}
           size="sm"
           width="200px"
           options={largeImagePresets}
@@ -62,35 +63,35 @@
     </SettingRow>
     {#if appState.integrations.discordRpc.largeImagePreset === "custom"}
       <SettingRow
-        title="Custom image settings"
+        title={$_("integrations.customImageSettings")}
         description={appState.integrations.discordRpc.customImage.svgUrl ||
-          "Set a template URL and options for this preset."}
+          $_("integrations.customImageSettingsDescription")}
         class="pl-9"
         href="/integrations/custom-image"
       />
     {/if}
   {/if}
   <SettingRow
-    title="Show account on Discord"
-    description="Discord Rich Presence is required turned on"
+    title={$_("integrations.shareAccount")}
+    description={$_("integrations.requiresDiscordRpc")}
     disabled={!appState.integrations.discordRpc.enabled}
   >
     {#snippet control()}
       <Switch
-        label="Show account on Discord"
+        label={$_("integrations.shareAccount")}
         bind:checked={appState.integrations.discordRpc.shareAccount}
         disabled={!appState.integrations.discordRpc.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title="Allow friends to join"
-    description="Discord Rich Presence is required turned on"
+    title={$_("integrations.allowFriendsToJoin")}
+    description={$_("integrations.requiresDiscordRpc")}
     disabled={!appState.integrations.discordRpc.enabled}
   >
     {#snippet control()}
       <Switch
-        label="Allow friends to join"
+        label={$_("integrations.allowFriendsToJoin")}
         bind:checked={appState.integrations.discordRpc.join}
         disabled={!appState.integrations.discordRpc.enabled}
       />
@@ -100,47 +101,47 @@
 
 <div class="h-7"></div>
 
-<SettingGroup label="System">
+<SettingGroup label={$_("integrations.systemGroup")}>
   <SettingRow
-    title="Close crash handler"
-    description="Kills Roblox crash handler on launch"
+    title={$_("integrations.closeCrashHandler")}
+    description={$_("integrations.closeCrashHandlerDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Close crash handler"
+        label={$_("integrations.closeCrashHandler")}
         bind:checked={appState.integrations.closeCrashHandler.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title="Trim memory when not focused"
-    description="Free memory while the client is in the background. [8damon/TASX-Roblox-Optimizer/]"
+    title={$_("integrations.trimMemory")}
+    description={$_("integrations.trimMemoryDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Trim memory when not focused"
+        label={$_("integrations.trimMemory")}
         bind:checked={appState.integrations.trimMemWhenNotFocused.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title="Disable system tray icon"
-    description="Disable Roblox's that annoying system tray icon"
+    title={$_("integrations.disableSystemTray")}
+    description={$_("integrations.disableSystemTrayDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Disable system tray icon"
+        label={$_("integrations.disableSystemTray")}
         bind:checked={appState.integrations.disableSystemTray.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title="Disable fullscreen optimization"
-    description="[SUPER DUPER EVIL DARK MAGIC] Disable fullscreen optimization!"
+    title={$_("integrations.disableFullscreenOptimization")}
+    description={$_("integrations.disableFullscreenOptimizationDescription")}
   >
     {#snippet control()}
       <Switch
-        label="Disable fullscreen optimization"
+        label={$_("integrations.disableFullscreenOptimization")}
         bind:checked={
           appState.integrations.disableFullscreenOptimization.enabled
         }

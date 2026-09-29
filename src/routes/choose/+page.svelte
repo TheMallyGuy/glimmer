@@ -17,12 +17,13 @@
   import { installationsState } from "$lib/installations.svelte";
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
+  import { _ } from "svelte-i18n";
 
   const DISCORD_INVITE = "https://discord.gg/UX5E9ppKFg";
 
   const targets = [
-    { value: "player", label: "Player", icon: Gamepad2 },
-    { value: "studio", label: "Studio", icon: DraftingCompass },
+    { value: "player", label: $_("common.player"), icon: Gamepad2 },
+    { value: "studio", label: $_("common.studio"), icon: DraftingCompass },
   ];
   const current = $derived(
     targets.find((t) => t.value === prefs.target) ?? targets[0],
@@ -78,7 +79,7 @@
     />
     <div data-tauri-drag-region class="h-full grow"></div>
     <IconButton
-      label="Close"
+      label={$_("common.close")}
       variant="ghost"
       onclick={() => getCurrentWindow().close()}
     >
@@ -100,13 +101,13 @@
         <span class="flex flex-col gap-0.5">
           <span class="font-display text-lg tracking-[0.01em]">
             {#if current.value == "player"}
-              Play
+              {$_("choose.play")}
             {:else}
-              Make Games
+              {$_("choose.makeGames")}
             {/if}
           </span>
           <span class="text-[13px] text-on-accent/70"
-            >Open Roblox {current.label}</span
+            >{$_("choose.openRoblox", { values: { target: current.label } })}</span
           >
         </span>
       </button>
@@ -123,8 +124,8 @@
           class="text-muted transition-colors group-hover:text-fg-2"
         />
         <span class="flex flex-col gap-0.5">
-          <span class="font-display text-lg tracking-[0.01em]">Settings</span>
-          <span class="text-[13px] text-muted">Configure Roblox</span>
+          <span class="font-display text-lg tracking-[0.01em]">{$_("choose.settings")}</span>
+          <span class="text-[13px] text-muted">{$_("choose.configureRoblox")}</span>
         </span>
       </button>
 
@@ -146,14 +147,14 @@
           class="absolute top-4 right-4 text-subtle"
         />
         <span class="flex flex-col gap-0.5">
-          <span class="font-display text-lg tracking-[0.01em]">Community</span>
-          <span class="text-[13px] text-muted">Discuss with our Community</span>
+          <span class="font-display text-lg tracking-[0.01em]">{$_("choose.community")}</span>
+          <span class="text-[13px] text-muted">{$_("choose.discussWithCommunity")}</span>
         </span>
       </button>
     </div>
 
     <div class="flex items-center gap-3">
-      <span id="target-label" class="text-[13px] text-muted">Launch as</span>
+      <span id="target-label" class="text-[13px] text-muted">{$_("choose.launchAs")}</span>
       <div
         role="radiogroup"
         aria-labelledby="target-label"
