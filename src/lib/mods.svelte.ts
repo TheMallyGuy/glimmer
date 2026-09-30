@@ -4,6 +4,17 @@ import { load, type Store } from '@tauri-apps/plugin-store';
 import { warn } from '@tauri-apps/plugin-log';
 import { ModificationManager } from '$ts/roblox/mod/manager';
 import { Applier } from '$ts/roblox/mod/apply';
+import { cursorModName, isCursorVersion, setCursor } from '$ts/roblox/mod/presets/mouseCursor';
+import { oldSoundsModName, setOldSounds } from '$ts/roblox/mod/presets/oldCharsSounds';
+import {
+  customDeathSoundModName,
+  setCustomDeathSound,
+} from '$ts/roblox/mod/presets/customDeathSound';
+import { customFontModName, setCustomFont } from '$ts/roblox/mod/presets/customFont';
+import {
+  oldAvatarBackgroundModName,
+  setOldAvatarBackground,
+} from '$ts/roblox/mod/presets/oldAvatarBackground';
 import type { CommunityMod } from '$ts/roblox/mod/community';
 import { sourceNames } from '$ts/roblox/mod/community';
 
@@ -22,7 +33,6 @@ export const installs = $state<Record<string, 'installing' | 'installed' | 'fail
 /** Built-in mod choices. */
 export const prebuilt = $state({
   cursor: 'default',
-  emoji: 'default',
   oldSounds: false,
   oldAvatarBackground: false,
   font: null as string | null,
@@ -188,16 +198,98 @@ export async function openModFolder(mod?: Mod) {
   await openPath(path);
 }
 
+/**
+ * Swaps the mouse cursor mod for the chosen preset ('default' just removes it).
+ * Throws when the preset has no bundled images, so the caller can put the old choice back.
+ */
+export async function applyCursor(value: string) {
+  if (value !== 'default' && !isCursorVersion(value)) {
+    // TODO: bundle images for the purple-cross and dot cursors
+    throw new Error(`no bundled images for the ${value} cursor`);
+  }
+
+  const m = await getManager();
+  await m.reIndex();
+
+  for (const version of ['2013', '2006'] as const) {
+    const name = cursorModName(version);
+    if (m.modificationPathIndex.some((e) => e.name === name)) await m.deleteMod(name);
+  }
+
+  if (value !== 'default') await setCursor(value);
+
+  await loadMods();
+  await persist();
+}
+
+/** Adds or removes the old character sounds mod. */
+export async function applyOldSounds(enabled: boolean) {
+  const m = await getManager();
+  await m.reIndex();
+
+  if (m.modificationPathIndex.some((e) => e.name === oldSoundsModName)) {
+    await m.deleteMod(oldSoundsModName);
+  }
+
+  if (enabled) await setOldSounds();
+
+  await loadMods();
+  await persist();
+}
+
+/** Adds or removes the old avatar editor background mod. */
+export async function applyOldAvatarBackground(enabled: boolean) {
+  const m = await getManager();
+  await m.reIndex();
+
+  if (m.modificationPathIndex.some((e) => e.name === oldAvatarBackgroundModName)) {
+    await m.deleteMod(oldAvatarBackgroundModName);
+  }
+
+  if (enabled) await setOldAvatarBackground();
+
+  await loadMods();
+  await persist();
+}
+
+/** Replaces the custom font mod with one for `fontPath`, or removes it when `fontPath` is null. */
+export async function applyCustomFont(fontPath: string | null) {
+  const m = await getManager();
+  await m.reIndex();
+
+  if (m.modificationPathIndex.some((e) => e.name === customFontModName)) {
+    await m.deleteMod(customFontModName);
+  }
+
+  if (fontPath) await setCustomFont(fontPath);
+
+  await loadMods();
+  await persist();
+}
+
+/** Replaces the death sound mod with one for `soundPath`, or removes it when `soundPath` is null. */
+export async function applyDeathSound(soundPath: string | null) {
+  const m = await getManager();
+  await m.reIndex();
+
+  if (m.modificationPathIndex.some((e) => e.name === customDeathSoundModName)) {
+    await m.deleteMod(customDeathSoundModName);
+  }
+
+  if (soundPath) await setCustomDeathSound(soundPath);
+
+  await loadMods();
+  await persist();
+}
+
 export async function installCommunityMod(mod: CommunityMod) {
   if (installs[mod.id] === 'installing') return;
   installs[mod.id] = 'installing';
 
   try {
     // TODO: download mod.download and extract it into the new mod's folder.
-    // Themes (mod.kind === 'theme') go to your bootstrapper themes folder,
-    // mods go to a new mod folder named below.
     const name = `[${sourceNames[mod.source].replace(' library', '')}] ${mod.name}`;
-    if (mod.kind === 'mod' && !nameTaken(name)) await createMod(name);
+    if (!nameTaken(name)) await createMod(name);
     installs[mod.id] = 'installed';
   } catch (err) {
     console.error(err);

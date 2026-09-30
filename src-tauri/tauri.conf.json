@@ -35,7 +35,10 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "./resources/locales/**/*.json"
+      "./resources/locales/**/*.json",
+      "./resources/mods/**/*.png",
+      "./resources/mods/**/*.mp3",
+      "./resources/mods/**/*.rbxl"
     ]
   }
 }

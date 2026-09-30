@@ -10,7 +10,6 @@ export interface CommunityMod {
     download: string;
     thumbnail?: string;
     source: CommunitySource;
-    kind: 'mod' | 'theme';
     gradient?: string;
 }
 
@@ -21,6 +20,8 @@ export const sourceNames: Record<CommunitySource, string> = {
 
 const FROSTSTRAP_URL = 'https://raw.githubusercontent.com/RealMeddsam/config/refs/heads/main/Data.json';
 const KLIKO_URL = 'https://raw.githubusercontent.com/klikos-modloader/marketplace/refs/heads/main/index.json';
+
+const FROSTSTRAP_THEME_TYPE = 5;
 
 interface FroststrapEntry {
     id: string;
@@ -57,17 +58,18 @@ async function getJson<T>(url: string): Promise<T> {
 
 async function fetchFroststrap(): Promise<CommunityMod[]> {
     const data = await getJson<{ communityMods?: FroststrapEntry[] }>(FROSTSTRAP_URL);
-    return (data.communityMods ?? []).map((m) => ({
-        id: `froststrap:${m.id}`,
-        name: m.name,
-        author: m.author,
-        description: m.description,
-        download: m.download,
-        thumbnail: m.thumbnail,
-        source: 'froststrap',
-        kind: m.modtype === 5 ? 'theme' : 'mod',
-        gradient: toGradient(m.angle, m.gradient),
-    }));
+    return (data.communityMods ?? [])
+        .filter((m) => m.modtype !== FROSTSTRAP_THEME_TYPE)
+        .map((m) => ({
+            id: `froststrap:${m.id}`,
+            name: m.name,
+            author: m.author,
+            description: m.description,
+            download: m.download,
+            thumbnail: m.thumbnail,
+            source: 'froststrap',
+            gradient: toGradient(m.angle, m.gradient),
+        }));
 }
 
 async function fetchKliko(): Promise<CommunityMod[]> {
@@ -80,7 +82,6 @@ async function fetchKliko(): Promise<CommunityMod[]> {
         download: m.download,
         thumbnail: m.thumbnail,
         source: 'kliko',
-        kind: 'mod',
     }));
 }
 
