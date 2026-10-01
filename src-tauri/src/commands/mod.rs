@@ -27,3 +27,6 @@ pub use font_tool::*;
 
 pub mod TASX;
 pub use TASX::*;
+
+pub mod local_app;
+pub use local_app::*;

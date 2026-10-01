@@ -10,6 +10,8 @@ export type WindowBinaryType = "WindowsStudio64" | "WindowsPlayer"
 // https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
 export type Distribution = "global" | "vng";
 
+const REGION_PROBE_TIMEOUT_MS = 3000;
+
 const DISTRIBUTION_CONFIG: Record<Distribution, { clientSettingsUrl: string; cdnExtension: string }> = {
     global: {
         clientSettingsUrl: 'https://clientsettings.roproxy.com/v2/client-version',
@@ -139,32 +141,31 @@ export class Downloader {
         return d;
     }
 
+    /**
+     * probes every base url at once and returns the first one to answer, which is the
+     * lowest-latency one. Probing one by one cost a full round trip per url (more for a dead one).
+     */
     async bestRegion(baseUrls: string[]): Promise<string> {
         debug("begging to test regions urls")
-        const best: [string, number][] = [];
 
-        for (const url of baseUrls) {
-            try {
-                const start = performance.now();
-                const response = await fetch(url);
-                const elapsed = performance.now() - start;
+        const probe = async (url: string) => {
+            const start = performance.now();
+            const response = await fetch(url, { signal: AbortSignal.timeout(REGION_PROBE_TIMEOUT_MS) });
 
-                if (response.status == 403) { // this is expected
-                    debug(`tested ${url} -> ${elapsed}`)
-                    best.push([url, elapsed]);
-                }
-            } catch {
-                // unreachable URL, skip it
+            if (response.status !== 403) { // 403 is expected
+                throw new Error(`unexpected status ${response.status}`);
             }
-        }
 
-        if (best.length === 0) {
+            debug(`tested ${url} -> ${performance.now() - start}`)
+            return url;
+        };
+
+        try {
+            return await Promise.any(baseUrls.map(probe));
+        } catch {
             error("No reachable base URLs")
             throw new Error("No reachable base URLs");
         }
-
-        best.sort((a, b) => a[1] - b[1]);
-        return best[0][0];
     }
 
     /**

@@ -22,7 +22,8 @@
     "applyingFlags": "Applying flags",
     "launching": "Launching {version}",
     "genericError": "Something went wrong. Please try again.",
-    "launchProgress": "Launch progress"
+    "launchProgress": "Launch progress",
+    "prepare": "Preparing..."
   },
   "choose": {
     "play": "Play",
@@ -205,7 +206,9 @@
     "disableSystemTray": "Disable system tray icon",
     "disableSystemTrayDescription": "Disable Roblox's that annoying system tray icon",
     "disableFullscreenOptimization": "Disable fullscreen optimization",
-    "disableFullscreenOptimizationDescription": "[SUPER DUPER EVIL DARK MAGIC] Disable fullscreen optimization!"
+    "disableFullscreenOptimizationDescription": "[SUPER DUPER EVIL DARK MAGIC] Disable fullscreen optimization!",
+    "disableLaunchAtStartup": "Disable launch at startup",
+    "disableLaunchAtStartupDescription": "Prevent Roblox from launching when you first start up your computer"
   },
   "customImage": {
     "backToIntegrations": "Back to integrations",

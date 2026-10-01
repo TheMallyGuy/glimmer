@@ -28,6 +28,7 @@
   import { _ } from "svelte-i18n";
   import { delay } from "$ts/utils";
   import { app } from "@tauri-apps/api";
+  import { LocalAppEditor } from "$ts/roblox/localApp";
 
   // the chooser and the footer pass ?target=studio; anything else launches the player
   const isStudio = page.url.searchParams.get("target") === "studio";
@@ -46,8 +47,6 @@
   let status = $state($_("splash.checkingForUpdates"));
   let progress = $state<number | null>(null);
   let error = $state<string | null>(null);
-
-  const GRID_OPACITY = 0.2;
 
   const appWindow = getCurrentWindow();
   let unlisten: UnlistenFn | undefined;
@@ -132,10 +131,22 @@
       await ffm.disableFlags();
     }
 
+    status = $_("splash.prepare");
+
     if (!isStudio) {
       commands.setFullscreenProp(
         appState.integrations.disableFullscreenOptimization.enabled,
         await join(installPath, EXE_NAME),
+      );
+    }
+
+    if (!isStudio) {
+      const lca = await LocalAppEditor.create();
+      await lca.setMinimizeToTray(
+        appState.integrations.disableSystemTray.enabled,
+      );
+      await lca.launchAtStartup(
+        !appState.integrations.disableLaunchAtStartup.enabled,
       );
     }
 
@@ -252,14 +263,15 @@
 <div
   data-tauri-drag-region
   class="relative flex h-screen w-screen flex-col overflow-hidden bg-canvas text-fg"
-  style="background-image: linear-gradient(180deg, #1f1f1f 0px, #0d0d0d 78px, #0d0d0d 100%);"
 >
-  <!-- Grid overlay -->
-  <div
-    aria-hidden="true"
-    class="pointer-events-none absolute inset-0"
-    style="background-image: linear-gradient(to right, rgb(255 255 255 / {GRID_OPACITY}) 1px, transparent 1px), linear-gradient(to bottom, rgb(255 255 255 / {GRID_OPACITY}) 1px, transparent 1px); background-size: 45.12px 47px;"
-  ></div>
+  <!-- Artwork: background, grid, corner arcs and the Glimmer wordmark in one 671x329 file -->
+  <img
+    src="/splash-bg.svg"
+    alt="Glimmer"
+    width="671"
+    height="329"
+    class="pointer-events-none absolute inset-0 h-full w-full"
+  />
 
   <!-- Top row -->
   <div class="relative flex justify-end gap-1 p-2">
@@ -281,25 +293,17 @@
     </button>
   </div>
 
-  <!-- Logo -->
-  <div
-    data-tauri-drag-region
-    class="relative flex grow items-center justify-center"
-  >
-    <img
-      src="/glimmer-logo.svg"
-      alt="Glimmer"
-      width="199"
-      height="44"
-      class="pointer-events-none block h-11 w-[199px]"
-    />
-  </div>
+  <!-- Spacer over the wordmark, so the window can be dragged from it -->
+  <div data-tauri-drag-region class="relative grow"></div>
 
   <!-- Status row -->
-  <div class="relative flex items-baseline gap-4 px-7 pb-5" aria-live="polite">
+  <div
+    class="relative flex items-baseline justify-between gap-4 px-7 pb-5"
+    aria-live="polite"
+  >
     <p
       class={cn(
-        "m-0 grow truncate text-sm",
+        "m-0 max-w-[440px] min-w-0 truncate text-sm",
         error ? "text-danger" : "text-fg-3",
       )}
     >

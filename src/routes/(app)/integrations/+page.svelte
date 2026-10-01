@@ -135,6 +135,17 @@
       />
     {/snippet}
   </SettingRow>
+   <SettingRow
+    title={$_("integrations.disableLaunchAtStartup")}
+    description={$_("integrations.disableLaunchAtStartupDescription")}
+  >
+    {#snippet control()}
+      <Switch
+        label={$_("integrations.disableLaunchAtStartup")}
+        bind:checked={appState.integrations.disableLaunchAtStartup.enabled}
+      />
+    {/snippet}
+  </SettingRow>
   <SettingRow
     title={$_("integrations.disableFullscreenOptimization")}
     description={$_("integrations.disableFullscreenOptimizationDescription")}

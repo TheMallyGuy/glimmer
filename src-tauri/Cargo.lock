@@ -1958,6 +1958,7 @@ name = "glimmer"
 version = "0.1.0"
 dependencies = [
  "app-finder",
+ "dirs",
  "discord-rich-presence",
  "log",
  "md5",
