@@ -9,6 +9,13 @@ export interface InstallEntry {
     vng?: boolean;
 }
 
+export type InstallKind = "player" | "studio";
+
+const KIND_FOLDERS: Record<InstallKind, string> = {
+    player: "versions",
+    studio: "studio-versions",
+};
+
 export class Installation {
     installationPath = "";
     installedVersions: InstallEntry[] = [];
@@ -16,9 +23,9 @@ export class Installation {
     private indexFile = ""
     constructor(reIndexVar: boolean) { }
 
-    static async create(reIndex = true): Promise<Installation> {
+    static async create(reIndex = true, kind: InstallKind = "player"): Promise<Installation> {
         const i = new Installation(reIndex);
-        i.installationPath = await join(await appDataDir(), "versions");
+        i.installationPath = await join(await appDataDir(), KIND_FOLDERS[kind]);
         i.indexFile = await join(i.installationPath, "index.json")
         i.reIndexVar = await reIndex
         return i;

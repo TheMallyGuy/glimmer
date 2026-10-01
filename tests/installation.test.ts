@@ -20,6 +20,20 @@ describe("Installation.create", () => {
         const i = await Installation.create();
         expect(i.installationPath).toBe(ROOT);
     });
+
+    test("keeps studio installs and their index in a separate folder", async () => {
+        const studioRoot = "/appdata/studio-versions";
+        seedInstall("version-player");
+        fakeFs.seed(`${studioRoot}/version-studio/AppSettings.xml`, "<Settings />");
+
+        const studio = await Installation.create(true, "studio");
+        await studio.reIndex();
+
+        expect(studio.installationPath).toBe(studioRoot);
+        expect(studio.installedVersions.map((v) => v.version)).toEqual(["version-studio"]);
+        expect(fakeFs.has(`${studioRoot}/index.json`)).toBe(true);
+        expect(readIndex()).toEqual([]);
+    });
 });
 
 describe("reIndex", () => {

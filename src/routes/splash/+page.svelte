@@ -3,11 +3,13 @@
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import { listen, type UnlistenFn } from "@tauri-apps/api/event";
   import { join } from "@tauri-apps/api/path";
+  import { page } from "$app/state";
   import { sizeWindow } from "$lib/window";
   import { cn } from "$lib";
   import {
     Downloader,
     type Distribution,
+    type WindowBinaryType,
   } from "$ts/roblox/installation/download";
   import {
     Installation,
@@ -27,7 +29,12 @@
   import { delay } from "$ts/utils";
   import { app } from "@tauri-apps/api";
 
-  const PLAYER_EXE = "RobloxPlayerBeta.exe";
+  // the chooser and the footer pass ?target=studio; anything else launches the player
+  const isStudio = page.url.searchParams.get("target") === "studio";
+  const binaryType: WindowBinaryType = isStudio
+    ? "WindowsStudio64"
+    : "WindowsPlayer";
+  const EXE_NAME = isStudio ? "RobloxStudioBeta.exe" : "RobloxPlayerBeta.exe";
 
   interface LaunchProgress {
     status: string;
@@ -80,30 +87,36 @@
             break;
         }
       },
+      binaryType,
     );
 
     await i.setActiveVersion(installName(version, d.distribution));
 
-    status = $_("splash.backingUpModOriginals");
-    try {
-      await backupNewVersion();
-    } catch (e) {
-      console.error("failed to back up new version for mods:", e);
+    // mods are only applied to the player install, so there are no originals to back up for Studio
+    if (!isStudio) {
+      status = $_("splash.backingUpModOriginals");
+      try {
+        await backupNewVersion();
+      } catch (e) {
+        console.error("failed to back up new version for mods:", e);
+      }
     }
 
     progress = null;
   }
 
-  /** spawn RobloxPlayerBeta.exe from an installed version's folder */
+  /** spawn the player or Studio executable from an installed version's folder */
   async function launchInstall(installPath: string) {
     const launchStatus = status;
 
-    status = $_("splash.applyingMods");
-    await loadMods();
-    try {
-      await applyMods();
-    } catch (e) {
-      console.error("failed to apply mods before launch:", e);
+    if (!isStudio) {
+      status = $_("splash.applyingMods");
+      await loadMods();
+      try {
+        await applyMods();
+      } catch (e) {
+        console.error("failed to apply mods before launch:", e);
+      }
     }
 
     const ffm = await FastFlagManager.create(installPath);
@@ -119,14 +132,16 @@
       await ffm.disableFlags();
     }
 
-    commands.setFullscreenProp(
-      appState.integrations.disableFullscreenOptimization.enabled,
-      await join(installPath, "RobloxPlayerBeta.exe"),
-    );
+    if (!isStudio) {
+      commands.setFullscreenProp(
+        appState.integrations.disableFullscreenOptimization.enabled,
+        await join(installPath, EXE_NAME),
+      );
+    }
 
     status = launchStatus;
 
-    const exePath = await join(installPath, PLAYER_EXE);
+    const exePath = await join(installPath, EXE_NAME);
     const result = await commands.launch(exePath, []);
 
     if (result.status === "error") {
@@ -136,17 +151,18 @@
 
   async function checkAndLaunch() {
     try {
-      const distribution: Distribution = appState.installations.vngDistribution
-        .enabled
-        ? "vng"
-        : "global";
+      // VNG only distributes the player, so Studio always uses the global CDN
+      const distribution: Distribution =
+        !isStudio && appState.installations.vngDistribution.enabled
+          ? "vng"
+          : "global";
       const d = await Downloader.create(DEFAULT_BASE_URLS, distribution);
-      const i = await Installation.create();
+      const i = await Installation.create(true, isStudio ? "studio" : "player");
 
       const existingInstallations: InstallEntry[] = await i.listInstallations();
 
       if (existingInstallations.length === 0) {
-        const latest = await d.fetchLatestVersion("WindowsPlayer");
+        const latest = await d.fetchLatestVersion(binaryType);
         const name = installName(latest, distribution);
         await downloadAndInstall(d, i, latest);
 
@@ -163,7 +179,7 @@
 
           await launchInstall(active.path);
         } else {
-          const latest = await d.fetchLatestVersion("WindowsPlayer");
+          const latest = await d.fetchLatestVersion(binaryType);
           const name = installName(latest, distribution);
           const upToDate = existingInstallations.find(
             (ver) => ver.version === name,
@@ -185,7 +201,7 @@
         }
       }
 
-      if (appState.integrations.closeCrashHandler.enabled) {
+      if (!isStudio && appState.integrations.closeCrashHandler.enabled) {
         await delay(5000);
         await commands.closeCrashHandler();
       }

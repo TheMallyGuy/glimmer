@@ -2,7 +2,7 @@ import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
 
 const LABEL = 'splash';
 
-export async function openSplashWindow() {
+export async function openSplashWindow(target = 'player') {
     const existing = await WebviewWindow.getByLabel(LABEL);
     if (existing) {
         await existing.unminimize();
@@ -11,7 +11,7 @@ export async function openSplashWindow() {
     }
 
     const win = new WebviewWindow(LABEL, {
-        url: '/splash',
+        url: `/splash?target=${encodeURIComponent(target)}`,
         title: 'glimmerSplash',
         width: 671,
         height: 329,

@@ -5,7 +5,7 @@ import { commands } from '../../bindings';
 import { fetch } from '@tauri-apps/plugin-http';
 import { debug, error, info } from '@tauri-apps/plugin-log';
 
-type WindowBinaryType = "WindowsStudio64" | "WindowsPlayer"
+export type WindowBinaryType = "WindowsStudio64" | "WindowsPlayer"
 
 // https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
 export type Distribution = "global" | "vng";

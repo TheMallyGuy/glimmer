@@ -20,7 +20,7 @@ src/
 │       ├── discordRpc.ts          Discord RPC client (talks to the Rust sidecar)
 │       ├── installation/
 │       │   ├── download.ts        Downloader class: region pick, manifest fetch, package download/extract
-│       │   ├── installation.ts    Installation class: tracks installed versions on disk
+│       │   ├── installation.ts    Installation class: tracks installed versions on disk (`versions/` for Player, `studio-versions/` for Studio)
 │       │   ├── watcher.ts         loads installed versions into installationsState
 │       │   └── index.ts           orchestrates download.ts + installation.ts step by step
 │       ├── logs/                  watcher.ts (roblox-log-line events), process.ts (parses lines: RPC, notifications)

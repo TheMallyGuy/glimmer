@@ -1,6 +1,6 @@
 import { appCacheDir, join } from "@tauri-apps/api/path";
 import { mkdir, remove } from "@tauri-apps/plugin-fs";
-import type { Downloader, Distribution } from "./download";
+import type { Downloader, Distribution, WindowBinaryType } from "./download";
 import type { Installation } from "./installation";
 
 export const DEFAULT_BASE_URLS = [
@@ -33,6 +33,7 @@ export async function installVersion(
     version: string,
     concurrency: number,
     onProgress?: (p: InstallProgress) => void,
+    binaryType: WindowBinaryType = "WindowsPlayer",
 ) {
     const name = installName(version, d.distribution);
 
@@ -50,7 +51,7 @@ export async function installVersion(
     });
 
     onProgress?.({ status: "extracting", done: 0, total: manifest.packages.length, percent: 0 });
-    await d.extractPackages(packagesDir, distDir, "WindowsPlayer", (done, total) => {
+    await d.extractPackages(packagesDir, distDir, binaryType, (done, total) => {
         onProgress?.({ status: "extracting", done, total, percent: Math.round((done / total) * 100) });
     });
 

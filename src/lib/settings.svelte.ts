@@ -24,6 +24,6 @@ export async function discard() {
 
 export async function launch(target: string) {
   await save();
-  await openSplashWindow()
+  await openSplashWindow(target)
   await getCurrentWindow().close();
 }
