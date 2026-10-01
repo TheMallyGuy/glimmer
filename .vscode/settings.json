@@ -2,5 +2,8 @@
   "svelte.enable-ts-plugin": true,
   "files.associations": {
     "*.css": "tailwindcss"
-  }
+  },
+  "i18n-ally.localesPaths": [
+    "src-tauri/resources/locales"
+  ]
 }
