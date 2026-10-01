@@ -7,6 +7,20 @@ import { debug, error, info } from '@tauri-apps/plugin-log';
 
 type WindowBinaryType = "WindowsStudio64" | "WindowsPlayer"
 
+// https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
+export type Distribution = "global" | "vng";
+
+const DISTRIBUTION_CONFIG: Record<Distribution, { clientSettingsUrl: string; cdnExtension: string }> = {
+    global: {
+        clientSettingsUrl: 'https://clientsettings.roproxy.com/v2/client-version',
+        cdnExtension: '',
+    },
+    vng: {
+        clientSettingsUrl: 'https://clientsettingscdn.robloxapp.vnggames.com/v2/client-version',
+        cdnExtension: '/vng',
+    },
+};
+
 interface ClientVersionResponse {
     version: string;
     clientVersionUpload: string;
@@ -26,7 +40,14 @@ export interface ParsedManifest {
 }
 
 export class Downloader {
-    private readonly clientSettingsUrl = 'https://clientsettings.roproxy.com/v2/client-version';
+    private get clientSettingsUrl() {
+        return DISTRIBUTION_CONFIG[this.distribution].clientSettingsUrl;
+    }
+
+    private get cdnExtension() {
+        return DISTRIBUTION_CONFIG[this.distribution].cdnExtension;
+    }
+
     // name each binary type is logged under in DeployHistory.txt
     private readonly deployHistoryNames: Record<WindowBinaryType, string> = {
         WindowsPlayer: "WindowsPlayer",
@@ -110,10 +131,10 @@ export class Downloader {
 
     baseUrl: string = "";
 
-    private constructor(private baseUrls: string[]) { }
+    private constructor(private baseUrls: string[], readonly distribution: Distribution) { }
 
-    static async create(baseUrls: string[]): Promise<Downloader> {
-        const d = new Downloader(baseUrls);
+    static async create(baseUrls: string[], distribution: Distribution = "global"): Promise<Downloader> {
+        const d = new Downloader(baseUrls, distribution);
         d.baseUrl = await d.bestRegion(baseUrls);
         return d;
     }
@@ -284,7 +305,7 @@ export class Downloader {
     }
 
     async fetchManifest(version: string): Promise<ParsedManifest> {
-        const url = joinUrl(this.baseUrl, `${version}-rbxPkgManifest.txt`);
+        const url = joinUrl(this.baseUrl, `${this.cdnExtension}/${version}-rbxPkgManifest.txt`);
         const response = await fetch(url);
 
         if (!response.ok) {
@@ -320,7 +341,7 @@ export class Downloader {
         onChunk?: (receivedBytes: number, totalBytes: number) => void
     ): Promise<string> {
         info("beginning to download package")
-        const url = joinUrl(this.baseUrl, `${version}-${pkg.fileName}`);
+        const url = joinUrl(this.baseUrl, `${this.cdnExtension}/${version}-${pkg.fileName}`);
         const response = await fetch(url);
 
         if (!response.ok) {

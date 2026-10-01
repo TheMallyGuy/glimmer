@@ -6,6 +6,7 @@ export interface InstallEntry {
     version: string;
     path: string;
     active: boolean;
+    vng?: boolean;
 }
 
 export class Installation {
@@ -35,15 +36,19 @@ export class Installation {
         return this.installedVersions
     }
 
-    async createNewInstallation(name: string, reIndex = true) {
+    /** creates the install's folder and records a placeholder index entry, so its `vng` flag survives the `reIndex()` at the end of a download */
+    async createNewInstallation(name: string, vng = false, reIndex = true) {
         if (reIndex) {
             await this.reIndex()
         }
 
         const path = await join(this.installationPath, name)
-        const res = await mkdir(path, { recursive: true })
+        await mkdir(path, { recursive: true })
 
-        return res
+        if (!this.installedVersions.some((v) => v.version === name)) {
+            this.installedVersions.push({ version: name, path, active: false, vng });
+            await this.writeIndex();
+        }
     }
 
     async reIndex() {
@@ -55,9 +60,13 @@ export class Installation {
         }
 
         const versions = await readDir(this.installationPath);
+        const persisted = await this.readPersistedEntries();
+        const previousByVersion = new Map(persisted.map((v) => [v.version, v] as const));
+        for (const v of this.installedVersions) previousByVersion.set(v.version, v); // in-memory wins
+
         const previousActive =
             this.installedVersions.find((v) => v.active)?.version
-            ?? await this.readPersistedActiveVersion();
+            ?? persisted.find((v) => v.active)?.version;
 
         this.installedVersions = [];
 
@@ -77,7 +86,8 @@ export class Installation {
             this.installedVersions.push({
                 version: version.name,
                 path,
-                active: version.name === previousActive
+                active: version.name === previousActive,
+                vng: previousByVersion.get(version.name)?.vng,
             });
         }
 
@@ -123,14 +133,13 @@ export class Installation {
         info(`removed installation ${version}`)
     }
 
-    /** read whichever version index.json currently has marked active, without touching in-memory state */
-    private async readPersistedActiveVersion(): Promise<string | undefined> {
+    /** read index.json from disk without touching in-memory state */
+    private async readPersistedEntries(): Promise<InstallEntry[]> {
         try {
             const raw = await readTextFile(this.indexFile);
-            const entries: InstallEntry[] = JSON.parse(raw);
-            return entries.find((v) => v.active)?.version;
+            return JSON.parse(raw);
         } catch {
-            return undefined;
+            return [];
         }
     }
 

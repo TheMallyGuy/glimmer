@@ -5,12 +5,19 @@
   import { join } from "@tauri-apps/api/path";
   import { sizeWindow } from "$lib/window";
   import { cn } from "$lib";
-  import { Downloader } from "$ts/roblox/installation/download";
+  import {
+    Downloader,
+    type Distribution,
+  } from "$ts/roblox/installation/download";
   import {
     Installation,
     type InstallEntry,
   } from "$ts/roblox/installation/installation";
-  import { DEFAULT_BASE_URLS, installVersion } from "$ts/roblox/installation";
+  import {
+    DEFAULT_BASE_URLS,
+    installVersion,
+    installName,
+  } from "$ts/roblox/installation";
   import { appState } from "$lib/appState.svelte";
   import { loadMods, applyMods, backupNewVersion } from "$lib/mods.svelte";
   import { FastFlagManager } from "$ts/roblox/flags";
@@ -75,7 +82,7 @@
       },
     );
 
-    await i.setActiveVersion(version);
+    await i.setActiveVersion(installName(version, d.distribution));
 
     status = $_("splash.backingUpModOriginals");
     try {
@@ -114,7 +121,7 @@
 
     commands.setFullscreenProp(
       appState.integrations.disableFullscreenOptimization.enabled,
-      await join(installPath, 'RobloxPlayerBeta.exe')
+      await join(installPath, "RobloxPlayerBeta.exe"),
     );
 
     status = launchStatus;
@@ -129,22 +136,27 @@
 
   async function checkAndLaunch() {
     try {
-      const d = await Downloader.create(DEFAULT_BASE_URLS);
+      const distribution: Distribution = appState.installations.vngDistribution
+        .enabled
+        ? "vng"
+        : "global";
+      const d = await Downloader.create(DEFAULT_BASE_URLS, distribution);
       const i = await Installation.create();
 
       const existingInstallations: InstallEntry[] = await i.listInstallations();
 
       if (existingInstallations.length === 0) {
         const latest = await d.fetchLatestVersion("WindowsPlayer");
+        const name = installName(latest, distribution);
         await downloadAndInstall(d, i, latest);
 
-        status = $_("splash.launching", { values: { version: latest } });
+        status = $_("splash.launching", { values: { version: name } });
 
-        await launchInstall(await join(i.installationPath, latest));
+        await launchInstall(await join(i.installationPath, name));
       } else {
         const active = i.getActiveVersion() ?? existingInstallations[0];
 
-        if (appState.installations.disableRobloxUpgrade) {
+        if (appState.installations.disableRobloxUpgrade.enabled) {
           status = $_("splash.launching", {
             values: { version: active.version },
           });
@@ -152,8 +164,9 @@
           await launchInstall(active.path);
         } else {
           const latest = await d.fetchLatestVersion("WindowsPlayer");
+          const name = installName(latest, distribution);
           const upToDate = existingInstallations.find(
-            (ver) => ver.version == latest,
+            (ver) => ver.version === name,
           );
 
           if (upToDate) {
@@ -165,9 +178,9 @@
           } else {
             await downloadAndInstall(d, i, latest);
 
-            status = $_("splash.launching", { values: { version: latest } });
+            status = $_("splash.launching", { values: { version: name } });
 
-            await launchInstall(await join(i.installationPath, latest));
+            await launchInstall(await join(i.installationPath, name));
           }
         }
       }

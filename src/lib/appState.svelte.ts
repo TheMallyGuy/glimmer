@@ -42,6 +42,9 @@ export const appState = $state({
         },
         disableRobloxUpgrade: {
             enabled: false
+        },
+        vngDistribution: {
+            enabled: false
         }
     },
     fastflags: {

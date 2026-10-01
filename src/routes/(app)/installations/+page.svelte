@@ -15,10 +15,14 @@
     Installation,
     type InstallEntry,
   } from "$ts/roblox/installation/installation";
-  import { Downloader } from "$ts/roblox/installation/download";
+  import {
+    Downloader,
+    type Distribution,
+  } from "$ts/roblox/installation/download";
   import {
     DEFAULT_BASE_URLS,
     installVersion,
+    installName,
     type InstallProgress,
   } from "$ts/roblox/installation";
   import { openPath } from "@tauri-apps/plugin-opener";
@@ -67,13 +71,45 @@
 
   let addOpen = $state(false);
   let versionHash = $state("");
+  let installAsVng = $state(false);
   let installing = $state(false);
   let installStatus = $state("");
   let installProgress = $state<number | null>(null);
   let installError = $state<string | null>(null);
 
+  let vngSwitchChecked = $state(appState.installations.vngDistribution.enabled);
+  let vngWarningStep = $state(0);
+
+  function onVngToggle(next: boolean) {
+    if (next) {
+      vngWarningStep = 1;
+    } else {
+      appState.installations.vngDistribution.enabled = false;
+    }
+  }
+
+  function vngWarningContinue() {
+    if (vngWarningStep < 3) {
+      vngWarningStep += 1;
+    } else {
+      appState.installations.vngDistribution.enabled = true;
+      vngWarningStep = 0;
+    }
+  }
+
+  function vngWarningCancel() {
+    vngWarningStep = 0;
+    vngSwitchChecked = appState.installations.vngDistribution.enabled;
+  }
+
+  function onVngDialogClose() {
+    vngWarningStep = 0;
+    vngSwitchChecked = appState.installations.vngDistribution.enabled;
+  }
+
   function openAdd() {
     versionHash = "";
+    installAsVng = appState.installations.vngDistribution.enabled;
     installError = null;
     addOpen = true;
   }
@@ -83,13 +119,15 @@
     installError = null;
 
     try {
-      const d = await Downloader.create(DEFAULT_BASE_URLS);
+      const distribution: Distribution = installAsVng ? "vng" : "global";
+      const d = await Downloader.create(DEFAULT_BASE_URLS, distribution);
       const version =
         versionHash.trim() || (await d.fetchLatestVersion("WindowsPlayer"));
+      const name = installName(version, distribution);
 
-      if (installationsState.versions.some((v) => v.version === version)) {
+      if (installationsState.versions.some((v) => v.version === name)) {
         installError = $_("installationsManage.alreadyInstalled", {
-          values: { version },
+          values: { version: name },
         });
         return;
       }
@@ -177,6 +215,11 @@
                     >{$_("installationsManage.active")}</span
                   >
                 {/if}
+                {#if entry.vng}
+                  <span class="shrink-0 text-xs text-muted"
+                    >{$_("installationsManage.vngTag")}</span
+                  >
+                {/if}
               </div>
               <div class="truncate text-[13px] text-muted">{entry.path}</div>
             </div>
@@ -259,6 +302,18 @@
         />
       {/snippet}
     </SettingRow>
+    <SettingRow
+      title={$_("installations.vngDistribution")}
+      description={$_("installations.vngDistributionDescription")}
+    >
+      {#snippet control()}
+        <Switch
+          label={$_("installations.vngDistribution")}
+          bind:checked={vngSwitchChecked}
+          onchange={onVngToggle}
+        />
+      {/snippet}
+    </SettingRow>
   </SettingGroup>
 </div>
 
@@ -302,6 +357,20 @@
       hint={$_("installationsManage.versionHashHint")}
       bind:value={versionHash}
     />
+    <div class="mt-3 flex items-center justify-between gap-4">
+      <div class="flex flex-col gap-[3px]">
+        <span class="text-[13px] text-fg-2">
+          {$_("installationsManage.installAsVng")}
+        </span>
+        <span class="text-[13px] text-muted">
+          {$_("installationsManage.installAsVngHint")}
+        </span>
+      </div>
+      <Switch
+        label={$_("installationsManage.installAsVng")}
+        bind:checked={installAsVng}
+      />
+    </div>
   {/if}
   {#snippet actions()}
     {#if !installing}
@@ -333,3 +402,62 @@
     </Button>
   {/snippet}
 </Dialog>
+
+{#if vngWarningStep === 1}
+  <Dialog
+    open
+    title={$_("installations.vngWarningTitle1")}
+    onclose={onVngDialogClose}
+  >
+    <p class="m-0 mb-1 text-xs text-muted">
+      {$_("installations.vngWarningStepLabel", { values: { step: 1 } })}
+    </p>
+    <p class="m-0 text-accent">{$_("installations.vngWarning1")}</p>
+    {#snippet actions()}
+      <Button variant="ghost" onclick={vngWarningContinue}>
+        {$_("installations.vngWarningContinue")}
+      </Button>
+      <Button variant="primary" onclick={vngWarningCancel}>
+        {$_("common.cancel")}
+      </Button>
+    {/snippet}
+  </Dialog>
+{:else if vngWarningStep === 2}
+  <Dialog
+    open
+    title={$_("installations.vngWarningTitle2")}
+    onclose={onVngDialogClose}
+  >
+    <p class="m-0 mb-1 text-xs text-muted">
+      {$_("installations.vngWarningStepLabel", { values: { step: 2 } })}
+    </p>
+    <p class="m-0 text-accent">{$_("installations.vngWarning2")}</p>
+    {#snippet actions()}
+      <Button variant="ghost" onclick={vngWarningContinue}>
+        {$_("installations.vngWarningContinue")}
+      </Button>
+      <Button variant="primary" onclick={vngWarningCancel}>
+        {$_("common.cancel")}
+      </Button>
+    {/snippet}
+  </Dialog>
+{:else if vngWarningStep === 3}
+  <Dialog
+    open
+    title={$_("installations.vngWarningTitle3")}
+    onclose={onVngDialogClose}
+  >
+    <p class="m-0 mb-1 text-xs text-muted">
+      {$_("installations.vngWarningStepLabel", { values: { step: 3 } })}
+    </p>
+    <p class="m-0 text-accent">{$_("installations.vngWarning3")}</p>
+    {#snippet actions()}
+      <Button variant="ghost" onclick={vngWarningContinue}>
+        {$_("installations.vngWarningContinue")}
+      </Button>
+      <Button variant="primary" onclick={vngWarningCancel}>
+        {$_("common.cancel")}
+      </Button>
+    {/snippet}
+  </Dialog>
+{/if}

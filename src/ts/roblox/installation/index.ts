@@ -1,6 +1,6 @@
 import { appCacheDir, join } from "@tauri-apps/api/path";
 import { mkdir, remove } from "@tauri-apps/plugin-fs";
-import type { Downloader } from "./download";
+import type { Downloader, Distribution } from "./download";
 import type { Installation } from "./installation";
 
 export const DEFAULT_BASE_URLS = [
@@ -16,6 +16,14 @@ export type InstallProgress =
     | { status: "finishing"; percent: null };
 
 /**
+ * the folder/index name a version is installed under. VNG installs get a `-VNG` suffix so a
+ * Global and a VNG install of the same version hash don't collide or get picked up as each other.
+ */
+export function installName(version: string, distribution: Distribution): string {
+    return distribution === "vng" ? `${version}-VNG` : version;
+}
+
+/**
  * downloads, extracts and installs a client version under `i`. Leaves the new
  * version out of `index.json`'s active slot -- call `i.setActiveVersion()` to switch to it.
  */
@@ -26,13 +34,15 @@ export async function installVersion(
     concurrency: number,
     onProgress?: (p: InstallProgress) => void,
 ) {
+    const name = installName(version, d.distribution);
+
     onProgress?.({ status: "fetchingManifest", percent: null });
     const manifest = await d.fetchManifest(version);
 
-    const packagesDir = await join(await appCacheDir(), "glimmer-downloads", version);
+    const packagesDir = await join(await appCacheDir(), "glimmer-downloads", name);
     await mkdir(packagesDir, { recursive: true });
-    await i.createNewInstallation(version);
-    const distDir = await join(i.installationPath, version);
+    await i.createNewInstallation(name, d.distribution === "vng");
+    const distDir = await join(i.installationPath, name);
 
     onProgress?.({ status: "downloading", done: 0, total: manifest.packages.length, percent: 0 });
     await d.downloadPackagesParallel(version, manifest, packagesDir, concurrency, (done, total, _pkg, percent) => {

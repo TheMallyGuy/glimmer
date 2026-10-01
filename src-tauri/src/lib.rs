@@ -19,6 +19,25 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(specta_collect_commands!())
 }
 
+// see https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
+fn vng_distribution_enabled_in_config(app: &AppHandle) -> bool {
+    let Ok(app_data_dir) = app.path().app_data_dir() else {
+        return false;
+    };
+
+    let Ok(contents) = std::fs::read_to_string(app_data_dir.join("config.json")) else {
+        return false;
+    };
+
+    let Ok(config) = serde_json::from_str::<serde_json::Value>(&contents) else {
+        return false;
+    };
+
+    config["installations"]["vngDistribution"]["enabled"]
+        .as_bool()
+        .unwrap_or(false)
+}
+
 // focus the chooser window if it's already open, otherwise create it
 fn open_selector_window(app: &AppHandle) {
     if let Some(win) = app.get_webview_window("main") {
@@ -96,14 +115,24 @@ pub fn run() {
             let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&open_selector, &quit])?;
 
-            let logs_dir = app.path().local_data_dir()?.join("Roblox").join("logs");
+            let local_data_dir = app.path().local_data_dir()?;
+            let mut logs_dirs = vec![local_data_dir.join("Roblox").join("logs")];
 
-            if let Err(e) = commands::watch_latest_log(
-                app.handle().clone(),
-                app.state::<LogWatcherRegistry>(),
-                logs_dir.to_string_lossy().to_string(),
-            ) {
-                tauri_plugin_log::log::error!("failed to start log watcher: {e}");
+            if vng_distribution_enabled_in_config(app.handle()) {
+                logs_dirs.push(local_data_dir.join("RobloxPCVNG").join("logs"));
+            }
+
+            for logs_dir in logs_dirs {
+                if let Err(e) = commands::watch_latest_log(
+                    app.handle().clone(),
+                    app.state::<LogWatcherRegistry>(),
+                    logs_dir.to_string_lossy().to_string(),
+                ) {
+                    tauri_plugin_log::log::error!(
+                        "failed to start log watcher for {:?}: {e}",
+                        logs_dir
+                    );
+                }
             }
 
             WebviewWindowBuilder::new(app, "background", WebviewUrl::App("/background".into()))
