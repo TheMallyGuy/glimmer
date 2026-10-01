@@ -1,7 +1,7 @@
 import { error, info } from "@tauri-apps/plugin-log";
 import { appState, gameState, setGameState, loadAppState } from "$lib/appState.svelte";
 import type { LogLineEvent } from "./watcher";
-import { setActivity } from "../discordRpc";
+import { setActivity, addActivity } from "../discordRpc";
 import { getGameInfo, getGameThumbnail, getUserHeadShot, getUserName } from "../generalRobloxApis";
 import { getCustomGameIcon } from "$ts/svg/api";
 import { fetchLocation } from "$ts/geo";
@@ -75,10 +75,7 @@ async function applyHeadshot() {
 
     if (!activeSession) return; // may have left the game while the headshot was fetching
 
-    await setActivity({
-        largeImage: activeSession.largeImage,
-        state: activeSession.state,
-        startTimestamp: activeSession.startTimestamp,
+    await addActivity({
         smallImage: userHeadshot,
         smallText: userDisplayName
     })
@@ -92,10 +89,6 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
             const [, gameId, place, position] = m;
             info(`game join: gameId=${gameId} place=${place} position=${position}`);
             const placeId = Number(place);
-
-            // the background window loads appState once at startup and this handler
-            // can run long after, so re-read it fresh here -- otherwise settings saved
-            // later (e.g. a custom Discord RPC image URL) never reach this window.
             await loadAppState();
 
             const gameInfo = await getGameInfo(placeId)
@@ -111,6 +104,10 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
                 largeImage: activeSession.largeImage,
                 state: activeSession.state,
                 startTimestamp: activeSession.startTimestamp,
+                buttons: [{
+                    label: "View Game",
+                    url: `https://roblox.com/games/${placeId}`
+                }]
             })
 
             await applyHeadshot();

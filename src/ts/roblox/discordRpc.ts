@@ -97,18 +97,10 @@ export type ActivityOptions = {
     matchSecret?: string;
 };
 
-/**
- * @example
- * await setActivity({
- *     details: "The Strongest Battlegrounds",
- *     state: "In a match",
- *     largeImage: await getCustomGameIcon(10449761463),
- *     largeText: "The Strongest Battlegrounds",
- *     startTimestamp: Date.now(),
- *     buttons: [{ label: "Play on Roblox", url: "https://www.roblox.com/games/10449761463" }],
- * });
- */
-export async function setActivity(opts: ActivityOptions) {
+
+let currentActivity: ActivityOptions = {};
+
+async function sendActivity(opts: ActivityOptions) {
     if (!appState.integrations.discordRpc.enabled) {
         debug("Discord RPC: skipped setActivity, disabled in settings");
         return;
@@ -146,11 +138,45 @@ export async function setActivity(opts: ActivityOptions) {
     }
 }
 
+/**
+ * Replaces the whole activity.
+ *
+ * @example
+ * await setActivity({
+ *     details: "The Strongest Battlegrounds",
+ *     state: "In a match",
+ *     largeImage: await getCustomGameIcon(10449761463),
+ *     largeText: "The Strongest Battlegrounds",
+ *     startTimestamp: Date.now(),
+ *     buttons: [{ label: "Play on Roblox", url: "https://www.roblox.com/games/10449761463" }],
+ * });
+ */
+export async function setActivity(opts: ActivityOptions) {
+    currentActivity = { ...opts };
+    await sendActivity(currentActivity);
+}
+
+/**
+ * Merges fields into the activity set by the last setActivity()/addActivity() call and resends it.
+ *
+ * @example
+ * await addActivity({
+ *     smallImage: userHeadshot,
+ *     smallText: userDisplayName,
+ * });
+ */
+export async function addActivity(opts: Partial<ActivityOptions>) {
+    currentActivity = { ...currentActivity, ...opts };
+    await sendActivity(currentActivity);
+}
+
 export async function clearActivity() {
     if (!running) {
         debug("Discord RPC: skipped clearActivity, sidecar not running");
         return;
     }
+
+    currentActivity = {};
 
     const result = await commands.discordRpcClearActivity();
     if (result.status === "error") {
