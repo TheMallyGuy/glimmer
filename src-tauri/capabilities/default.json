@@ -49,6 +49,17 @@
       ]
     },
     {
+      "identifier": "fs:allow-read-file",
+      "allow": [
+        {
+          "path": "$HOME"
+        },
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
+    },
+    {
       "identifier": "fs:allow-write-text-file",
       "allow": [
         {

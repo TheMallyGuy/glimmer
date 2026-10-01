@@ -185,7 +185,8 @@
     "yourMods": "Your mods",
     "builtIn": "Built-in",
     "community": "Community",
-    "modViewsNav": "Mod views"
+    "modViewsNav": "Mod views",
+    "fontEditor": "Icon editor"
   },
   "modsManage": {
     "modCount": "{count, plural, one {# mod} other {# mods}}",
@@ -278,5 +279,39 @@
   },
   "inspiredBanner": {
     "inspiredFrom": "Inspired from"
+  },
+  "modsFontEditor": {
+    "intro": "Recolor Roblox's icons or swap them for your own SVG or PNG art. Export the result as a mod.",
+    "noFonts": "No icon fonts found. Install Roblox first, then come back.",
+    "loadError": "Could not read the icon font. {error}",
+    "fontLabel": "Icon font",
+    "searchIcons": "Search icons",
+    "iconCount": "{shown} of {all} icons",
+    "editedCount": "{count, plural, one {# edited icon} other {# edited icons}}",
+    "showPreview": "Show preview",
+    "preview": "Preview",
+    "previewing": "Building preview…",
+    "previewReady": "Preview ready. Turn on \"Show preview\" to see it.",
+    "exportTtf": "Export font",
+    "exportMod": "Export as mod",
+    "exportingMod": "Exporting…",
+    "modExported": "Exported as the \"Custom icon font\" mod.",
+    "fontExported": "Saved {file}.",
+    "buildError": "The font tool failed. {error}",
+    "nothingToExport": "Edit at least one icon first.",
+    "editIcon": "Edit {name}",
+    "recolor": "Recolor",
+    "flatColor": "Color",
+    "gradient": "Use a gradient",
+    "gradientEnd": "Gradient end",
+    "replaceArt": "Replace with artwork",
+    "chooseArt": "Choose SVG or PNG",
+    "changeArt": "Change artwork",
+    "usingArt": "Using {file}",
+    "replaceNote": "Replaced icons keep the colors in their artwork.",
+    "resetIcon": "Reset icon",
+    "inspector": "Icon details",
+    "selectHint": "Select an icon to recolor it or replace it with your own art.",
+    "gradientStart": "Gradient start"
   }
 }
