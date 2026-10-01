@@ -1,5 +1,5 @@
 import { appDataDir, join } from "@tauri-apps/api/path";
-import { exists, mkdir, readDir, readTextFile, writeFile } from "@tauri-apps/plugin-fs";
+import { exists, mkdir, readDir, readTextFile, remove, writeFile } from "@tauri-apps/plugin-fs";
 import { debug, info } from "@tauri-apps/plugin-log";
 
 export interface InstallEntry {
@@ -107,6 +107,20 @@ export class Installation {
 
         await this.writeIndex();
         info(`set active version to ${version}`)
+    }
+
+    /** deletes an installed version's files and drops it from the index */
+    async removeInstallation(version: string) {
+        const entry = this.installedVersions.find((v) => v.version === version);
+        if (!entry) {
+            throw new Error(`No installed version found for "${version}"`);
+        }
+
+        await remove(entry.path, { recursive: true });
+        this.installedVersions = this.installedVersions.filter((v) => v.version !== version);
+
+        await this.writeIndex();
+        info(`removed installation ${version}`)
     }
 
     /** read whichever version index.json currently has marked active, without touching in-memory state */

@@ -2,8 +2,7 @@
   import { onMount, onDestroy } from "svelte";
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import { listen, type UnlistenFn } from "@tauri-apps/api/event";
-  import { appCacheDir, join } from "@tauri-apps/api/path";
-  import { mkdir, remove } from "@tauri-apps/plugin-fs";
+  import { join } from "@tauri-apps/api/path";
   import { sizeWindow } from "$lib/window";
   import { cn } from "$lib";
   import { Downloader } from "$ts/roblox/installation/download";
@@ -11,6 +10,7 @@
     Installation,
     type InstallEntry,
   } from "$ts/roblox/installation/installation";
+  import { DEFAULT_BASE_URLS, installVersion } from "$ts/roblox/installation";
   import { appState } from "$lib/appState.svelte";
   import { loadMods, applyMods, backupNewVersion } from "$lib/mods.svelte";
   import { FastFlagManager } from "$ts/roblox/flags";
@@ -44,54 +44,37 @@
     i: Installation,
     version: string,
   ) {
-    status = $_("splash.fetchingManifest");
-    progress = null;
-    const manifest = await d.fetchManifest(version);
-
-    const packagesDir = await join(
-      await appCacheDir(),
-      "glimmer-downloads",
+    await installVersion(
+      d,
+      i,
       version,
-    );
-    await mkdir(packagesDir, { recursive: true });
-    await i.createNewInstallation(version);
-    const distDir = await join(i.installationPath, version);
-
-    status = $_("splash.downloadingClient", {
-      values: { done: 0, total: manifest.packages.length },
-    });
-    progress = 0;
-    await d.downloadPackagesParallel(
-      version,
-      manifest,
-      packagesDir,
       appState.installations.parallelDownloader.value,
-      (done, total, _pkg, percent) => {
-        status = $_("splash.downloadingClient", { values: { done, total } });
-        progress = percent;
+      (p) => {
+        switch (p.status) {
+          case "fetchingManifest":
+            status = $_("splash.fetchingManifest");
+            progress = null;
+            break;
+          case "downloading":
+            status = $_("splash.downloadingClient", {
+              values: { done: p.done, total: p.total },
+            });
+            progress = p.percent;
+            break;
+          case "extracting":
+            status = $_("splash.extractingClient", {
+              values: { done: p.done, total: p.total },
+            });
+            progress = p.percent;
+            break;
+          case "finishing":
+            status = $_("splash.finishingInstallation");
+            progress = null;
+            break;
+        }
       },
     );
 
-    status = $_("splash.extractingClient", {
-      values: { done: 0, total: manifest.packages.length },
-    });
-    progress = 0;
-    await d.extractPackages(
-      packagesDir,
-      distDir,
-      "WindowsPlayer",
-      (done, total) => {
-        status = $_("splash.extractingClient", { values: { done, total } });
-        progress = Math.round((done / total) * 100);
-      },
-    );
-
-    status = $_("splash.finishingInstallation");
-    progress = null;
-    await d.writeXml(distDir);
-    await remove(packagesDir, { recursive: true });
-
-    await i.reIndex();
     await i.setActiveVersion(version);
 
     status = $_("splash.backingUpModOriginals");
@@ -145,15 +128,8 @@
   }
 
   async function checkAndLaunch() {
-    const BASE_URLS = [
-      "https://setup-cfly.rbxcdn.com/",
-      "https://setup-aws.rbxcdn.com/",
-      "https://setup-ak.rbxcdn.com/",
-      "https://setup.rbxcdn.com/",
-    ];
-
     try {
-      const d = await Downloader.create(BASE_URLS);
+      const d = await Downloader.create(DEFAULT_BASE_URLS);
       const i = await Installation.create();
 
       const existingInstallations: InstallEntry[] = await i.listInstallations();

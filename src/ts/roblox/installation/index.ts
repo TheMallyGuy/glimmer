@@ -1,57 +1,52 @@
-// import { mkdir } from '@tauri-apps/plugin-fs';
-// import { appCacheDir, join } from '@tauri-apps/api/path';
-// import { Downloader } from './download';
+import { appCacheDir, join } from "@tauri-apps/api/path";
+import { mkdir, remove } from "@tauri-apps/plugin-fs";
+import type { Downloader } from "./download";
+import type { Installation } from "./installation";
 
-// const BASE_URLS = [
-//     "https://setup-cfly.rbxcdn.com/",
-//     "https://setup-aws.rbxcdn.com/",
-//     "https://setup-ak.rbxcdn.com/",
-//     "https://setup.rbxcdn.com/",
-// ];
+export const DEFAULT_BASE_URLS = [
+    "https://setup-cfly.rbxcdn.com/",
+    "https://setup-aws.rbxcdn.com/",
+    "https://setup-ak.rbxcdn.com/",
+    "https://setup.rbxcdn.com/",
+];
 
-// /**
-//  * Full dry run of the download pipeline: picks a region, resolves the latest
-//  * WindowsPlayer version, downloads every package in its manifest, extracts
-//  * them and writes AppSettings.xml. Logs each step so you can see where it
-//  * breaks. Everything is written under the OS cache dir, so it's safe to
-//  * delete afterwards.
-//  */
-// export async function dryRunDownload() {
-//     console.log('[dry run] picking fastest region…');
-//     const dl = await Downloader.create(BASE_URLS);
-//     console.log('[dry run] using region:', dl.baseUrl);
+export type InstallProgress =
+    | { status: "fetchingManifest"; percent: null }
+    | { status: "downloading" | "extracting"; done: number; total: number; percent: number }
+    | { status: "finishing"; percent: null };
 
-//     const version = await dl.fetchLatestVersion('WindowsPlayer');
-//     console.log('[dry run] latest version:', version);
+/**
+ * downloads, extracts and installs a client version under `i`. Leaves the new
+ * version out of `index.json`'s active slot -- call `i.setActiveVersion()` to switch to it.
+ */
+export async function installVersion(
+    d: Downloader,
+    i: Installation,
+    version: string,
+    concurrency: number,
+    onProgress?: (p: InstallProgress) => void,
+) {
+    onProgress?.({ status: "fetchingManifest", percent: null });
+    const manifest = await d.fetchManifest(version);
 
-//     const manifest = await dl.fetchManifest(version);
-//     console.log(`[dry run] manifest has ${manifest.packages.length} packages`);
+    const packagesDir = await join(await appCacheDir(), "glimmer-downloads", version);
+    await mkdir(packagesDir, { recursive: true });
+    await i.createNewInstallation(version);
+    const distDir = await join(i.installationPath, version);
 
-//     const root = await join(await appCacheDir(), 'glimmer-dry-run', version);
-//     const packagesDir = await join(root, 'packages');
-//     const distDir = await join(root, 'extracted');
+    onProgress?.({ status: "downloading", done: 0, total: manifest.packages.length, percent: 0 });
+    await d.downloadPackagesParallel(version, manifest, packagesDir, concurrency, (done, total, _pkg, percent) => {
+        onProgress?.({ status: "downloading", done, total, percent });
+    });
 
-//     await mkdir(packagesDir, { recursive: true });
-//     await mkdir(distDir, { recursive: true });
+    onProgress?.({ status: "extracting", done: 0, total: manifest.packages.length, percent: 0 });
+    await d.extractPackages(packagesDir, distDir, "WindowsPlayer", (done, total) => {
+        onProgress?.({ status: "extracting", done, total, percent: Math.round((done / total) * 100) });
+    });
 
-//     console.log('[dry run] downloading packages to', packagesDir);
-//     let lastLoggedPercent = -1;
-//     await dl.downloadPackagesParallel(version, manifest, packagesDir, 4, (done, total, pkg, percent) => {
-//         if (percent === lastLoggedPercent) return;
-//         lastLoggedPercent = percent;
-//         console.log(`[dry run] downloading (${done}/${total}, ${percent}%) ${pkg.fileName}`);
-//     });
+    onProgress?.({ status: "finishing", percent: null });
+    await d.writeXml(distDir);
+    await remove(packagesDir, { recursive: true });
 
-//     console.log('[dry run] extracting into', distDir);
-//     await dl.extractPackages(packagesDir, distDir, 'WindowsPlayer', (done, total, filename) => {
-//         const percent = Math.round((done / total) * 100);
-//         console.log(`[dry run] extracting (${done}/${total}, ${percent}%) ${filename}`);
-//     });
-
-//     console.log('[dry run] writing AppSettings.xml');
-//     await dl.writeXml(distDir);
-
-//     console.log('[dry run] done, client staged at', distDir);
-// }
-
-// dryRunDownload().catch((err) => console.error('[dry run] failed:', err));
+    await i.reIndex();
+}
