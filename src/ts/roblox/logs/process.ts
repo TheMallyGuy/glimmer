@@ -6,6 +6,7 @@ import { getGameInfo, getGameThumbnail, getUserHeadShot, getUserName } from "../
 import { getCustomGameIcon } from "$ts/svg/api";
 import { fetchLocation } from "$ts/geo";
 import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/plugin-notification";
+import { commands } from "$ts/bindings";
 
 async function notify(options: { title: string, body: string }) {
     let granted = await isPermissionGranted();
@@ -81,6 +82,21 @@ async function applyHeadshot() {
     })
 }
 
+async function startTasxIfEnabled() {
+    if (!appState.integrations.trimMemWhenNotFocused.enabled) return;
+
+    const hwnd = await commands.getRobloxHwnd();
+    if (hwnd.status === "error") {
+        error(`TASX optimizer: failed to get Roblox's window handle: ${hwnd.error}`);
+        return;
+    }
+
+    const result = await commands.tasx(hwnd.data);
+    if (result.status === "error") {
+        error(`TASX optimizer: failed to start: ${result.error}`);
+    }
+}
+
 const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
     {
         name: "gameJoin",
@@ -111,6 +127,7 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
             })
 
             await applyHeadshot();
+            await startTasxIfEnabled();
 
 
             const udmx = gameState.serverIp

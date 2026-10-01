@@ -1980,6 +1980,8 @@ dependencies = [
  "tauri-plugin-single-instance",
  "tauri-plugin-store",
  "tauri-specta",
+ "windows 0.62.2",
+ "windows-result 0.4.1",
  "winreg 0.56.0",
  "zip",
 ]
