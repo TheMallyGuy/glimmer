@@ -57,6 +57,8 @@ src/
         └── mods/                  +layout (view cards + banner), manage, prebuilt, community, font-editor
 ```
 
+Tests live in `tests/`, one `<module>.test.ts` per module in `src/ts` or `src/lib`, run with `bun test`. `tests/setup.ts` (preloaded by `bunfig.toml`) replaces the Tauri plugins with in-memory fakes from `tests/helpers/` (`fakeFs`, `invoke` handlers, log spies); stub network calls by assigning `globalThis.fetch`. `.svelte.ts` rune modules can't load under Bun, so mock them with `mock.module` where a test needs them.
+
 Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, font_tool, hash, launch, log_watcher, mods, preps, TASX), collected automatically via `tauri-helper`'s `#[auto_collect_command]` and exported to `src/ts/bindings.ts` by `tauri-specta` in debug builds. Call them as `commands.<name>()` from `$ts/bindings`.
 
 Windows: `main` (the chooser), `splash`, `settings` (the `(app)` routes) and a hidden `background` window created in `src-tauri/src/lib.rs`. A single-instance plugin hands second launches to the existing window.
@@ -202,3 +204,4 @@ Use these instead of writing new markup for the same job.
 2. It works with the keyboard, and the focus ring is visible.
 3. It has no `<style>` blocks and no Svelte 4 syntax.
 4. `bun run check` passes.
+5. `bun test` passes, and new logic in `src/ts` or `src/lib` has a test file in `tests/`.
