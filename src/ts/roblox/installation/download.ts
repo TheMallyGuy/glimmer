@@ -1,5 +1,5 @@
 import { join } from '@tauri-apps/api/path';
-import { writeFile } from '@tauri-apps/plugin-fs';
+import { exists, writeFile } from '@tauri-apps/plugin-fs';
 import { joinUrl } from '../../utils';
 import { commands } from '../../bindings';
 import { fetch } from '@tauri-apps/plugin-http';
@@ -384,8 +384,26 @@ export class Downloader {
     }
 
     /**
+     * true when destDir already holds a complete copy of the package, i.e. an earlier
+     * attempt finished it. The md5 check also rejects files cut short by a crash.
+     */
+    async hasCachedPackage(pkg: PackageEntry, destDir: string): Promise<boolean> {
+        const dest = await join(destDir, pkg.fileName);
+        if (!await exists(dest)) return false;
+
+        try {
+            const result = await commands.md5File(dest);
+            return result.status === "ok" && result.data.toLowerCase() === pkg.md5.toLowerCase();
+        } catch {
+            return false;
+        }
+    }
+
+    /**
      * download every package listed in a parsed manifest into destDir, with up to
-     * `concurrency` packages downloading at once
+     * `concurrency` packages downloading at once. Packages already in destDir with a
+     * matching md5 are kept, so a retry after a failed or cancelled install resumes
+     * where it stopped.
      */
     async downloadPackagesParallel(
         version: string,
@@ -401,6 +419,11 @@ export class Downloader {
         const receivedByIndex: number[] = new Array(total).fill(0);
         const totalBytes = manifest.packages.reduce((sum, pkg) => sum + pkg.compressedSize, 0);
 
+        const percentDone = () => {
+            const bytesDone = receivedByIndex.reduce((sum, b) => sum + b, 0);
+            return totalBytes > 0 ? Math.round((bytesDone / totalBytes) * 100) : 100;
+        };
+
         let done = 0;
         let nextIndex = 0;
 
@@ -411,11 +434,18 @@ export class Downloader {
 
                 const pkg = manifest.packages[index];
 
+                if (await this.hasCachedPackage(pkg, destDir)) {
+                    debug(`resuming: ${pkg.fileName} already downloaded`)
+                    paths[index] = await join(destDir, pkg.fileName);
+                    receivedByIndex[index] = pkg.compressedSize;
+                    done++;
+                    onProgress?.(done, total, pkg, percentDone());
+                    continue;
+                }
+
                 paths[index] = await this.downloadPackage(version, pkg, destDir, (receivedBytes) => {
                     receivedByIndex[index] = receivedBytes;
-                    const bytesDone = receivedByIndex.reduce((sum, b) => sum + b, 0);
-                    const percent = totalBytes > 0 ? Math.round((bytesDone / totalBytes) * 100) : 100;
-                    onProgress?.(done, total, pkg, percent);
+                    onProgress?.(done, total, pkg, percentDone());
                 });
 
                 receivedByIndex[index] = pkg.compressedSize;

@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { Downloader } from "$ts/roblox/installation/download";
 import { invokeCalls, invokeHandlers, jsonResponse, logSpies, resetTauri } from "./helpers/tauri";
+import { fakeFs } from "./helpers/fakeFs";
 
 const realFetch = globalThis.fetch;
 const BASE = "https://cdn.example.com";
@@ -277,5 +278,59 @@ describe("extractPackages", () => {
         const sources = invokeCalls.map((c) => (c.args as { zipPath: string }).zipPath);
         expect(sources).toContain("/src/RobloxStudio.zip");
         expect(sources).not.toContain("/src/RobloxApp.zip");
+    });
+});
+
+describe("downloadPackagesParallel resume", () => {
+    const manifest = {
+        manifestVersion: "v0",
+        packages: [
+            { fileName: "a.zip", md5: "AAAA", compressedSize: 10, uncompressedSize: 20 },
+            { fileName: "b.zip", md5: "bbbb", compressedSize: 30, uncompressedSize: 40 },
+        ],
+    };
+
+    const bodyResponse = () => ({ ...jsonResponse(""), body: null, arrayBuffer: async () => new Uint8Array([1, 2, 3]).buffer });
+
+    beforeEach(() => {
+        fakeFs.reset();
+        invokeHandlers.md5_file = (args) => ((args as { path: string }).path.endsWith("a.zip") ? "aaaa" : "wrong");
+    });
+
+    test("keeps packages whose md5 already matches and downloads the rest", async () => {
+        fakeFs.seed("/dl/a.zip", "complete");
+        fakeFs.seed("/dl/b.zip", "cut short");
+        stubFetch(() => bodyResponse());
+
+        const progress: number[] = [];
+        const paths = await downloader().downloadPackagesParallel("version-x", manifest, "/dl", 1, (_d, _t, _p, pct) =>
+            progress.push(pct),
+        );
+
+        expect(paths).toEqual(["/dl/a.zip", "/dl/b.zip"]);
+        expect(urls).toEqual([`${BASE}/version-x-b.zip`]);
+        expect(fakeFs.text("/dl/a.zip")).toBe("complete");
+        expect(progress[0]).toBe(25);
+    });
+
+    test("downloads everything when nothing is cached", async () => {
+        stubFetch(() => bodyResponse());
+
+        await downloader().downloadPackagesParallel("version-x", manifest, "/dl", 2);
+
+        expect(urls.sort()).toEqual([`${BASE}/version-x-a.zip`, `${BASE}/version-x-b.zip`]);
+        expect(invokeCalls.filter((c) => c.cmd === "md5_file")).toHaveLength(0);
+    });
+
+    test("redownloads a cached package when the md5 check fails", async () => {
+        fakeFs.seed("/dl/a.zip", "complete");
+        invokeHandlers.md5_file = () => {
+            throw new Error("hash failed");
+        };
+        stubFetch(() => bodyResponse());
+
+        await downloader().downloadPackagesParallel("version-x", manifest, "/dl", 1);
+
+        expect(urls).toHaveLength(2);
     });
 });
