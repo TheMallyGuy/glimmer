@@ -1962,6 +1962,7 @@ dependencies = [
  "discord-rich-presence",
  "log",
  "md5",
+ "rayon",
  "serde",
  "serde_json",
  "specta",
