@@ -18,7 +18,7 @@
     installVersion,
     installName,
   } from "$ts/roblox/installation";
-  import { appState } from "$lib/appState.svelte";
+  import { appState, loadAppState } from "$lib/appState.svelte";
   import { loadMods, applyMods, backupNewVersion } from "$lib/mods.svelte";
   import { FastFlagManager } from "$ts/roblox/flags";
   import { flagsToObject } from "$lib/flags";
@@ -207,6 +207,9 @@
     sizeWindow(671, 329);
     appWindow.setResizable(false);
 
+    // the root layout also calls this, but its onMount races this page's --
+    // load explicitly so settings like the VNG switch are in before we check
+    await loadAppState();
     await checkAndLaunch();
   });
 
