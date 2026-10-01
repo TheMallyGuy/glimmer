@@ -1,7 +1,9 @@
 import { appDataDir, join } from "@tauri-apps/api/path";
 import { copyFile, exists, mkdir, readDir, readFile, writeTextFile } from "@tauri-apps/plugin-fs";
+import { warn } from "@tauri-apps/plugin-log";
 import { commands } from "../../bindings";
 import { ModificationManager } from "./manager";
+import { StockRestorer } from "./stock";
 
 /** A BuilderIcons font found in the active Roblox install. */
 export interface SourceFont {
@@ -44,16 +46,24 @@ export async function findBuilderIcons(): Promise<SourceFont[]> {
     const dir = await join(m.modificationVerPath, ...FONT_DIR);
     if (!(await exists(dir))) return [];
 
-    const backup = await m.backupPath();
-    const found: SourceFont[] = [];
-    for (const entry of await readDir(dir)) {
-        if (!entry.isFile || !/^BuilderIcons-(Regular|Filled)\.ttf$/i.test(entry.name)) continue;
+    const entries = (await readDir(dir)).filter((e) => e.isFile && /^BuilderIcons-(Regular|Filled)\.ttf$/i.test(e.name));
+    const rels = entries.map((e) => [...FONT_DIR, e.name]);
 
-        const rel = [...FONT_DIR, entry.name];
-        const stock = await join(backup, ...rel);
+    // edit the stock font, since mods may have replaced the installed one
+    const stockDir = await join(await workDir(), "stock", m.activeVersionName);
+    let stocked = new Set<string>();
+    try {
+        stocked = new Set(await (await StockRestorer.create(m.activeVersionName)).extract(rels.map((r) => r.join("/")), stockDir));
+    } catch (e) {
+        warn(`couldn't get the stock fonts, using the installed ones: ${e}`);
+    }
+
+    const found: SourceFont[] = [];
+    for (const [i, entry] of entries.entries()) {
+        const rel = rels[i];
         found.push({
             label: entry.name.replace(/^BuilderIcons-/i, "").replace(/\.ttf$/i, ""),
-            path: (await exists(stock)) ? stock : await join(dir, entry.name),
+            path: stocked.has(rel.join("/")) ? await join(stockDir, ...rel) : await join(dir, entry.name),
             rel,
         });
     }

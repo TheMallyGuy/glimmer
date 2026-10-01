@@ -1,8 +1,10 @@
 import { join } from "@tauri-apps/api/path";
-import { exists, readTextFile, writeFile } from "@tauri-apps/plugin-fs";
+import { exists, readTextFile, remove, writeFile } from "@tauri-apps/plugin-fs";
 import { info, warn } from "@tauri-apps/plugin-log";
 import { commands } from "../../bindings";
 import type { ModificationManager } from "./manager";
+import { StockRestorer } from "./stock";
+import type { FillProgress } from "../installation/packageCache";
 
 interface AppliedFileEntry {
     /** path of the applied file, relative to the installation root */
@@ -31,7 +33,8 @@ export class Applier {
         return a;
     }
 
-    async apply(order: string[]): Promise<void> {
+    /** `onProgress` reports the stock package download, which only happens when the cache is missing or corrupt */
+    async apply(order: string[], onProgress?: FillProgress): Promise<void> {
         await this.manager.reIndex();
         await this.manager.refreshActiveVersion();
 
@@ -39,15 +42,16 @@ export class Applier {
             throw new Error("No active installation to apply mods to.");
         }
 
-        const backupDir = await this.manager.backupPath();
+        await this.dropLegacyBackups();
 
-        const previousPaths = Object.values(this.appliedIndex).flat().map((e) => e.path);
+        const previousPaths = [...new Set(Object.values(this.appliedIndex).flat().map((e) => e.path))];
         if (previousPaths.length) {
-            const reverted = await commands.revertFiles(this.manager.modificationVerPath, backupDir, previousPaths);
-            if (reverted.status === "ok") {
-                info(`reverted ${reverted.data} file(s) to stock before reapplying mods`);
-            } else {
-                warn(`failed to revert previous mod files: ${reverted.error}`);
+            try {
+                const stock = await StockRestorer.create(this.manager.activeVersionName);
+                const restored = await stock.restore(this.manager.modificationVerPath, previousPaths, onProgress);
+                info(`restored ${restored} file(s) to stock before reapplying mods`);
+            } catch (e) {
+                warn(`failed to restore stock files: ${e}`);
             }
         }
         this.appliedIndex = {};
@@ -59,7 +63,7 @@ export class Applier {
             const modPath = await join(this.manager.modificationPath, name);
             info(`applying mod ${name}`);
 
-            const result = await commands.applyMod(modPath, this.manager.modificationVerPath, backupDir);
+            const result = await commands.applyMod(modPath, this.manager.modificationVerPath);
             if (result.status === "error") {
                 warn(`failed to apply mod ${name}: ${result.error}`);
                 continue;
@@ -70,6 +74,12 @@ export class Applier {
 
         await this.saveIndex();
         info(`applied ${toApply.length} mod(s)`);
+    }
+
+    /** older versions kept a full copy of the install under mods/.originals; stock files now come from the package cache */
+    private async dropLegacyBackups() {
+        const legacy = await join(this.manager.modificationPath, ".originals");
+        if (await exists(legacy)) await remove(legacy, { recursive: true });
     }
 
     private async loadIndex() {

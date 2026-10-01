@@ -21,12 +21,14 @@ src/
 │       ├── installation/
 │       │   ├── download.ts        Downloader class: region pick, manifest fetch, package download/extract
 │       │   ├── installation.ts    Installation class: tracks installed versions on disk (`versions/` for Player, `studio-versions/` for Studio)
+│       │   ├── packageCache.ts    PackageCache class: downloaded package zips kept per install (cache dir), pruned to the active version
 │       │   ├── watcher.ts         loads installed versions into installationsState
 │       │   └── index.ts           orchestrates download.ts + installation.ts step by step
 │       ├── logs/                  watcher.ts (roblox-log-line events), process.ts (parses lines: RPC, notifications)
 │       └── mod/
 │           ├── manager.ts         ModificationManager: mod folders and index
 │           ├── apply.ts           Applier: copies mods into an install, tracks hashes
+│           ├── stock.ts           StockRestorer class: restores stock files by extracting just those files from the cached packages (no full backup copy)
 │           ├── community.ts       Froststrap + Kliko library loader
 │           ├── fontEditor.ts      BuilderIcons font reading and editing
 │           └── presets/           one file per prebuilt mod (cursor, sounds, fonts, avatar background)

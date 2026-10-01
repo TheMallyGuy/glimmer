@@ -1,7 +1,8 @@
-import { appCacheDir, join } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
 import { mkdir, remove } from "@tauri-apps/plugin-fs";
 import type { Downloader, Distribution, WindowBinaryType } from "./download";
 import type { Installation } from "./installation";
+import { PackageCache } from "./packageCache";
 
 export const DEFAULT_BASE_URLS = [
     "https://setup-cfly.rbxcdn.com/",
@@ -23,9 +24,17 @@ export function installName(version: string, distribution: Distribution): string
     return distribution === "vng" ? `${version}-VNG` : version;
 }
 
+/** inverse of `installName` */
+export function parseInstallName(name: string): { version: string; distribution: Distribution } {
+    return name.endsWith("-VNG")
+        ? { version: name.slice(0, -"-VNG".length), distribution: "vng" }
+        : { version: name, distribution: "global" };
+}
+
 /**
  * downloads, extracts and installs a client version under `i`. Leaves the new
  * version out of `index.json`'s active slot -- call `i.setActiveVersion()` to switch to it.
+ * `keepPackages` leaves the downloaded zips in the package cache, which mods restore stock files from.
  */
 export async function installVersion(
     d: Downloader,
@@ -34,13 +43,14 @@ export async function installVersion(
     concurrency: number,
     onProgress?: (p: InstallProgress) => void,
     binaryType: WindowBinaryType = "WindowsPlayer",
+    keepPackages = false,
 ) {
     const name = installName(version, d.distribution);
 
     onProgress?.({ status: "fetchingManifest", percent: null });
     const manifest = await d.fetchManifest(version);
 
-    const packagesDir = await join(await appCacheDir(), "glimmer-downloads", name);
+    const packagesDir = await (await PackageCache.create()).dir(name);
     await mkdir(packagesDir, { recursive: true });
     await i.createNewInstallation(name, d.distribution === "vng");
     const distDir = await join(i.installationPath, name);
@@ -57,7 +67,7 @@ export async function installVersion(
 
     onProgress?.({ status: "finishing", percent: null });
     await d.writeXml(distDir);
-    await remove(packagesDir, { recursive: true });
+    if (!keepPackages) await remove(packagesDir, { recursive: true });
 
     await i.reIndex();
 }

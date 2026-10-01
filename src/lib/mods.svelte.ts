@@ -4,6 +4,7 @@ import { load, type Store } from '@tauri-apps/plugin-store';
 import { warn } from '@tauri-apps/plugin-log';
 import { ModificationManager } from '$ts/roblox/mod/manager';
 import { Applier } from '$ts/roblox/mod/apply';
+import type { FillProgress } from '$ts/roblox/installation/packageCache';
 import { cursorModName, isCursorVersion, setCursor } from '$ts/roblox/mod/presets/mouseCursor';
 import { oldSoundsModName, setOldSounds } from '$ts/roblox/mod/presets/oldCharsSounds';
 import {
@@ -90,34 +91,17 @@ async function saveConfig() {
   await config.save();
 }
 
-/** copy enabled mods' files into the active install, in priority order */
-export async function applyMods() {
+/** copy enabled mods' files into the active install, in priority order. Only the launch splash and installing a mod call this */
+export async function applyMods(onProgress?: FillProgress) {
   const m = await getManager();
   if (!applier) applier = await Applier.create(m);
   const order = mods.list.filter((mo) => mo.enabled).map((mo) => mo.name);
-  await applier.apply(order);
+  await applier.apply(order, onProgress);
 }
 
-/**
- * snapshot the currently active install as the stock backup mods revert to. call this right
- * after a version finishes installing/upgrading, so a fresh version always has its own
- * complete backup up front rather than only building one lazily as mods happen to touch files.
- */
-export async function backupNewVersion() {
-  const m = await getManager();
-  await m.refreshActiveVersion();
-  await m.backupCurrentVersion();
-}
-
-/** save state, then copy enabled mods' files into the active install in priority order */
+/** save order, enabled state and mod files. Toggling and editing mods only stages them; the splash applies them on launch */
 async function persist() {
   await saveConfig();
-
-  try {
-    await applyMods();
-  } catch (err) {
-    warn(`could not apply mods to the active install: ${err}`);
-  }
 }
 
 export function nameTaken(name: string, exceptId?: string) {
@@ -306,6 +290,7 @@ export async function installCommunityMod(mod: CommunityMod) {
     // TODO: download mod.download and extract it into the new mod's folder.
     const name = `[${sourceNames[mod.source].replace(' library', '')}] ${mod.name}`;
     if (!nameTaken(name)) await createMod(name);
+    await applyMods(); // an install takes effect right away
     installs[mod.id] = 'installed';
   } catch (err) {
     console.error(err);

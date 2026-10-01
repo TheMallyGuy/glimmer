@@ -5,54 +5,59 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 /** Commands */
 export const commands = {
 	closeCrashHandler: () => typedError<null, string>(__TAURI_INVOKE("close_crash_handler")),
-	getRobloxHwnd: () => typedError<string, string>(__TAURI_INVOKE("get_roblox_hwnd")),
 	/**
-	 *  run the bundled BuildersColors sidecar (see `externalBin` in tauri.conf.json) and return what
-	 *  it printed. tauri puts the sidecar next to the app executable, without the target triple.
+	 *  extract only the wanted files (paths relative to the install root) out of cached package
+	 *  zips into `dest_dir`, instead of unpacking whole packages. returns the paths found, so
+	 *  the caller can tell stock files apart from ones a mod added.
+	 *  zip entries are CRC-checked while they're read, so a corrupt cached package fails here.
 	 */
-	runFontTool: (args: string[]) => typedError<string, string>(__TAURI_INVOKE("run_font_tool", { args })),
-	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
-	backupInstall: (destDir: string, backupDir: string) => typedError<number, string>(__TAURI_INVOKE("backup_install", { destDir, backupDir })),
-	setFullscreenProp: (disable: boolean, rblxExe: string) => typedError<null, string>(__TAURI_INVOKE("set_fullscreen_prop", { disable, rblxExe })),
-	tasx: (hwnd: string) => typedError<null, string>(__TAURI_INVOKE("tasx", { hwnd })),
-	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
+	extractPackageFiles: (sources: PackageSource[], destDir: string, paths: string[]) => typedError<string[], string>(__TAURI_INVOKE("extract_package_files", { sources, destDir, paths })),
 	/**  `true` if the debug connection is currently open */
 	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
-	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
-	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
-	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
-	readFullscreenProp: (rblxExe: string) => typedError<boolean, string>(__TAURI_INVOKE("read_fullscreen_prop", { rblxExe })),
-	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
-	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
+	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
 	/**  stop watching a log directory previously passed to `watch_latest_log` */
 	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
 	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
-	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
-	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
+	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
 	/**  hash raw bytes with md5, returning the lowercase hex digest */
 	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
-	/**
-	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
-	 *  don't need to be loaded into memory all at once
-	 */
-	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
-	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
+	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
+	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
 	/**
 	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
 	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
 	 */
 	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
+	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
+	setFullscreenProp: (disable: boolean, rblxExe: string) => typedError<null, string>(__TAURI_INVOKE("set_fullscreen_prop", { disable, rblxExe })),
+	applyMod: (modDir: string, destDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir })),
+	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
+	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
+	/**
+	 *  run the bundled BuildersColors sidecar (see `externalBin` in tauri.conf.json) and return what
+	 *  it printed. tauri puts the sidecar next to the app executable, without the target triple.
+	 */
+	runFontTool: (args: string[]) => typedError<string, string>(__TAURI_INVOKE("run_font_tool", { args })),
+	readFullscreenProp: (rblxExe: string) => typedError<boolean, string>(__TAURI_INVOKE("read_fullscreen_prop", { rblxExe })),
+	getRobloxHwnd: () => typedError<string, string>(__TAURI_INVOKE("get_roblox_hwnd")),
 	/**
 	 *  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes.
 	 *  also watches the spawned process in the background and emits "roblox-exited"
 	 *  once it closes, so the frontend can clear Discord RPC's presence.
 	 */
 	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
-	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
-	getLocalApp: (vng: boolean | null) => typedError<string, string>(__TAURI_INVOKE("get_local_app", { vng })),
+	tasx: (hwnd: string) => typedError<null, string>(__TAURI_INVOKE("tasx", { hwnd })),
+	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
+	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
 	writeLocalApp: (content: string, vng: boolean | null) => typedError<null, string>(__TAURI_INVOKE("write_local_app", { content, vng })),
-	applyMod: (modDir: string, destDir: string, backupDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir, backupDir })),
-	revertFiles: (destDir: string, backupDir: string, paths: string[]) => typedError<number, string>(__TAURI_INVOKE("revert_files", { destDir, backupDir, paths })),
+	/**
+	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
+	 *  don't need to be loaded into memory all at once
+	 */
+	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
+	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
+	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
+	getLocalApp: (vng: boolean | null) => typedError<string, string>(__TAURI_INVOKE("get_local_app", { vng })),
 };
 
 /* Types */
@@ -84,6 +89,12 @@ export type DiscordActivityPayload = {
 	joinSecret: string | null,
 	spectateSecret: string | null,
 	matchSecret: string | null,
+};
+
+/**  a cached package zip and the install folder its entries extract under (e.g. "shaders/") */
+export type PackageSource = {
+	zipPath: string,
+	prefix: string,
 };
 
 /* Tauri Specta runtime */

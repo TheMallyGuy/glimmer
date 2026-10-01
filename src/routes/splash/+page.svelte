@@ -20,8 +20,9 @@
     installVersion,
     installName,
   } from "$ts/roblox/installation";
+  import { PackageCache } from "$ts/roblox/installation/packageCache";
   import { appState, loadAppState } from "$lib/appState.svelte";
-  import { loadMods, applyMods, backupNewVersion } from "$lib/mods.svelte";
+  import { loadMods, applyMods } from "$lib/mods.svelte";
   import { FastFlagManager } from "$ts/roblox/flags";
   import { flagsToObject } from "$lib/flags";
   import { commands } from "$ts/bindings";
@@ -87,17 +88,17 @@
         }
       },
       binaryType,
+      !isStudio, // the player's zips are what mods restore stock files from
     );
 
     await i.setActiveVersion(installName(version, d.distribution));
 
-    // mods are only applied to the player install, so there are no originals to back up for Studio
+    // mods are only applied to the player, and only the active version's zips are needed to restore it
     if (!isStudio) {
-      status = $_("splash.backingUpModOriginals");
       try {
-        await backupNewVersion();
+        await (await PackageCache.create()).prune(installName(version, d.distribution));
       } catch (e) {
-        console.error("failed to back up new version for mods:", e);
+        console.error("failed to prune old package cache:", e);
       }
     }
 
@@ -112,10 +113,14 @@
       status = $_("splash.applyingMods");
       await loadMods();
       try {
-        await applyMods();
+        await applyMods((done, total, percent) => {
+          status = $_("splash.downloadingModOriginals", { values: { done, total } });
+          progress = percent;
+        });
       } catch (e) {
         console.error("failed to apply mods before launch:", e);
       }
+      progress = null;
     }
 
     const ffm = await FastFlagManager.create(installPath);

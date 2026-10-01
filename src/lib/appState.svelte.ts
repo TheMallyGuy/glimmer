@@ -29,6 +29,9 @@ export const appState = $state({
         disableSystemTray: {
             enabled: false
         },
+        disableLaunchAtStartup: {
+            enabled: false
+        },
         disableFullscreenOptimization: {
             enabled: false
         },

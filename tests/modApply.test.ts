@@ -1,16 +1,22 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import { Applier } from "$ts/roblox/mod/apply";
 import { ModificationManager } from "$ts/roblox/mod/manager";
+import { EXTRACT_ROOTS } from "$ts/roblox/installation/download";
 import { fakeFs } from "./helpers/fakeFs";
 import { invokeCalls, invokeHandlers, logSpies, resetTauri } from "./helpers/tauri";
 
 const MODS = "/appdata/mods";
 const INSTALL = "/appdata/versions/version-aaaa";
-const BACKUP = `${MODS}/.originals/version-aaaa`;
+const CACHE = "/cache/glimmer-downloads/version-aaaa";
 
 function seedActiveInstall() {
     fakeFs.seed(`${INSTALL}/AppSettings.xml`, "<Settings />");
     fakeFs.seed("/appdata/versions/index.json", JSON.stringify([{ version: "version-aaaa", path: INSTALL, active: true }]));
+}
+
+/** a complete package cache, so restoring never has to download */
+function seedCache() {
+    for (const zip of Object.keys(EXTRACT_ROOTS.player)) fakeFs.seed(`${CACHE}/${zip}`, "zip");
 }
 
 async function applier() {
@@ -24,7 +30,8 @@ beforeEach(() => {
     fakeFs.reset();
     resetTauri();
     invokeHandlers.apply_mod = (args) => [{ path: `file-from-${(args as { modDir: string }).modDir.split("/").pop()}`, hash: "h" }];
-    invokeHandlers.revert_files = (args) => (args as { paths: string[] }).paths.length;
+    invokeHandlers.extract_package_files = (args) => (args as { paths: string[] }).paths;
+    seedCache();
 });
 
 describe("Applier.apply", () => {
@@ -48,7 +55,7 @@ describe("Applier.apply", () => {
             `${MODS}/Middle`,
             `${MODS}/Top`,
         ]);
-        expect(calls("apply_mod")[0]).toEqual({ modDir: `${MODS}/Bottom`, destDir: INSTALL, backupDir: BACKUP });
+        expect(calls("apply_mod")[0]).toEqual({ modDir: `${MODS}/Bottom`, destDir: INSTALL });
     });
 
     test("skips names that are not mods on disk", async () => {
@@ -88,17 +95,17 @@ describe("Applier.apply", () => {
         expect(logSpies.warn).toHaveBeenCalledTimes(1);
     });
 
-    test("does not revert anything on the first apply", async () => {
+    test("does not restore anything on the first apply", async () => {
         seedActiveInstall();
         fakeFs.seedDir(`${MODS}/A`);
         const a = await applier();
 
         await a.apply(["A"]);
 
-        expect(calls("revert_files")).toEqual([]);
+        expect(calls("extract_package_files")).toEqual([]);
     });
 
-    test("reverts what the previous apply wrote before reapplying", async () => {
+    test("restores stock for what the previous apply wrote before reapplying", async () => {
         seedActiveInstall();
         fakeFs.seedDir(`${MODS}/A`);
         const a = await applier();
@@ -106,10 +113,10 @@ describe("Applier.apply", () => {
 
         await a.apply(["A"]);
 
-        expect(calls("revert_files")).toEqual([{ destDir: INSTALL, backupDir: BACKUP, paths: ["file-from-A"] }]);
+        expect(calls("extract_package_files")).toEqual([{ sources: expect.any(Array), destDir: INSTALL, paths: ["file-from-A"] }]);
     });
 
-    test("a mod that was removed is reverted and no longer recorded", async () => {
+    test("a mod that was removed is restored to stock and no longer recorded", async () => {
         seedActiveInstall();
         fakeFs.seedDir(`${MODS}/A`);
         fakeFs.seedDir(`${MODS}/B`);
@@ -118,23 +125,43 @@ describe("Applier.apply", () => {
 
         await a.apply(["A"]);
 
-        expect(calls("revert_files").at(-1)).toMatchObject({ paths: expect.arrayContaining(["file-from-A", "file-from-B"]) });
+        expect(calls("extract_package_files").at(-1)).toMatchObject({ paths: expect.arrayContaining(["file-from-A", "file-from-B"]) });
         expect(Object.keys(appliedIndex())).toEqual(["A"]);
     });
 
-    test("a failed revert is a warning, not an error", async () => {
+    test("a failed restore is a warning, not an error", async () => {
         seedActiveInstall();
         fakeFs.seedDir(`${MODS}/A`);
         const a = await applier();
         await a.apply(["A"]);
-        invokeHandlers.revert_files = () => {
+        invokeHandlers.extract_package_files = () => {
             throw "locked";
         };
 
+        // the retry re-verifies the cache against the CDN, which is offline here
+        const realFetch = globalThis.fetch;
+        globalThis.fetch = (async () => {
+            throw new Error("offline");
+        }) as unknown as typeof fetch;
+        try {
+            await a.apply(["A"]);
+        } finally {
+            globalThis.fetch = realFetch;
+        }
+
+        expect(logSpies.warn).toHaveBeenCalledTimes(2);
+        expect(Object.keys(appliedIndex())).toEqual(["A"]);
+    });
+
+    test("removes the legacy .originals backup folder", async () => {
+        seedActiveInstall();
+        fakeFs.seedDir(`${MODS}/A`);
+        fakeFs.seed(`${MODS}/.originals/version-aaaa/file.bin`, "old backup");
+        const a = await applier();
+
         await a.apply(["A"]);
 
-        expect(logSpies.warn).toHaveBeenCalledTimes(1);
-        expect(Object.keys(appliedIndex())).toEqual(["A"]);
+        expect(fakeFs.has(`${MODS}/.originals`)).toBe(false);
     });
 
     test("loads the applied index saved by an earlier session", async () => {
@@ -145,7 +172,7 @@ describe("Applier.apply", () => {
 
         await a.apply(["A"]);
 
-        expect(calls("revert_files")).toEqual([{ destDir: INSTALL, backupDir: BACKUP, paths: ["stale.file"] }]);
+        expect(calls("extract_package_files")).toEqual([{ sources: expect.any(Array), destDir: INSTALL, paths: ["stale.file"] }]);
         expect(Object.keys(appliedIndex())).toEqual(["A"]);
     });
 });

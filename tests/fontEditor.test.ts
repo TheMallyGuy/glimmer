@@ -8,6 +8,7 @@ import {
     type FontEdits,
     type SourceFont,
 } from "$ts/roblox/mod/fontEditor";
+import { EXTRACT_ROOTS } from "$ts/roblox/installation/download";
 import { fakeFs } from "./helpers/fakeFs";
 import { invokeCalls, invokeHandlers, resetTauri } from "./helpers/tauri";
 import { cmapFormat12, cmapFormat4, cmapTable, postTable, sfnt } from "./helpers/ttf";
@@ -284,6 +285,12 @@ describe("saveFont", () => {
 describe("findBuilderIcons", () => {
     const FONT_DIR = "ExtraContent/LuaPackages/Packages/_Index/BuilderIcons/BuilderIcons/Font";
 
+    // a complete package cache, whose "stock" extraction finds nothing unless a test says otherwise
+    beforeEach(() => {
+        for (const zip of Object.keys(EXTRACT_ROOTS.player)) fakeFs.seed(`/cache/glimmer-downloads/version-aaaa/${zip}`, "zip");
+        invokeHandlers.extract_package_files = () => [];
+    });
+
     test("is empty without an active install", async () => {
         expect(await findBuilderIcons()).toEqual([]);
     });
@@ -313,15 +320,20 @@ describe("findBuilderIcons", () => {
         expect(await findBuilderIcons()).toEqual([]);
     });
 
-    test("edits the stock backup of a font when mods have replaced the original", async () => {
+    test("edits the stock copy of a font when mods have replaced the original", async () => {
         const install = "/appdata/versions/version-aaaa";
         fakeFs.seed(`${install}/AppSettings.xml`, "<Settings />");
         fakeFs.seed("/appdata/versions/index.json", JSON.stringify([{ version: "version-aaaa", path: install, active: true }]));
         fakeFs.seed(`${install}/${FONT_DIR}/BuilderIcons-Regular.ttf`, "modded");
-        const stock = `/appdata/mods/.originals/version-aaaa/${FONT_DIR}/BuilderIcons-Regular.ttf`;
-        fakeFs.seed(stock, "stock");
+        invokeHandlers.extract_package_files = (args) => {
+            const { destDir, paths } = args as { destDir: string; paths: string[] };
+            for (const p of paths) fakeFs.seed(`${destDir}/${p}`, "stock");
+            return paths;
+        };
 
         const [font] = await findBuilderIcons();
-        expect(font.path).toBe(stock);
+
+        expect(font.path).toBe(`/appdata/font-editor/stock/version-aaaa/${FONT_DIR}/BuilderIcons-Regular.ttf`);
+        expect(fakeFs.text(font.path)).toBe("stock");
     });
 });
