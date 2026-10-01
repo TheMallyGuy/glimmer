@@ -11,6 +11,7 @@
         { href: "/mods/manage", label: $_("modsLayout.yourMods"), count: mods.list.length },
         { href: "/mods/prebuilt", label: $_("modsLayout.builtIn") },
         { href: "/mods/community", label: $_("modsLayout.community") },
+        { href: "/mods/font-editor", label: $_("modsLayout.fontEditor") },
     ]);
 </script>
 
