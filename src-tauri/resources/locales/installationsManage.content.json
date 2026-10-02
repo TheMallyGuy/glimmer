@@ -35,8 +35,8 @@
     "versionHash": "Version hash",
     "versionHashPlaceholder": "[version hash]",
     "versionHashHint": "Leave blank to install the latest version.",
-    "installAsVng": "Install from VNG Games",
-    "installAsVngHint": "Download Roblox's Vietnamese distribution instead of the global client.",
+    "installAsVng": "Install Roblox VNG Games",
+    "installAsVngHint": "Download Roblox's Vietnamese distribution instead of the global client [DO NOT CHECK THIS IF YOU DON'T KNOW WHAT'S DOING]",
     "alreadyInstalled": {
       "nodeType": "insertion",
       "insertion": "{{version}} is already installed."

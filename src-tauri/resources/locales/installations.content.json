@@ -3,7 +3,7 @@
   "key": "installations",
   "content": {
     "parallelDownloads": "Parallel downloads",
-    "parallelDownloadsDescription": "How many packages to download at once.",
+    "parallelDownloadsDescription": "How many packages to download at once, CPU usage is proportional to this number",
     "forceReinstallRoblox": "Force reinstall Roblox",
     "forceReinstallRobloxDescription": "Redownload the client fresh next time it launches.",
     "disableRobloxUpgrades": "Disable Roblox upgrades",

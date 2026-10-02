@@ -3,7 +3,7 @@
   "key": "flagsLayout",
   "content": {
     "enableFastFlags": "Enable Fast Flags",
-    "enableFastFlagsDescription": "apply fast flag i guess",
+    "enableFastFlagsDescription": "Disable/Enable feature flags",
     "applyOnLaunch": "Apply Fast Flags on launch",
     "viewEditor": "Editor",
     "viewPresets": "Presets",

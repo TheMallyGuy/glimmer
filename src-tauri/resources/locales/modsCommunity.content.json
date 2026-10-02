@@ -6,7 +6,7 @@
     "filterMods": "Mods",
     "filterThemes": "Bootstrapper themes",
     "loading": "Loading community mods…",
-    "loadError": "Couldn’t reach the Froststrap or Kliko libraries. Check your connection and try again.",
+    "loadError": "Couldn’t reach the Froststrap or Kliko libraries. Check your internet connection and try again",
     "searchCommunityMods": "Search community mods",
     "filterGroupLabel": "Filter",
     "shownOfAll": {

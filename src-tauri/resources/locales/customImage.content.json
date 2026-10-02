@@ -7,7 +7,7 @@
     "templateUrl": "Template URL",
     "templateUrlDescription": "An template. You can make an template by exporting an SVG having an element named GAME_THUMBNAIL. (For figma users, please check the box include 'id' attribute in export in order to work.)",
     "templateUrlPlaceholder": "https://example.com/template.svg",
-    "badgeColour": "Badge colour",
+    "badgeColour": "Glimmer badge colour",
     "badgeColourDescription": "Fill colour for the Glimmer badge stamped on the image.",
     "colourWhite": "White",
     "colourBlack": "Black",
