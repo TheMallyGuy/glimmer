@@ -10,7 +10,7 @@
     User,
     X,
   } from "@lucide/svelte";
-  import { IconButton, Menu, cn, type MenuItem } from "$lib";
+  import { IconButton, Menu, GlimmerLogo, cn, type MenuItem } from "$lib";
   import { prefs, launch } from "$lib/settings.svelte";
   import { appState } from "$lib/appState.svelte";
   import { avatars, loadAvatars, selectAccount } from "$lib/accounts.svelte";
@@ -115,12 +115,7 @@
     data-tauri-drag-region
     class="flex h-14 shrink-0 items-center pr-2 pl-5"
   >
-    <img
-      src="/glimmer-logo.svg"
-      alt="Glimmer"
-      height="26"
-      class="pointer-events-none -ml-1.5 h-[26px] w-auto"
-    />
+    <GlimmerLogo class="-ml-1.5 h-[26px] w-auto" />
     <div data-tauri-drag-region class="h-full grow"></div>
     {#if showAccounts}
       <button

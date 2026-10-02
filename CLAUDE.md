@@ -215,7 +215,7 @@ Use these instead of writing new markup for the same job.
 - No second yellow button on a screen.
 - No new colours, fonts or radii outside `theme.css`.
 - No emoji or decorative gradients (Froststrap's own thumbnail gradients are data, which is fine).
-- Don't warp or restyle the Glimmer or Froststrap logos. Use `glimmer-logo.svg` and `static/froststrap.png` as they are.
+- Don't warp or restyle the Glimmer or Froststrap logos. Use `static/froststrap.png` as it is. For Glimmer use the `GlimmerLogo` component (the shapes of `glimmer-logo.svg`, drawn inline); its mark follows the accent colour and nothing else about it changes.
 
 ## Before finishing a change
 

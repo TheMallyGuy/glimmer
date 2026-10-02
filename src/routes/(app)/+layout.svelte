@@ -21,6 +21,7 @@
     TabBar,
     SearchField,
     IconButton,
+    GlimmerLogo,
     Button,
     SplitButton,
     type Tab,
@@ -109,12 +110,7 @@
 <div class="flex h-screen flex-col bg-app">
   <header class="shrink-0 bg-surface">
     <div data-tauri-drag-region class="flex h-16 items-center gap-2 pr-2 pl-6">
-      <img
-        src="/glimmer-logo.svg"
-        alt="Glimmer"
-        height="14"
-        class="pointer-events-none"
-      />
+      <GlimmerLogo />
       <div data-tauri-drag-region class="h-full grow"></div>
       <SearchField
         label={$appLayoutContent.searchAllSettings.value}
