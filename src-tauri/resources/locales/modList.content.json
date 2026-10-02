@@ -1,0 +1,26 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "modList",
+  "content": {
+    "yourModsList": "Your mods, highest priority first",
+    "newModName": "New mod name",
+    "newModNamePlaceholder": "Mod name, then press Enter",
+    "enableMod": {
+      "nodeType": "insertion",
+      "insertion": "Enable {{name}}"
+    },
+    "reorderMod": {
+      "nodeType": "insertion",
+      "insertion": "Reorder {{name}}. Use the up and down arrow keys."
+    },
+    "renameMod": {
+      "nodeType": "insertion",
+      "insertion": "Rename {{name}}"
+    },
+    "clickToRename": "Click to rename",
+    "moreForMod": {
+      "nodeType": "insertion",
+      "insertion": "More for {{name}}"
+    }
+  }
+}

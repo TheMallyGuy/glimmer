@@ -1,0 +1,11 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "modsLayout",
+  "content": {
+    "yourMods": "Your mods",
+    "builtIn": "Built-in",
+    "community": "Community",
+    "modViewsNav": "Mod views",
+    "fontEditor": "Icon editor"
+  }
+}

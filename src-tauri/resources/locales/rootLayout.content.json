@@ -1,0 +1,7 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "rootLayout",
+  "content": {
+    "uninstallBubblestrap": "Please uninstall Bubblestrap to launch glimmer."
+  }
+}

@@ -7,7 +7,9 @@
   import Dialog from './Dialog.svelte';
   import { flagType, newFlag, parseFlagsJson, flagsToObject, type Flag } from '../flags';
   import { cn } from '../utils';
-  import { _ } from 'svelte-i18n';
+  import { useIntlayer } from "svelte-intlayer";
+  const commonContent = useIntlayer("common");
+  const flagTableContent = useIntlayer("flagTable");
 
   interface Props {
     /** Pass a $state array and bind it: `bind:flags`. */
@@ -47,16 +49,16 @@
   });
 
   const typeLabels: Record<ReturnType<typeof flagType>, string> = {
-    get Boolean() { return $_('flagTable.typeBoolean'); },
-    get Integer() { return $_('flagTable.typeInteger'); },
-    get String() { return $_('flagTable.typeString'); },
-    get Log() { return $_('flagTable.typeLog'); },
-    get 'Unknown prefix'() { return $_('flagTable.typeUnknownPrefix'); },
-    get Empty() { return $_('flagTable.typeEmpty'); },
+    get Boolean() { return $flagTableContent.typeBoolean.value; },
+    get Integer() { return $flagTableContent.typeInteger.value; },
+    get String() { return $flagTableContent.typeString.value; },
+    get Log() { return $flagTableContent.typeLog.value; },
+    get 'Unknown prefix'() { return $flagTableContent.typeUnknownPrefix.value; },
+    get Empty() { return $flagTableContent.typeEmpty.value; },
   };
 
   function typeLabel(f: Flag) {
-    if ((counts.get(f.name.trim()) ?? 0) > 1) return { text: $_('flagTable.typeDuplicate'), bad: true };
+    if ((counts.get(f.name.trim()) ?? 0) > 1) return { text: $flagTableContent.typeDuplicate.value, bad: true };
     const t = flagType(f.name);
     return t === 'Empty' ? { text: typeLabels.Empty, bad: false } : { text: typeLabels[t], bad: t === 'Unknown prefix' };
   }
@@ -95,7 +97,7 @@
       error = '';
       changed();
     } catch (err) {
-      error = `${$_('flagTable.importErrorPrefix', { values: { file: file.name } })}: ${err instanceof Error ? err.message : $_('flagTable.importErrorFallback')}`;
+      error = `${$flagTableContent.importErrorPrefix({ file: file.name }).value}: ${err instanceof Error ? err.message : $flagTableContent.importErrorFallback.value}`;
     }
   }
 
@@ -116,25 +118,25 @@
 
 <div class={cn('flex min-h-0 flex-col gap-3', className)}>
   <div class="flex items-center gap-2">
-    <SearchField label={$_('flagTable.filterFlags')} bind:value={query} width="300px" />
+    <SearchField label={$flagTableContent.filterFlags.value} bind:value={query} width="300px" />
     <div class="grow"></div>
     <Button variant="secondary" size="sm" class="h-10" onclick={() => fileInput.click()}>
-      <Upload size={16} strokeWidth={1.75} aria-hidden="true" /> {$_('flagTable.importJson')}
+      <Upload size={16} strokeWidth={1.75} aria-hidden="true" /> {$flagTableContent.importJson.value}
     </Button>
     <Button variant="primary" size="sm" class="h-10" onclick={add}>
-      <Plus size={16} strokeWidth={1.75} aria-hidden="true" /> {$_('flagTable.addFlag')}
+      <Plus size={16} strokeWidth={1.75} aria-hidden="true" /> {$flagTableContent.addFlag.value}
     </Button>
     <input bind:this={fileInput} type="file" accept=".json,application/json" hidden onchange={onFile} />
   </div>
 
   {#if error}<p class="m-0 text-[13px] text-danger" role="alert">{error}</p>{/if}
 
-  <div class="flex min-h-0 grow flex-col" role="table" aria-label={$_('flagTable.fastFlagsTable')}>
+  <div class="flex min-h-0 grow flex-col" role="table" aria-label={$flagTableContent.fastFlagsTable.value}>
     <div class={cn(grid, 'h-9 pl-[18px] pr-2 text-[13px] text-muted')} role="row">
-      <div role="columnheader">{$_('flagTable.columnName')}</div>
-      <div role="columnheader" class="pl-2">{$_('flagTable.columnValue')}</div>
-      <div role="columnheader">{$_('flagTable.columnType')}</div>
-      <div role="columnheader"><span class="sr-only">{$_('flagTable.columnActions')}</span></div>
+      <div role="columnheader">{$flagTableContent.columnName.value}</div>
+      <div role="columnheader" class="pl-2">{$flagTableContent.columnValue.value}</div>
+      <div role="columnheader">{$flagTableContent.columnType.value}</div>
+      <div role="columnheader"><span class="sr-only">{$flagTableContent.columnActions.value}</span></div>
     </div>
 
     <div class="flex min-h-0 flex-col gap-0.5 overflow-auto" role="rowgroup">
@@ -147,8 +149,8 @@
               bind:value={flag.name}
               oninput={changed}
               class={cell}
-              aria-label={$_('flagTable.flagName')}
-              placeholder={$_('flagTable.flagNamePlaceholder')}
+              aria-label={$flagTableContent.flagName.value}
+              placeholder={$flagTableContent.flagNamePlaceholder.value}
               spellcheck="false"
               autocomplete="off"
             />
@@ -158,30 +160,30 @@
               bind:value={flag.value}
               oninput={changed}
               class={cell}
-              aria-label={$_('flagTable.valueForFlag', { values: { name: flag.name || $_('flagTable.newFlagFallback') } })}
-              placeholder={$_('flagTable.valuePlaceholder')}
+              aria-label={$flagTableContent.valueForFlag({ name: flag.name || $flagTableContent.newFlagFallback.value }).value}
+              placeholder={$flagTableContent.valuePlaceholder.value}
               spellcheck="false"
               autocomplete="off"
             />
           </div>
           <div role="cell" class={cn('text-[13px]', t.bad ? 'text-danger' : 'text-fg-2')}>{t.text}</div>
           <div role="cell">
-            <IconButton label={$_('flagTable.removeFlag', { values: { name: flag.name || $_('flagTable.removeFlagFallback') } })} variant="ghost" size="sm" onclick={() => remove(flag.id)}>
+            <IconButton label={$flagTableContent.removeFlag({ name: flag.name || $flagTableContent.removeFlagFallback.value }).value} variant="ghost" size="sm" onclick={() => remove(flag.id)}>
               <Trash2 size={16} strokeWidth={1.75} aria-hidden="true" />
             </IconButton>
           </div>
         </div>
       {:else}
         <div class="bg-row px-[18px] py-8 text-sm text-muted">
-          {flags.length === 0 ? $_('flagTable.emptyNoFlags') : $_('flagTable.emptyNoMatch')}
+          {flags.length === 0 ? $flagTableContent.emptyNoFlags.value : $flagTableContent.emptyNoMatch.value}
         </div>
       {/each}
     </div>
   </div>
 
   <div class="flex items-center gap-1 pt-1">
-    <span class="grow text-[13px] text-muted">{$_('flagTable.flagCount', { values: { count: flags.length } })}</span>
-    <Button variant="ghost" size="sm" onclick={exportJson} disabled={flags.length === 0}>{$_('flagTable.exportJson')}</Button>
+    <span class="grow text-[13px] text-muted">{$flagTableContent.flagCount(flags.length)({ count: flags.length }).value}</span>
+    <Button variant="ghost" size="sm" onclick={exportJson} disabled={flags.length === 0}>{$flagTableContent.exportJson.value}</Button>
     <Button
       variant="ghost"
       size="sm"
@@ -189,15 +191,15 @@
       onclick={() => (confirmReset = true)}
       disabled={flags.length === 0}
     >
-      {$_('flagTable.resetAll')}
+      {$flagTableContent.resetAll.value}
     </Button>
   </div>
 </div>
 
-<Dialog bind:open={confirmReset} title={$_('flagTable.resetDialogTitle')}>
-  <p>{$_('flagTable.resetDialogBody')}</p>
+<Dialog bind:open={confirmReset} title={$flagTableContent.resetDialogTitle.value}>
+  <p>{$flagTableContent.resetDialogBody.value}</p>
   {#snippet actions()}
-    <Button variant="ghost" onclick={() => (confirmReset = false)}>{$_('common.cancel')}</Button>
-    <Button variant="danger" onclick={resetAll}>{$_('flagTable.resetFlags')}</Button>
+    <Button variant="ghost" onclick={() => (confirmReset = false)}>{$commonContent.cancel.value}</Button>
+    <Button variant="danger" onclick={resetAll}>{$flagTableContent.resetFlags.value}</Button>
   {/snippet}
 </Dialog>

@@ -9,16 +9,18 @@
     applyOldSounds,
     applyOldAvatarBackground,
   } from "$lib/mods.svelte";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const commonContent = useIntlayer("common");
+  const modsPrebuiltContent = useIntlayer("modsPrebuilt");
 
   let appliedCursor = prebuilt.cursor;
 
   const cursors = [
-    { value: "default", label: $_("modsPrebuilt.cursorDefault") },
-    { value: "2006", label: $_("modsPrebuilt.cursor2006") },
-    { value: "2013", label: $_("modsPrebuilt.cursor2013") },
-    { value: "purple-cross", label: $_("modsPrebuilt.cursorPurpleCross") },
-    { value: "dot", label: $_("modsPrebuilt.cursorDot") },
+    { value: "default", label: $modsPrebuiltContent.cursorDefault.value },
+    { value: "2006", label: $modsPrebuiltContent.cursor2006.value },
+    { value: "2013", label: $modsPrebuiltContent.cursor2013.value },
+    { value: "purple-cross", label: $modsPrebuiltContent.cursorPurpleCross.value },
+    { value: "dot", label: $modsPrebuiltContent.cursorDot.value },
   ];
 
   async function changeCursor(value: string) {
@@ -90,14 +92,14 @@
 </script>
 
 <div class="flex flex-col gap-7">
-  <SettingGroup label={$_("modsPrebuilt.presetsGroup")}>
+  <SettingGroup label={$modsPrebuiltContent.presetsGroup.value}>
     <SettingRow
-      title={$_("modsPrebuilt.mouseCursor")}
-      description={$_("modsPrebuilt.mouseCursorDescription")}
+      title={$modsPrebuiltContent.mouseCursor.value}
+      description={$modsPrebuiltContent.mouseCursorDescription.value}
     >
       {#snippet control()}
         <Dropdown
-          label={$_("modsPrebuilt.mouseCursor")}
+          label={$modsPrebuiltContent.mouseCursor.value}
           size="sm"
           width="200px"
           options={cursors}
@@ -107,24 +109,24 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("modsPrebuilt.oldCharacterSounds")}
-      description={$_("modsPrebuilt.oldCharacterSoundsDescription")}
+      title={$modsPrebuiltContent.oldCharacterSounds.value}
+      description={$modsPrebuiltContent.oldCharacterSoundsDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("modsPrebuilt.oldCharacterSounds")}
+          label={$modsPrebuiltContent.oldCharacterSounds.value}
           bind:checked={prebuilt.oldSounds}
           onchange={changeOldSounds}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("modsPrebuilt.oldAvatarBackground")}
-      description={$_("modsPrebuilt.oldAvatarBackgroundDescription")}
+      title={$modsPrebuiltContent.oldAvatarBackground.value}
+      description={$modsPrebuiltContent.oldAvatarBackgroundDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("modsPrebuilt.oldAvatarBackground")}
+          label={$modsPrebuiltContent.oldAvatarBackground.value}
           bind:checked={prebuilt.oldAvatarBackground}
           onchange={changeOldAvatarBackground}
         />
@@ -132,14 +134,12 @@
     </SettingRow>
   </SettingGroup>
 
-  <SettingGroup label={$_("modsPrebuilt.yourFilesGroup")}>
+  <SettingGroup label={$modsPrebuiltContent.yourFilesGroup.value}>
     <SettingRow
-      title={$_("modsPrebuilt.customFont")}
+      title={$modsPrebuiltContent.customFont.value}
       description={prebuilt.font
-        ? $_("modsPrebuilt.usingFile", {
-            values: { file: fileName(prebuilt.font) },
-          })
-        : $_("modsPrebuilt.customFontDescription")}
+        ? $modsPrebuiltContent.usingFile({ file: fileName(prebuilt.font) }).value
+        : $modsPrebuiltContent.customFontDescription.value}
     >
       {#snippet control()}
         <div class="flex gap-1">
@@ -148,24 +148,22 @@
               variant="ghost"
               size="sm"
               onclick={() => setFont(null)}
-              >{$_("common.remove")}</Button
+              >{$commonContent.remove.value}</Button
             >
           {/if}
           <Button size="sm" onclick={() => pick("font")}
             >{prebuilt.font
-              ? $_("modsPrebuilt.changeFont")
-              : $_("modsPrebuilt.chooseFont")}</Button
+              ? $modsPrebuiltContent.changeFont.value
+              : $modsPrebuiltContent.chooseFont.value}</Button
           >
         </div>
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("modsPrebuilt.customDeathSound")}
+      title={$modsPrebuiltContent.customDeathSound.value}
       description={prebuilt.deathSound
-        ? $_("modsPrebuilt.usingFile", {
-            values: { file: fileName(prebuilt.deathSound) },
-          })
-        : $_("modsPrebuilt.customDeathSoundDescription")}
+        ? $modsPrebuiltContent.usingFile({ file: fileName(prebuilt.deathSound) }).value
+        : $modsPrebuiltContent.customDeathSoundDescription.value}
     >
       {#snippet control()}
         <div class="flex gap-1">
@@ -174,13 +172,13 @@
               variant="ghost"
               size="sm"
               onclick={() => setDeathSound(null)}
-              >{$_("common.remove")}</Button
+              >{$commonContent.remove.value}</Button
             >
           {/if}
           <Button size="sm" onclick={() => pick("deathSound")}
             >{prebuilt.deathSound
-              ? $_("modsPrebuilt.changeSound")
-              : $_("modsPrebuilt.chooseSound")}</Button
+              ? $modsPrebuiltContent.changeSound.value
+              : $modsPrebuiltContent.chooseSound.value}</Button
           >
         </div>
       {/snippet}

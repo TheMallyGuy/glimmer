@@ -7,7 +7,8 @@
         type DndEvent,
     } from "svelte-dnd-action";
     import { mods, setEnabled, type Mod } from "$lib/mods.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modListContent = useIntlayer("modList");
 
     interface Props {
         editingId: string | null;
@@ -59,16 +60,16 @@
     onconsider={onDndConsider}
     onfinalize={onDndFinalize}
     class="m-0 flex list-none flex-col gap-0.5 p-0"
-    aria-label={$_("modList.yourModsList")}
+    aria-label={$modListContent.yourModsList.value}
 >
     {#if editingId === "new"}
         <li class="flex h-12 items-center gap-2 bg-tonal pr-2 pl-9">
             <input
                 bind:this={editInput}
                 bind:value={draft}
-                aria-label={$_("modList.newModName")}
+                aria-label={$modListContent.newModName.value}
                 aria-invalid={editError ? true : undefined}
-                placeholder={$_("modList.newModNamePlaceholder")}
+                placeholder={$modListContent.newModNamePlaceholder.value}
                 autocomplete="off"
                 spellcheck="false"
                 class={cn(
@@ -102,7 +103,7 @@
                 bind:this={handles[i]}
                 type="button"
                 use:dragHandle
-                aria-label={$_("modList.reorderMod", { values: { name: mod.name } })}
+                aria-label={$modListContent.reorderMod({ name: mod.name }).value}
                 class="flex h-8 w-6 shrink-0 cursor-grab items-center justify-center rounded-gl border-0 bg-transparent text-subtle opacity-0 group-hover:opacity-100 hover:text-fg-2 focus-visible:opacity-100 active:cursor-grabbing"
                 onkeydown={(e) => onHandleKey(e, i)}
             >
@@ -110,7 +111,7 @@
             </button>
 
             <Switch
-                label={$_("modList.enableMod", { values: { name: mod.name } })}
+                label={$modListContent.enableMod({ name: mod.name }).value}
                 checked={mod.enabled}
                 onchange={(v) => setEnabled(mod.id, v)}
             />
@@ -119,7 +120,7 @@
                 <input
                     bind:this={editInput}
                     bind:value={draft}
-                    aria-label={$_("modList.renameMod", { values: { name: mod.name } })}
+                    aria-label={$modListContent.renameMod({ name: mod.name }).value}
                     aria-invalid={editError ? true : undefined}
                     autocomplete="off"
                     spellcheck="false"
@@ -140,7 +141,7 @@
                 <button
                     bind:this={nameButtons[mod.id]}
                     type="button"
-                    title={$_("modList.clickToRename")}
+                    title={$modListContent.clickToRename.value}
                     class={cn(
                         "ml-1 h-8 min-w-0 grow cursor-text truncate rounded-gl border-0 bg-transparent px-2 text-left text-[15px] font-medium hover:bg-tonal",
                         mod.enabled ? "text-fg" : "text-off",
@@ -154,7 +155,7 @@
 
             {#if !editing}
                 <IconButton
-                    label={$_("modList.moreForMod", { values: { name: mod.name } })}
+                    label={$modListContent.moreForMod({ name: mod.name }).value}
                     variant="ghost"
                     size="sm"
                     aria-haspopup="menu"

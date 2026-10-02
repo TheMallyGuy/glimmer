@@ -3,11 +3,12 @@
   import { goto } from "$app/navigation";
   import { SettingGroup, SettingRow, TextField, Dropdown, Button } from "$lib";
   import { appState } from "$lib/appState.svelte";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const customImageContent = useIntlayer("customImage");
 
   const overlays = [
-    { value: "white", label: $_("customImage.colourWhite") },
-    { value: "black", label: $_("customImage.colourBlack") },
+    { value: "white", label: $customImageContent.colourWhite.value },
+    { value: "black", label: $customImageContent.colourBlack.value },
   ];
 
   const customImage = appState.integrations.discordRpc.customImage;
@@ -20,29 +21,29 @@
   onclick={() => goto("/integrations")}
 >
   <ArrowLeft size={16} strokeWidth={1.75} aria-hidden="true" />
-  {$_("customImage.backToIntegrations")}
+  {$customImageContent.backToIntegrations.value}
 </Button>
 
-<SettingGroup label={$_("customImage.groupLabel")}>
+<SettingGroup label={$customImageContent.groupLabel.value}>
   <SettingRow
-    title={$_("customImage.templateUrl")}
-    description={$_("customImage.templateUrlDescription")}
+    title={$customImageContent.templateUrl.value}
+    description={$customImageContent.templateUrlDescription.value}
   >
     {#snippet control()}
       <TextField
-        label={$_("customImage.templateUrl")}
-        placeholder={$_("customImage.templateUrlPlaceholder")}
+        label={$customImageContent.templateUrl.value}
+        placeholder={$customImageContent.templateUrlPlaceholder.value}
         bind:value={customImage.svgUrl}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("customImage.badgeColour")}
-    description={$_("customImage.badgeColourDescription")}
+    title={$customImageContent.badgeColour.value}
+    description={$customImageContent.badgeColourDescription.value}
   >
     {#snippet control()}
       <Dropdown
-        label={$_("customImage.badgeColour")}
+        label={$customImageContent.badgeColour.value}
         size="sm"
         width="160px"
         options={overlays}
@@ -51,12 +52,12 @@
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("customImage.outputSize")}
-    description={$_("customImage.outputSizeDescription")}
+    title={$customImageContent.outputSize.value}
+    description={$customImageContent.outputSizeDescription.value}
   >
     {#snippet control()}
       <TextField
-        label={$_("customImage.outputSize")}
+        label={$customImageContent.outputSize.value}
         type="number"
         min="16"
         max="1024"

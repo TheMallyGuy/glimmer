@@ -1,0 +1,17 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "customImage",
+  "content": {
+    "backToIntegrations": "Back to integrations",
+    "groupLabel": "Custom large image",
+    "templateUrl": "Template URL",
+    "templateUrlDescription": "An template. You can make an template by exporting an SVG having an element named GAME_THUMBNAIL. (For figma users, please check the box include 'id' attribute in export in order to work.)",
+    "templateUrlPlaceholder": "https://example.com/template.svg",
+    "badgeColour": "Badge colour",
+    "badgeColourDescription": "Fill colour for the Glimmer badge stamped on the image.",
+    "colourWhite": "White",
+    "colourBlack": "Black",
+    "outputSize": "Output size",
+    "outputSizeDescription": "Rendered size in pixels, 16-1024."
+  }
+}

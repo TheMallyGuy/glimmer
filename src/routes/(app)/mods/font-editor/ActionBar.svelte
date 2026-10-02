@@ -1,5 +1,6 @@
 <script lang="ts">
     import { Button, Switch, cn } from "$lib";
+    import { dictText } from "$lib/utils";
     import {
         editedTotal,
         editor,
@@ -7,7 +8,8 @@
         exportTtf,
         previewFont,
     } from "$lib/iconEditor.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modsFontEditorContent = useIntlayer("modsFontEditor");
 
     const message = $derived(editor.message);
 </script>
@@ -15,18 +17,16 @@
 <div class="sticky bottom-0 flex flex-col gap-1 bg-canvas py-3">
     <div class="flex flex-wrap items-center gap-2">
         <span class="text-[13px] text-muted">
-            {$_("modsFontEditor.editedCount", {
-                values: { count: editedTotal() },
-            })}
+            {$modsFontEditorContent.editedCount(editedTotal())({ count: editedTotal() }).value}
         </span>
         {#if editor.previews[editor.fontPath]}
             <Switch
-                label={$_("modsFontEditor.showPreview")}
+                label={$modsFontEditorContent.showPreview.value}
                 size="sm"
                 bind:checked={editor.showPreview}
             />
             <span class="text-[13px] text-muted"
-                >{$_("modsFontEditor.showPreview")}</span
+                >{$modsFontEditorContent.showPreview.value}</span
             >
         {/if}
         <div class="ml-auto flex items-center gap-2">
@@ -36,20 +36,20 @@
                 onclick={previewFont}
             >
                 {editor.busy === "preview"
-                    ? $_("modsFontEditor.previewing")
-                    : $_("modsFontEditor.preview")}
+                    ? $modsFontEditorContent.previewing.value
+                    : $modsFontEditorContent.preview.value}
             </Button>
             <Button
                 variant="secondary"
                 disabled={!!editor.busy}
                 onclick={exportTtf}
             >
-                {$_("modsFontEditor.exportTtf")}
+                {$modsFontEditorContent.exportTtf.value}
             </Button>
             <Button disabled={!!editor.busy} onclick={exportMod}>
                 {editor.busy === "mod"
-                    ? $_("modsFontEditor.exportingMod")
-                    : $_("modsFontEditor.exportMod")}
+                    ? $modsFontEditorContent.exportingMod.value
+                    : $modsFontEditorContent.exportMod.value}
             </Button>
         </div>
     </div>
@@ -62,7 +62,7 @@
         aria-live="polite"
     >
         {#if message}
-            {$_(`modsFontEditor.${message.key}`, { values: message.values })}
+            {dictText($modsFontEditorContent[message.key], message.values)}
         {/if}
     </p>
 </div>

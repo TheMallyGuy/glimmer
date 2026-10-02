@@ -1,0 +1,34 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "modsCommunity",
+  "content": {
+    "filterAll": "All",
+    "filterMods": "Mods",
+    "filterThemes": "Bootstrapper themes",
+    "loading": "Loading community mods…",
+    "loadError": "Couldn’t reach the Froststrap or Kliko libraries. Check your connection and try again.",
+    "searchCommunityMods": "Search community mods",
+    "filterGroupLabel": "Filter",
+    "shownOfAll": {
+      "nodeType": "insertion",
+      "insertion": "{{shown}} of {{all}}"
+    },
+    "failedToLoad": {
+      "nodeType": "insertion",
+      "insertion": "The {{libraries}} didn’t load, so its mods are missing."
+    },
+    "emptyNoMatch": "No mods match that. Try another filter or search.",
+    "themeBadge": "Theme",
+    "byAuthor": {
+      "nodeType": "insertion",
+      "insertion": "by {{author}}"
+    },
+    "unknownAuthor": "Unknown author",
+    "installedAriaLabel": "Installed",
+    "installAriaLabel": "Install",
+    "installing": "Installing…",
+    "installed": "Installed",
+    "retryInstall": "Retry install",
+    "install": "Install"
+  }
+}

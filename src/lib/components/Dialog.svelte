@@ -3,7 +3,8 @@
   import { X } from '@lucide/svelte';
   import IconButton from './IconButton.svelte';
   import { cn } from '../utils';
-  import { _ } from 'svelte-i18n';
+  import { useIntlayer } from "svelte-intlayer";
+  const commonContent = useIntlayer("common");
 
   interface Props {
     open?: boolean;
@@ -62,7 +63,7 @@
   <div class="flex flex-col gap-3 pt-6 pr-6 pb-5 pl-7">
     <header class="flex items-start gap-4">
       <h2 id="{uid}-title" class="m-0 grow pt-1.5 font-display text-[22px] font-normal tracking-[0.01em]">{title}</h2>
-      <IconButton label={$_('common.close')} variant="ghost" size="sm" class="-mr-2" onclick={() => (open = false)}>
+      <IconButton label={$commonContent.close.value} variant="ghost" size="sm" class="-mr-2" onclick={() => (open = false)}>
         <X size={16} strokeWidth={1.75} aria-hidden="true" />
       </IconButton>
     </header>

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "modsPrebuilt",
+  "content": {
+    "presetsGroup": "Presets",
+    "yourFilesGroup": "Your files",
+    "cursorDefault": "Default",
+    "cursor2006": "From 2006",
+    "cursor2013": "From 2013",
+    "cursorPurpleCross": "Purple cross",
+    "cursorDot": "Black and white dot",
+    "mouseCursor": "Mouse cursor",
+    "mouseCursorDescription": "Swap the in-game cursor for a classic one.",
+    "oldCharacterSounds": "Old character sounds",
+    "oldCharacterSoundsDescription": "Bring back the original walking, jumping and death sounds.",
+    "oldAvatarBackground": "Old avatar editor background",
+    "oldAvatarBackgroundDescription": "Use the plain background from the older avatar editor.",
+    "customFont": "Custom font",
+    "usingFile": {
+      "nodeType": "insertion",
+      "insertion": "Using {{file}}"
+    },
+    "customFontDescription": "Replace the in-game UI font with a .ttf or .otf file.",
+    "customDeathSound": "Custom death sound",
+    "customDeathSoundDescription": "Play your own sound when your character resets.",
+    "chooseFont": "Choose font",
+    "changeFont": "Change font",
+    "chooseSound": "Choose sound",
+    "changeSound": "Change sound"
+  }
+}

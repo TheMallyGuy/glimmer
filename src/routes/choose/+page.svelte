@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
-  import { getCurrentWindow } from "@tauri-apps/api/window";
   import { openUrl } from "@tauri-apps/plugin-opener";
   import {
     Gamepad2,
@@ -12,18 +11,20 @@
   } from "@lucide/svelte";
   import { IconButton, cn } from "$lib";
   import { prefs, launch } from "$lib/settings.svelte";
-  import { sizeWindow } from "$lib/window";
+  import { sizeWindow, closeWindow } from "$lib/window";
   import { openSettingsWindow } from "$ts/windows/settings";
   import { installationsState } from "$lib/installations.svelte";
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const chooseContent = useIntlayer("choose");
+  const commonContent = useIntlayer("common");
 
   const DISCORD_INVITE = "https://discord.gg/UX5E9ppKFg";
 
   const targets = [
-    { value: "player", label: $_("common.player"), icon: Gamepad2 },
-    { value: "studio", label: $_("common.studio"), icon: DraftingCompass },
+    { value: "player", label: $commonContent.player.value, icon: Gamepad2 },
+    { value: "studio", label: $commonContent.studio.value, icon: DraftingCompass },
   ];
   const current = $derived(
     targets.find((t) => t.value === prefs.target) ?? targets[0],
@@ -59,7 +60,7 @@
 
   async function openSettings() {
     await openSettingsWindow();
-    await getCurrentWindow().close();
+    await closeWindow();
   }
 
   const tile =
@@ -79,9 +80,9 @@
     />
     <div data-tauri-drag-region class="h-full grow"></div>
     <IconButton
-      label={$_("common.close")}
+      label={$commonContent.close.value}
       variant="ghost"
-      onclick={() => getCurrentWindow().close()}
+      onclick={closeWindow}
     >
       <X size={14} strokeWidth={1.5} />
     </IconButton>
@@ -101,13 +102,13 @@
         <span class="flex flex-col gap-0.5">
           <span class="font-display text-lg tracking-[0.01em]">
             {#if current.value == "player"}
-              {$_("choose.play")}
+              {$chooseContent.play.value}
             {:else}
-              {$_("choose.makeGames")}
+              {$chooseContent.makeGames.value}
             {/if}
           </span>
           <span class="text-[13px] text-on-accent/70"
-            >{$_("choose.openRoblox", { values: { target: current.label } })}</span
+            >{$chooseContent.openRoblox({ target: current.label }).value}</span
           >
         </span>
       </button>
@@ -124,8 +125,8 @@
           class="text-muted transition-colors group-hover:text-fg-2"
         />
         <span class="flex flex-col gap-0.5">
-          <span class="font-display text-lg tracking-[0.01em]">{$_("choose.settings")}</span>
-          <span class="text-[13px] text-muted">{$_("choose.configureRoblox")}</span>
+          <span class="font-display text-lg tracking-[0.01em]">{$chooseContent.settings.value}</span>
+          <span class="text-[13px] text-muted">{$chooseContent.configureRoblox.value}</span>
         </span>
       </button>
 
@@ -147,14 +148,14 @@
           class="absolute top-4 right-4 text-subtle"
         />
         <span class="flex flex-col gap-0.5">
-          <span class="font-display text-lg tracking-[0.01em]">{$_("choose.community")}</span>
-          <span class="text-[13px] text-muted">{$_("choose.discussWithCommunity")}</span>
+          <span class="font-display text-lg tracking-[0.01em]">{$chooseContent.community.value}</span>
+          <span class="text-[13px] text-muted">{$chooseContent.discussWithCommunity.value}</span>
         </span>
       </button>
     </div>
 
     <div class="flex items-center gap-3">
-      <span id="target-label" class="text-[13px] text-muted">{$_("choose.launchAs")}</span>
+      <span id="target-label" class="text-[13px] text-muted">{$chooseContent.launchAs.value}</span>
       <div
         role="radiogroup"
         aria-labelledby="target-label"

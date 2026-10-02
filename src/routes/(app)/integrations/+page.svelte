@@ -1,59 +1,60 @@
 <script lang="ts">
   import { SettingGroup, SettingRow, Switch, Dropdown } from "$lib";
   import { appState } from "$lib/appState.svelte";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const integrationsContent = useIntlayer("integrations");
 
   const largeImagePresets = [
-    { value: "icon", label: $_("integrations.presetGameIcon") },
-    { value: "gisl", label: $_("integrations.presetGameIsLife") },
-    { value: "interview", label: $_("integrations.presetJobInterview") },
-    { value: "custom", label: $_("integrations.presetCustom") },
+    { value: "icon", label: $integrationsContent.presetGameIcon.value },
+    { value: "gisl", label: $integrationsContent.presetGameIsLife.value },
+    { value: "interview", label: $integrationsContent.presetJobInterview.value },
+    { value: "custom", label: $integrationsContent.presetCustom.value },
   ];
 </script>
 
 <SettingGroup>
   <SettingRow
-    title={$_("integrations.activityWatching")}
-    description={$_("integrations.activityWatchingDescription")}
+    title={$integrationsContent.activityWatching.value}
+    description={$integrationsContent.activityWatchingDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.activityWatching")}
+        label={$integrationsContent.activityWatching.value}
         bind:checked={appState.integrations.activityWatching.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("integrations.serverLocationNotifier")}
-    description={$_("integrations.serverLocationNotifierDescription")}
+    title={$integrationsContent.serverLocationNotifier.value}
+    description={$integrationsContent.serverLocationNotifierDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.serverLocationNotifier")}
+        label={$integrationsContent.serverLocationNotifier.value}
         bind:checked={appState.integrations.serverLocNotifer.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("integrations.discordRichPresence")}
-    description={$_("integrations.discordRichPresenceDescription")}
+    title={$integrationsContent.discordRichPresence.value}
+    description={$integrationsContent.discordRichPresenceDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.discordRichPresence")}
+        label={$integrationsContent.discordRichPresence.value}
         bind:checked={appState.integrations.discordRpc.enabled}
       />
     {/snippet}
   </SettingRow>
   {#if appState.integrations.discordRpc.enabled}
     <SettingRow
-      title={$_("integrations.largeImagePreset")}
-      description={$_("integrations.largeImagePresetDescription")}
+      title={$integrationsContent.largeImagePreset.value}
+      description={$integrationsContent.largeImagePresetDescription.value}
       class="pl-9"
     >
       {#snippet control()}
         <Dropdown
-          label={$_("integrations.largeImagePreset")}
+          label={$integrationsContent.largeImagePreset.value}
           size="sm"
           width="200px"
           options={largeImagePresets}
@@ -63,35 +64,35 @@
     </SettingRow>
     {#if appState.integrations.discordRpc.largeImagePreset === "custom"}
       <SettingRow
-        title={$_("integrations.customImageSettings")}
+        title={$integrationsContent.customImageSettings.value}
         description={appState.integrations.discordRpc.customImage.svgUrl ||
-          $_("integrations.customImageSettingsDescription")}
+          $integrationsContent.customImageSettingsDescription.value}
         class="pl-9"
         href="/integrations/custom-image"
       />
     {/if}
   {/if}
   <SettingRow
-    title={$_("integrations.shareAccount")}
-    description={$_("integrations.requiresDiscordRpc")}
+    title={$integrationsContent.shareAccount.value}
+    description={$integrationsContent.requiresDiscordRpc.value}
     disabled={!appState.integrations.discordRpc.enabled}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.shareAccount")}
+        label={$integrationsContent.shareAccount.value}
         bind:checked={appState.integrations.discordRpc.shareAccount}
         disabled={!appState.integrations.discordRpc.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("integrations.allowFriendsToJoin")}
-    description={$_("integrations.requiresDiscordRpc")}
+    title={$integrationsContent.allowFriendsToJoin.value}
+    description={$integrationsContent.requiresDiscordRpc.value}
     disabled={!appState.integrations.discordRpc.enabled}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.allowFriendsToJoin")}
+        label={$integrationsContent.allowFriendsToJoin.value}
         bind:checked={appState.integrations.discordRpc.join}
         disabled={!appState.integrations.discordRpc.enabled}
       />
@@ -101,58 +102,58 @@
 
 <div class="h-7"></div>
 
-<SettingGroup label={$_("integrations.systemGroup")}>
+<SettingGroup label={$integrationsContent.systemGroup.value}>
   <SettingRow
-    title={$_("integrations.closeCrashHandler")}
-    description={$_("integrations.closeCrashHandlerDescription")}
+    title={$integrationsContent.closeCrashHandler.value}
+    description={$integrationsContent.closeCrashHandlerDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.closeCrashHandler")}
+        label={$integrationsContent.closeCrashHandler.value}
         bind:checked={appState.integrations.closeCrashHandler.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("integrations.trimMemory")}
-    description={$_("integrations.trimMemoryDescription")}
+    title={$integrationsContent.trimMemory.value}
+    description={$integrationsContent.trimMemoryDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.trimMemory")}
+        label={$integrationsContent.trimMemory.value}
         bind:checked={appState.integrations.trimMemWhenNotFocused.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("integrations.disableSystemTray")}
-    description={$_("integrations.disableSystemTrayDescription")}
+    title={$integrationsContent.disableSystemTray.value}
+    description={$integrationsContent.disableSystemTrayDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.disableSystemTray")}
+        label={$integrationsContent.disableSystemTray.value}
         bind:checked={appState.integrations.disableSystemTray.enabled}
       />
     {/snippet}
   </SettingRow>
    <SettingRow
-    title={$_("integrations.disableLaunchAtStartup")}
-    description={$_("integrations.disableLaunchAtStartupDescription")}
+    title={$integrationsContent.disableLaunchAtStartup.value}
+    description={$integrationsContent.disableLaunchAtStartupDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.disableLaunchAtStartup")}
+        label={$integrationsContent.disableLaunchAtStartup.value}
         bind:checked={appState.integrations.disableLaunchAtStartup.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
-    title={$_("integrations.disableFullscreenOptimization")}
-    description={$_("integrations.disableFullscreenOptimizationDescription")}
+    title={$integrationsContent.disableFullscreenOptimization.value}
+    description={$integrationsContent.disableFullscreenOptimizationDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("integrations.disableFullscreenOptimization")}
+        label={$integrationsContent.disableFullscreenOptimization.value}
         bind:checked={
           appState.integrations.disableFullscreenOptimization.enabled
         }

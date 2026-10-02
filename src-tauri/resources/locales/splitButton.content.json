@@ -1,0 +1,11 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "splitButton",
+  "content": {
+    "launchTarget": "Launch target",
+    "launchTargetWithValue": {
+      "nodeType": "insertion",
+      "insertion": "Launch target: {{target}}"
+    }
+  }
+}

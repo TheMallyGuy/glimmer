@@ -1,3 +1,4 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { join } from '@tauri-apps/api/path';
 import { openPath } from '@tauri-apps/plugin-opener';
 import { load, type Store } from '@tauri-apps/plugin-store';
@@ -57,6 +58,8 @@ async function getConfig(): Promise<Store> {
 
 /** a mod's disk folder name doubles as its id, since that's the only stable identity on disk */
 export async function loadMods() {
+  if (!isTauri()) return; // no disk outside Tauri
+
   const m = await getManager();
   await m.reIndex();
 

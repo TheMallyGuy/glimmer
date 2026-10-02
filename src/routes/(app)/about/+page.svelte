@@ -1,9 +1,10 @@
 <script lang="ts">
   import { SettingGroup, SettingRow } from '$lib';
-  import { _ } from 'svelte-i18n';
+  import { useIntlayer } from "svelte-intlayer";
+  const aboutContent = useIntlayer("about");
 </script>
 
 <SettingGroup>
-  <SettingRow title={$_('about.glimmer')} description={$_('about.version')} />
-  <SettingRow title={$_('about.sourceCode')} href="#" />
+  <SettingRow title={$aboutContent.glimmer.value} description={$aboutContent.version.value} />
+  <SettingRow title={$aboutContent.sourceCode.value} href="#" />
 </SettingGroup>

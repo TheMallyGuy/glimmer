@@ -11,7 +11,8 @@
         setColor,
         setGradient,
     } from "$lib/iconEditor.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modsFontEditorContent = useIntlayer("modsFontEditor");
 
     const glyph = $derived(selectedGlyph());
     const edit = $derived(selectedEdit());
@@ -25,7 +26,7 @@
 
 <aside
     class="sticky top-0 flex w-[280px] shrink-0 flex-col gap-5 bg-row px-[18px] py-4"
-    aria-label={$_("modsFontEditor.inspector")}
+    aria-label={$modsFontEditorContent.inspector.value}
 >
     {#if glyph}
         <div class="flex flex-col items-center gap-1 bg-field py-5">
@@ -43,12 +44,12 @@
         </div>
 
         <section class="flex flex-col gap-2">
-            <h3 class={heading}>{$_("modsFontEditor.recolor")}</h3>
+            <h3 class={heading}>{$modsFontEditorContent.recolor.value}</h3>
             <div class="flex flex-wrap items-center gap-3">
                 <label class="flex items-center gap-2 text-[13px] text-muted">
                     {isGradient
-                        ? $_("modsFontEditor.gradientStart")
-                        : $_("modsFontEditor.flatColor")}
+                        ? $modsFontEditorContent.gradientStart.value
+                        : $modsFontEditorContent.flatColor.value}
                     <input
                         type="color"
                         class={swatch}
@@ -61,7 +62,7 @@
                     <label
                         class="flex items-center gap-2 text-[13px] text-muted"
                     >
-                        {$_("modsFontEditor.gradientEnd")}
+                        {$modsFontEditorContent.gradientEnd.value}
                         <input
                             type="color"
                             class={swatch}
@@ -73,32 +74,30 @@
             </div>
             <div class="flex items-center gap-2">
                 <Switch
-                    label={$_("modsFontEditor.gradient")}
+                    label={$modsFontEditorContent.gradient.value}
                     size="sm"
                     checked={isGradient}
                     disabled={!!edit?.art}
                     onchange={setGradient}
                 />
                 <span class="text-[13px] text-muted"
-                    >{$_("modsFontEditor.gradient")}</span
+                    >{$modsFontEditorContent.gradient.value}</span
                 >
             </div>
         </section>
 
         <section class="flex flex-col gap-2">
-            <h3 class={heading}>{$_("modsFontEditor.replaceArt")}</h3>
+            <h3 class={heading}>{$modsFontEditorContent.replaceArt.value}</h3>
             <p class="m-0 text-[13px] break-words text-muted">
                 {edit?.art
-                    ? $_("modsFontEditor.usingArt", {
-                          values: { file: baseName(edit.art.path) },
-                      })
-                    : $_("modsFontEditor.replaceNote")}
+                    ? $modsFontEditorContent.usingArt({ file: baseName(edit.art.path) }).value
+                    : $modsFontEditorContent.replaceNote.value}
             </p>
             <div>
                 <Button variant="secondary" size="sm" onclick={pickArt}>
                     {edit?.art
-                        ? $_("modsFontEditor.changeArt")
-                        : $_("modsFontEditor.chooseArt")}
+                        ? $modsFontEditorContent.changeArt.value
+                        : $modsFontEditorContent.chooseArt.value}
                 </Button>
             </div>
         </section>
@@ -110,12 +109,12 @@
                 disabled={!edit}
                 onclick={resetSelected}
             >
-                {$_("modsFontEditor.resetIcon")}
+                {$modsFontEditorContent.resetIcon.value}
             </Button>
         </div>
     {:else}
         <p class="m-0 py-6 text-center text-[13px] text-muted">
-            {$_("modsFontEditor.selectHint")}
+            {$modsFontEditorContent.selectHint.value}
         </p>
     {/if}
 </aside>

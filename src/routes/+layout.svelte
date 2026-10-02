@@ -6,14 +6,18 @@
   import { commands } from "$ts/bindings";
   import { message } from "@tauri-apps/plugin-dialog";
   import { exit } from "@tauri-apps/api/app";
-  import { isLoading, _ } from "svelte-i18n";
-  import { setupI18n } from "$ts/i18n";
+  import { isTauri } from "@tauri-apps/api/core";
+  import { setupIntlayer, useIntlayer } from "svelte-intlayer";
+  const rootLayoutContent = useIntlayer("rootLayout");
 
   let { children }: { children: Snippet } = $props();
 
-  setupI18n();
+  // starts the intlayer editor client (a no-op unless the editor is enabled)
+  setupIntlayer("en");
 
   onMount(async () => {
+    if (!isTauri()) return; // e.g. open in the intlayer editor, where there are no Tauri APIs
+
     await loadAppState();
     const bubble: boolean = await commands.isBubblestrap();
 
@@ -23,12 +27,10 @@
 
     if (bubble) {
       // see bubble.rs
-      await message($_("rootLayout.uninstallBubblestrap"));
+      await message($rootLayoutContent.uninstallBubblestrap.value);
       exit(1);
     }
   });
 </script>
 
-{#if !$isLoading}
-  {@render children()}
-{/if}
+{@render children()}

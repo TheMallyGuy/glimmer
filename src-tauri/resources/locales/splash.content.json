@@ -1,0 +1,30 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "splash",
+  "content": {
+    "checkingForUpdates": "Checking for updates",
+    "fetchingManifest": "Fetching manifest",
+    "downloadingClient": {
+      "nodeType": "insertion",
+      "insertion": "Downloading client ({{done}}/{{total}})"
+    },
+    "extractingClient": {
+      "nodeType": "insertion",
+      "insertion": "Extracting client ({{done}}/{{total}})"
+    },
+    "finishingInstallation": "Finishing installation",
+    "applyingMods": "Applying mods",
+    "downloadingModOriginals": {
+      "nodeType": "insertion",
+      "insertion": "Downloading mod originals ({{done}}/{{total}})"
+    },
+    "applyingFlags": "Applying flags",
+    "launching": {
+      "nodeType": "insertion",
+      "insertion": "Launching {{version}}"
+    },
+    "genericError": "Something went wrong. Please try again.",
+    "launchProgress": "Launch progress",
+    "prepare": "Preparing..."
+  }
+}

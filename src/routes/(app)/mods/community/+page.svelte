@@ -9,7 +9,9 @@
         type CommunitySource,
     } from "$ts/roblox/mod/community";
     import { installs, installCommunityMod } from "$lib/mods.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const commonContent = useIntlayer("common");
+    const modsCommunityContent = useIntlayer("modsCommunity");
 
     let all = $state<CommunityMod[]>([]);
     let failed = $state<CommunitySource[]>([]);
@@ -59,30 +61,30 @@
 
 {#if status === "loading"}
     <p class="m-0 bg-row px-[18px] py-8 text-sm text-muted" aria-live="polite">
-        {$_("modsCommunity.loading")}
+        {$modsCommunityContent.loading.value}
     </p>
 {:else if status === "error"}
     <div class="flex flex-col items-start gap-3 bg-row px-[18px] py-8">
         <p class="m-0 text-sm text-muted">
-            {$_("modsCommunity.loadError")}
+            {$modsCommunityContent.loadError.value}
         </p>
         <Button size="sm" onclick={() => load(true)}>
             <RotateCw size={16} strokeWidth={1.75} aria-hidden="true" />
-            {$_("common.tryAgain")}
+            {$commonContent.tryAgain.value}
         </Button>
     </div>
 {:else}
     <div class="flex flex-col gap-4">
         <div class="flex flex-wrap items-center gap-2">
             <SearchField
-                label={$_("modsCommunity.searchCommunityMods")}
+                label={$modsCommunityContent.searchCommunityMods.value}
                 bind:value={query}
                 width="260px"
             />
             <div
                 class="flex flex-wrap items-center gap-1"
                 role="group"
-                aria-label={$_("modsCommunity.filterGroupLabel")}
+                aria-label={$modsCommunityContent.filterGroupLabel.value}
             >
                 {#each sourceFilters as f (f.id)}
                     <button
@@ -95,32 +97,28 @@
                 {/each}
             </div>
             <span class="ml-auto text-[13px] text-muted"
-                >{$_("modsCommunity.shownOfAll", {
-                    values: { shown: shown.length, all: all.length },
-                })}</span
+                >{$modsCommunityContent.shownOfAll({ shown: shown.length, all: all.length }).value}</span
             >
         </div>
 
         {#if failed.length}
             <p class="m-0 text-[13px] text-accent">
-                {$_("modsCommunity.failedToLoad", {
-                    values: {
+                {$modsCommunityContent.failedToLoad({
                         libraries: failed
                             .map((s) => sourceNames[s])
                             .join(" and "),
-                    },
-                })}
+                    }).value}
                 <button
                     type="button"
                     class="cursor-pointer border-0 bg-transparent p-0 text-accent underline"
-                    onclick={() => load(true)}>{$_("common.tryAgain")}</button
+                    onclick={() => load(true)}>{$commonContent.tryAgain.value}</button
                 >
             </p>
         {/if}
 
         {#if shown.length === 0}
             <p class="m-0 bg-row px-[18px] py-8 text-sm text-muted">
-                {$_("modsCommunity.emptyNoMatch")}
+                {$modsCommunityContent.emptyNoMatch.value}
             </p>
         {:else}
             <ul
@@ -156,10 +154,8 @@
                             </h3>
                             <p class="m-0 truncate text-xs text-muted">
                                 {mod.author
-                                    ? $_("modsCommunity.byAuthor", {
-                                          values: { author: mod.author },
-                                      })
-                                    : $_("modsCommunity.unknownAuthor")}
+                                    ? $modsCommunityContent.byAuthor({ author: mod.author }).value
+                                    : $modsCommunityContent.unknownAuthor.value}
                             </p>
                             <p class="m-0 truncate text-xs text-muted">
                                 {sourceNames[mod.source]}
@@ -176,35 +172,33 @@
                                 disabled={state === "installing" ||
                                     state === "installed"}
                                 aria-label="{state === 'installed'
-                                    ? $_('modsCommunity.installedAriaLabel')
-                                    : $_(
-                                          'modsCommunity.installAriaLabel',
-                                      )} {mod.name}"
+                                    ? $modsCommunityContent.installedAriaLabel.value
+                                    : $modsCommunityContent.installAriaLabel.value} {mod.name}"
                                 onclick={() => installCommunityMod(mod)}
                             >
                                 {#if state === "installing"}
-                                    {$_("modsCommunity.installing")}
+                                    {$modsCommunityContent.installing.value}
                                 {:else if state === "installed"}
                                     <Check
                                         size={16}
                                         strokeWidth={1.75}
                                         aria-hidden="true"
                                     />
-                                    {$_("modsCommunity.installed")}
+                                    {$modsCommunityContent.installed.value}
                                 {:else if state === "failed"}
                                     <RotateCw
                                         size={16}
                                         strokeWidth={1.75}
                                         aria-hidden="true"
                                     />
-                                    {$_("modsCommunity.retryInstall")}
+                                    {$modsCommunityContent.retryInstall.value}
                                 {:else}
                                     <Download
                                         size={16}
                                         strokeWidth={1.75}
                                         aria-hidden="true"
                                     />
-                                    {$_("modsCommunity.install")}
+                                    {$modsCommunityContent.install.value}
                                 {/if}
                             </Button>
                         </div>

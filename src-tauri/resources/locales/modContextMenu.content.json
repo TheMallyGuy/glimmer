@@ -1,0 +1,12 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "modContextMenu",
+  "content": {
+    "modActions": "Mod actions",
+    "rename": "Rename",
+    "openFolder": "Open folder",
+    "moveToTop": "Move to top",
+    "moveToBottom": "Move to bottom",
+    "delete": "Delete"
+  }
+}

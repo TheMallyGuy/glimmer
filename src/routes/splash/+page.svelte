@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount, onDestroy } from "svelte";
   import { getCurrentWindow } from "@tauri-apps/api/window";
+  import { isTauri } from "@tauri-apps/api/core";
   import { listen, type UnlistenFn } from "@tauri-apps/api/event";
   import { join } from "@tauri-apps/api/path";
   import { page } from "$app/state";
@@ -26,10 +27,12 @@
   import { FastFlagManager } from "$ts/roblox/flags";
   import { flagsToObject } from "$lib/flags";
   import { commands } from "$ts/bindings";
-  import { _ } from "svelte-i18n";
   import { delay } from "$ts/utils";
   import { app } from "@tauri-apps/api";
   import { LocalAppEditor } from "$ts/roblox/localApp";
+  import { useIntlayer } from "svelte-intlayer";
+  const commonContent = useIntlayer("common");
+  const splashContent = useIntlayer("splash");
 
   // the chooser and the footer pass ?target=studio; anything else launches the player
   const isStudio = page.url.searchParams.get("target") === "studio";
@@ -45,11 +48,12 @@
     error?: string;
   }
 
-  let status = $state($_("splash.checkingForUpdates"));
+  let status = $state($splashContent.checkingForUpdates.value);
   let progress = $state<number | null>(null);
   let error = $state<string | null>(null);
 
-  const appWindow = getCurrentWindow();
+  // there is no window outside Tauri (e.g. in the intlayer editor)
+  const appWindow = isTauri() ? getCurrentWindow() : null;
   let unlisten: UnlistenFn | undefined;
 
   /** downloads, extracts and installs a client version, then marks it active */
@@ -66,23 +70,19 @@
       (p) => {
         switch (p.status) {
           case "fetchingManifest":
-            status = $_("splash.fetchingManifest");
+            status = $splashContent.fetchingManifest.value;
             progress = null;
             break;
           case "downloading":
-            status = $_("splash.downloadingClient", {
-              values: { done: p.done, total: p.total },
-            });
+            status = $splashContent.downloadingClient({ done: p.done, total: p.total }).value;
             progress = p.percent;
             break;
           case "extracting":
-            status = $_("splash.extractingClient", {
-              values: { done: p.done, total: p.total },
-            });
+            status = $splashContent.extractingClient({ done: p.done, total: p.total }).value;
             progress = p.percent;
             break;
           case "finishing":
-            status = $_("splash.finishingInstallation");
+            status = $splashContent.finishingInstallation.value;
             progress = null;
             break;
         }
@@ -110,11 +110,11 @@
     const launchStatus = status;
 
     if (!isStudio) {
-      status = $_("splash.applyingMods");
+      status = $splashContent.applyingMods.value;
       await loadMods();
       try {
         await applyMods((done, total, percent) => {
-          status = $_("splash.downloadingModOriginals", { values: { done, total } });
+          status = $splashContent.downloadingModOriginals({ done, total }).value;
           progress = percent;
         });
       } catch (e) {
@@ -126,7 +126,7 @@
     const ffm = await FastFlagManager.create(installPath);
 
     if (appState.fastflags.enabled) {
-      status = $_("splash.applyingFlags");
+      status = $splashContent.applyingFlags.value;
       try {
         await ffm.apply(flagsToObject(appState.fastflags.flags));
       } catch (e) {
@@ -136,7 +136,7 @@
       await ffm.disableFlags();
     }
 
-    status = $_("splash.prepare");
+    status = $splashContent.prepare.value;
 
     if (!isStudio) {
       commands.setFullscreenProp(
@@ -182,16 +182,14 @@
         const name = installName(latest, distribution);
         await downloadAndInstall(d, i, latest);
 
-        status = $_("splash.launching", { values: { version: name } });
+        status = $splashContent.launching({ version: name }).value;
 
         await launchInstall(await join(i.installationPath, name));
       } else {
         const active = i.getActiveVersion() ?? existingInstallations[0];
 
         if (appState.installations.disableRobloxUpgrade.enabled) {
-          status = $_("splash.launching", {
-            values: { version: active.version },
-          });
+          status = $splashContent.launching({ version: active.version }).value;
 
           await launchInstall(active.path);
         } else {
@@ -202,15 +200,13 @@
           );
 
           if (upToDate) {
-            status = $_("splash.launching", {
-              values: { version: upToDate.version },
-            });
+            status = $splashContent.launching({ version: upToDate.version }).value;
 
             await launchInstall(upToDate.path);
           } else {
             await downloadAndInstall(d, i, latest);
 
-            status = $_("splash.launching", { values: { version: name } });
+            status = $splashContent.launching({ version: name }).value;
 
             await launchInstall(await join(i.installationPath, name));
           }
@@ -223,21 +219,24 @@
       }
 
       // launched successfully: close just this window, not the whole app
-      await appWindow.close();
+      await appWindow?.close();
     } catch (e) {
       if (e instanceof Error) {
         error = e.message;
       } else if (typeof e === "string") {
         error = e;
       } else {
-        error = $_("splash.genericError");
+        error = $splashContent.genericError.value;
       }
     }
   }
 
   onMount(async () => {
+    // outside Tauri (e.g. the intlayer editor) there is nothing to install or launch
+    if (!isTauri()) return;
+
     sizeWindow(671, 329);
-    appWindow.setResizable(false);
+    appWindow?.setResizable(false);
 
     // the root layout also calls this, but its onMount races this page's --
     // load explicitly so settings like the VNG switch are in before we check
@@ -251,16 +250,16 @@
 
   function cancel() {
     if (error) {
-      appWindow.close();
+      appWindow?.close();
       return;
     }
-    appWindow.close();
+    appWindow?.close();
   }
 
   function retry() {
     error = null;
     progress = null;
-    status = $_("splash.checkingForUpdates");
+    status = $splashContent.checkingForUpdates.value;
     checkAndLaunch();
   }
 </script>
@@ -286,7 +285,7 @@
         class="h-11 cursor-pointer rounded-gl border-0 bg-tonal px-4 text-sm text-fg hover:bg-tonal-hover"
         onclick={retry}
       >
-        {$_("common.tryAgain")}
+        {$commonContent.tryAgain.value}
       </button>
     {/if}
     <button
@@ -294,7 +293,7 @@
       class="h-11 cursor-pointer rounded-gl border-0 bg-transparent px-4 text-sm text-fg-3 hover:bg-hover hover:text-fg"
       onclick={cancel}
     >
-      {error ? $_("common.close") : $_("common.cancel")}
+      {error ? $commonContent.close.value : $commonContent.cancel.value}
     </button>
   </div>
 
@@ -326,7 +325,7 @@
   <!-- Progress line: flush with the bottom edge -->
   <div
     role="progressbar"
-    aria-label={$_("splash.launchProgress")}
+    aria-label={$splashContent.launchProgress.value}
     aria-valuemin={0}
     aria-valuemax={100}
     aria-valuenow={progress ?? undefined}

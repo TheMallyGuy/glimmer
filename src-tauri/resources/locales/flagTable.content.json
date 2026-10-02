@@ -1,0 +1,59 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "flagTable",
+  "content": {
+    "filterFlags": "Filter flags",
+    "importJson": "Import JSON",
+    "addFlag": "Add flag",
+    "fastFlagsTable": "Fast Flags",
+    "columnName": "Name",
+    "columnValue": "Value",
+    "columnType": "Type",
+    "columnActions": "Actions",
+    "flagName": "Flag name",
+    "flagNamePlaceholder": "FFlagName",
+    "valueForFlag": {
+      "nodeType": "insertion",
+      "insertion": "Value for {{name}}"
+    },
+    "newFlagFallback": "new flag",
+    "valuePlaceholder": "Value",
+    "removeFlag": {
+      "nodeType": "insertion",
+      "insertion": "Remove {{name}}"
+    },
+    "removeFlagFallback": "flag",
+    "typeDuplicate": "Duplicate",
+    "typeBoolean": "Boolean",
+    "typeInteger": "Integer",
+    "typeString": "String",
+    "typeLog": "Log",
+    "typeUnknownPrefix": "Unknown prefix",
+    "typeEmpty": "—",
+    "emptyNoFlags": "No flags yet. Add one or import a JSON file.",
+    "emptyNoMatch": "No flags match that filter.",
+    "flagCount": {
+      "nodeType": "enumeration",
+      "enumeration": {
+        "1": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} flag"
+        },
+        "fallback": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} flags"
+        }
+      }
+    },
+    "exportJson": "Export JSON",
+    "resetAll": "Reset all",
+    "resetDialogTitle": "Reset all Fast Flags?",
+    "resetDialogBody": "This removes every flag you have set and restores the client defaults. You can’t undo this.",
+    "resetFlags": "Reset flags",
+    "importErrorPrefix": {
+      "nodeType": "insertion",
+      "insertion": "Couldn’t import {{file}}"
+    },
+    "importErrorFallback": "the file isn’t valid JSON."
+  }
+}

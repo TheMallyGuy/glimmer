@@ -1,4 +1,5 @@
 import type { Flag } from './flags';
+import { isTauri } from '@tauri-apps/api/core';
 import { Configuration } from '$ts/configuration';
 
 export const appState = $state({
@@ -89,6 +90,7 @@ function deepMerge(target: Record<string, unknown>, source: Record<string, unkno
 }
 
 export async function loadAppState() {
+    if (!isTauri()) return; // keep the defaults when the page runs outside Tauri
     const c = await Configuration.create();
     const text = await c.getAsText();
     if (text) deepMerge(appState, JSON.parse(text));

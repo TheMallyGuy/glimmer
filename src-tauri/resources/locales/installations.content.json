@@ -1,0 +1,26 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "installations",
+  "content": {
+    "parallelDownloads": "Parallel downloads",
+    "parallelDownloadsDescription": "How many packages to download at once.",
+    "forceReinstallRoblox": "Force reinstall Roblox",
+    "forceReinstallRobloxDescription": "Redownload the client fresh next time it launches.",
+    "disableRobloxUpgrades": "Disable Roblox upgrades",
+    "disableRobloxUpgradesDescription": "Keep the currently installed client version.",
+    "vngDistribution": "Roblox VNG",
+    "vngDistributionDescription": "DO NOT ENABLE THIS UNLESS YOUR ACCOUNT IS VNG. YOU WILL LOOSE YOUR ACCOUNT IF YOUR ROBLOX ACCOUNT IS NOT VNG.",
+    "vngWarningStepLabel": {
+      "nodeType": "insertion",
+      "insertion": "{{step}}/3"
+    },
+    "vngWarningTitle1": "Read this carefully",
+    "vngWarning1": "This is roblox VNG, a Vietnamese distribution of Roblox. Its was meant for Vietnamese users, If you logged your account in Roblox VNG. You will loose your account forever.",
+    "vngWarningTitle2": "Read this extra carefully",
+    "vngWarning2": "Are you sure your account is VNG? You can check by logging in your account and press buy robux, if you got redirect to an VNG payment website. Thats mean your account is VNG.",
+    "vngWarningTitle3": "Em chac chua?",
+    "vngWarning3": "Are you really sure? You can't undo if your account is in VNG.",
+    "vngWarningContinue": "Next",
+    "vngWarningConfirm": "Enable Roblox VNG"
+  }
+}

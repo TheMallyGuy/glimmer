@@ -1,4 +1,5 @@
-import { getCurrentWindow } from '@tauri-apps/api/window';
+import { isTauri } from '@tauri-apps/api/core';
+import { closeWindow } from '$lib/window';
 import { appState } from '$lib/appState.svelte';
 import { Configuration } from '$ts/configuration';
 import { openChooserWindow } from '$ts/windows/chooser';
@@ -13,17 +14,19 @@ export const prefs = $state({
 });
 
 export async function save() {
+  if (!isTauri()) return;
+
   const configuration = await Configuration.create();
   await configuration.saveRaw(JSON.stringify($state.snapshot(appState)));
 }
 
 export async function discard() {
   await openChooserWindow();
-  await getCurrentWindow().close();
+  await closeWindow();
 }
 
 export async function launch(target: string) {
   await save();
   await openSplashWindow(target)
-  await getCurrentWindow().close();
+  await closeWindow();
 }

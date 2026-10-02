@@ -6,7 +6,8 @@
         fontFamily,
         shownGlyphs,
     } from "$lib/iconEditor.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modsFontEditorContent = useIntlayer("modsFontEditor");
 </script>
 
 <ul
@@ -24,9 +25,7 @@
                     selected ? "bg-hover" : "bg-row hover:bg-hover",
                 )}
                 aria-pressed={selected}
-                aria-label={$_("modsFontEditor.editIcon", {
-                    values: { name: glyph.name },
-                })}
+                aria-label={$modsFontEditorContent.editIcon({ name: glyph.name }).value}
                 onclick={() => (editor.selected = glyph.name)}
             >
                 <span

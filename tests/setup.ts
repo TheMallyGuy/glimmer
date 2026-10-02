@@ -16,7 +16,7 @@ mock.module("@tauri-apps/api/path", () => ({
     join: async (...parts: string[]) => parts.filter(Boolean).join("/").replace(/\/{2,}/g, "/"),
 }));
 
-mock.module("@tauri-apps/api/core", () => ({ invoke }));
+mock.module("@tauri-apps/api/core", () => ({ invoke, isTauri: () => true }));
 mock.module("@tauri-apps/plugin-fs", () => fsModule);
 mock.module("@tauri-apps/plugin-log", () => logSpies);
 

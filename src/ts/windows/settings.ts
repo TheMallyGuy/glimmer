@@ -1,8 +1,12 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { goto } from '$app/navigation';
 
 const LABEL = 'settings';
 
 export async function openSettingsWindow() {
+    if (!isTauri()) return goto('/mods');
+
     const existing = await WebviewWindow.getByLabel(LABEL);
     if (existing) {
         await existing.unminimize();

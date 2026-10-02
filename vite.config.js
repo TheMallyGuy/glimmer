@@ -1,6 +1,7 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
+import { intlayer } from "vite-intlayer";
 import process from "node:process";
 import { resolve } from "node:path";
 
@@ -8,7 +9,8 @@ const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(() => ({
-  plugins: [tailwindcss(), sveltekit()],
+  // intlayer goes before sveltekit so content declarations are built first
+  plugins: [tailwindcss(), intlayer(), sveltekit()],
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent Vite from obscuring rust errors
@@ -18,6 +20,8 @@ export default defineConfig(() => ({
   server: {
     port: 1420,
     strictPort: true,
+    // intlayer's generated dictionaries live outside src
+    fs: { allow: [resolve("./.intlayer")] },
     host: host || "127.0.0.1",
     hmr: host ? { protocol: "ws", host, port: 1421 } : undefined,
     watch: {

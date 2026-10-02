@@ -3,19 +3,20 @@
     import { page } from "$app/state";
     import { InspiredBanner, cn } from "$lib";
     import { mods } from "$lib/mods.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modsLayoutContent = useIntlayer("modsLayout");
 
     let { children }: { children: Snippet } = $props();
 
     const views = $derived([
-        { href: "/mods/manage", label: $_("modsLayout.yourMods"), count: mods.list.length },
-        { href: "/mods/prebuilt", label: $_("modsLayout.builtIn") },
-        { href: "/mods/community", label: $_("modsLayout.community") },
-        { href: "/mods/font-editor", label: $_("modsLayout.fontEditor") },
+        { href: "/mods/manage", label: $modsLayoutContent.yourMods.value, count: mods.list.length },
+        { href: "/mods/prebuilt", label: $modsLayoutContent.builtIn.value },
+        { href: "/mods/community", label: $modsLayoutContent.community.value },
+        { href: "/mods/font-editor", label: $modsLayoutContent.fontEditor.value },
     ]);
 </script>
 
-<nav aria-label={$_("modsLayout.modViewsNav")} class="mb-5 flex gap-1">
+<nav aria-label={$modsLayoutContent.modViewsNav.value} class="mb-5 flex gap-1">
 
     {#each views as view (view.href)}
 

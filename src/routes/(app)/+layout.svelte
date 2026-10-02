@@ -4,6 +4,7 @@
   import { page } from "$app/state";
   import { goto } from "$app/navigation";
   import { getCurrentWindow } from "@tauri-apps/api/window";
+  import { isTauri } from "@tauri-apps/api/core";
   import { sizeWindow } from "$lib/window";
   import {
     Plug,
@@ -26,42 +27,45 @@
   import { installationsState } from "$lib/installations.svelte";
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const appLayoutContent = useIntlayer("appLayout");
+  const commonContent = useIntlayer("common");
 
   let { children }: { children: Snippet } = $props();
 
   const tabs: Tab[] = [
-    { id: "integrations", label: $_("appLayout.tabIntegrations"), icon: Plug },
-    { id: "mods", label: $_("appLayout.tabMods"), icon: Package },
-    { id: "flags", label: $_("appLayout.tabFastFlags"), icon: Flag },
-    { id: "installations", label: $_("appLayout.tabInstallations"), icon: HardDriveDownload },
-    { id: "about", label: $_("appLayout.tabAbout"), icon: Info },
+    { id: "integrations", label: $appLayoutContent.tabIntegrations.value, icon: Plug },
+    { id: "mods", label: $appLayoutContent.tabMods.value, icon: Package },
+    { id: "flags", label: $appLayoutContent.tabFastFlags.value, icon: Flag },
+    { id: "installations", label: $appLayoutContent.tabInstallations.value, icon: HardDriveDownload },
+    { id: "about", label: $appLayoutContent.tabAbout.value, icon: Info },
   ];
 
   const titles: Record<string, [string, string]> = {
     integrations: [
-      $_("appLayout.tabIntegrations"),
-      $_("appLayout.integrationsBlurb"),
+      $appLayoutContent.tabIntegrations.value,
+      $appLayoutContent.integrationsBlurb.value,
     ],
     mods: [
-      $_("appLayout.tabMods"),
-      $_("appLayout.modsBlurb"),
+      $appLayoutContent.tabMods.value,
+      $appLayoutContent.modsBlurb.value,
     ],
     flags: [
-      $_("appLayout.tabFastFlags"),
-      $_("appLayout.flagsBlurb"),
+      $appLayoutContent.tabFastFlags.value,
+      $appLayoutContent.flagsBlurb.value,
     ],
     installations: [
-      $_("appLayout.tabInstallations"),
-      $_("appLayout.installationsBlurb"),
+      $appLayoutContent.tabInstallations.value,
+      $appLayoutContent.installationsBlurb.value,
     ],
-    about: [$_("appLayout.tabAbout"), $_("appLayout.aboutBlurb")],
+    about: [$appLayoutContent.tabAbout.value, $appLayoutContent.aboutBlurb.value],
   };
 
   const section = $derived(page.url.pathname.split("/")[1] || "mods");
   const [heading, blurb] = $derived(titles[section] ?? ["", ""]);
 
-  const appWindow = getCurrentWindow();
+  // there is no window outside Tauri (e.g. in the intlayer editor)
+  const appWindow = isTauri() ? getCurrentWindow() : null;
 
   const activeVersion = $derived(
     installationsState.versions.find((v) => v.active),
@@ -74,7 +78,7 @@
 
   onMount(async () => {
     sizeWindow(1184, 834);
-    appWindow.setResizable(true);
+    appWindow?.setResizable(true);
 
     stopWatching = await watchInstallations();
   });
@@ -92,18 +96,18 @@
         class="pointer-events-none"
       />
       <div data-tauri-drag-region class="h-full grow"></div>
-      <SearchField label={$_("appLayout.searchAllSettings")} bind:value={prefs.query} />
+      <SearchField label={$appLayoutContent.searchAllSettings.value} bind:value={prefs.query} />
       <IconButton
-        label={$_("common.minimize")}
+        label={$commonContent.minimize.value}
         variant="ghost"
-        onclick={() => appWindow.minimize()}
+        onclick={() => appWindow?.minimize()}
       >
         <Minus size={14} strokeWidth={1.5} />
       </IconButton>
       <IconButton
-        label={$_("common.close")}
+        label={$commonContent.close.value}
         variant="ghost"
-        onclick={() => appWindow.close()}
+        onclick={() => appWindow?.close()}
       >
         <X size={14} strokeWidth={1.5} />
       </IconButton>
@@ -112,7 +116,7 @@
       {tabs}
       value={section}
       onchange={(id) => goto(`/${id}`)}
-      label={$_("appLayout.settingsSections")}
+      label={$appLayoutContent.settingsSections.value}
       class="px-[18px]"
     />
   </header>
@@ -131,22 +135,22 @@
 
   <footer class="flex h-16 shrink-0 items-center gap-1 bg-footer pr-6 pl-8">
     <span class="grow text-xs text-muted">{bottomVerionText}</span>
-    <Button variant="ghost" onclick={discard}>{$_("common.discard")}</Button>
-    <Button onclick={save}>{$_("common.save")}</Button>
+    <Button variant="ghost" onclick={discard}>{$commonContent.discard.value}</Button>
+    <Button onclick={save}>{$commonContent.save.value}</Button>
     <SplitButton
       class="ml-1"
-      label={$_("appLayout.saveAndLaunch")}
+      label={$appLayoutContent.saveAndLaunch.value}
       bind:value={prefs.target}
       options={[
         {
           value: "player",
-          label: $_("common.player"),
-          description: $_("appLayout.launchGame"),
+          label: $commonContent.player.value,
+          description: $appLayoutContent.launchGame.value,
         },
         {
           value: "studio",
-          label: $_("common.studio"),
-          description: $_("appLayout.launchStudioDescription"),
+          label: $commonContent.studio.value,
+          description: $appLayoutContent.launchStudioDescription.value,
         },
       ]}
       onclick={launch}

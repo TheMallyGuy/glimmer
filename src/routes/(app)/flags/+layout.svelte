@@ -3,31 +3,32 @@
   import { page } from "$app/state";
   import { SettingGroup, SettingRow, Switch, cn } from "$lib";
   import { appState } from "$lib/appState.svelte";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const flagsLayoutContent = useIntlayer("flagsLayout");
 
   let { children }: { children: Snippet } = $props();
 
   const views = [
-    { href: "/flags/editor", label: $_("flagsLayout.viewEditor") },
-    { href: "/flags/presets", label: $_("flagsLayout.viewPresets") },
+    { href: "/flags/editor", label: $flagsLayoutContent.viewEditor.value },
+    { href: "/flags/presets", label: $flagsLayoutContent.viewPresets.value },
   ];
 </script>
 
 <SettingGroup>
   <SettingRow
-    title={$_("flagsLayout.enableFastFlags")}
-    description={$_("flagsLayout.enableFastFlagsDescription")}
+    title={$flagsLayoutContent.enableFastFlags.value}
+    description={$flagsLayoutContent.enableFastFlagsDescription.value}
   >
     {#snippet control()}
       <Switch
-        label={$_("flagsLayout.applyOnLaunch")}
+        label={$flagsLayoutContent.applyOnLaunch.value}
         bind:checked={appState.fastflags.enabled}
       />
     {/snippet}
   </SettingRow>
 </SettingGroup>
 
-<nav aria-label={$_("flagsLayout.flagViewsNav")} class="my-5 flex gap-1">
+<nav aria-label={$flagsLayoutContent.flagViewsNav.value} class="my-5 flex gap-1">
   {#each views as view (view.href)}
     {@const current = page.url.pathname.startsWith(view.href)}
     <a

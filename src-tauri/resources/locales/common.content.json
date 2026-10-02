@@ -1,0 +1,16 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "common",
+  "content": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "minimize": "Minimize",
+    "discard": "Discard",
+    "save": "Save",
+    "tryAgain": "Try again",
+    "remove": "Remove",
+    "default": "Default",
+    "player": "Player",
+    "studio": "Studio"
+  }
+}

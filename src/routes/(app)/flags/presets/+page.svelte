@@ -2,7 +2,9 @@
   import { SettingGroup, SettingRow, Switch, Dropdown, TextField } from "$lib";
   import { appState } from "$lib/appState.svelte";
   import { getFlagValue, setFlagValue } from "$lib/flags";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const commonContent = useIntlayer("common");
+  const flagsPresetsContent = useIntlayer("flagsPresets");
 
   const flags = appState.fastflags.flags;
 
@@ -35,7 +37,7 @@
     { value: "8", label: "x8" },
   ];
   const textureItems = [
-    { value: "-1", label: $_("common.default") },
+    { value: "-1", label: $commonContent.default.value },
     { value: "0", label: "0" },
     { value: "1", label: "1" },
     { value: "2", label: "2" },
@@ -43,10 +45,10 @@
     { value: "4", label: "4" },
   ];
   const graphicsApiItems = [
-    { value: "default", label: $_("common.default") },
-    { value: "d3d11", label: $_("flagsPresets.graphicsApiDirect3D11") },
-    { value: "vulkan", label: $_("flagsPresets.graphicsApiVulkan") },
-    { value: "opengl", label: $_("flagsPresets.graphicsApiOpenGL") },
+    { value: "default", label: $commonContent.default.value },
+    { value: "d3d11", label: $flagsPresetsContent.graphicsApiDirect3D11.value },
+    { value: "vulkan", label: $flagsPresetsContent.graphicsApiVulkan.value },
+    { value: "opengl", label: $flagsPresetsContent.graphicsApiOpenGL.value },
   ];
 
   const altEnterFullscreen = $derived(
@@ -110,26 +112,26 @@
 </script>
 
 <div class="flex flex-col gap-0.5">
-  <SettingGroup label={$_("flagsPresets.geometryGroup")}>
+  <SettingGroup label={$flagsPresetsContent.geometryGroup.value}>
     <SettingRow
-      title={$_("flagsPresets.lowMeshQuality")}
-      description={$_("flagsPresets.lowMeshQualityDescription")}
+      title={$flagsPresetsContent.lowMeshQuality.value}
+      description={$flagsPresetsContent.lowMeshQualityDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("flagsPresets.lowMeshQuality")}
+          label={$flagsPresetsContent.lowMeshQuality.value}
           checked={lowMeshQuality}
           onchange={setLowMeshQuality}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("flagsPresets.pauseVoxelizer")}
-      description={$_("flagsPresets.pauseVoxelizerDescription")}
+      title={$flagsPresetsContent.pauseVoxelizer.value}
+      description={$flagsPresetsContent.pauseVoxelizerDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("flagsPresets.pauseVoxelizer")}
+          label={$flagsPresetsContent.pauseVoxelizer.value}
           checked={pauseVoxelizer}
           onchange={(v) =>
             setFlagValue(flags, VOXELIZER_KEY, v ? "true" : "false")}
@@ -138,14 +140,14 @@
     </SettingRow>
   </SettingGroup>
 
-  <SettingGroup label={$_("flagsPresets.renderingGroup")}>
+  <SettingGroup label={$flagsPresetsContent.renderingGroup.value}>
     <SettingRow
-      title={$_("flagsPresets.preferredGraphicsApi")}
-      description={$_("flagsPresets.preferredGraphicsApiDescription")}
+      title={$flagsPresetsContent.preferredGraphicsApi.value}
+      description={$flagsPresetsContent.preferredGraphicsApiDescription.value}
     >
       {#snippet control()}
         <Dropdown
-          label={$_("flagsPresets.preferredGraphicsApi")}
+          label={$flagsPresetsContent.preferredGraphicsApi.value}
           size="sm"
           width="160px"
           options={graphicsApiItems}
@@ -154,10 +156,10 @@
         />
       {/snippet}
     </SettingRow>
-    <SettingRow title={$_("flagsPresets.msaaSamples")} description={$_("flagsPresets.msaaSamplesDescription")}>
+    <SettingRow title={$flagsPresetsContent.msaaSamples.value} description={$flagsPresetsContent.msaaSamplesDescription.value}>
       {#snippet control()}
         <Dropdown
-          label={$_("flagsPresets.msaaSamples")}
+          label={$flagsPresetsContent.msaaSamples.value}
           size="sm"
           width="120px"
           options={msaaItems}
@@ -167,12 +169,12 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("flagsPresets.textureQualityOverride")}
-      description={$_("flagsPresets.textureQualityOverrideDescription")}
+      title={$flagsPresetsContent.textureQualityOverride.value}
+      description={$flagsPresetsContent.textureQualityOverrideDescription.value}
     >
       {#snippet control()}
         <Dropdown
-          label={$_("flagsPresets.textureQualityOverride")}
+          label={$flagsPresetsContent.textureQualityOverride.value}
           size="sm"
           width="140px"
           options={textureItems}
@@ -182,36 +184,36 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("flagsPresets.graySky")}
-      description={$_("flagsPresets.graySkyDescription")}
+      title={$flagsPresetsContent.graySky.value}
+      description={$flagsPresetsContent.graySkyDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("flagsPresets.graySky")}
+          label={$flagsPresetsContent.graySky.value}
           checked={graySky}
           onchange={(v) => setFlagValue(flags, SKY_KEY, v ? "true" : "false")}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("flagsPresets.disableDpiScaling")}
-      description={$_("flagsPresets.disableDpiScalingDescription")}
+      title={$flagsPresetsContent.disableDpiScaling.value}
+      description={$flagsPresetsContent.disableDpiScalingDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("flagsPresets.disableDpiScaling")}
+          label={$flagsPresetsContent.disableDpiScaling.value}
           checked={disableDpiScale}
           onchange={(v) => setFlagValue(flags, DPI_KEY, v ? "true" : "false")}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("flagsPresets.renderQualityLevelOverride")}
-      description={$_("flagsPresets.renderQualityLevelOverrideDescription")}
+      title={$flagsPresetsContent.renderQualityLevelOverride.value}
+      description={$flagsPresetsContent.renderQualityLevelOverrideDescription.value}
     >
       {#snippet control()}
         <TextField
-          label={$_("flagsPresets.renderQualityLevelOverride")}
+          label={$flagsPresetsContent.renderQualityLevelOverride.value}
           class="w-[120px]"
           value={frmQualityOverride}
           oninput={(e) =>
@@ -221,14 +223,14 @@
     </SettingRow>
   </SettingGroup>
 
-  <SettingGroup label={$_("flagsPresets.grassGroup")}>
+  <SettingGroup label={$flagsPresetsContent.grassGroup.value}>
     <SettingRow
-      title={$_("flagsPresets.maxGrassDistance")}
-      description={$_("flagsPresets.maxGrassDistanceDescription")}
+      title={$flagsPresetsContent.maxGrassDistance.value}
+      description={$flagsPresetsContent.maxGrassDistanceDescription.value}
     >
       {#snippet control()}
         <TextField
-          label={$_("flagsPresets.maxGrassDistance")}
+          label={$flagsPresetsContent.maxGrassDistance.value}
           class="w-[120px]"
           value={maxGrassDistance}
           oninput={(e) =>
@@ -237,12 +239,12 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("flagsPresets.minGrassDistance")}
-      description={$_("flagsPresets.minGrassDistanceDescription")}
+      title={$flagsPresetsContent.minGrassDistance.value}
+      description={$flagsPresetsContent.minGrassDistanceDescription.value}
     >
       {#snippet control()}
         <TextField
-          label={$_("flagsPresets.minGrassDistance")}
+          label={$flagsPresetsContent.minGrassDistance.value}
           class="w-[120px]"
           value={minGrassDistance}
           oninput={(e) =>
@@ -251,12 +253,12 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("flagsPresets.grassMotionFactor")}
-      description={$_("flagsPresets.grassMotionFactorDescription")}
+      title={$flagsPresetsContent.grassMotionFactor.value}
+      description={$flagsPresetsContent.grassMotionFactorDescription.value}
     >
       {#snippet control()}
         <TextField
-          label={$_("flagsPresets.grassMotionFactor")}
+          label={$flagsPresetsContent.grassMotionFactor.value}
           class="w-[120px]"
           value={grassMotionFactor}
           oninput={(e) =>
@@ -266,14 +268,14 @@
     </SettingRow>
   </SettingGroup>
 
-  <SettingGroup label={$_("flagsPresets.windowGroup")}>
+  <SettingGroup label={$flagsPresetsContent.windowGroup.value}>
     <SettingRow
-      title={$_("flagsPresets.handleAltEnter")}
-      description={$_("flagsPresets.handleAltEnterDescription")}
+      title={$flagsPresetsContent.handleAltEnter.value}
+      description={$flagsPresetsContent.handleAltEnterDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("flagsPresets.handleAltEnter")}
+          label={$flagsPresetsContent.handleAltEnter.value}
           checked={altEnterFullscreen}
           onchange={(v) =>
             setFlagValue(flags, ALT_ENTER_KEY, v ? "true" : "false")}

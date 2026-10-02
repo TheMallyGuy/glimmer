@@ -1,0 +1,12 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "flagsLayout",
+  "content": {
+    "enableFastFlags": "Enable Fast Flags",
+    "enableFastFlagsDescription": "apply fast flag i guess",
+    "applyOnLaunch": "Apply Fast Flags on launch",
+    "viewEditor": "Editor",
+    "viewPresets": "Presets",
+    "flagViewsNav": "Fast Flag views"
+  }
+}

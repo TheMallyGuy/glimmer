@@ -9,7 +9,8 @@
 <script lang="ts">
   import { ArrowRight, ChevronDown, Check } from "@lucide/svelte";
   import { cn } from "../utils";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const splitButtonContent = useIntlayer("splitButton");
 
   interface Props {
     /** Main action text, e.g. "Save and launch". */
@@ -108,7 +109,7 @@
   <button
     bind:this={toggle}
     type="button"
-    aria-label={$_("splitButton.launchTargetWithValue", { values: { target: current?.label } })}
+    aria-label={$splitButtonContent.launchTargetWithValue({ target: current?.label }).value}
     aria-haspopup="menu"
     aria-expanded={open}
     aria-controls="{uid}-menu"
@@ -123,7 +124,7 @@
     <div
       id="{uid}-menu"
       role="menu"
-      aria-label={$_("splitButton.launchTarget")}
+      aria-label={$splitButtonContent.launchTarget.value}
       tabindex="-1"
       class={cn(
         "absolute right-0 z-30 flex w-[220px] flex-col rounded-gl bg-menu p-1 shadow-menu outline-none",

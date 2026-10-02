@@ -1,7 +1,8 @@
 <script lang="ts">
     import { Menu, type MenuItem } from "$lib";
     import type { Mod } from "$lib/mods.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modContextMenuContent = useIntlayer("modContextMenu");
 
     interface Props {
         open?: boolean;
@@ -35,16 +36,16 @@
         if (!mod) return [];
         const m = mod;
         return [
-            { label: $_("modContextMenu.rename"), shortcut: "F2", onselect: () => onRename(m) },
-            { label: $_("modContextMenu.openFolder"), onselect: () => onOpenFolder(m) },
+            { label: $modContextMenuContent.rename.value, shortcut: "F2", onselect: () => onRename(m) },
+            { label: $modContextMenuContent.openFolder.value, onselect: () => onOpenFolder(m) },
             {
-                label: $_("modContextMenu.moveToTop"),
+                label: $modContextMenuContent.moveToTop.value,
                 separator: true,
                 onselect: () => onMoveTop(m),
             },
-            { label: $_("modContextMenu.moveToBottom"), onselect: () => onMoveBottom(m) },
+            { label: $modContextMenuContent.moveToBottom.value, onselect: () => onMoveBottom(m) },
             {
-                label: $_("modContextMenu.delete"),
+                label: $modContextMenuContent.delete.value,
                 shortcut: "Del",
                 danger: true,
                 separator: true,
@@ -54,4 +55,4 @@
     });
 </script>
 
-<Menu bind:open {x} {y} {items} label={$_("modContextMenu.modActions")} {returnFocus} />
+<Menu bind:open {x} {y} {items} label={$modContextMenuContent.modActions.value} {returnFocus} />

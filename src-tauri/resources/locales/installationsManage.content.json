@@ -1,0 +1,62 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "installationsManage",
+  "content": {
+    "installedVersions": "Installed versions",
+    "versionCount": {
+      "nodeType": "enumeration",
+      "enumeration": {
+        "1": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} version installed"
+        },
+        "fallback": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} versions installed"
+        }
+      }
+    },
+    "active": "Active",
+    "vngTag": "VNG",
+    "setActive": "Set active",
+    "openFolder": "Open folder",
+    "openFolderForVersion": {
+      "nodeType": "insertion",
+      "insertion": "Open folder for {{version}}"
+    },
+    "delete": "Delete",
+    "deleteVersion": {
+      "nodeType": "insertion",
+      "insertion": "Delete {{version}}"
+    },
+    "cantDeleteActive": "Switch to another version before deleting this one.",
+    "emptyNoInstallations": "No installations yet. Add one to get started.",
+    "addInstallation": "Add installation",
+    "versionHash": "Version hash",
+    "versionHashPlaceholder": "[version hash]",
+    "versionHashHint": "Leave blank to install the latest version.",
+    "installAsVng": "Install from VNG Games",
+    "installAsVngHint": "Download Roblox's Vietnamese distribution instead of the global client.",
+    "alreadyInstalled": {
+      "nodeType": "insertion",
+      "insertion": "{{version}} is already installed."
+    },
+    "fetchingManifest": "Fetching manifest",
+    "downloadingClient": {
+      "nodeType": "insertion",
+      "insertion": "Downloading client ({{done}}/{{total}})"
+    },
+    "extractingClient": {
+      "nodeType": "insertion",
+      "insertion": "Extracting client ({{done}}/{{total}})"
+    },
+    "finishingInstallation": "Finishing installation",
+    "install": "Install",
+    "deleteInstallationTitle": "Delete installation",
+    "deleteInstallationBody": {
+      "nodeType": "insertion",
+      "insertion": "This removes {{version}} from disk. This can't be undone."
+    },
+    "settingsGroup": "Download settings"
+  }
+}

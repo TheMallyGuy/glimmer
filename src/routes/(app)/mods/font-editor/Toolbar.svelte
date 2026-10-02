@@ -1,18 +1,19 @@
 <script lang="ts">
     import { Dropdown, SearchField } from "$lib";
     import { editor, selectFont, shownGlyphs } from "$lib/iconEditor.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modsFontEditorContent = useIntlayer("modsFontEditor");
 </script>
 
 <div class="flex flex-wrap items-center gap-2">
     <SearchField
-        label={$_("modsFontEditor.searchIcons")}
+        label={$modsFontEditorContent.searchIcons.value}
         bind:value={editor.query}
         width="260px"
     />
     {#if editor.fonts.length > 1}
         <Dropdown
-            label={$_("modsFontEditor.fontLabel")}
+            label={$modsFontEditorContent.fontLabel.value}
             size="sm"
             width="180px"
             options={editor.fonts.map((f) => ({
@@ -24,8 +25,6 @@
         />
     {/if}
     <span class="ml-auto text-[13px] text-muted">
-        {$_("modsFontEditor.iconCount", {
-            values: { shown: shownGlyphs().length, all: editor.glyphs.length },
-        })}
+        {$modsFontEditorContent.iconCount({ shown: shownGlyphs().length, all: editor.glyphs.length }).value}
     </span>
 </div>

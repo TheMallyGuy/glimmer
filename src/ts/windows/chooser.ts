@@ -1,8 +1,12 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { goto } from '$app/navigation';
 
 const LABEL = 'main';
 
 export async function openChooserWindow() {
+    if (!isTauri()) return goto('/choose');
+
     const existing = await WebviewWindow.getByLabel(LABEL);
     if (existing) {
         await existing.unminimize();

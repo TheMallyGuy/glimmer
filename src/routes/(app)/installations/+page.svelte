@@ -28,7 +28,10 @@
   import { openPath } from "@tauri-apps/plugin-opener";
   import { error as logError } from "@tauri-apps/plugin-log";
   import { Plus, FolderOpen, Trash2 } from "@lucide/svelte";
-  import { _ } from "svelte-i18n";
+  import { useIntlayer } from "svelte-intlayer";
+  const commonContent = useIntlayer("common");
+  const installationsContent = useIntlayer("installations");
+  const installationsManageContent = useIntlayer("installationsManage");
 
   const concurrencyOptions = [1, 2, 3, 4, 5, 6, 8].map((n) => ({
     value: String(n),
@@ -126,9 +129,7 @@
       const name = installName(version, distribution);
 
       if (installationsState.versions.some((v) => v.version === name)) {
-        installError = $_("installationsManage.alreadyInstalled", {
-          values: { version: name },
-        });
+        installError = $installationsManageContent.alreadyInstalled({ version: name }).value;
         return;
       }
 
@@ -143,23 +144,19 @@
         (p: InstallProgress) => {
           switch (p.status) {
             case "fetchingManifest":
-              installStatus = $_("installationsManage.fetchingManifest");
+              installStatus = $installationsManageContent.fetchingManifest.value;
               installProgress = null;
               break;
             case "downloading":
-              installStatus = $_("installationsManage.downloadingClient", {
-                values: { done: p.done, total: p.total },
-              });
+              installStatus = $installationsManageContent.downloadingClient({ done: p.done, total: p.total }).value;
               installProgress = p.percent;
               break;
             case "extracting":
-              installStatus = $_("installationsManage.extractingClient", {
-                values: { done: p.done, total: p.total },
-              });
+              installStatus = $installationsManageContent.extractingClient({ done: p.done, total: p.total }).value;
               installProgress = p.percent;
               break;
             case "finishing":
-              installStatus = $_("installationsManage.finishingInstallation");
+              installStatus = $installationsManageContent.finishingInstallation.value;
               installProgress = null;
               break;
           }
@@ -181,24 +178,22 @@
     <div class="flex items-center gap-1">
       <p class="m-0 grow text-[13px] text-muted">
         {#if installationsState.versions.length}
-          {$_("installationsManage.versionCount", {
-            values: { count: installationsState.versions.length },
-          })}
+          {$installationsManageContent.versionCount(installationsState.versions.length)({ count: installationsState.versions.length }).value}
         {/if}
       </p>
       <Button variant="primary" size="sm" onclick={openAdd}>
         <Plus size={16} strokeWidth={1.75} aria-hidden="true" />
-        {$_("installationsManage.addInstallation")}
+        {$installationsManageContent.addInstallation.value}
       </Button>
     </div>
 
     {#if installationsState.versions.length === 0}
       <div class="flex flex-col items-start gap-3 bg-row px-[18px] py-8">
         <p class="m-0 text-sm text-muted">
-          {$_("installationsManage.emptyNoInstallations")}
+          {$installationsManageContent.emptyNoInstallations.value}
         </p>
         <Button size="sm" onclick={openAdd}>
-          {$_("installationsManage.addInstallation")}
+          {$installationsManageContent.addInstallation.value}
         </Button>
       </div>
     {:else}
@@ -212,12 +207,12 @@
                 >
                 {#if entry.active}
                   <span class="shrink-0 text-xs text-accent"
-                    >{$_("installationsManage.active")}</span
+                    >{$installationsManageContent.active.value}</span
                   >
                 {/if}
                 {#if entry.vng}
                   <span class="shrink-0 text-xs text-muted"
-                    >{$_("installationsManage.vngTag")}</span
+                    >{$installationsManageContent.vngTag.value}</span
                   >
                 {/if}
               </div>
@@ -230,13 +225,11 @@
                   size="sm"
                   onclick={() => setActive(entry)}
                 >
-                  {$_("installationsManage.setActive")}
+                  {$installationsManageContent.setActive.value}
                 </Button>
               {/if}
               <IconButton
-                label={$_("installationsManage.openFolderForVersion", {
-                  values: { version: entry.version },
-                })}
+                label={$installationsManageContent.openFolderForVersion({ version: entry.version }).value}
                 variant="ghost"
                 size="sm"
                 onclick={() => openFolder(entry)}
@@ -245,10 +238,8 @@
               </IconButton>
               <IconButton
                 label={entry.active
-                  ? $_("installationsManage.cantDeleteActive")
-                  : $_("installationsManage.deleteVersion", {
-                      values: { version: entry.version },
-                    })}
+                  ? $installationsManageContent.cantDeleteActive.value
+                  : $installationsManageContent.deleteVersion({ version: entry.version }).value}
                 variant="ghost"
                 size="sm"
                 disabled={entry.active}
@@ -263,14 +254,14 @@
     {/if}
   </section>
 
-  <SettingGroup label={$_("installationsManage.settingsGroup")}>
+  <SettingGroup label={$installationsManageContent.settingsGroup.value}>
     <SettingRow
-      title={$_("installations.parallelDownloads")}
-      description={$_("installations.parallelDownloadsDescription")}
+      title={$installationsContent.parallelDownloads.value}
+      description={$installationsContent.parallelDownloadsDescription.value}
     >
       {#snippet control()}
         <Dropdown
-          label={$_("installations.parallelDownloads")}
+          label={$installationsContent.parallelDownloads.value}
           size="sm"
           width="180px"
           value={String(appState.installations.parallelDownloader.value)}
@@ -281,34 +272,34 @@
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("installations.forceReinstallRoblox")}
-      description={$_("installations.forceReinstallRobloxDescription")}
+      title={$installationsContent.forceReinstallRoblox.value}
+      description={$installationsContent.forceReinstallRobloxDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("installations.forceReinstallRoblox")}
+          label={$installationsContent.forceReinstallRoblox.value}
           bind:checked={appState.installations.forceReinstallRoblox.enabled}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("installations.disableRobloxUpgrades")}
-      description={$_("installations.disableRobloxUpgradesDescription")}
+      title={$installationsContent.disableRobloxUpgrades.value}
+      description={$installationsContent.disableRobloxUpgradesDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("installations.disableRobloxUpgrades")}
+          label={$installationsContent.disableRobloxUpgrades.value}
           bind:checked={appState.installations.disableRobloxUpgrade.enabled}
         />
       {/snippet}
     </SettingRow>
     <SettingRow
-      title={$_("installations.vngDistribution")}
-      description={$_("installations.vngDistributionDescription")}
+      title={$installationsContent.vngDistribution.value}
+      description={$installationsContent.vngDistributionDescription.value}
     >
       {#snippet control()}
         <Switch
-          label={$_("installations.vngDistribution")}
+          label={$installationsContent.vngDistribution.value}
           bind:checked={vngSwitchChecked}
           onchange={onVngToggle}
         />
@@ -319,7 +310,7 @@
 
 <Dialog
   bind:open={addOpen}
-  title={$_("installationsManage.addInstallation")}
+  title={$installationsManageContent.addInstallation.value}
   closeOnBackdrop={!installing}
 >
   {#if installing}
@@ -352,22 +343,22 @@
       <p class="m-0 mb-1 text-[13px] text-danger">{installError}</p>
     {/if}
     <TextField
-      label={$_("installationsManage.versionHash")}
-      placeholder={$_("installationsManage.versionHashPlaceholder")}
-      hint={$_("installationsManage.versionHashHint")}
+      label={$installationsManageContent.versionHash.value}
+      placeholder={$installationsManageContent.versionHashPlaceholder.value}
+      hint={$installationsManageContent.versionHashHint.value}
       bind:value={versionHash}
     />
     <div class="mt-3 flex items-center justify-between gap-4">
       <div class="flex flex-col gap-[3px]">
         <span class="text-[13px] text-fg-2">
-          {$_("installationsManage.installAsVng")}
+          {$installationsManageContent.installAsVng.value}
         </span>
         <span class="text-[13px] text-muted">
-          {$_("installationsManage.installAsVngHint")}
+          {$installationsManageContent.installAsVngHint.value}
         </span>
       </div>
       <Switch
-        label={$_("installationsManage.installAsVng")}
+        label={$installationsManageContent.installAsVng.value}
         bind:checked={installAsVng}
       />
     </div>
@@ -375,10 +366,10 @@
   {#snippet actions()}
     {#if !installing}
       <Button variant="ghost" onclick={() => (addOpen = false)}>
-        {$_("common.cancel")}
+        {$commonContent.cancel.value}
       </Button>
       <Button variant="primary" onclick={startInstall}>
-        {$_("installationsManage.install")}
+        {$installationsManageContent.install.value}
       </Button>
     {/if}
   {/snippet}
@@ -386,19 +377,17 @@
 
 <Dialog
   bind:open={deleteConfirmOpen}
-  title={$_("installationsManage.deleteInstallationTitle")}
+  title={$installationsManageContent.deleteInstallationTitle.value}
 >
   <p class="m-0">
-    {$_("installationsManage.deleteInstallationBody", {
-      values: { version: deleteTarget?.version ?? "" },
-    })}
+    {$installationsManageContent.deleteInstallationBody({ version: deleteTarget?.version ?? "" }).value}
   </p>
   {#snippet actions()}
     <Button variant="ghost" onclick={() => (deleteConfirmOpen = false)}>
-      {$_("common.cancel")}
+      {$commonContent.cancel.value}
     </Button>
     <Button variant="danger" onclick={confirmDelete}>
-      {$_("installationsManage.delete")}
+      {$installationsManageContent.delete.value}
     </Button>
   {/snippet}
 </Dialog>
@@ -406,57 +395,57 @@
 {#if vngWarningStep === 1}
   <Dialog
     open
-    title={$_("installations.vngWarningTitle1")}
+    title={$installationsContent.vngWarningTitle1.value}
     onclose={onVngDialogClose}
   >
     <p class="m-0 mb-1 text-xs text-muted">
-      {$_("installations.vngWarningStepLabel", { values: { step: 1 } })}
+      {$installationsContent.vngWarningStepLabel({ step: 1 }).value}
     </p>
-    <p class="m-0 text-accent">{$_("installations.vngWarning1")}</p>
+    <p class="m-0 text-accent">{$installationsContent.vngWarning1.value}</p>
     {#snippet actions()}
       <Button variant="ghost" onclick={vngWarningContinue}>
-        {$_("installations.vngWarningContinue")}
+        {$installationsContent.vngWarningContinue.value}
       </Button>
       <Button variant="primary" onclick={vngWarningCancel}>
-        {$_("common.cancel")}
+        {$commonContent.cancel.value}
       </Button>
     {/snippet}
   </Dialog>
 {:else if vngWarningStep === 2}
   <Dialog
     open
-    title={$_("installations.vngWarningTitle2")}
+    title={$installationsContent.vngWarningTitle2.value}
     onclose={onVngDialogClose}
   >
     <p class="m-0 mb-1 text-xs text-muted">
-      {$_("installations.vngWarningStepLabel", { values: { step: 2 } })}
+      {$installationsContent.vngWarningStepLabel({ step: 2 }).value}
     </p>
-    <p class="m-0 text-accent">{$_("installations.vngWarning2")}</p>
+    <p class="m-0 text-accent">{$installationsContent.vngWarning2.value}</p>
     {#snippet actions()}
       <Button variant="ghost" onclick={vngWarningContinue}>
-        {$_("installations.vngWarningContinue")}
+        {$installationsContent.vngWarningContinue.value}
       </Button>
       <Button variant="primary" onclick={vngWarningCancel}>
-        {$_("common.cancel")}
+        {$commonContent.cancel.value}
       </Button>
     {/snippet}
   </Dialog>
 {:else if vngWarningStep === 3}
   <Dialog
     open
-    title={$_("installations.vngWarningTitle3")}
+    title={$installationsContent.vngWarningTitle3.value}
     onclose={onVngDialogClose}
   >
     <p class="m-0 mb-1 text-xs text-muted">
-      {$_("installations.vngWarningStepLabel", { values: { step: 3 } })}
+      {$installationsContent.vngWarningStepLabel({ step: 3 }).value}
     </p>
-    <p class="m-0 text-accent">{$_("installations.vngWarning3")}</p>
+    <p class="m-0 text-accent">{$installationsContent.vngWarning3.value}</p>
     {#snippet actions()}
       <Button variant="ghost" onclick={vngWarningContinue}>
-        {$_("installations.vngWarningContinue")}
+        {$installationsContent.vngWarningContinue.value}
       </Button>
       <Button variant="primary" onclick={vngWarningCancel}>
-        {$_("common.cancel")}
+        {$commonContent.cancel.value}
       </Button>
     {/snippet}
   </Dialog>

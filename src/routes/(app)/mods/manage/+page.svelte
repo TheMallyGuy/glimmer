@@ -20,7 +20,8 @@
         commitDelete,
         type Mod,
     } from "$lib/mods.svelte";
-    import { _ } from "svelte-i18n";
+    import { useIntlayer } from "svelte-intlayer";
+    const modsManageContent = useIntlayer("modsManage");
 
     onMount(loadMods);
 
@@ -50,8 +51,8 @@
     }
 
     function validate(name: string, id?: string) {
-        if (!name) return $_("modsManage.needsAName");
-        if (nameTaken(name, id)) return $_("modsManage.nameAlreadyUsed");
+        if (!name) return $modsManageContent.needsAName.value;
+        if (nameTaken(name, id)) return $modsManageContent.nameAlreadyUsed.value;
         return "";
     }
 
@@ -74,12 +75,12 @@
         editingId = null;
         if (isNew) {
             const mod = await createMod(name);
-            announce($_("modsManage.announceCreated", { values: { name } }));
+            announce($modsManageContent.announceCreated({ name }).value);
             await tick();
             nameButtons[mod.id]?.focus();
         } else if (current) {
             await renameMod(current.id, name);
-            announce($_("modsManage.announceRenamed", { values: { name } }));
+            announce($modsManageContent.announceRenamed({ name }).value);
             finish(current.id);
         }
     }
@@ -114,7 +115,7 @@
         if (!removed) return;
         undo = removed;
         undoTimer = setTimeout(flushUndo, 6000);
-        announce($_("modsManage.announceDeleted", { values: { name: mod.name } }));
+        announce($modsManageContent.announceDeleted({ name: mod.name }).value);
         await tick();
         if (next) nameButtons[next.id]?.focus();
     }
@@ -131,7 +132,7 @@
         const { mod, index } = undo;
         restoreMod(mod, index);
         undo = null;
-        announce($_("modsManage.announceRestored", { values: { name: mod.name } }));
+        announce($modsManageContent.announceRestored({ name: mod.name }).value);
         await tick();
         nameButtons[mod.id]?.focus();
     }
@@ -182,7 +183,7 @@
         if (from < 0 || to < 0 || to >= mods.list.length || from === to) return;
         const name = mods.list[from].name;
         await moveMod(from, to);
-        announce($_("modsManage.announceMoved", { values: { name, position: to + 1, total: mods.list.length } }));
+        announce($modsManageContent.announceMoved({ name, position: to + 1, total: mods.list.length }).value);
     }
 
     async function onHandleKey(e: KeyboardEvent, i: number) {
@@ -212,11 +213,11 @@
     <div class="flex items-center gap-1">
         <p class="m-0 grow text-[13px] text-muted">
             {#if mods.list.length}
-                {$_("modsManage.modCount", { values: { count: mods.list.length } })}, {$_("modsManage.enabledSuffix", { values: { enabledCount } })}
+                {$modsManageContent.modCount(mods.list.length)({ count: mods.list.length }).value}, {$modsManageContent.enabledSuffix({ enabledCount }).value}
             {/if}
         </p>
         <Button variant="ghost" size="sm" onclick={() => openModFolder()}>
-            <FolderOpen size={16} strokeWidth={1.75} aria-hidden="true" /> {$_("modsManage.openFolder")}
+            <FolderOpen size={16} strokeWidth={1.75} aria-hidden="true" /> {$modsManageContent.openFolder.value}
         </Button>
         <Button
             variant="primary"
@@ -224,22 +225,22 @@
             onclick={startNew}
             disabled={editingId === "new"}
         >
-            <Plus size={16} strokeWidth={1.75} aria-hidden="true" /> {$_("modsManage.newMod")}
+            <Plus size={16} strokeWidth={1.75} aria-hidden="true" /> {$modsManageContent.newMod.value}
         </Button>
     </div>
 
     {#if mods.list.length === 0 && editingId !== "new"}
         <div class="flex flex-col items-start gap-3 bg-row px-[18px] py-8">
             <p class="m-0 text-sm text-muted">
-                {$_("modsManage.emptyNoMods")}
+                {$modsManageContent.emptyNoMods.value}
             </p>
             <div class="flex gap-1">
-                <Button size="sm" onclick={startNew}>{$_("modsManage.createAMod")}</Button>
+                <Button size="sm" onclick={startNew}>{$modsManageContent.createAMod.value}</Button>
                 <Button
                     variant="ghost"
                     size="sm"
                     onclick={() => goto("/mods/community")}
-                    >{$_("modsManage.browseCommunityMods")}</Button
+                    >{$modsManageContent.browseCommunityMods.value}</Button
                 >
             </div>
         </div>
@@ -267,20 +268,20 @@
     {#if undo}
         <div class="flex h-11 items-center gap-3 bg-tonal pr-1 pl-[18px]">
             <span class="min-w-0 grow truncate text-sm text-fg-2"
-                >{$_("modsManage.deleted", { values: { name: undo.mod.name } })}</span
+                >{$modsManageContent.deleted({ name: undo.mod.name }).value}</span
             >
             <Button
                 variant="ghost"
                 size="sm"
                 class="text-accent hover:enabled:text-accent"
-                onclick={undoDelete}>{$_("modsManage.undo")}</Button
+                onclick={undoDelete}>{$modsManageContent.undo.value}</Button
             >
         </div>
     {/if}
 
     {#if mods.list.length}
         <p class="m-0 text-[13px] text-muted">
-            {$_("modsManage.tip")}
+            {$modsManageContent.tip.value}
         </p>
     {/if}
 

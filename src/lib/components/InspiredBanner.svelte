@@ -1,6 +1,7 @@
 <script lang="ts">
   import { cn } from '../utils';
-  import { _ } from 'svelte-i18n';
+  import { useIntlayer } from "svelte-intlayer";
+  const inspiredBannerContent = useIntlayer("inspiredBanner");
 
   interface Props {
     /** Font size of the line; the logo scales with it. */
@@ -29,7 +30,7 @@
     className
   )}
 >
-  {$_('inspiredBanner.inspiredFrom')}
+  {$inspiredBannerContent.inspiredFrom.value}
   <img
     src={logo}
     alt=""

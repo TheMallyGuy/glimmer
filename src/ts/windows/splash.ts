@@ -1,8 +1,12 @@
+import { isTauri } from '@tauri-apps/api/core';
 import { WebviewWindow } from '@tauri-apps/api/webviewWindow';
+import { goto } from '$app/navigation';
 
 const LABEL = 'splash';
 
 export async function openSplashWindow(target = 'player') {
+    if (!isTauri()) return goto(`/splash?target=${encodeURIComponent(target)}`);
+
     const existing = await WebviewWindow.getByLabel(LABEL);
     if (existing) {
         await existing.unminimize();

@@ -8,11 +8,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "check": "intlayer build && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "intlayer build && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test": "bun test",
     "test:watch": "bun test --watch",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "editor": "node node_modules/intlayer-editor/server/dist/index.mjs"
   },
   "license": "MIT",
   "dependencies": {
@@ -26,8 +27,10 @@
     "@tauri-apps/plugin-opener": "^2.6.0",
     "@tauri-apps/plugin-process": "2.4.0",
     "@tauri-apps/plugin-store": "2",
+    "intlayer": "^9.6.0",
+    "intlayer-editor": "^9.6.0",
     "svelte-dnd-action": "^0.9.79",
-    "svelte-i18n": "^4.0.1",
+    "svelte-intlayer": "^9.6.0",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
@@ -41,6 +44,10 @@
     "svelte-check": "^4.7.6",
     "tailwindcss": "^4.3.3",
     "typescript": "~6.0.3",
-    "vite": "npm:rolldown-vite@latest"
+    "vite": "npm:rolldown-vite@latest",
+    "vite-intlayer": "^9.6.0"
+  },
+  "patchedDependencies": {
+    "intlayer-editor@9.6.0": "patches/intlayer-editor@9.6.0.patch"
   }
 }

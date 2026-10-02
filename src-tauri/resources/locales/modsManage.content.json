@@ -1,0 +1,56 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "modsManage",
+  "content": {
+    "modCount": {
+      "nodeType": "enumeration",
+      "enumeration": {
+        "1": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} mod"
+        },
+        "fallback": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} mods"
+        }
+      }
+    },
+    "enabledSuffix": {
+      "nodeType": "insertion",
+      "insertion": "{{enabledCount}} on"
+    },
+    "openFolder": "Open folder",
+    "newMod": "New mod",
+    "emptyNoMods": "No mods yet. Create one, or install one from Community!",
+    "createAMod": "Create a mod",
+    "browseCommunityMods": "Browse community mods",
+    "deleted": {
+      "nodeType": "insertion",
+      "insertion": "Deleted {{name}}"
+    },
+    "undo": "Undo",
+    "tip": "Tip: Top of the list wins when two mods change the same file. Click a name to rename it, or right-click a mod for more!",
+    "needsAName": "Needs a name",
+    "nameAlreadyUsed": "Name already used",
+    "announceCreated": {
+      "nodeType": "insertion",
+      "insertion": "Created {{name}}."
+    },
+    "announceRenamed": {
+      "nodeType": "insertion",
+      "insertion": "Renamed to {{name}}."
+    },
+    "announceDeleted": {
+      "nodeType": "insertion",
+      "insertion": "Deleted {{name}}. Press Undo to bring it back."
+    },
+    "announceRestored": {
+      "nodeType": "insertion",
+      "insertion": "Restored {{name}}."
+    },
+    "announceMoved": {
+      "nodeType": "insertion",
+      "insertion": "Moved {{name}} to position {{position}} of {{total}}."
+    }
+  }
+}

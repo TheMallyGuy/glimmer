@@ -1,0 +1,17 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "choose",
+  "content": {
+    "play": "Play",
+    "makeGames": "Make Games",
+    "openRoblox": {
+      "nodeType": "insertion",
+      "insertion": "Open Roblox {{target}}"
+    },
+    "settings": "Settings",
+    "configureRoblox": "Configure Roblox",
+    "community": "Community",
+    "discussWithCommunity": "Discuss with our Community",
+    "launchAs": "Launch as"
+  }
+}
