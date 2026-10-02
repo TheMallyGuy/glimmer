@@ -4,6 +4,9 @@
   "content": {
     "glimmer": "Glimmer",
     "version": "[v0.0.0]",
-    "sourceCode": "Source code"
+    "sourceCode": "Source code",
+    "funGroup": "fun",
+    "redRings": "Evil red rings",
+    "redRingsDescription": "if youre from crush. yes you know what this is. its back."
   }
 }

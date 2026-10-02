@@ -19,4 +19,5 @@ export { default as TextField } from './components/TextField.svelte';
 export { default as InspiredBanner } from './components/InspiredBanner.svelte';
 export { default as Menu } from './components/Menu.svelte';
 export { default as GlimmerLogo } from './components/GlimmerLogo.svelte';
+export { default as RingsOverlay } from './components/RingsOverlay.svelte';
 export type { MenuItem } from './components/Menu.svelte';

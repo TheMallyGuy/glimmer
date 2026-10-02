@@ -4,65 +4,65 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
-	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
+	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
+	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
+	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
 	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
+	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
+	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
+	/**  stop watching a log directory previously passed to `watch_latest_log` */
+	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
+	applyMod: (modDir: string, destDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir })),
+	/**
+	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
+	 *  don't need to be loaded into memory all at once
+	 */
+	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
+	extractPackageFiles: (sources: PackageSource[], destDir: string, paths: string[]) => typedError<string[], string>(__TAURI_INVOKE("extract_package_files", { sources, destDir, paths })),
 	getRobloxHwnd: () => typedError<string, string>(__TAURI_INVOKE("get_roblox_hwnd")),
-	/**  hash raw bytes with md5, returning the lowercase hex digest */
-	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
-	getLocalApp: (vng: boolean | null) => typedError<string, string>(__TAURI_INVOKE("get_local_app", { vng })),
-	writeLocalApp: (content: string, vng: boolean | null) => typedError<null, string>(__TAURI_INVOKE("write_local_app", { content, vng })),
 	/**
 	 *  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes.
 	 *  also watches the spawned process in the background and emits "roblox-exited"
 	 *  once it closes, so the frontend can clear Discord RPC's presence.
 	 */
 	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
-	/**  deletes the secret saved under `key`. Deleting a secret that is not there is fine. */
-	keyringDelete: (key: string) => typedError<null, string>(__TAURI_INVOKE("keyring_delete", { key })),
-	/**  `true` if the debug connection is currently open */
-	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
-	/**  the secret saved under `key`, or null when there is none */
-	keyringGet: (key: string) => typedError<string | null, string>(__TAURI_INVOKE("keyring_get", { key })),
-	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
-	applyMod: (modDir: string, destDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir })),
+	closeCrashHandler: () => typedError<null, string>(__TAURI_INVOKE("close_crash_handler")),
+	/**  hash raw bytes with md5, returning the lowercase hex digest */
+	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
+	keyringSet: (key: string, secret: string) => typedError<null, string>(__TAURI_INVOKE("keyring_set", { key, secret })),
+	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
+	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
+	/**
+	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
+	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
+	 */
+	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
 	tasx: (hwnd: string) => typedError<null, string>(__TAURI_INVOKE("tasx", { hwnd })),
-	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
-	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
-	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
-	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
-	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
 	/**
 	 *  run the bundled BuildersColors sidecar (see `externalBin` in tauri.conf.json) and return what
 	 *  it printed. tauri puts the sidecar next to the app executable, without the target triple.
 	 */
 	runFontTool: (args: string[]) => typedError<string, string>(__TAURI_INVOKE("run_font_tool", { args })),
+	setFullscreenProp: (disable: boolean, rblxExe: string) => typedError<null, string>(__TAURI_INVOKE("set_fullscreen_prop", { disable, rblxExe })),
+	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
+	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
+	/**  the secret saved under `key`, or null when there is none */
+	keyringGet: (key: string) => typedError<string | null, string>(__TAURI_INVOKE("keyring_get", { key })),
+	/**  `true` if the debug connection is currently open */
+	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
+	writeLocalApp: (content: string, vng: boolean | null) => typedError<null, string>(__TAURI_INVOKE("write_local_app", { content, vng })),
+	getLocalApp: (vng: boolean | null) => typedError<string, string>(__TAURI_INVOKE("get_local_app", { vng })),
+	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
 	/**
 	 *  The value of a cookie in another window's webview, or null when the window or the cookie is
 	 *  not there. This is the one thing the frontend can't do itself: cookies marked HttpOnly (like
 	 *  Roblox's login) are hidden from page scripts and from fetch.
 	 */
 	webviewCookie: (label: string, name: string) => typedError<string | null, string>(__TAURI_INVOKE("webview_cookie", { label, name })),
-	setFullscreenProp: (disable: boolean, rblxExe: string) => typedError<null, string>(__TAURI_INVOKE("set_fullscreen_prop", { disable, rblxExe })),
-	/**
-	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
-	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
-	 */
-	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
-	/**
-	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
-	 *  don't need to be loaded into memory all at once
-	 */
-	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
-	/**  stop watching a log directory previously passed to `watch_latest_log` */
-	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
+	/**  deletes the secret saved under `key`. Deleting a secret that is not there is fine. */
+	keyringDelete: (key: string) => typedError<null, string>(__TAURI_INVOKE("keyring_delete", { key })),
 	readFullscreenProp: (rblxExe: string) => typedError<boolean, string>(__TAURI_INVOKE("read_fullscreen_prop", { rblxExe })),
-	closeCrashHandler: () => typedError<null, string>(__TAURI_INVOKE("close_crash_handler")),
-	extractPackageFiles: (sources: PackageSource[], destDir: string, paths: string[]) => typedError<string[], string>(__TAURI_INVOKE("extract_package_files", { sources, destDir, paths })),
-	keyringSet: (key: string, secret: string) => typedError<null, string>(__TAURI_INVOKE("keyring_set", { key, secret })),
-	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
-	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
-	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
+	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
 };
 
 /* Types */

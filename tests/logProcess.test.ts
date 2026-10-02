@@ -190,7 +190,7 @@ describe("processLogLine: joining a game", () => {
         await waitFor(() => sendNotification.mock.calls.length > 0);
         expect(fetchLocation).toHaveBeenCalledWith("128.116.1.2");
         expect(sendNotification.mock.calls[0][0]).toMatchObject({ body: "Hanoi, Vietnam" });
-        expect(sendNotification.mock.calls[0][0].title).toContain("Asia");
+        expect(sendNotification.mock.calls[0][0].title).toBe("bro is located in asia");
     });
 
     test("a failed location lookup does not stop the join: Discord presence still starts", async () => {

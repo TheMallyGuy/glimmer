@@ -39,6 +39,9 @@ export const appState = $state({
         disableFullscreenOptimization: {
             enabled: false
         },
+        redRings: {
+            enabled: false
+        },
     },
     installations: {
         parallelDownloader: {

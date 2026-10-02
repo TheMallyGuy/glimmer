@@ -12,6 +12,7 @@ src/
 │   ├── configuration.ts           Configuration: config.json in the app data dir (plugin-store + raw read/write)
 │   ├── theme.ts                   AccentTheme class: derives accent shades from a colour and applies them as CSS variables (accent colour setting)
 │   ├── background.ts              BackgroundTheme (background colour -> surface tokens, see-through over a picture) and BackgroundImage (picture copy kept in app data)
+│   ├── rings.ts                   RingsEffect class: raw WebGL port of crush's red rings (the opt-in "Evil red rings" fun setting; shown by RingsOverlay)
 │   ├── geo.ts                     IP geolocation lookup (server location notifier)
 │   ├── utils.ts
 │   ├── svg/api.ts                 custom game icon thumbnails (glimmer-thumb)

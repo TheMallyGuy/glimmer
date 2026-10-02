@@ -3,6 +3,8 @@
   import { appState, loadAppState } from "$lib/appState.svelte";
   import { AccentTheme } from "$ts/theme";
   import { applyBackground } from "$lib/appearance.svelte";
+  import { RingsOverlay } from "$lib";
+  import { page } from "$app/state";
   import "./layout.css";
   import { onMount, type Snippet } from "svelte";
   import { commands } from "$ts/bindings";
@@ -19,6 +21,14 @@
 
   // the settings window previews a new accent as it is picked; other windows get the saved one when they load
   $effect(() => AccentTheme.apply(appState.appearance.accent));
+
+  // the rings are decorative motion, so they stay off when the system asks for less motion, and the hidden background window has nothing to draw on
+  const reducedMotion = $state(
+    typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+  const showRings = $derived(
+    appState.integrations.redRings.enabled && !reducedMotion && page.url.pathname !== "/background",
+  );
   $effect(() => {
     const { color, image, dim } = appState.appearance.background;
     applyBackground(color, image, dim);
@@ -43,3 +53,7 @@
 </script>
 
 {@render children()}
+
+{#if showRings}
+  <RingsOverlay color="#ff2a2a" colorTwo="#7a0012" />
+{/if}
