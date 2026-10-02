@@ -109,6 +109,17 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
 
             const gameInfo = await getGameInfo(placeId)
 
+            const udmx = gameState.serverIp
+
+            if (udmx && appState.integrations.serverLocNotifer.enabled) {
+                const geoInformation = await fetchLocation(udmx)
+
+                await notify({
+                    title: `bro is located in ${geoInformation.continent}`,
+                    body: `${geoInformation.city}, ${geoInformation.country}`
+                })
+            }
+
             activeSession = {
                 placeId,
                 state: `Playing ${gameInfo.name}`,
@@ -128,18 +139,6 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
 
             await applyHeadshot();
             await startTasxIfEnabled();
-
-
-            const udmx = gameState.serverIp
-
-            if (udmx && appState.integrations.serverLocNotifer.enabled) {
-                const geoInformation = await fetchLocation(udmx)
-
-                await notify({
-                    title: `bro is located in ${geoInformation.continent}`,
-                    body: `${geoInformation.city}, ${geoInformation.country}`
-                })
-            }
         },
     },
     {
