@@ -1,6 +1,8 @@
 @theme {
   /* Surfaces */
   --color-canvas: #0d0d0d;
+  /* the window background: the canvas, or see-through while a background picture shows (see src/ts/background.ts) */
+  --color-app: var(--color-canvas);
   --color-surface: #111111;
   --color-row: #151515;
   --color-field: #161616;
@@ -47,6 +49,10 @@
 @layer base {
   body {
     background-color: var(--color-canvas);
+    background-image: var(--app-background-image, none);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     color: var(--color-fg);
     font-family: var(--font-sans);
   }

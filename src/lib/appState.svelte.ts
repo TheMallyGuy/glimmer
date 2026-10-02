@@ -2,6 +2,8 @@ import type { Flag } from './flags';
 import type { Account } from '$ts/roblox/account/login';
 import { isTauri } from '@tauri-apps/api/core';
 import { Configuration } from '$ts/configuration';
+import { DEFAULT_ACCENT } from '$ts/theme';
+import { DEFAULT_BACKGROUND, DEFAULT_DIM } from '$ts/background';
 
 export const appState = $state({
     integrations: {
@@ -55,6 +57,18 @@ export const appState = $state({
     fastflags: {
         enabled: true,
         flags: [] as Flag[] // flags go here
+    },
+    appearance: {
+        /** accent colour as "#rrggbb" */
+        accent: DEFAULT_ACCENT,
+        background: {
+            /** background colour as "#rrggbb" */
+            color: DEFAULT_BACKGROUND,
+            /** file name of the picture in the app data folder, or "" for none */
+            image: "",
+            /** how much the picture is darkened, 0 to 0.9 */
+            dim: DEFAULT_DIM
+        }
     },
     accounts: {
         list: [] as Account[],

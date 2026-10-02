@@ -5,13 +5,14 @@
   import { appState } from "$lib/appState.svelte";
   import {
     accountsView,
+    avatars,
+    loadAvatars,
     addAccount,
     cancelAddAccount,
     checkAccounts,
     removeAccount,
     selectAccount,
   } from "$lib/accounts.svelte";
-  import { getUserHeadShot } from "$ts/roblox/generalRobloxApis";
   import type { Account } from "$ts/roblox/account/login";
   import { useIntlayer } from "svelte-intlayer";
   const commonContent = useIntlayer("common");
@@ -19,17 +20,7 @@
 
   onMount(checkAccounts);
 
-  let avatars = $state<Record<string, string>>({});
-
-  $effect(() => {
-    for (const account of appState.accounts.list) {
-      if (account.id in avatars) continue;
-      avatars[account.id] = "";
-      getUserHeadShot(Number(account.id))
-        .then((url) => (avatars[account.id] = url ?? ""))
-        .catch(() => {});
-    }
-  });
+  $effect(loadAvatars);
 
   // the account the next launch signs in as, if one is picked
   const activeAccount = $derived(

@@ -1,6 +1,7 @@
 import { isTauri } from '@tauri-apps/api/core';
 import { appState } from '$lib/appState.svelte';
 import { Configuration } from '$ts/configuration';
+import { getUserHeadShot } from '$ts/roblox/generalRobloxApis';
 import {
   AccountLogin,
   loginStillValid,
@@ -91,4 +92,20 @@ export async function checkAccounts() {
       accountsView.expired[account.id] = !(await loginStillValid(account.id));
     })
   );
+}
+
+/** headshot url per account id; "" while loading or when Roblox has none */
+export const avatars = $state({} as Record<string, string>);
+
+/** fetches the headshots of accounts that have none yet */
+export function loadAvatars() {
+  if (!isTauri()) return;
+
+  for (const account of appState.accounts.list as Account[]) {
+    if (account.id in avatars) continue;
+    avatars[account.id] = '';
+    getUserHeadShot(Number(account.id))
+      .then((url) => (avatars[account.id] = url ?? ''))
+      .catch(() => {});
+  }
 }

@@ -1,6 +1,8 @@
 <script lang="ts">
   import { Installation } from "$ts/roblox/installation/installation";
-  import { loadAppState } from "$lib/appState.svelte";
+  import { appState, loadAppState } from "$lib/appState.svelte";
+  import { AccentTheme } from "$ts/theme";
+  import { applyBackground } from "$lib/appearance.svelte";
   import "./layout.css";
   import { onMount, type Snippet } from "svelte";
   import { commands } from "$ts/bindings";
@@ -14,6 +16,13 @@
 
   // starts the intlayer editor client (a no-op unless the editor is enabled)
   setupIntlayer("en");
+
+  // the settings window previews a new accent as it is picked; other windows get the saved one when they load
+  $effect(() => AccentTheme.apply(appState.appearance.accent));
+  $effect(() => {
+    const { color, image, dim } = appState.appearance.background;
+    applyBackground(color, image, dim);
+  });
 
   onMount(async () => {
     if (!isTauri()) return; // e.g. open in the intlayer editor, where there are no Tauri APIs

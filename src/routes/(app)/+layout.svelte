@@ -12,6 +12,7 @@
     Flag,
     HardDriveDownload,
     Users,
+    Palette,
     Info,
     Minus,
     X,
@@ -48,6 +49,7 @@
       icon: HardDriveDownload,
     },
     { id: "accounts", label: $appLayoutContent.tabAccounts.value, icon: Users },
+    { id: "appearance", label: $appLayoutContent.tabAppearance.value, icon: Palette },
     { id: "about", label: $appLayoutContent.tabAbout.value, icon: Info },
   ];
 
@@ -68,6 +70,10 @@
     accounts: [
       $appLayoutContent.tabAccounts.value,
       $appLayoutContent.accountsBlurb.value,
+    ],
+    appearance: [
+      $appLayoutContent.tabAppearance.value,
+      $appLayoutContent.appearanceBlurb.value,
     ],
     about: [
       $appLayoutContent.tabAbout.value,
@@ -100,7 +106,7 @@
   onDestroy(() => stopWatching?.());
 </script>
 
-<div class="flex h-screen flex-col bg-canvas">
+<div class="flex h-screen flex-col bg-app">
   <header class="shrink-0 bg-surface">
     <div data-tauri-drag-region class="flex h-16 items-center gap-2 pr-2 pl-6">
       <img

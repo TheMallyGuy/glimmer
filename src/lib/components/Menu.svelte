@@ -4,6 +4,10 @@
     /** Shown on the right, e.g. "F2". */
     shortcut?: string;
     danger?: boolean;
+    /** Small picture before the label. A url, or null for a placeholder; leave out for no picture. */
+    avatar?: string | null;
+    /** Makes the item a radio: true marks the current choice. Leave out for a plain action. */
+    checked?: boolean;
     /** Draws a thin gap above this item. */
     separator?: boolean;
     onselect: () => void;
@@ -12,6 +16,7 @@
 
 <script lang="ts">
   import { tick } from 'svelte';
+  import { Check, User } from '@lucide/svelte';
   import { cn } from '../utils';
 
   interface Props {
@@ -98,12 +103,13 @@
     style:top="{pos.top}px"
     {onkeydown}
   >
-    {#each items as item, i (item.label)}
+    {#each items as item, i}
       {#if item.separator}<div class="my-1 h-px bg-track" role="separator"></div>{/if}
       <button
         bind:this={buttons[i]}
         type="button"
-        role="menuitem"
+        role={item.checked === undefined ? 'menuitem' : 'menuitemradio'}
+        aria-checked={item.checked}
         class={cn(
           'flex h-8 cursor-pointer items-center justify-between gap-4 rounded-gl border-0 bg-transparent px-2.5 text-left text-sm',
           'hover:bg-menu-active focus-visible:bg-menu-active focus-visible:-outline-offset-2',
@@ -111,8 +117,20 @@
         )}
         onclick={() => select(item)}
       >
-        {item.label}
+        <span class="flex min-w-0 items-center gap-2">
+          {#if item.avatar !== undefined}
+            <span class="flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-gl bg-field text-muted">
+              {#if item.avatar}
+                <img src={item.avatar} alt="" class="size-full object-cover" />
+              {:else}
+                <User size={12} strokeWidth={1.75} aria-hidden="true" />
+              {/if}
+            </span>
+          {/if}
+          <span class="min-w-0 truncate">{item.label}</span>
+        </span>
         {#if item.shortcut}<span class="text-xs text-subtle">{item.shortcut}</span>{/if}
+        {#if item.checked}<Check size={16} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-accent" />{/if}
       </button>
     {/each}
   </div>

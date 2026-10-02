@@ -292,7 +292,7 @@
 
 <div
   data-tauri-drag-region
-  class="relative flex h-screen w-screen flex-col overflow-hidden bg-canvas text-fg"
+  class="relative flex h-screen w-screen flex-col overflow-hidden bg-app text-fg"
 >
   <!-- Artwork: background, grid, corner arcs and the Glimmer wordmark in one 671x329 file -->
   <img

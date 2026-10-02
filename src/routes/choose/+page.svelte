@@ -7,10 +7,13 @@
     Settings,
     MessagesSquare,
     ArrowUpRight,
+    User,
     X,
   } from "@lucide/svelte";
-  import { IconButton, cn } from "$lib";
+  import { IconButton, Menu, cn, type MenuItem } from "$lib";
   import { prefs, launch } from "$lib/settings.svelte";
+  import { appState } from "$lib/appState.svelte";
+  import { avatars, loadAvatars, selectAccount } from "$lib/accounts.svelte";
   import { sizeWindow, closeWindow } from "$lib/window";
   import { openSettingsWindow } from "$ts/windows/settings";
   import { installationsState } from "$lib/installations.svelte";
@@ -30,6 +33,46 @@
     targets.find((t) => t.value === prefs.target) ?? targets[0],
   );
   const LaunchIcon = $derived(current.icon);
+
+  // Accounts only apply to the player, and the avatar button is hidden without any.
+  const showAccounts = $derived(
+    appState.accounts.list.length > 0 && prefs.target === "player",
+  );
+  const activeAccount = $derived(
+    appState.accounts.list.find((a) => a.id === appState.accounts.activeId),
+  );
+
+  let accountButton = $state<HTMLButtonElement | null>(null);
+  let accountMenuOpen = $state(false);
+  let accountMenuPos = $state({ x: 0, y: 0 });
+
+  // the menu is 208px wide (w-52), so line its right edge up with the button's
+  function toggleAccountMenu() {
+    if (accountMenuOpen) {
+      accountMenuOpen = false;
+      return;
+    }
+    const r = accountButton!.getBoundingClientRect();
+    accountMenuPos = { x: r.right - 208, y: r.bottom + 4 };
+    accountMenuOpen = true;
+  }
+
+  const accountItems = $derived<MenuItem[]>([
+    {
+      label: $chooseContent.robloxLogin.value,
+      avatar: null,
+      checked: !activeAccount,
+      onselect: () => selectAccount(null),
+    },
+    ...appState.accounts.list.map((a) => ({
+      label: a.displayName,
+      avatar: avatars[a.id] || null,
+      checked: a.id === appState.accounts.activeId,
+      onselect: () => selectAccount(a.id),
+    })),
+  ]);
+
+  $effect(loadAvatars);
 
   let targetButtons: HTMLButtonElement[] = $state([]);
 
@@ -67,7 +110,7 @@
     "group relative flex flex-col items-start justify-between gap-6 rounded-gl border-0 p-4 text-left cursor-pointer transition-colors motion-reduce:transition-none";
 </script>
 
-<div class="flex h-screen w-screen flex-col bg-canvas text-fg">
+<div class="flex h-screen w-screen flex-col bg-app text-fg">
   <header
     data-tauri-drag-region
     class="flex h-14 shrink-0 items-center pr-2 pl-5"
@@ -79,6 +122,23 @@
       class="pointer-events-none -ml-1.5 h-[26px] w-auto"
     />
     <div data-tauri-drag-region class="h-full grow"></div>
+    {#if showAccounts}
+      <button
+        bind:this={accountButton}
+        type="button"
+        aria-label={$chooseContent.signInAsName({ name: activeAccount?.displayName ?? $chooseContent.robloxLogin.value }).value}
+        aria-haspopup="menu"
+        aria-expanded={accountMenuOpen}
+        class="mr-1 flex size-9 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-gl border-0 bg-row p-0 text-muted transition-colors hover:bg-hover motion-reduce:transition-none"
+        onclick={toggleAccountMenu}
+      >
+        {#if activeAccount && avatars[activeAccount.id]}
+          <img src={avatars[activeAccount.id]} alt="" class="size-full object-cover" />
+        {:else}
+          <User size={18} strokeWidth={1.75} aria-hidden="true" />
+        {/if}
+      </button>
+    {/if}
     <IconButton
       label={$commonContent.close.value}
       variant="ghost"
@@ -184,5 +244,15 @@
       </div>
       <span class="ml-auto text-xs text-muted">{bottomVerionText}</span>
     </div>
+
   </main>
 </div>
+
+<Menu
+  bind:open={accountMenuOpen}
+  x={accountMenuPos.x}
+  y={accountMenuPos.y}
+  label={$chooseContent.signInAs.value}
+  items={accountItems}
+  returnFocus={accountButton}
+/>

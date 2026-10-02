@@ -12,6 +12,12 @@
     "configureRoblox": "Configure Roblox",
     "community": "Community",
     "discussWithCommunity": "Discuss with our Community",
-    "launchAs": "Launch as"
+    "launchAs": "Launch as",
+    "signInAs": "Sign in as",
+    "signInAsName": {
+      "nodeType": "insertion",
+      "insertion": "Sign in as: {{name}}"
+    },
+    "robloxLogin": "non-Forced"
   }
 }

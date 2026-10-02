@@ -1,0 +1,45 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "appearance",
+  "content": {
+    "accentGroup": "Accent colour",
+    "accentTitle": "Accent colour",
+    "accentDescription": "Used for the main action, the selected tab, switches and focus rings. It changes as you pick it. Save to keep it.",
+    "swatchLabel": {
+      "nodeType": "insertion",
+      "insertion": "Accent {{color}}"
+    },
+    "customColor": "Custom colour",
+    "customHint": "A hex colour like #ffe54e.",
+    "invalidColor": "That's not a hex colour. Use 3 or 6 digits, like #ffe54e.",
+    "tooDark": "Too dark to read on the dark background. Pick a lighter colour.",
+    "reset": "Reset to yellow",
+    "backgroundGroup": "Background",
+    "backgroundColorTitle": "Background colour",
+    "backgroundColorDescription": "Tints every surface. Only dark colours work, so text stays readable.",
+    "backgroundSwatchLabel": {
+      "nodeType": "insertion",
+      "insertion": "Background {{color}}"
+    },
+    "backgroundCustomColor": "Custom background colour",
+    "backgroundTooLight": "Too light for the text. Pick a darker colour.",
+    "imageTitle": "Background picture",
+    "imageDescription": "Shows behind everything, under a dark layer. Glimmer keeps its own copy, so the original can move.",
+    "chooseImage": "Choose picture",
+    "changeImage": "Change picture",
+    "removeImage": "Remove picture",
+    "imagePickerTitle": "Choose a background picture",
+    "imageFilter": "Pictures",
+    "imageFailed": {
+      "nodeType": "insertion",
+      "insertion": "Couldn't use that picture. {{error}}"
+    },
+    "dimTitle": "Darkening",
+    "dimDescription": "How much of the picture the dark layer hides. More makes text easier to read.",
+    "dimLabel": "Darkening",
+    "dimValue": {
+      "nodeType": "insertion",
+      "insertion": "{{percent}}%"
+    }
+  }
+}
