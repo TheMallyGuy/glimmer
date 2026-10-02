@@ -2,7 +2,7 @@ use tauri_helper::auto_collect_command;
 
 /// every secret lives in the OS credential store under this service. It is the service the
 /// account logins were first saved under, so they keep working.
-const SERVICE: &str = "glimmer-roblox-accounts";
+const SERVICE: &str = "glimmer";
 
 fn entry(key: &str) -> Result<keyring::Entry, String> {
     keyring::Entry::new(SERVICE, key).map_err(|e| e.to_string())
