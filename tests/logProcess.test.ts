@@ -193,6 +193,19 @@ describe("processLogLine: joining a game", () => {
         expect(sendNotification.mock.calls[0][0].title).toContain("Asia");
     });
 
+    test("a failed location lookup does not stop the join: Discord presence still starts", async () => {
+        appState.integrations.serverLocNotifer.enabled = true;
+        gameState.serverIp = "128.116.1.2";
+        fetchLocation.mockImplementationOnce(async () => {
+            throw new Error("cannot fetch geolocation for 128.116.1.2: 429");
+        });
+
+        feed(joinLine);
+
+        await waitFor(() => setActivity.mock.calls.length > 0);
+        expect(sendNotification).not.toHaveBeenCalled();
+    });
+
     test("skips the location notification without a server address", async () => {
         appState.integrations.serverLocNotifer.enabled = true;
 
