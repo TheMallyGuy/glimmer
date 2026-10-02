@@ -1,0 +1,45 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "accounts",
+  "content": {
+    "intro": "Pick the Roblox account to sign in with. It's used the next time you launch.",
+    "addAccount": "Add account",
+    "waitingForLogin": "Waiting for you to log in…",
+    "cancelLogin": "Cancel",
+    "loginFailed": {
+      "nodeType": "insertion",
+      "insertion": "Couldn't add the account. {{error}}"
+    },
+    "emptyTitle": "No accounts yet",
+    "emptyBody": "Conveniently add accounts and switch to it with one click!, Uses keyrings to secure your credentials.",
+    "forcedTitle": {
+      "nodeType": "insertion",
+      "insertion": "Logging in as {{name}}"
+    },
+    "forcedDescription": "This account will be the next account that Roblox will signed in as! You can click stop to stop forcing.",
+    "useRobloxLogin": "Stop forcing an account",
+    "unforcedTitle": "Select an account!",
+    "unforcedDescription": "In the next launch, We'll forcfully sign in as the account you pick.",
+    "useAccount": "Use this account",
+    "selected": "Logged in next launch",
+    "expired": "Login expired. Remove this account and add it again.",
+    "usernameLine": {
+      "nodeType": "insertion",
+      "insertion": "@{{name}}"
+    },
+    "removeAccount": {
+      "nodeType": "insertion",
+      "insertion": "Remove {{name}}"
+    },
+    "removeTitle": "Remove account",
+    "removeBody": {
+      "nodeType": "insertion",
+      "insertion": "Remove {{name}} from Glimmer? Their saved login is deleted. You can add the account again later."
+    },
+    "remove": "Remove account",
+    "avatarAlt": {
+      "nodeType": "insertion",
+      "insertion": "Avatar of {{name}}"
+    }
+  }
+}

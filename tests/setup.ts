@@ -7,6 +7,7 @@
  */
 import { mock } from "bun:test";
 import { fsModule } from "./helpers/fakeFs";
+import { WebviewWindow } from "./helpers/webview";
 import { invoke, logSpies } from "./helpers/tauri";
 
 mock.module("@tauri-apps/api/path", () => ({
@@ -18,6 +19,7 @@ mock.module("@tauri-apps/api/path", () => ({
 
 mock.module("@tauri-apps/api/core", () => ({ invoke, isTauri: () => true }));
 mock.module("@tauri-apps/plugin-fs", () => fsModule);
+mock.module("@tauri-apps/api/webviewWindow", () => ({ WebviewWindow }));
 mock.module("@tauri-apps/plugin-log", () => logSpies);
 
 // plugin-http's fetch is the browser one; routing it through globalThis lets a test stub one thing

@@ -1,4 +1,5 @@
 import type { Flag } from './flags';
+import type { Account } from '$ts/roblox/account/login';
 import { isTauri } from '@tauri-apps/api/core';
 import { Configuration } from '$ts/configuration';
 
@@ -54,6 +55,11 @@ export const appState = $state({
     fastflags: {
         enabled: true,
         flags: [] as Flag[] // flags go here
+    },
+    accounts: {
+        list: [] as Account[],
+        /** the account the next launch signs in as */
+        activeId: null as string | null
     }
 });
 

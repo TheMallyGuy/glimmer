@@ -180,6 +180,12 @@
         },
         {
           "url": "https://ipwho.is"
+        },
+        {
+          "url": "https://auth.roblox.com"
+        },
+        {
+          "url": "https://users.roblox.com"
         }
       ],
       "deny": [

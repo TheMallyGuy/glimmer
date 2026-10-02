@@ -27,6 +27,7 @@
   import { FastFlagManager } from "$ts/roblox/flags";
   import { flagsToObject } from "$lib/flags";
   import { commands } from "$ts/bindings";
+  import { AccountLauncher, AccountLaunchError } from "$ts/roblox/account/launcher";
   import { delay } from "$ts/utils";
   import { app } from "@tauri-apps/api";
   import { LocalAppEditor } from "$ts/roblox/localApp";
@@ -105,6 +106,31 @@
     progress = null;
   }
 
+  /**
+   * the arguments that sign the player in as the selected account, or none to leave Roblox on its
+   * own login. Built right before launching because the login ticket expires within a minute.
+   */
+  async function accountLaunchArgs(): Promise<string[]> {
+    const id = appState.accounts.activeId;
+    const account = appState.accounts.list.find((a) => a.id === id);
+    if (isStudio || !account) return [];
+
+    status = $splashContent.signingIn({ name: account.displayName }).value;
+    try {
+      return await new AccountLauncher().args(account.id);
+    } catch (e) {
+      if (!(e instanceof AccountLaunchError)) throw e;
+      const name = account.displayName;
+      throw new Error(
+        e.kind === "expired"
+          ? $splashContent.accountExpired({ name }).value
+          : e.kind === "missing"
+            ? $splashContent.accountMissing({ name }).value
+            : $splashContent.accountFailed({ name, error: e.message }).value,
+      );
+    }
+  }
+
   /** spawn the player or Studio executable from an installed version's folder */
   async function launchInstall(installPath: string) {
     const launchStatus = status;
@@ -158,7 +184,7 @@
     status = launchStatus;
 
     const exePath = await join(installPath, EXE_NAME);
-    const result = await commands.launch(exePath, []);
+    const result = await commands.launch(exePath, await accountLaunchArgs());
 
     if (result.status === "error") {
       throw new Error(result.error);

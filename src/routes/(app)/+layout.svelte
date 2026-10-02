@@ -11,6 +11,7 @@
     Package,
     Flag,
     HardDriveDownload,
+    Users,
     Info,
     Minus,
     X,
@@ -34,10 +35,19 @@
   let { children }: { children: Snippet } = $props();
 
   const tabs: Tab[] = [
-    { id: "integrations", label: $appLayoutContent.tabIntegrations.value, icon: Plug },
+    {
+      id: "integrations",
+      label: $appLayoutContent.tabIntegrations.value,
+      icon: Plug,
+    },
     { id: "mods", label: $appLayoutContent.tabMods.value, icon: Package },
     { id: "flags", label: $appLayoutContent.tabFastFlags.value, icon: Flag },
-    { id: "installations", label: $appLayoutContent.tabInstallations.value, icon: HardDriveDownload },
+    {
+      id: "installations",
+      label: $appLayoutContent.tabInstallations.value,
+      icon: HardDriveDownload,
+    },
+    { id: "accounts", label: $appLayoutContent.tabAccounts.value, icon: Users },
     { id: "about", label: $appLayoutContent.tabAbout.value, icon: Info },
   ];
 
@@ -46,10 +56,7 @@
       $appLayoutContent.tabIntegrations.value,
       $appLayoutContent.integrationsBlurb.value,
     ],
-    mods: [
-      $appLayoutContent.tabMods.value,
-      $appLayoutContent.modsBlurb.value,
-    ],
+    mods: [$appLayoutContent.tabMods.value, $appLayoutContent.modsBlurb.value],
     flags: [
       $appLayoutContent.tabFastFlags.value,
       $appLayoutContent.flagsBlurb.value,
@@ -58,7 +65,14 @@
       $appLayoutContent.tabInstallations.value,
       $appLayoutContent.installationsBlurb.value,
     ],
-    about: [$appLayoutContent.tabAbout.value, $appLayoutContent.aboutBlurb.value],
+    accounts: [
+      $appLayoutContent.tabAccounts.value,
+      $appLayoutContent.accountsBlurb.value,
+    ],
+    about: [
+      $appLayoutContent.tabAbout.value,
+      $appLayoutContent.aboutBlurb.value,
+    ],
   };
 
   const section = $derived(page.url.pathname.split("/")[1] || "mods");
@@ -96,7 +110,10 @@
         class="pointer-events-none"
       />
       <div data-tauri-drag-region class="h-full grow"></div>
-      <SearchField label={$appLayoutContent.searchAllSettings.value} bind:value={prefs.query} />
+      <SearchField
+        label={$appLayoutContent.searchAllSettings.value}
+        bind:value={prefs.query}
+      />
       <IconButton
         label={$commonContent.minimize.value}
         variant="ghost"
@@ -135,7 +152,9 @@
 
   <footer class="flex h-16 shrink-0 items-center gap-1 bg-footer pr-6 pl-8">
     <span class="grow text-xs text-muted">{bottomVerionText}</span>
-    <Button variant="ghost" onclick={discard}>{$commonContent.discard.value}</Button>
+    <Button variant="ghost" onclick={discard}
+      >{$commonContent.discard.value}</Button
+    >
     <Button onclick={save}>{$commonContent.save.value}</Button>
     <SplitButton
       class="ml-1"

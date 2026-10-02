@@ -25,6 +25,22 @@
     },
     "genericError": "Something went wrong. Please try again.",
     "launchProgress": "Launch progress",
-    "prepare": "Preparing..."
+    "prepare": "Preparing...",
+    "signingIn": {
+      "nodeType": "insertion",
+      "insertion": "Signing in as {{name}}"
+    },
+    "accountExpired": {
+      "nodeType": "insertion",
+      "insertion": "{{name}}'s login expired. Remove the account in the Accounts tab and add it again."
+    },
+    "accountMissing": {
+      "nodeType": "insertion",
+      "insertion": "The saved login for {{name}} is missing. Remove the account in the Accounts tab and add it again."
+    },
+    "accountFailed": {
+      "nodeType": "insertion",
+      "insertion": "Couldn't sign in as {{name}}. {{error}}"
+    }
   }
 }
