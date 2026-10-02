@@ -112,12 +112,16 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
             const udmx = gameState.serverIp
 
             if (udmx && appState.integrations.serverLocNotifer.enabled) {
-                const geoInformation = await fetchLocation(udmx)
+                try {
+                    const geoInformation = await fetchLocation(udmx)
 
-                await notify({
-                    title: `bro is located in ${geoInformation.continent}`,
-                    body: `${geoInformation.city}, ${geoInformation.country}`
-                })
+                    await notify({
+                        title: `bro is located in ${geoInformation.continent.toLowerCase()}`,
+                        body: `${geoInformation.city}, ${geoInformation.country}`
+                    })
+                } catch (err) {
+                    error(`server location notification skipped: ${err}`)
+                }
             }
 
             activeSession = {
