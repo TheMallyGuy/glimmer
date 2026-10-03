@@ -79,6 +79,7 @@ pub fn run() {
         .expect("failed to export typescript bindings");
 
     tauri::Builder::default()
+        .plugin(tauri_plugin_deep_link::init())
         // must be registered first: it's what lets a second launch hand off to this
         // one instead of starting a whole separate process
         .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {

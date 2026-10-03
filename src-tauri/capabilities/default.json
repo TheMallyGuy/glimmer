@@ -204,6 +204,7 @@
     "core:app:allow-exit",
     "dialog:default",
     "process:default",
-    "notification:default"
+    "notification:default",
+    "deep-link:default"
   ]
 }
