@@ -95,7 +95,6 @@ fn tail_new_content(app: &AppHandle, state: &mut TailState) {
     }
 }
 
-
 #[tauri::command]
 #[specta::specta]
 #[auto_collect_command]

@@ -18,10 +18,7 @@ pub struct AppliedFile {
 #[tauri::command]
 #[specta::specta]
 #[auto_collect_command]
-pub async fn apply_mod(
-    mod_dir: String,
-    dest_dir: String,
-) -> Result<Vec<AppliedFile>, String> {
+pub async fn apply_mod(mod_dir: String, dest_dir: String) -> Result<Vec<AppliedFile>, String> {
     tauri::async_runtime::spawn_blocking(move || {
         let src = Path::new(&mod_dir);
         let dest = Path::new(&dest_dir);

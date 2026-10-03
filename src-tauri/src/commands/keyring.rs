@@ -25,7 +25,9 @@ pub fn keyring_set(key: String, secret: String) -> Result<(), String> {
 #[auto_collect_command]
 pub fn keyring_get(key: String) -> Result<Option<String>, String> {
     match entry(&key)?.get_secret() {
-        Ok(bytes) => String::from_utf8(bytes).map(Some).map_err(|e| e.to_string()),
+        Ok(bytes) => String::from_utf8(bytes)
+            .map(Some)
+            .map_err(|e| e.to_string()),
         Err(keyring::Error::NoEntry) => Ok(None),
         Err(e) => Err(e.to_string()),
     }

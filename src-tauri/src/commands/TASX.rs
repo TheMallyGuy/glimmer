@@ -20,13 +20,11 @@ use windows::Win32::UI::WindowsAndMessaging::{
     FindWindowW, GetForegroundWindow, GetWindowThreadProcessId, IsWindow,
 };
 
-
 #[tauri::command]
 #[specta::specta]
 #[auto_collect_command]
 pub fn get_roblox_hwnd() -> Result<String, String> {
-    let hwnd = unsafe { FindWindowW(w!("WINDOWSCLIENT"), None) }
-        .map_err(|e| e.to_string())?;
+    let hwnd = unsafe { FindWindowW(w!("WINDOWSCLIENT"), None) }.map_err(|e| e.to_string())?;
     Ok((hwnd.0 as isize).to_string())
 }
 

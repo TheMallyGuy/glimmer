@@ -134,7 +134,6 @@ fn discord_rpc_enabled_in_config(app: &AppHandle) -> bool {
         .unwrap_or(false)
 }
 
-
 fn spawn_login(app: AppHandle, state_handle: tauri::State<'_, DiscordRpcState>) {
     let generation = state_handle.generation.fetch_add(1, Ordering::SeqCst) + 1;
 
