@@ -54,7 +54,7 @@
   aria-labelledby="{uid}-title"
   style:width
   class={cn(
-    'm-auto max-w-[calc(100vw-32px)] rounded-gl border-0 bg-dialog p-0 text-fg shadow-dialog backdrop:bg-black/60',
+    'm-auto max-w-[calc(100vw-32px)] animate-pop-in rounded-gl border-0 bg-dialog p-0 text-fg shadow-dialog backdrop:animate-fade-in backdrop:bg-black/60',
     className
   )}
   onclose={handleClose}

@@ -32,7 +32,7 @@
   aria-label={label}
   title={label}
   class={cn(
-    'inline-flex shrink-0 items-center justify-center rounded-gl border-0 cursor-pointer transition-colors motion-reduce:transition-none disabled:opacity-40 disabled:cursor-not-allowed',
+    'inline-flex shrink-0 items-center justify-center rounded-gl border-0 cursor-pointer transition-[color,background-color,transform] motion-reduce:transition-none active:enabled:scale-90 disabled:opacity-40 disabled:cursor-not-allowed',
     size === 'sm' ? 'size-9' : 'size-11',
     variants[variant],
     className

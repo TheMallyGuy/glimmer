@@ -44,6 +44,7 @@ src/
 ├── lib/
 │   ├── theme.css                  design tokens (@theme) and base styles
 │   ├── utils.ts                   cn(): class joining with tailwind-merge; dictText(): text of a dictionary entry by runtime key
+│   ├── motion.ts                  prefersReducedMotion() and motionMs(): durations for Svelte transitions that drop to 0 for reduced motion
 │   ├── window.ts                  window resize/center helpers
 │   ├── flags.ts                   Flag type and helpers
 │   ├── index.ts                   barrel: components, cn, flag helpers
@@ -91,7 +92,7 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/`
   - the selected state (tab underline, selected icon, checked switch, dropdown check),
   - notes and warnings.
 - No emoji, gradient backgrounds, glows or decorative shadows. The only shadows are on floating menus and dialogs.
-- Motion is only used to answer something the person did (a switch sliding, a hover). Always add `motion-reduce:transition-none`.
+- Motion is short (under 300ms), ease-out and never blocks anything: entrances (tab content, rows, popups, dialogs, toasts), the sliding tab underline, press feedback and hovers. Use the animation tokens in `theme.css` (`animate-fade-in`, `animate-fade-up`, `animate-pop-in`) or Svelte transitions with `motionMs()` from `$lib/motion`. Nothing loops except the launch progress. Always add `motion-reduce:transition-none` to transitions: `theme.css` also finishes every animation at once when the system asks for less motion.
 
 ## Tokens (lib/theme.css)
 

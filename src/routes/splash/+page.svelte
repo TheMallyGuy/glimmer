@@ -300,7 +300,7 @@
     alt="Glimmer"
     width="671"
     height="329"
-    class="pointer-events-none absolute inset-0 h-full w-full"
+    class="pointer-events-none absolute inset-0 h-full w-full animate-fade-in"
   />
 
   <!-- Top row -->

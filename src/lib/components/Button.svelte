@@ -45,7 +45,7 @@
 <button
   {type}
   class={cn(
-    'inline-flex items-center justify-center gap-2 rounded-gl border-0 font-sans text-sm font-medium leading-none whitespace-nowrap cursor-pointer transition-colors motion-reduce:transition-none disabled:cursor-not-allowed',
+    'inline-flex items-center justify-center gap-2 rounded-gl border-0 font-sans text-sm font-medium leading-none whitespace-nowrap cursor-pointer transition-[color,background-color,transform] motion-reduce:transition-none active:enabled:scale-[0.97] disabled:cursor-not-allowed',
     sizes[size],
     variants[variant],
     variant === 'primary' && primaryText[size],

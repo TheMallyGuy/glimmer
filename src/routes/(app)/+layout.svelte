@@ -24,6 +24,7 @@
     GlimmerLogo,
     Button,
     SplitButton,
+    toast,
     type Tab,
   } from "$lib";
   import { prefs, save, discard, launch } from "$lib/settings.svelte";
@@ -35,6 +36,19 @@
   const commonContent = useIntlayer("common");
 
   let { children }: { children: Snippet } = $props();
+
+  const toastContent = useIntlayer("toast");
+
+  async function saveSettings() {
+    try {
+      await save();
+      toast.success($toastContent.saved.value);
+    } catch (e) {
+      toast.error(
+        $toastContent.saveFailed({ error: e instanceof Error ? e.message : String(e) }).value,
+      );
+    }
+  }
 
   const tabs: Tab[] = [
     {
@@ -148,7 +162,12 @@
         {heading}
       </h1>
       <p class="m-0 mb-7 max-w-[520px] text-sm text-muted">{blurb}</p>
-      {@render children()}
+      <!-- keyed on the tab, so switching tabs plays the entrance but moving inside one does not reload it -->
+      {#key section}
+        <div class="animate-fade-up">
+          {@render children()}
+        </div>
+      {/key}
     </div>
   </main>
 
@@ -157,7 +176,7 @@
     <Button variant="ghost" onclick={discard}
       >{$commonContent.discard.value}</Button
     >
-    <Button onclick={save}>{$commonContent.save.value}</Button>
+    <Button onclick={saveSettings}>{$commonContent.save.value}</Button>
     <SplitButton
       class="ml-1"
       label={$appLayoutContent.saveAndLaunch.value}

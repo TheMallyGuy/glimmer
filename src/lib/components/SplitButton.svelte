@@ -127,8 +127,8 @@
       aria-label={$splitButtonContent.launchTarget.value}
       tabindex="-1"
       class={cn(
-        "absolute right-0 z-30 flex w-[220px] flex-col rounded-gl bg-menu p-1 shadow-menu outline-none",
-        placement === "up" ? "bottom-[calc(100%+8px)]" : "top-[calc(100%+8px)]",
+        "absolute right-0 z-30 flex w-[220px] animate-pop-in flex-col rounded-gl bg-menu p-1 shadow-menu outline-none",
+        placement === "up" ? "bottom-[calc(100%+8px)] origin-bottom-right" : "top-[calc(100%+8px)] origin-top-right",
       )}
       onkeydown={onMenuKey}
     >

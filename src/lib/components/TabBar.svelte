@@ -36,6 +36,20 @@
 
   let buttons: HTMLButtonElement[] = $state([]);
 
+  // where the sliding underline sits: under the selected tab, inset like the old per-tab one
+  let underline = $state({ left: 0, width: 0 });
+
+  function placeUnderline() {
+    const el = buttons[tabs.findIndex((t) => t.id === value)];
+    if (el) underline = { left: el.offsetLeft + 14, width: Math.max(0, el.offsetWidth - 28) };
+  }
+
+  $effect(() => {
+    value;
+    tabs;
+    placeUnderline();
+  });
+
   function select(id: string) {
     if (id === value) return;
     value = id;
@@ -56,7 +70,9 @@
   }
 </script>
 
-<div class={cn('flex gap-0.5 overflow-x-auto [scrollbar-width:none]', className)} role="tablist" aria-label={label}>
+<svelte:window onresize={placeUnderline} />
+
+<div class={cn('relative flex gap-0.5 overflow-x-auto [scrollbar-width:none]', className)} role="tablist" aria-label={label}>
   {#each tabs as tab, i (tab.id)}
     {@const selected = tab.id === value}
     {@const Icon = tab.icon}
@@ -85,8 +101,14 @@
       {/if}
       {tab.label}
       <span
-        class={cn('absolute inset-x-3.5 bottom-0 h-0.5', selected ? 'bg-accent' : 'bg-transparent group-hover:bg-[#3a3a3a]')}
+        class={cn('absolute inset-x-3.5 bottom-0 h-0.5', !selected && 'bg-transparent group-hover:bg-[#3a3a3a]')}
       ></span>
     </button>
   {/each}
+  <span
+    aria-hidden="true"
+    class="pointer-events-none absolute bottom-0 h-0.5 bg-accent transition-[left,width] duration-300 ease-out motion-reduce:transition-none"
+    style:left="{underline.left}px"
+    style:width="{underline.width}px"
+  ></span>
 </div>

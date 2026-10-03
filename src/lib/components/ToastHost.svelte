@@ -2,6 +2,9 @@
   import { CircleAlert, CircleCheck, Info, X } from '@lucide/svelte';
   import { useIntlayer } from 'svelte-intlayer';
   import { toast, toasts } from '../toasts.svelte';
+  import { flip } from 'svelte/animate';
+  import { fly } from 'svelte/transition';
+  import { motionMs } from '../motion';
   import { cn } from '../utils';
   import Button from './Button.svelte';
   import IconButton from './IconButton.svelte';
@@ -22,6 +25,9 @@
     <div
       role={item.kind === 'error' ? 'alert' : 'status'}
       class="pointer-events-auto flex items-start gap-3 rounded-gl bg-menu py-3 pr-2 pl-3.5 shadow-menu"
+      in:fly={{ x: -24, duration: motionMs(220) }}
+      out:fly={{ x: -24, duration: motionMs(160) }}
+      animate:flip={{ duration: motionMs(200) }}
       onpointerenter={() => toast.pause(item.id)}
       onpointerleave={() => toast.resume(item.id)}
       onfocusin={() => toast.pause(item.id)}

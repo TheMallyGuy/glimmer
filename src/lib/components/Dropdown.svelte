@@ -126,7 +126,7 @@
       aria-label={label}
       tabindex="-1"
       aria-activedescendant="{uid}-opt-{active}"
-      class="absolute left-0 top-[calc(100%+4px)] z-20 m-0 w-full min-w-40 list-none rounded-gl bg-menu p-1 shadow-menu outline-none"
+      class="absolute left-0 top-[calc(100%+4px)] z-20 m-0 w-full min-w-40 origin-top animate-pop-in list-none rounded-gl bg-menu p-1 shadow-menu outline-none"
       onkeydown={onListKey}
     >
       {#each options as opt, i (opt.value)}

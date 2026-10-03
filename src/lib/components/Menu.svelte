@@ -98,7 +98,7 @@
     role="menu"
     aria-label={label}
     tabindex="-1"
-    class="fixed z-50 flex w-52 flex-col rounded-gl bg-menu p-1 shadow-menu outline-none"
+    class="fixed z-50 flex w-52 origin-top animate-pop-in flex-col rounded-gl bg-menu p-1 shadow-menu outline-none"
     style:left="{pos.left}px"
     style:top="{pos.top}px"
     {onkeydown}

@@ -122,7 +122,7 @@
 
     <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
       {#each appState.accounts.list as account (account.id)}
-        <li class="flex items-center gap-4 bg-row px-[18px] py-4">
+        <li class="flex animate-fade-up items-center gap-4 bg-row px-[18px] py-4">
           <div
             class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-gl bg-field text-muted"
           >

@@ -111,7 +111,7 @@
   }
 
   const tile =
-    "group relative flex flex-col items-start justify-between gap-6 rounded-gl border-0 p-4 text-left cursor-pointer transition-colors motion-reduce:transition-none";
+    "group relative flex flex-col items-start justify-between gap-6 rounded-gl border-0 p-4 text-left cursor-pointer animate-fade-up transition-colors motion-reduce:transition-none";
 </script>
 
 <div class="flex h-screen w-screen flex-col bg-app text-fg">
@@ -161,6 +161,7 @@
           tile,
           "bg-accent text-on-accent hover:bg-accent-hover active:bg-accent-press",
         )}
+        style:animation-delay="0ms"
         onclick={() => launch(prefs.target)}
       >
         <LaunchIcon size={22} strokeWidth={1.75} aria-hidden="true" />
@@ -181,6 +182,7 @@
       <button
         type="button"
         class={cn(tile, "bg-row hover:bg-hover")}
+        style:animation-delay="60ms"
         onclick={openSettings}
       >
         <Settings
@@ -202,6 +204,7 @@
       <button
         type="button"
         class={cn(tile, "bg-row hover:bg-hover")}
+        style:animation-delay="120ms"
         onclick={() => openUrl(DISCORD_INVITE)}
       >
         <MessagesSquare

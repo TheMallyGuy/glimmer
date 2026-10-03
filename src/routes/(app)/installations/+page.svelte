@@ -199,7 +199,7 @@
     {:else}
       <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
         {#each installationsState.versions as entry (entry.version)}
-          <li class="flex items-center gap-4 bg-row px-[18px] py-4">
+          <li class="flex animate-fade-up items-center gap-4 bg-row px-[18px] py-4">
             <div class="flex min-w-0 grow flex-col gap-[3px]">
               <div class="flex items-center gap-2">
                 <span class="truncate font-mono text-[15px] font-medium text-fg"
