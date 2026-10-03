@@ -19,6 +19,11 @@
     "core:window:allow-set-size",
     "core:window:allow-set-resizable",
     "core:window:allow-center",
+    "core:window:allow-show",
+    "core:window:allow-unminimize",
+    "core:window:allow-set-focus",
+    "core:app:allow-default-window-icon",
+    "core:app:allow-version",
     "core:webview:allow-create-webview-window",
     {
       "identifier": "fs:allow-write-file",

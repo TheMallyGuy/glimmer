@@ -1,0 +1,9 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "tray",
+  "content": {
+    "tooltip": "Glimmer",
+    "openSelector": "Open selector",
+    "quit": "Quit"
+  }
+}

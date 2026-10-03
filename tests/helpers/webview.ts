@@ -36,6 +36,21 @@ export class WebviewWindow {
         return () => { };
     }
 
+    /** the focus-related calls made on this window, in order */
+    calls: string[] = [];
+
+    async unminimize() {
+        this.calls.push("unminimize");
+    }
+
+    async show() {
+        this.calls.push("show");
+    }
+
+    async setFocus() {
+        this.calls.push("setFocus");
+    }
+
     async close() {
         windows.delete(this.label);
     }

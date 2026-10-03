@@ -27,7 +27,11 @@
 
   const targets = [
     { value: "player", label: $commonContent.player.value, icon: Gamepad2 },
-    { value: "studio", label: $commonContent.studio.value, icon: DraftingCompass },
+    {
+      value: "studio",
+      label: $commonContent.studio.value,
+      icon: DraftingCompass,
+    },
   ];
   const current = $derived(
     targets.find((t) => t.value === prefs.target) ?? targets[0],
@@ -121,14 +125,20 @@
       <button
         bind:this={accountButton}
         type="button"
-        aria-label={$chooseContent.signInAsName({ name: activeAccount?.displayName ?? $chooseContent.robloxLogin.value }).value}
+        aria-label={$chooseContent.signInAsName({
+          name: activeAccount?.displayName ?? $chooseContent.robloxLogin.value,
+        }).value}
         aria-haspopup="menu"
         aria-expanded={accountMenuOpen}
         class="mr-1 flex size-9 shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-gl border-0 bg-row p-0 text-muted transition-colors hover:bg-hover motion-reduce:transition-none"
         onclick={toggleAccountMenu}
       >
         {#if activeAccount && avatars[activeAccount.id]}
-          <img src={avatars[activeAccount.id]} alt="" class="size-full object-cover" />
+          <img
+            src={avatars[activeAccount.id]}
+            alt=""
+            class="size-full object-cover"
+          />
         {:else}
           <User size={18} strokeWidth={1.75} aria-hidden="true" />
         {/if}
@@ -180,8 +190,12 @@
           class="text-muted transition-colors group-hover:text-fg-2"
         />
         <span class="flex flex-col gap-0.5">
-          <span class="font-display text-lg tracking-[0.01em]">{$chooseContent.settings.value}</span>
-          <span class="text-[13px] text-muted">{$chooseContent.configureRoblox.value}</span>
+          <span class="font-display text-lg tracking-[0.01em]"
+            >{$chooseContent.settings.value}</span
+          >
+          <span class="text-[13px] text-muted"
+            >{$chooseContent.configureRoblox.value}</span
+          >
         </span>
       </button>
 
@@ -203,14 +217,20 @@
           class="absolute top-4 right-4 text-subtle"
         />
         <span class="flex flex-col gap-0.5">
-          <span class="font-display text-lg tracking-[0.01em]">{$chooseContent.community.value}</span>
-          <span class="text-[13px] text-muted">{$chooseContent.discussWithCommunity.value}</span>
+          <span class="font-display text-lg tracking-[0.01em]"
+            >{$chooseContent.community.value}</span
+          >
+          <span class="text-[13px] text-muted"
+            >{$chooseContent.discussWithCommunity.value}</span
+          >
         </span>
       </button>
     </div>
 
     <div class="flex items-center gap-3">
-      <span id="target-label" class="text-[13px] text-muted">{$chooseContent.launchAs.value}</span>
+      <span id="target-label" class="text-[13px] text-muted"
+        >{$chooseContent.launchAs.value}</span
+      >
       <div
         role="radiogroup"
         aria-labelledby="target-label"
@@ -239,7 +259,6 @@
       </div>
       <span class="ml-auto text-xs text-muted">{bottomVerionText}</span>
     </div>
-
   </main>
 </div>
 

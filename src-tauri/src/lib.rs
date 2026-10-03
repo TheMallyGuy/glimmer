@@ -1,8 +1,4 @@
-use tauri::{
-    menu::{Menu, MenuItem},
-    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
-    AppHandle, Manager, WebviewUrl, WebviewWindowBuilder,
-};
+use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
 use tauri_helper::{auto_collect_command, specta_collect_commands};
 pub mod commands;
 pub use commands::*;
@@ -110,11 +106,6 @@ pub fn run() {
         .setup(|app| {
             commands::start_discord_rpc_at_boot(app.handle());
 
-            let open_selector =
-                MenuItem::with_id(app, "open_selector", "Open selector", true, None::<&str>)?;
-            let quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&open_selector, &quit])?;
-
             let local_data_dir = app.path().local_data_dir()?;
             let mut logs_dirs = vec![local_data_dir.join("Roblox").join("logs")];
 
@@ -142,28 +133,7 @@ pub fn run() {
                 .inner_size(1.0, 1.0)
                 .build()?;
 
-            TrayIconBuilder::new()
-                .icon(app.default_window_icon().unwrap().clone())
-                .tooltip("Glimmer")
-                .menu(&menu)
-                .show_menu_on_left_click(false)
-                .on_menu_event(|app, event| match event.id.as_ref() {
-                    "open_selector" => open_selector_window(app),
-
-                    "quit" => std::process::exit(0),
-                    _ => {}
-                })
-                .on_tray_icon_event(|tray, event| {
-                    if let TrayIconEvent::Click {
-                        button: MouseButton::Left,
-                        button_state: MouseButtonState::Up,
-                        ..
-                    } = event
-                    {
-                        focus_existing_instance(tray.app_handle());
-                    }
-                })
-                .build(app)?;
+            // the tray icon is made by the frontend (see src/ts/tray.ts), in the background window above
 
             Ok(())
         })
