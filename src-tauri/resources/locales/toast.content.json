@@ -1,0 +1,13 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "toast",
+  "content": {
+    "region": "Notifications",
+    "dismiss": "Dismiss notification",
+    "saved": "Settings saved.",
+    "saveFailed": {
+      "nodeType": "insertion",
+      "insertion": "Couldn't save your settings. {{error}}"
+    }
+  }
+}

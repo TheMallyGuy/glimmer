@@ -9,6 +9,8 @@ export { default as SettingRow } from "./components/SettingRow.svelte";
 export { default as SettingGroup } from "./components/SettingGroup.svelte";
 export { default as Dialog } from "./components/Dialog.svelte";
 export { default as FlagTable } from "./components/FlagTable.svelte";
+export { default as ToastHost } from "./components/ToastHost.svelte";
+export { toast } from "./toasts.svelte";
 
 export type { Tab } from "./components/TabBar.svelte";
 export type { DropdownOption } from "./components/Dropdown.svelte";

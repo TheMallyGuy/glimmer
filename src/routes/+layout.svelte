@@ -3,7 +3,7 @@
   import { appState, loadAppState } from "$lib/appState.svelte";
   import { AccentTheme } from "$ts/theme";
   import { applyBackground } from "$lib/appearance.svelte";
-  import { RingsOverlay } from "$lib";
+  import { RingsOverlay, ToastHost } from "$lib";
   import { page } from "$app/state";
   import "./layout.css";
   import { onMount, type Snippet } from "svelte";
@@ -53,6 +53,8 @@
 </script>
 
 {@render children()}
+
+<ToastHost />
 
 {#if showRings}
   <RingsOverlay color="#ff2a2a" colorTwo="#7a0012" />

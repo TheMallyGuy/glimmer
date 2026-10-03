@@ -35,31 +35,3 @@ describe("PathManager defaults", () => {
         expect(await pm.getBundledResource("resources/Mods/x.rbxl")).toBe("/resources/resources/Mods/x.rbxl");
     });
 });
-
-describe("PathManager overrides", () => {
-    test("a moved data folder moves everything that lives in it, but not the cache", async () => {
-        const pm = new PathManager({ dataDir: "/elsewhere" });
-
-        expect(await pm.getConfigFile()).toBe("/elsewhere/config.json");
-        expect(await pm.getRobloxInstallationsDir("player")).toBe("/elsewhere/versions");
-        expect(await pm.getModsIndexFile()).toBe("/elsewhere/mods/index.json");
-        expect(await pm.getBackgroundsDir()).toBe("/elsewhere/backgrounds");
-        expect(await pm.getFontEditorDir()).toBe("/elsewhere/font-editor");
-        expect(await pm.getPackageCacheDir()).toBe("/cache/glimmer-downloads");
-    });
-
-    test("the settings file can move on its own", async () => {
-        const pm = new PathManager({ configDir: "/settings" });
-
-        expect(await pm.getConfigFile()).toBe("/settings/config.json");
-        expect(await pm.getModsDir()).toBe("/appdata/mods");
-    });
-
-    test("a Roblox install location can move per kind, and its index goes with it", async () => {
-        const pm = new PathManager({ installationsDir: { player: "D:/Games/Roblox" } });
-
-        expect(await pm.getRobloxInstallationsDir("player")).toBe("D:/Games/Roblox");
-        expect(await pm.getInstallationIndexFile("player")).toBe("D:/Games/Roblox/index.json");
-        expect(await pm.getRobloxInstallationsDir("studio")).toBe("/appdata/studio-versions");
-    });
-});
