@@ -168,7 +168,7 @@ describe("processLogLine: joining a game", () => {
         feed(joinLine);
 
         await waitFor(() => addActivity.mock.calls.length > 0);
-        expect(addActivity).toHaveBeenCalledWith({ smallImage: "head.png", smallText: "Cool Person" });
+        expect(addActivity).toHaveBeenCalledWith({ smallImage: "head.png", smallText: "Cool Person (coolperson)" });
     });
 
     test("does not touch the account when sharing is off", async () => {

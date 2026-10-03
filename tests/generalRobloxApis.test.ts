@@ -156,8 +156,8 @@ describe("getGameThumbnail", () => {
 
 describe("getUserName", () => {
     test("returns the display name", async () => {
-        stubFetch({ "/users/5/": () => jsonResponse({ displayName: "Cool Person" }) });
-        expect(await getUserName(5)).toBe("Cool Person");
+        stubFetch({ "/users/5/": () => jsonResponse({ displayName: "Cool Person", username: "coolperson" }) });
+        expect(await getUserName(5)).toEqual({ displayName: "Cool Person", username: "coolperson" });
     });
 
     test("throws with the status on failure", async () => {
