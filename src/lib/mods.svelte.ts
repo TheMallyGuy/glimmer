@@ -1,25 +1,39 @@
-import { isTauri } from '@tauri-apps/api/core';
-import { join } from '@tauri-apps/api/path';
-import { openPath } from '@tauri-apps/plugin-opener';
-import { load, type Store } from '@tauri-apps/plugin-store';
-import { warn } from '@tauri-apps/plugin-log';
-import { ModificationManager } from '$ts/roblox/mod/manager';
-import { Applier } from '$ts/roblox/mod/apply';
-import type { FillProgress } from '$ts/roblox/installation/packageCache';
-import { cursorModName, isCursorVersion, setCursor } from '$ts/roblox/mod/presets/mouseCursor';
-import { oldSoundsModName, setOldSounds } from '$ts/roblox/mod/presets/oldCharsSounds';
+import { isTauri } from "@tauri-apps/api/core";
+import { join } from "@tauri-apps/api/path";
+import { openPath } from "@tauri-apps/plugin-opener";
+import { load, type Store } from "@tauri-apps/plugin-store";
+import { warn } from "@tauri-apps/plugin-log";
+import { ModificationManager } from "$ts/roblox/mod/manager";
+import { Applier } from "$ts/roblox/mod/apply";
+import type { FillProgress } from "$ts/roblox/installation/packageCache";
+import {
+  cursorModName,
+  isCursorVersion,
+  setCursor,
+} from "$ts/roblox/mod/presets/mouseCursor";
+import {
+  oldSoundsModName,
+  setOldSounds,
+} from "$ts/roblox/mod/presets/oldCharsSounds";
 import {
   customDeathSoundModName,
   setCustomDeathSound,
-} from '$ts/roblox/mod/presets/customDeathSound';
-import { iconFontModName, setIconFont, type BuiltFont } from '$ts/roblox/mod/presets/iconFont';
-import { customFontModName, setCustomFont } from '$ts/roblox/mod/presets/customFont';
+} from "$ts/roblox/mod/presets/customDeathSound";
+import {
+  iconFontModName,
+  setIconFont,
+  type BuiltFont,
+} from "$ts/roblox/mod/presets/iconFont";
+import {
+  customFontModName,
+  setCustomFont,
+} from "$ts/roblox/mod/presets/customFont";
 import {
   oldAvatarBackgroundModName,
   setOldAvatarBackground,
-} from '$ts/roblox/mod/presets/oldAvatarBackground';
-import type { CommunityMod } from '$ts/roblox/mod/community';
-import { sourceNames } from '$ts/roblox/mod/community';
+} from "$ts/roblox/mod/presets/oldAvatarBackground";
+import type { CommunityMod } from "$ts/roblox/mod/community";
+import { sourceNames } from "$ts/roblox/mod/community";
 
 export interface Mod {
   id: string;
@@ -31,11 +45,13 @@ export interface Mod {
 export const mods = $state({ list: [] as Mod[] });
 
 /** Install state per community mod id. */
-export const installs = $state<Record<string, 'installing' | 'installed' | 'failed'>>({});
+export const installs = $state<
+  Record<string, "installing" | "installed" | "failed">
+>({});
 
 /** Built-in mod choices. */
 export const prebuilt = $state({
-  cursor: 'default',
+  cursor: "default",
   oldSounds: false,
   oldAvatarBackground: false,
   font: null as string | null,
@@ -52,7 +68,7 @@ async function getManager(): Promise<ModificationManager> {
 }
 
 async function getConfig(): Promise<Store> {
-  if (!configStore) configStore = await load('mods.json');
+  if (!configStore) configStore = await load("mods.json");
   return configStore;
 }
 
@@ -64,8 +80,8 @@ export async function loadMods() {
   await m.reIndex();
 
   const config = await getConfig();
-  const order = (await config.get<string[]>('order')) ?? [];
-  const enabled = (await config.get<Record<string, boolean>>('enabled')) ?? {};
+  const order = (await config.get<string[]>("order")) ?? [];
+  const enabled = (await config.get<Record<string, boolean>>("enabled")) ?? {};
 
   const diskNames = new Set(m.modificationPathIndex.map((e) => e.name));
   const orderedNames = [
@@ -85,11 +101,14 @@ export async function loadMods() {
 /** save order + enabled state, without touching the active installation's files */
 async function saveConfig() {
   const config = await getConfig();
-  await config.set('order', mods.list.map((m) => m.name));
+  await config.set(
+    "order",
+    mods.list.map((m) => m.name),
+  );
 
   const enabled: Record<string, boolean> = {};
   for (const mod of mods.list) enabled[mod.name] = mod.enabled;
-  await config.set('enabled', enabled);
+  await config.set("enabled", enabled);
 
   await config.save();
 }
@@ -182,7 +201,9 @@ export async function reorderMods(newOrder: Mod[]) {
 
 export async function openModFolder(mod?: Mod) {
   const m = await getManager();
-  const path = mod ? await join(m.modificationPath, mod.name) : m.modificationPath;
+  const path = mod
+    ? await join(m.modificationPath, mod.name)
+    : m.modificationPath;
   await openPath(path);
 }
 
@@ -191,7 +212,7 @@ export async function openModFolder(mod?: Mod) {
  * Throws when the preset has no bundled images, so the caller can put the old choice back.
  */
 export async function applyCursor(value: string) {
-  if (value !== 'default' && !isCursorVersion(value)) {
+  if (value !== "default" && !isCursorVersion(value)) {
     // TODO: bundle images for the purple-cross and dot cursors
     throw new Error(`no bundled images for the ${value} cursor`);
   }
@@ -199,12 +220,13 @@ export async function applyCursor(value: string) {
   const m = await getManager();
   await m.reIndex();
 
-  for (const version of ['2013', '2006'] as const) {
+  for (const version of ["2013", "2006"] as const) {
     const name = cursorModName(version);
-    if (m.modificationPathIndex.some((e) => e.name === name)) await m.deleteMod(name);
+    if (m.modificationPathIndex.some((e) => e.name === name))
+      await m.deleteMod(name);
   }
 
-  if (value !== 'default') await setCursor(value);
+  if (value !== "default") await setCursor(value);
 
   await loadMods();
   await persist();
@@ -230,7 +252,9 @@ export async function applyOldAvatarBackground(enabled: boolean) {
   const m = await getManager();
   await m.reIndex();
 
-  if (m.modificationPathIndex.some((e) => e.name === oldAvatarBackgroundModName)) {
+  if (
+    m.modificationPathIndex.some((e) => e.name === oldAvatarBackgroundModName)
+  ) {
     await m.deleteMod(oldAvatarBackgroundModName);
   }
 
@@ -286,17 +310,17 @@ export async function applyIconFont(fonts: BuiltFont[]) {
 }
 
 export async function installCommunityMod(mod: CommunityMod) {
-  if (installs[mod.id] === 'installing') return;
-  installs[mod.id] = 'installing';
+  if (installs[mod.id] === "installing") return;
+  installs[mod.id] = "installing";
 
   try {
     // TODO: download mod.download and extract it into the new mod's folder.
-    const name = `[${sourceNames[mod.source].replace(' library', '')}] ${mod.name}`;
+    const name = `[${sourceNames[mod.source].replace(" library", "")}] ${mod.name}`;
     if (!nameTaken(name)) await createMod(name);
     await applyMods(); // an install takes effect right away
-    installs[mod.id] = 'installed';
+    installs[mod.id] = "installed";
   } catch (err) {
     console.error(err);
-    installs[mod.id] = 'failed';
+    installs[mod.id] = "failed";
   }
 }

@@ -1,5 +1,5 @@
-import { open, save } from '@tauri-apps/plugin-dialog';
-import { applyIconFont } from '$lib/mods.svelte';
+import { open, save } from "@tauri-apps/plugin-dialog";
+import { applyIconFont } from "$lib/mods.svelte";
 import {
   buildFont,
   countEdits,
@@ -9,12 +9,12 @@ import {
   type FontEdits,
   type IconEdit,
   type IconGlyph,
-  type SourceFont
-} from '$ts/roblox/mod/fontEditor';
+  type SourceFont,
+} from "$ts/roblox/mod/fontEditor";
 
-export const SOURCE_FAMILY = 'glimmer-icons-source';
-export const PREVIEW_FAMILY = 'glimmer-icons-preview';
-export const DEFAULT_COLOR = '#ffffff';
+export const SOURCE_FAMILY = "glimmer-icons-source";
+export const PREVIEW_FAMILY = "glimmer-icons-preview";
+export const DEFAULT_COLOR = "#ffffff";
 
 /** A status line: a `modsFontEditor` string key plus its values, so the view can translate it. */
 interface Message {
@@ -25,10 +25,10 @@ interface Message {
 
 export const editor = $state({
   fonts: [] as SourceFont[],
-  fontPath: '',
+  fontPath: "",
   glyphs: [] as IconGlyph[],
-  status: 'loading' as 'loading' | 'ready' | 'empty' | 'error',
-  query: '',
+  status: "loading" as "loading" | "ready" | "empty" | "error",
+  query: "",
   /** glyph name of the icon shown in the inspector */
   selected: null as string | null,
   /** edits for every font, keyed by font path */
@@ -36,8 +36,8 @@ export const editor = $state({
   /** last preview build per font path */
   previews: {} as Record<string, string>,
   showPreview: false,
-  busy: '' as '' | 'preview' | 'mod' | 'ttf',
-  message: null as Message | null
+  busy: "" as "" | "preview" | "mod" | "ttf",
+  message: null as Message | null,
 });
 
 const baseName = (path: string) => path.split(/[\\/]/).pop() ?? path;
@@ -47,18 +47,26 @@ function say(key: string, error = false, values?: Record<string, string>) {
 }
 
 // ---------------------------------------------------------------- read helpers
-export const currentSource = () => editor.fonts.find((f) => f.path === editor.fontPath);
-export const currentEdits = (): FontEdits => editor.edits[editor.fontPath] ?? {};
+export const currentSource = () =>
+  editor.fonts.find((f) => f.path === editor.fontPath);
+export const currentEdits = (): FontEdits =>
+  editor.edits[editor.fontPath] ?? {};
 export const editedTotal = () =>
   Object.values(editor.edits).reduce((n, e) => n + countEdits(e), 0);
-export const selectedGlyph = () => editor.glyphs.find((g) => g.name === editor.selected);
-export const selectedEdit = () => (editor.selected ? currentEdits()[editor.selected] : undefined);
+export const selectedGlyph = () =>
+  editor.glyphs.find((g) => g.name === editor.selected);
+export const selectedEdit = () =>
+  editor.selected ? currentEdits()[editor.selected] : undefined;
 export const fontFamily = () =>
-  editor.showPreview && editor.previews[editor.fontPath] ? PREVIEW_FAMILY : SOURCE_FAMILY;
+  editor.showPreview && editor.previews[editor.fontPath]
+    ? PREVIEW_FAMILY
+    : SOURCE_FAMILY;
 
 export function shownGlyphs() {
   const q = editor.query.trim().toLowerCase();
-  return q ? editor.glyphs.filter((g) => g.name.toLowerCase().includes(q)) : editor.glyphs;
+  return q
+    ? editor.glyphs.filter((g) => g.name.toLowerCase().includes(q))
+    : editor.glyphs;
 }
 
 // ---------------------------------------------------------------- loading
@@ -75,16 +83,16 @@ export async function selectFont(path: string) {
   editor.fontPath = path;
   editor.showPreview = false;
   editor.selected = null;
-  editor.status = 'loading';
+  editor.status = "loading";
   try {
     const { glyphs, bytes } = await listGlyphs(path);
     await loadFace(SOURCE_FAMILY, bytes);
     editor.glyphs = glyphs;
-    editor.status = glyphs.length ? 'ready' : 'empty';
+    editor.status = glyphs.length ? "ready" : "empty";
   } catch (err) {
     console.error(err);
-    say('loadError', true, { error: String(err) });
-    editor.status = 'error';
+    say("loadError", true, { error: String(err) });
+    editor.status = "error";
   }
 }
 
@@ -96,7 +104,7 @@ export async function initEditor() {
     editor.fonts = [];
   }
   if (!editor.fonts.length) {
-    editor.status = 'empty';
+    editor.status = "empty";
     return;
   }
   await selectFont(editor.fonts[0].path);
@@ -127,11 +135,11 @@ export async function pickArt() {
   if (!editor.selected) return;
   const path = await open({
     multiple: false,
-    filters: [{ name: 'Artwork', extensions: ['svg', 'png'] }]
+    filters: [{ name: "Artwork", extensions: ["svg", "png"] }],
   });
-  if (typeof path !== 'string') return;
+  if (typeof path !== "string") return;
   setEdit(editor.selected, {
-    art: { kind: path.toLowerCase().endsWith('.png') ? 'png' : 'svg', path }
+    art: { kind: path.toLowerCase().endsWith(".png") ? "png" : "svg", path },
   });
 }
 
@@ -143,7 +151,9 @@ export function resetSelected() {
 /** builds every font that has edits, or only the selected font for a preview */
 async function build(onlySelected: boolean) {
   const targets = editor.fonts.filter(
-    (f) => countEdits(editor.edits[f.path] ?? {}) > 0 && (!onlySelected || f.path === editor.fontPath)
+    (f) =>
+      countEdits(editor.edits[f.path] ?? {}) > 0 &&
+      (!onlySelected || f.path === editor.fontPath),
   );
   const built: { font: SourceFont; path: string }[] = [];
   for (const font of targets) {
@@ -152,52 +162,53 @@ async function build(onlySelected: boolean) {
   return built;
 }
 
-async function run(kind: 'preview' | 'mod' | 'ttf', task: () => Promise<void>) {
+async function run(kind: "preview" | "mod" | "ttf", task: () => Promise<void>) {
   editor.busy = kind;
   try {
     await task();
   } catch (err) {
     console.error(err);
-    say('buildError', true, { error: String(err) });
+    say("buildError", true, { error: String(err) });
   } finally {
-    editor.busy = '';
+    editor.busy = "";
   }
 }
 
 export async function previewFont() {
-  if (!countEdits(currentEdits())) return say('nothingToExport', true);
-  say('previewing');
-  await run('preview', async () => {
+  if (!countEdits(currentEdits())) return say("nothingToExport", true);
+  say("previewing");
+  await run("preview", async () => {
     const [built] = await build(true);
     const { bytes } = await listGlyphs(built.path);
     await loadFace(PREVIEW_FAMILY, bytes);
     editor.previews[editor.fontPath] = built.path;
     editor.showPreview = true;
-    say('previewReady');
+    say("previewReady");
   });
 }
 
 export async function exportMod() {
-  if (!editedTotal()) return say('nothingToExport', true);
-  await run('mod', async () => {
+  if (!editedTotal()) return say("nothingToExport", true);
+  await run("mod", async () => {
     const built = await build(false);
     await applyIconFont(built.map((b) => ({ path: b.path, rel: b.font.rel })));
-    say('modExported');
+    say("modExported");
   });
 }
 
 export async function exportTtf() {
   const source = currentSource();
-  if (!source || !countEdits(currentEdits())) return say('nothingToExport', true);
+  if (!source || !countEdits(currentEdits()))
+    return say("nothingToExport", true);
   const dest = await save({
     defaultPath: `BuilderIcons-${source.label}.ttf`,
-    filters: [{ name: 'Font', extensions: ['ttf'] }]
+    filters: [{ name: "Font", extensions: ["ttf"] }],
   });
   if (!dest) return;
-  await run('ttf', async () => {
+  await run("ttf", async () => {
     const [built] = await build(true);
     await saveFont(built.path, dest);
-    say('fontExported', false, { file: baseName(dest) });
+    say("fontExported", false, { file: baseName(dest) });
   });
 }
 

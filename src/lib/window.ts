@@ -1,5 +1,5 @@
-import { isTauri } from '@tauri-apps/api/core';
-import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
+import { isTauri } from "@tauri-apps/api/core";
+import { getCurrentWindow, LogicalSize } from "@tauri-apps/api/window";
 
 export async function sizeWindow(width: number, height: number) {
   if (!isTauri()) return; // e.g. the page is open in the intlayer editor

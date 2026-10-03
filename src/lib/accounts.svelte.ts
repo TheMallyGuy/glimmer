@@ -1,22 +1,22 @@
-import { isTauri } from '@tauri-apps/api/core';
-import { appState } from '$lib/appState.svelte';
-import { Configuration } from '$ts/configuration';
-import { getUserHeadShot } from '$ts/roblox/generalRobloxApis';
+import { isTauri } from "@tauri-apps/api/core";
+import { appState } from "$lib/appState.svelte";
+import { Configuration } from "$ts/configuration";
+import { getUserHeadShot } from "$ts/roblox/generalRobloxApis";
 import {
   AccountLogin,
   loginStillValid,
   removeLogin,
   withAccounts,
-  type Account
-} from '$ts/roblox/account/login';
+  type Account,
+} from "$ts/roblox/account/login";
 
 /** view state of the Accounts tab */
 export const accountsView = $state({
   /** the login window is open */
   adding: false,
-  error: '',
+  error: "",
   /** account ids whose saved login Roblox no longer accepts */
-  expired: {} as Record<string, boolean>
+  expired: {} as Record<string, boolean>,
 });
 
 let login: AccountLogin | null = null;
@@ -26,20 +26,22 @@ async function persist() {
   if (!isTauri()) return;
 
   const configuration = await Configuration.create();
-  let raw = '';
+  let raw = "";
   try {
     raw = await configuration.getAsText();
   } catch {
     // no config yet
   }
-  await configuration.saveRaw(withAccounts(raw, $state.snapshot(appState.accounts)));
+  await configuration.saveRaw(
+    withAccounts(raw, $state.snapshot(appState.accounts)),
+  );
 }
 
 /** opens the Roblox login window and saves the account once the person has logged in */
 export async function addAccount() {
   if (accountsView.adding) return;
   accountsView.adding = true;
-  accountsView.error = '';
+  accountsView.error = "";
 
   login = new AccountLogin();
   try {
@@ -90,7 +92,7 @@ export async function checkAccounts() {
   await Promise.all(
     appState.accounts.list.map(async (account: Account) => {
       accountsView.expired[account.id] = !(await loginStillValid(account.id));
-    })
+    }),
   );
 }
 
@@ -103,9 +105,9 @@ export function loadAvatars() {
 
   for (const account of appState.accounts.list as Account[]) {
     if (account.id in avatars) continue;
-    avatars[account.id] = '';
+    avatars[account.id] = "";
     getUserHeadShot(Number(account.id))
-      .then((url) => (avatars[account.id] = url ?? ''))
+      .then((url) => (avatars[account.id] = url ?? ""))
       .catch(() => {});
   }
 }

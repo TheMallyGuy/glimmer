@@ -36,9 +36,9 @@
   --color-danger-bg-hover: #3a2020;
 
   /* Type */
-  --font-sans: 'Geist', 'Segoe UI', system-ui, sans-serif;
-  --font-display: 'Cal Sans', 'Geist', system-ui, sans-serif;
-  --font-mono: 'Geist Mono', Consolas, monospace;
+  --font-sans: "Geist", "Segoe UI", system-ui, sans-serif;
+  --font-display: "Cal Sans", "Geist", system-ui, sans-serif;
+  --font-mono: "Geist Mono", Consolas, monospace;
 
   /* Shape and depth */
   --radius-gl: 2px;
@@ -87,13 +87,19 @@
   }
 
   @keyframes splash-slide {
-    from { left: -25%; }
-    to { left: 100%; }
+    from {
+      left: -25%;
+    }
+    to {
+      left: 100%;
+    }
   }
   .splash-indeterminate {
     animation: splash-slide 1.2s ease-in-out infinite;
   }
   @media (prefers-reduced-motion: reduce) {
-    .splash-indeterminate { animation: none; }
+    .splash-indeterminate {
+      animation: none;
+    }
   }
 }

@@ -1,10 +1,10 @@
-import { twMerge } from 'tailwind-merge';
+import { twMerge } from "tailwind-merge";
 
 export type ClassValue = string | false | null | undefined;
 
 /** Joins class names and lets later Tailwind classes override earlier ones. */
 export function cn(...classes: ClassValue[]): string {
-  return twMerge(classes.filter(Boolean).join(' '));
+  return twMerge(classes.filter(Boolean).join(" "));
 }
 
 /**
@@ -12,8 +12,10 @@ export function cn(...classes: ClassValue[]): string {
  * entries with `{{placeholders}}` are called with their values.
  */
 export function dictText(
-  entry: { value?: string } & ((values: Record<string, string>) => { value: string }),
-  values: Record<string, string> = {}
+  entry: { value?: string } & ((values: Record<string, string>) => {
+    value: string;
+  }),
+  values: Record<string, string> = {},
 ): string {
   return entry.value ?? entry(values).value;
 }
