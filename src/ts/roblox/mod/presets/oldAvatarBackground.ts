@@ -1,4 +1,5 @@
-import { join, resolveResource } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import { error } from "@tauri-apps/plugin-log";
 import { copyFile, mkdir } from "@tauri-apps/plugin-fs";
 import { ModificationManager } from "../manager";
@@ -11,7 +12,7 @@ const PLACE_FILE = "Mobile.rbxl";
 export async function setOldAvatarBackground() {
   const m = await ModificationManager.create(true, true);
 
-  const source = await resolveResource(
+  const source = await new PathManager().getBundledResource(
     "resources/Mods/OldAvatarBackground.rbxl",
   );
 

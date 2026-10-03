@@ -15,6 +15,7 @@ mock.module("@tauri-apps/api/path", () => ({
     appDataDir: async () => "/appdata",
     appCacheDir: async () => "/cache",
     dataDir: async () => "/data",
+    resolveResource: async (p: string) => `/resources/${p}`,
     join: async (...parts: string[]) => parts.filter(Boolean).join("/").replace(/\/{2,}/g, "/"),
 }));
 

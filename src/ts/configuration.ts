@@ -1,4 +1,4 @@
-import { appDataDir, join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { load, Store } from "@tauri-apps/plugin-store";
 
@@ -15,13 +15,13 @@ export class Configuration {
 
   async getAsText(): Promise<string> {
     const content = await readTextFile(
-      await join(await appDataDir(), "config.json"),
+      await new PathManager().getConfigFile(),
     ); // i mean surely nothing can go wrong right?
     return content;
   }
 
   async saveRaw(conf: string) {
-    await writeTextFile(await join(await appDataDir(), "config.json"), conf); // i mean surely nothing can go wrong right?
+    await writeTextFile(await new PathManager().getConfigFile(), conf); // i mean surely nothing can go wrong right?
   }
 
   async get(key: string): Promise<any> {

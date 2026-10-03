@@ -1,4 +1,3 @@
-import { dataDir } from "@tauri-apps/api/path";
 import { fetch } from "@tauri-apps/plugin-http";
 import { error } from "@tauri-apps/plugin-log";
 

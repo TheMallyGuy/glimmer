@@ -1,4 +1,5 @@
-import { appDataDir, join } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
+import { PathManager } from "./pathManager";
 import {
   exists,
   mkdir,
@@ -183,7 +184,7 @@ export class BackgroundImage {
   }
 
   private async dir() {
-    return join(await appDataDir(), "backgrounds");
+    return new PathManager().getBackgroundsDir();
   }
 
   private async removeFile(name: string) {

@@ -1,4 +1,5 @@
-import { appDataDir, join } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import { Installation } from "../installation/installation";
 import { debug, info, warn } from "@tauri-apps/plugin-log";
 import {
@@ -37,8 +38,9 @@ export class ModificationManager {
     m.installation = await Installation.create();
     m.reIndexVar = await reIndex;
 
-    m.modificationPath = await join(await appDataDir(), "mods");
-    m.modificationPathIndexPath = await join(m.modificationPath, "index.json");
+    const pm = new PathManager();
+    m.modificationPath = await pm.getModsDir();
+    m.modificationPathIndexPath = await pm.getModsIndexFile();
 
     await m.refreshActiveVersion();
 

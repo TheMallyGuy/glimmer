@@ -1,4 +1,5 @@
 import { join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import { exists, readTextFile, remove, writeFile } from "@tauri-apps/plugin-fs";
 import { info, warn } from "@tauri-apps/plugin-log";
 import { commands } from "../../bindings";
@@ -28,7 +29,7 @@ export class Applier {
 
   static async create(manager: ModificationManager): Promise<Applier> {
     const a = new Applier(manager);
-    a.appliedIndexPath = await join(manager.modificationPath, "applied.json");
+    a.appliedIndexPath = await new PathManager().getAppliedModsFile();
     await a.loadIndex();
     return a;
   }
@@ -95,7 +96,7 @@ export class Applier {
 
   /** older versions kept a full copy of the install under mods/.originals; stock files now come from the package cache */
   private async dropLegacyBackups() {
-    const legacy = await join(this.manager.modificationPath, ".originals");
+    const legacy = await new PathManager().getLegacyOriginalsDir();
     if (await exists(legacy)) await remove(legacy, { recursive: true });
   }
 

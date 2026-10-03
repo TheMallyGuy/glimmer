@@ -1,4 +1,5 @@
-import { join, resolveResource } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import { error } from "@tauri-apps/plugin-log";
 import { copyFile, mkdir } from "@tauri-apps/plugin-fs";
 import { ModificationManager } from "../manager";
@@ -24,7 +25,7 @@ export async function setOldSounds() {
   await mkdir(target, { recursive: true });
 
   for (const [robloxFile, bundled] of Object.entries(SOUND_FILES)) {
-    const source = await resolveResource(`resources/Mods/Sounds/${bundled}`);
+    const source = await new PathManager().getBundledResource(`resources/Mods/Sounds/${bundled}`);
 
     if (!source) {
       error(`cannot find ${bundled} in resources maybe its deleted?`);

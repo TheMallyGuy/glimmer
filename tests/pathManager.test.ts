@@ -1,0 +1,65 @@
+import { describe, expect, test } from "bun:test";
+import { PathManager } from "$ts/pathManager";
+
+// the test setup puts the app data folder at /appdata and the cache at /cache
+
+describe("PathManager defaults", () => {
+    const pm = new PathManager();
+
+    test("the settings file is in the app data folder", async () => {
+        expect(await pm.getConfigFile()).toBe("/appdata/config.json");
+    });
+
+    test("player and studio installs get separate folders, each with its own index", async () => {
+        expect(await pm.getRobloxInstallationsDir("player")).toBe("/appdata/versions");
+        expect(await pm.getRobloxInstallationsDir("studio")).toBe("/appdata/studio-versions");
+        expect(await pm.getInstallationIndexFile("player")).toBe("/appdata/versions/index.json");
+        expect(await pm.getInstallationIndexFile("studio")).toBe("/appdata/studio-versions/index.json");
+    });
+
+    test("mod files live in the mods folder", async () => {
+        expect(await pm.getModsDir()).toBe("/appdata/mods");
+        expect(await pm.getModsIndexFile()).toBe("/appdata/mods/index.json");
+        expect(await pm.getAppliedModsFile()).toBe("/appdata/mods/applied.json");
+        expect(await pm.getLegacyOriginalsDir()).toBe("/appdata/mods/.originals");
+    });
+
+    test("downloaded packages stay in the cache folder, not the data folder", async () => {
+        expect(await pm.getPackageCacheDir()).toBe("/cache/glimmer-downloads");
+        expect(await pm.getPackageCacheDir("version-aaaa")).toBe("/cache/glimmer-downloads/version-aaaa");
+    });
+
+    test("working folders and bundled files", async () => {
+        expect(await pm.getFontEditorDir()).toBe("/appdata/font-editor");
+        expect(await pm.getBackgroundsDir()).toBe("/appdata/backgrounds");
+        expect(await pm.getBundledResource("resources/Mods/x.rbxl")).toBe("/resources/resources/Mods/x.rbxl");
+    });
+});
+
+describe("PathManager overrides", () => {
+    test("a moved data folder moves everything that lives in it, but not the cache", async () => {
+        const pm = new PathManager({ dataDir: "/elsewhere" });
+
+        expect(await pm.getConfigFile()).toBe("/elsewhere/config.json");
+        expect(await pm.getRobloxInstallationsDir("player")).toBe("/elsewhere/versions");
+        expect(await pm.getModsIndexFile()).toBe("/elsewhere/mods/index.json");
+        expect(await pm.getBackgroundsDir()).toBe("/elsewhere/backgrounds");
+        expect(await pm.getFontEditorDir()).toBe("/elsewhere/font-editor");
+        expect(await pm.getPackageCacheDir()).toBe("/cache/glimmer-downloads");
+    });
+
+    test("the settings file can move on its own", async () => {
+        const pm = new PathManager({ configDir: "/settings" });
+
+        expect(await pm.getConfigFile()).toBe("/settings/config.json");
+        expect(await pm.getModsDir()).toBe("/appdata/mods");
+    });
+
+    test("a Roblox install location can move per kind, and its index goes with it", async () => {
+        const pm = new PathManager({ installationsDir: { player: "D:/Games/Roblox" } });
+
+        expect(await pm.getRobloxInstallationsDir("player")).toBe("D:/Games/Roblox");
+        expect(await pm.getInstallationIndexFile("player")).toBe("D:/Games/Roblox/index.json");
+        expect(await pm.getRobloxInstallationsDir("studio")).toBe("/appdata/studio-versions");
+    });
+});

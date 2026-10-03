@@ -1,4 +1,5 @@
-import { appDataDir, join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
+import { join } from "@tauri-apps/api/path";
 import {
   exists,
   mkdir,
@@ -18,10 +19,7 @@ export interface InstallEntry {
 
 export type InstallKind = "player" | "studio";
 
-const KIND_FOLDERS: Record<InstallKind, string> = {
-  player: "versions",
-  studio: "studio-versions",
-};
+
 
 export class Installation {
   installationPath = "";
@@ -35,8 +33,9 @@ export class Installation {
     kind: InstallKind = "player",
   ): Promise<Installation> {
     const i = new Installation(reIndex);
-    i.installationPath = await join(await appDataDir(), KIND_FOLDERS[kind]);
-    i.indexFile = await join(i.installationPath, "index.json");
+    const pm = new PathManager();
+    i.installationPath = await pm.getRobloxInstallationsDir(kind);
+    i.indexFile = await pm.getInstallationIndexFile(kind);
     i.reIndexVar = await reIndex;
     return i;
   }

@@ -1,4 +1,5 @@
-import { appCacheDir, join } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import { exists, mkdir, readDir, remove } from "@tauri-apps/plugin-fs";
 import type { PackageSource } from "../../bindings";
 import { EXTRACT_ROOTS, type Downloader } from "./download";
@@ -19,7 +20,7 @@ export class PackageCache {
 
   static async create(): Promise<PackageCache> {
     const c = new PackageCache();
-    c.root = await join(await appCacheDir(), "glimmer-downloads");
+    c.root = await new PathManager().getPackageCacheDir();
     return c;
   }
 

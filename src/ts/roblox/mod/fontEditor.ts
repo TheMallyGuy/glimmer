@@ -1,4 +1,5 @@
-import { appDataDir, join } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import {
   copyFile,
   exists,
@@ -49,7 +50,7 @@ const FONT_DIR = [
 const PUA = [0xe000, 0xf8ff];
 
 async function workDir() {
-  const dir = await join(await appDataDir(), "font-editor");
+  const dir = await new PathManager().getFontEditorDir();
   await mkdir(dir, { recursive: true });
   return dir;
 }

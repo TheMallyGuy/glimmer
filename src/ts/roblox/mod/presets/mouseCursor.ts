@@ -1,4 +1,5 @@
-import { join, resolveResource } from "@tauri-apps/api/path";
+import { join } from "@tauri-apps/api/path";
+import { PathManager } from "$ts/pathManager";
 import { error } from "@tauri-apps/plugin-log";
 import { copyFile, mkdir } from "@tauri-apps/plugin-fs";
 import { ModificationManager } from "../manager";
@@ -22,7 +23,7 @@ export async function setCursor(cursorType: CursorVersion) {
   await mkdir(target, { recursive: true });
 
   for (const file of CURSOR_FILES) {
-    const source = await resolveResource(
+    const source = await new PathManager().getBundledResource(
       `resources/Mods/Cursors/${cursorType}/${file}`,
     );
 
