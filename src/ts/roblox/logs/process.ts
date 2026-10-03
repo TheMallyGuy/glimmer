@@ -58,7 +58,7 @@ async function applyHeadshot() {
     if (!activeSession || !appState.integrations.discordRpc.shareAccount || !gameState.userId) return;
 
     let userHeadshot: string | undefined;
-    let userDisplayName: string | undefined;
+    let user: { displayName: string; username: string } | undefined;
 
     try {
         userHeadshot = (await getUserHeadShot(gameState.userId)) ?? undefined;
@@ -68,7 +68,7 @@ async function applyHeadshot() {
     }
 
     try {
-        userDisplayName = (await getUserName(gameState.userId)) ?? undefined;
+        user = (await getUserName(gameState.userId)) ?? undefined;
     } catch (err) {
         error(`failed to fetch user headshot for ${gameState.userId}: ${err}`)
     }
@@ -78,7 +78,7 @@ async function applyHeadshot() {
 
     await addActivity({
         smallImage: userHeadshot,
-        smallText: userDisplayName
+        smallText: `${user!.displayName} (${user!.username})`
     })
 }
 

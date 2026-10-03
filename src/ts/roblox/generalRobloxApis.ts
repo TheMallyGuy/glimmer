@@ -97,9 +97,10 @@ export async function getUserName(userId: number) {
 
     const json = (await res.json()) as {
         displayName: string
+        username: string
     }
 
-    return json.displayName
+    return json
 }
 
 
