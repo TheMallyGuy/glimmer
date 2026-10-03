@@ -1,0 +1,59 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "link",
+  "content": {
+    "backToIntegrations": "Back to integrations",
+    "noGames": "No games collected yet",
+    "gamesTitle": {
+      "nodeType": "enumeration",
+      "enumeration": {
+        "1": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} game collected"
+        },
+        "fallback": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} games collected"
+        }
+      }
+    },
+    "gamesDescription": "Glimmer remembers the games you join. They stay on this computer until you share them with a link code!",
+    "clear": "Clear games",
+    "clearTitle": "Clear collected games",
+    "clearBody": "Forget every game Glimmer collected? Games you joined before are not shared again unless you play them again.",
+    "recentTitle": "Recently played",
+    "playCount": {
+      "nodeType": "enumeration",
+      "enumeration": {
+        "1": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} play"
+        },
+        "fallback": {
+          "nodeType": "insertion",
+          "insertion": "{{count}} plays"
+        }
+      }
+    },
+    "shareTitle": "Share with a link code",
+    "shareDescription": "Run /link create in our Discord, then paste the code here to find the games you and your friends have in common.",
+    "codeLabel": "Link code",
+    "codePlaceholder": "Paste the code from Discord",
+    "usernameLabel": "Roblox username",
+    "usernameHint": "Shown to the others in the link.",
+    "share": "Share my games",
+    "needGames": "Nothing to share yet. Join a game in Roblox and Glimmer will remember it.",
+    "needCode": "Paste the link code from Discord to share.",
+    "needUsername": "Enter your Roblox username to share.",
+    "sharing": "Sharing…",
+    "shared": {
+      "nodeType": "insertion",
+      "insertion": "Shared your games as {{name}}. Run /link result in Discord."
+    },
+    "shareFailed": {
+      "nodeType": "insertion",
+      "insertion": "Couldn't share your games. {{error}}"
+    },
+    "cleared": "Collected games cleared."
+  }
+}

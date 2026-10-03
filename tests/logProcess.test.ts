@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test";
 import { invokeCalls, invokeHandlers, jsonResponse, logSpies, resetTauri } from "./helpers/tauri";
+import { fakeFs } from "./helpers/fakeFs";
 
 // ---- modules process.ts pulls in that cannot (or should not) run under bun test
 // appState.svelte.ts uses runes, so it is swapped for a plain object with the same shape.
@@ -65,7 +66,7 @@ function stubRobloxApis() {
         }
         if (url.includes("avatar-headshot")) return jsonResponse({ data: [{ state: "Completed", imageUrl: "head.png" }] });
         if (url.includes("/users/")) return jsonResponse({ displayName: "Cool Person", name: "coolperson" });
-        if (url.includes("glimmer-thumb")) return jsonResponse({ url: "https://img.example/icon.png" });
+        if (url.includes("glimmerlink.mallyy.workers.dev")) return jsonResponse({ url: "https://img.example/icon.png" });
         throw new Error(`unexpected url ${url}`);
     }) as typeof fetch;
 }
@@ -130,6 +131,15 @@ describe("processLogLine: state rules", () => {
 describe("processLogLine: joining a game", () => {
     const joinLine = `[FLog::Network] ! Joining game '${GAME_ID}' place ${PLACE_ID} at 128.116.1.2`;
 
+    test("remembers the game for sharing with a link code", async () => {
+        fakeFs.reset();
+        fakeFs.seedDir("/appdata");
+        feed(joinLine);
+
+        await waitFor(() => fakeFs.text("/appdata/games.json") !== undefined);
+        expect(JSON.parse(fakeFs.text("/appdata/games.json")!)).toMatchObject([{ placeId: PLACE_ID, name: "Obby Land", plays: 1 }]);
+    });
+
     test("sets Discord activity with the game name and a view button", async () => {
         const before = Date.now();
         feed(joinLine);
@@ -155,7 +165,7 @@ describe("processLogLine: joining a game", () => {
         feed(joinLine);
 
         await waitFor(() => setActivity.mock.calls.length > 0);
-        const thumb = new URL(requested.find((u) => u.includes("glimmer-thumb"))!);
+        const thumb = new URL(requested.find((u) => u.includes("glimmerlink.mallyy.workers.dev"))!);
         expect(thumb.searchParams.get("overlay")).toBe("black");
         expect(thumb.searchParams.get("size")).toBe("500");
         expect(thumb.searchParams.get("url_svg")).toContain("games%20is%20life.svg");

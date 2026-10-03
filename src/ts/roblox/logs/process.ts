@@ -14,6 +14,7 @@ import {
   getUserName,
 } from "../generalRobloxApis";
 import { getCustomGameIcon } from "$ts/svg/api";
+import { GameHistory } from "../gameHistory";
 import { fetchLocation } from "$ts/geo";
 import {
   isPermissionGranted,
@@ -135,6 +136,12 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
       await loadAppState();
 
       const gameInfo = await getGameInfo(placeId);
+
+      try {
+        await new GameHistory().record(placeId, gameInfo.name);
+      } catch (err) {
+        error(`failed to remember the game ${placeId}: ${err}`);
+      }
 
       const udmx = gameState.serverIp;
 

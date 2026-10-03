@@ -25,7 +25,7 @@ describe("getCustomGameIcon", () => {
         const url = await getCustomGameIcon(123);
 
         expect(url).toBe("https://img.example/icon.png");
-        expect(requested).toEqual(["https://glimmer-thumb.vercel.app/thumbnail/place/123/url"]);
+        expect(requested).toEqual(["https://glimmerlink.mallyy.workers.dev/thumbnail/place/123/url"]);
     });
 
     test("sends the options as query parameters", async () => {

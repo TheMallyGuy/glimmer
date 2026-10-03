@@ -63,6 +63,11 @@ export class PathManager {
         return join(await appDataDir(), "font-editor");
     }
 
+    /** the games joined across sessions (see GameHistory) */
+    async getGameHistoryFile(): Promise<string> {
+        return join(await appDataDir(), "games.json");
+    }
+
     /** the picture used as the app background */
     async getBackgroundsDir(): Promise<string> {
         return join(await appDataDir(), "backgrounds");

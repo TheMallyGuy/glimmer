@@ -2,7 +2,7 @@ import { joinUrl } from "$ts/utils";
 import { fetch } from "@tauri-apps/plugin-http";
 import { error } from "@tauri-apps/plugin-log";
 
-const baseUrl = "https://glimmerlink.mallyy.workers.dev/";
+export const baseUrl = "https://glimmerlink.mallyy.workers.dev/";
 
 export interface CustomIconOptions {
   /** custom SVG template URL, same #GAME_THUMBNAIL structure requirement as the bundled template */

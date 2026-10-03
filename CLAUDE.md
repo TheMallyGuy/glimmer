@@ -25,6 +25,8 @@ src/
 │       ├── flags.ts               Fast Flag helpers
 │       ├── generalRobloxApis.ts   game, thumbnail and user lookups
 │       ├── game.ts                GameLink class: parses roblox://experiences/start game links, builds the roblox-player: play URI for a game (place, server or private server)
+│       ├── gameHistory.ts         GameHistory class: the games joined across sessions (games.json, kept apart from config.json), recorded by the log rules
+│       ├── gmLink.ts              GmLink class: sends the collected games to a link code of the glimmerlink API (the Discord bot in glimmerlinkbot makes the codes)
 │       ├── discordRpc.ts          Discord RPC client (talks to the Rust sidecar)
 │       ├── account/
 │       │   ├── login.ts           AccountLogin class (Roblox login window, saves the login to the keyring), login validity helpers, config.json merge
@@ -68,7 +70,7 @@ src/
     └── (app)/                     main window (route group, not in the URL)
         ├── +layout.svelte         window chrome: header, tab bar, footer
         ├── <section>/+page.svelte one route per tab: integrations, mods, flags, installations, accounts, appearance, about
-        ├── integrations/          +page, custom-image
+        ├── integrations/          +page, custom-image, link (collected games shared with a Discord link code)
         ├── flags/                 +layout, editor, presets
         └── mods/                  +layout (view cards + banner), manage, prebuilt, community, font-editor
 ```

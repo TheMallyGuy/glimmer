@@ -161,3 +161,13 @@
     {/snippet}
   </SettingRow>
 </SettingGroup>
+
+<div class="h-7"></div>
+
+<SettingGroup label={$integrationsContent.friendsGroup.value}>
+  <SettingRow
+    title={$integrationsContent.linkTitle.value}
+    description={$integrationsContent.linkDescription.value}
+    href="/integrations/link"
+  />
+</SettingGroup>
