@@ -27,7 +27,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "externalBin" : [
+    "externalBin": [
       "./external/BuildersColors"
     ],
     "icon": [
@@ -42,5 +42,15 @@
       "./resources/mods/**/*.mp3",
       "./resources/mods/**/*.rbxl"
     ]
+  },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": [
+          "roblox-player",
+          "roblox"
+        ]
+      }
+    }
   }
 }

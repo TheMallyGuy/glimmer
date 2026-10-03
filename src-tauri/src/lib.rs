@@ -79,12 +79,19 @@ pub fn run() {
         .expect("failed to export typescript bindings");
 
     tauri::Builder::default()
-        .plugin(tauri_plugin_deep_link::init())
-        // must be registered first: it's what lets a second launch hand off to this
-        // one instead of starting a whole separate process
-        .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-            focus_existing_instance(app);
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            let opened_by_link = args
+                .iter()
+                .skip(1)
+                .any(|a| a.starts_with("roblox:") || a.starts_with("roblox-player:"));
+            if opened_by_link {
+                return;
+            }
+
+            let app = app.clone();
+            tauri::async_runtime::spawn(async move { focus_existing_instance(&app) });
         }))
+        .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_dialog::init())
@@ -105,6 +112,13 @@ pub fn run() {
         .manage(commands::DiscordRpcState::default())
         .manage(commands::DiscordRpcDebugState::default())
         .setup(|app| {
+
+            #[cfg(all(debug_assertions, any(windows, target_os = "linux")))]
+            {
+                use tauri_plugin_deep_link::DeepLinkExt;
+                app.deep_link().register_all()?;
+            }
+
             commands::start_discord_rpc_at_boot(app.handle());
 
             let local_data_dir = app.path().local_data_dir()?;

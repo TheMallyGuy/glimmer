@@ -15,6 +15,7 @@ src/
 │   ├── background.ts              BackgroundTheme (background colour -> surface tokens, see-through over a picture) and BackgroundImage (picture copy kept in app data)
 │   ├── rings.ts                   RingsEffect class: raw WebGL port of crush's red rings (the opt-in "Evil red rings" fun setting; shown by RingsOverlay)
 │   ├── toast.ts                   ToastQueue class: the toasts on screen, auto-dismiss with pause/resume (shown bottom left by ToastHost)
+│   ├── deepLink.ts                DeepLinkHandler class: links that open Glimmer (roblox-player:, roblox:), handed over by single-instance; started in the background window
 │   ├── tray.ts                    AppTray class: the system tray icon and its menu (made in the hidden background window)
 │   ├── geo.ts                     IP geolocation lookup (server location notifier)
 │   ├── utils.ts
@@ -23,6 +24,7 @@ src/
 │   └── roblox/
 │       ├── flags.ts               Fast Flag helpers
 │       ├── generalRobloxApis.ts   game, thumbnail and user lookups
+│       ├── game.ts                GameLink class: parses roblox://experiences/start game links, builds the roblox-player: play URI for a game (place, server or private server)
 │       ├── discordRpc.ts          Discord RPC client (talks to the Rust sidecar)
 │       ├── account/
 │       │   ├── login.ts           AccountLogin class (Roblox login window, saves the login to the keyring), login validity helpers, config.json merge

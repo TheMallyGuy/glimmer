@@ -30,6 +30,7 @@
       "nodeType": "insertion",
       "insertion": "Signing in as {{name}}"
     },
+    "accountNeeded": "Joining a game link needs an account. Add one in the Accounts tab.",
     "accountExpired": {
       "nodeType": "insertion",
       "insertion": "{{name}}'s login expired. Remove the account in the Accounts tab and add it again."

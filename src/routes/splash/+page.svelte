@@ -27,7 +27,11 @@
   import { FastFlagManager } from "$ts/roblox/flags";
   import { flagsToObject } from "$lib/flags";
   import { commands } from "$ts/bindings";
-  import { AccountLauncher, AccountLaunchError } from "$ts/roblox/account/launcher";
+  import {
+    AccountLauncher,
+    AccountLaunchError,
+  } from "$ts/roblox/account/launcher";
+  import { GameLink } from "$ts/roblox/game";
   import { delay } from "$ts/utils";
   import { app } from "@tauri-apps/api";
   import { LocalAppEditor } from "$ts/roblox/localApp";
@@ -37,6 +41,11 @@
 
   // the chooser and the footer pass ?target=studio; anything else launches the player
   const isStudio = page.url.searchParams.get("target") === "studio";
+  // a link from the Roblox website or a deep link, to launch with as Roblox's own launcher would:
+  // a roblox-player: link goes to the player as it is, a roblox://experiences/start link names a game
+  const link = !isStudio ? page.url.searchParams.get("link") : null;
+  const playerLink = link && /^roblox-player:/i.test(link) ? link : null;
+  const gameTarget = link ? GameLink.parse(link) : null;
   const binaryType: WindowBinaryType = isStudio
     ? "WindowsStudio64"
     : "WindowsPlayer";
@@ -75,11 +84,17 @@
             progress = null;
             break;
           case "downloading":
-            status = $splashContent.downloadingClient({ done: p.done, total: p.total }).value;
+            status = $splashContent.downloadingClient({
+              done: p.done,
+              total: p.total,
+            }).value;
             progress = p.percent;
             break;
           case "extracting":
-            status = $splashContent.extractingClient({ done: p.done, total: p.total }).value;
+            status = $splashContent.extractingClient({
+              done: p.done,
+              total: p.total,
+            }).value;
             progress = p.percent;
             break;
           case "finishing":
@@ -97,7 +112,9 @@
     // mods are only applied to the player, and only the active version's zips are needed to restore it
     if (!isStudio) {
       try {
-        await (await PackageCache.create()).prune(installName(version, d.distribution));
+        await (
+          await PackageCache.create()
+        ).prune(installName(version, d.distribution));
       } catch (e) {
         console.error("failed to prune old package cache:", e);
       }
@@ -111,6 +128,30 @@
    * own login. Built right before launching because the login ticket expires within a minute.
    */
   async function accountLaunchArgs(): Promise<string[]> {
+    if (playerLink) return [playerLink];
+
+    if (gameTarget) {
+      const id = appState.accounts.activeId;
+      const account = appState.accounts.list.find((a) => a.id === id);
+      // a game link carries no login ticket, so only one of Glimmer's accounts can sign it in
+      if (!account) throw new Error($splashContent.accountNeeded.value);
+
+      status = $splashContent.signingIn({ name: account.displayName }).value;
+      try {
+        return await new AccountLauncher().gameArgs(account.id, gameTarget);
+      } catch (e) {
+        if (!(e instanceof AccountLaunchError)) throw e;
+        const name = account.displayName;
+        throw new Error(
+          e.kind === "expired"
+            ? $splashContent.accountExpired({ name }).value
+            : e.kind === "missing"
+              ? $splashContent.accountMissing({ name }).value
+              : $splashContent.accountFailed({ name, error: e.message }).value,
+        );
+      }
+    }
+
     const id = appState.accounts.activeId;
     const account = appState.accounts.list.find((a) => a.id === id);
     if (isStudio || !account) return [];
@@ -140,7 +181,10 @@
       await loadMods();
       try {
         await applyMods((done, total, percent) => {
-          status = $splashContent.downloadingModOriginals({ done, total }).value;
+          status = $splashContent.downloadingModOriginals({
+            done,
+            total,
+          }).value;
           progress = percent;
         });
       } catch (e) {
@@ -226,7 +270,9 @@
           );
 
           if (upToDate) {
-            status = $splashContent.launching({ version: upToDate.version }).value;
+            status = $splashContent.launching({
+              version: upToDate.version,
+            }).value;
 
             await launchInstall(upToDate.path);
           } else {

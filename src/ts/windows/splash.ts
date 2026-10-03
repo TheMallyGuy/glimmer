@@ -4,8 +4,9 @@ import { goto } from "$app/navigation";
 
 const LABEL = "splash";
 
-export async function openSplashWindow(target = "player") {
-  if (!isTauri()) return goto(`/splash?target=${encodeURIComponent(target)}`);
+export async function openSplashWindow(target = "player", link?: string) {
+  const url = `/splash?target=${encodeURIComponent(target)}${link ? `&link=${encodeURIComponent(link)}` : ""}`;
+  if (!isTauri()) return goto(url);
 
   const existing = await WebviewWindow.getByLabel(LABEL);
   if (existing) {
@@ -15,7 +16,7 @@ export async function openSplashWindow(target = "player") {
   }
 
   const win = new WebviewWindow(LABEL, {
-    url: `/splash?target=${encodeURIComponent(target)}`,
+    url,
     title: "glimmerSplash",
     width: 671,
     height: 329,

@@ -25,6 +25,7 @@ mock.module("@tauri-apps/api/webviewWindow", () => ({ WebviewWindow }));
 mock.module("@tauri-apps/api/tray", () => ({ TrayIcon: FakeTrayIcon }));
 mock.module("@tauri-apps/api/menu", () => ({ Menu: FakeMenu, MenuItem: FakeMenuItem }));
 mock.module("@tauri-apps/api/app", () => appModule);
+mock.module("@tauri-apps/plugin-deep-link", () => ({ onOpenUrl: async () => () => { }, getCurrent: async () => null }));
 mock.module("@tauri-apps/plugin-log", () => logSpies);
 
 // SvelteKit modules only exist inside the app; outside Tauri the window helpers navigate with goto

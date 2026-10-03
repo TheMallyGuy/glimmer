@@ -64,7 +64,7 @@ function stubRobloxApis() {
             return jsonResponse({ data: [{ name: "Obby Land", description: "", playing: 1, visits: 2 }] });
         }
         if (url.includes("avatar-headshot")) return jsonResponse({ data: [{ state: "Completed", imageUrl: "head.png" }] });
-        if (url.includes("/users/")) return jsonResponse({ displayName: "Cool Person" });
+        if (url.includes("/users/")) return jsonResponse({ displayName: "Cool Person", name: "coolperson" });
         if (url.includes("glimmer-thumb")) return jsonResponse({ url: "https://img.example/icon.png" });
         throw new Error(`unexpected url ${url}`);
     }) as typeof fetch;

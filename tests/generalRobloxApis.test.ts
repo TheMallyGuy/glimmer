@@ -155,8 +155,8 @@ describe("getGameThumbnail", () => {
 });
 
 describe("getUserName", () => {
-    test("returns the display name", async () => {
-        stubFetch({ "/users/5/": () => jsonResponse({ displayName: "Cool Person", username: "coolperson" }) });
+    test("returns the display name and the login name Roblox calls `name`", async () => {
+        stubFetch({ "/users/5/": () => jsonResponse({ displayName: "Cool Person", name: "coolperson" }) });
         expect(await getUserName(5)).toEqual({ displayName: "Cool Person", username: "coolperson" });
     });
 

@@ -1,0 +1,102 @@
+import { describe, expect, test } from "bun:test";
+import { GameLink } from "$ts/roblox/game";
+
+const CONTEXT = { ticket: "TICKET", launchTimeMs: 1700000000000, browserTrackerId: 12345678901 };
+
+/** the place launcher url inside a launch URI, decoded */
+function launcherUrl(uri: string): URL {
+    const encoded = uri.split("+").find((p) => p.startsWith("placelauncherurl:"))!.slice("placelauncherurl:".length);
+    return new URL(decodeURIComponent(encoded));
+}
+
+describe("GameLink.parse", () => {
+    test("reads the place from a roblox://experiences/start link", () => {
+        expect(GameLink.parse("roblox://experiences/start?placeId=1818")).toEqual({ placeId: 1818 });
+    });
+
+    test("reads a server (gameInstanceId) and a private server link code", () => {
+        expect(GameLink.parse("roblox://experiences/start?placeId=1&gameInstanceId=abc-123")).toEqual({ placeId: 1, jobId: "abc-123" });
+        expect(GameLink.parse("roblox://experiences/start?placeId=1&linkCode=9876")).toEqual({ placeId: 1, linkCode: "9876" });
+    });
+
+    test("allows a trailing slash and extra parameters", () => {
+        expect(GameLink.parse("roblox://experiences/start/?placeId=7&launchData=x")).toEqual({ placeId: 7 });
+    });
+
+    test.each([
+        "roblox://experiences/start",
+        "roblox://experiences/start?placeId=abc",
+        "roblox://experiences/start?placeId=-5",
+        "roblox://experiences/start?placeId=0",
+        "roblox://navigation/profile?userId=1",
+        "roblox-player:1+launchmode:play",
+        "https://www.roblox.com/games/1818",
+        "not a link",
+        "",
+    ])("%p is not a game link", (input) => {
+        expect(GameLink.parse(input)).toBeNull();
+    });
+});
+
+describe("GameLink.format", () => {
+    test("builds a link that parse reads back", () => {
+        for (const target of [{ placeId: 1818 }, { placeId: 1, jobId: "abc-123" }, { placeId: 1, linkCode: "9876" }]) {
+            expect(GameLink.parse(GameLink.format(target))).toEqual(target);
+        }
+    });
+
+    test("only includes the parts that are set", () => {
+        expect(GameLink.format({ placeId: 1818 })).toBe("roblox://experiences/start?placeId=1818");
+    });
+});
+
+describe("GameLink.launchUri", () => {
+    test("starts the player in play mode with the ticket", () => {
+        const uri = GameLink.launchUri({ placeId: 1818 }, CONTEXT);
+
+        expect(uri.startsWith("roblox-player:1+launchmode:play+gameinfo:TICKET+launchtime:1700000000000+placelauncherurl:")).toBe(true);
+        expect(uri.endsWith("+browsertrackerid:12345678901+robloxLocale:en_us+gameLocale:en_us+channel:+LaunchExp:InApp")).toBe(true);
+    });
+
+    test("the place launcher url is encoded, so it can't split the URI at a +", () => {
+        const uri = GameLink.launchUri({ placeId: 1818 }, CONTEXT);
+        const encoded = uri.split("+").find((p) => p.startsWith("placelauncherurl:"))!;
+
+        expect(encoded).not.toContain("?");
+        expect(encoded).not.toContain("&");
+        expect(uri.split("+")).toHaveLength(10);
+    });
+
+    test("joining any server requests the game", () => {
+        const url = launcherUrl(GameLink.launchUri({ placeId: 1818 }, CONTEXT));
+
+        expect(url.origin + url.pathname).toBe("https://assetgame.roblox.com/game/PlaceLauncher.ashx");
+        expect(Object.fromEntries(url.searchParams)).toEqual({
+            request: "RequestGame",
+            browserTrackerId: "12345678901",
+            placeId: "1818",
+            isPlayTogetherGame: "false",
+        });
+    });
+
+    test("joining a server requests that job", () => {
+        const url = launcherUrl(GameLink.launchUri({ placeId: 1, jobId: "abc-123" }, CONTEXT));
+
+        expect(url.searchParams.get("request")).toBe("RequestGameJob");
+        expect(url.searchParams.get("gameId")).toBe("abc-123");
+    });
+
+    test("joining a private server requests it by link code", () => {
+        const url = launcherUrl(GameLink.launchUri({ placeId: 1, linkCode: "9876" }, CONTEXT));
+
+        expect(url.searchParams.get("request")).toBe("RequestPrivateGame");
+        expect(url.searchParams.get("linkCode")).toBe("9876");
+        expect(url.searchParams.get("accessCode")).toBe("");
+    });
+
+    test("a private server link code wins over a server id", () => {
+        const url = launcherUrl(GameLink.launchUri({ placeId: 1, jobId: "j", linkCode: "c" }, CONTEXT));
+
+        expect(url.searchParams.get("request")).toBe("RequestPrivateGame");
+    });
+});

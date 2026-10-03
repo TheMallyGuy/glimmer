@@ -2,6 +2,7 @@ import { fetch } from "@tauri-apps/plugin-http";
 import { Keyring } from "../../keyring";
 import { COOKIE_NAME } from "./login";
 import { launchUri } from "$ts/utils";
+import { GameLink, type GameTarget } from "../game";
 
 const TICKET_URL = "https://auth.roblox.com/v1/authentication-ticket";
 
@@ -29,9 +30,24 @@ export class AccountLauncher {
 
   async args(id: string): Promise<string[]> {
     const ticket = await this.ticket(await this.cookie(id));
-    // the tracker id is only an analytics label, so any 11 digit number will do
-    const tracker = 10_000_000_000 + Math.floor(this.random() * 90_000_000_000);
-    return [launchUri(ticket, this.now(), tracker)];
+    return [launchUri(ticket, this.now(), this.trackerId())];
+  }
+
+  /** the arguments that start the player in a game, signed in as an account */
+  async gameArgs(id: string, game: GameTarget): Promise<string[]> {
+    const ticket = await this.ticket(await this.cookie(id));
+    return [
+      GameLink.launchUri(game, {
+        ticket,
+        launchTimeMs: this.now(),
+        browserTrackerId: this.trackerId(),
+      }),
+    ];
+  }
+
+  /** the tracker id is only an analytics label, so any 11 digit number will do */
+  private trackerId(): number {
+    return 10_000_000_000 + Math.floor(this.random() * 90_000_000_000);
   }
 
   private async cookie(id: string): Promise<string> {

@@ -5,6 +5,7 @@ import { Keyring } from "$ts/keyring";
 import { fakeWebviews, WebviewWindow } from "./helpers/webview";
 import { invokeCalls, invokeHandlers, resetTauri } from "./helpers/tauri";
 import { launchUri } from "$ts/utils";
+import { GameLink } from "$ts/roblox/game";
 
 const ACCOUNT = { id: "42", name: "builderman", displayName: "Builderman" };
 const realFetch = globalThis.fetch;
@@ -216,6 +217,20 @@ describe("AccountLauncher", () => {
         expect(first.body).toBe("{}");
         expect(first.headers["X-CSRF-TOKEN"]).toBeUndefined();
         expect(second.headers["X-CSRF-TOKEN"]).toBe("CSRF");
+    });
+
+    test("gameArgs builds the play URI for a game with the ticket", async () => {
+        expect(await launcher().gameArgs("42", { placeId: 1818 })).toEqual([
+            GameLink.launchUri({ placeId: 1818 }, { ticket: "TICKET", launchTimeMs: 1700000000000, browserTrackerId: 10_000_000_000 }),
+        ]);
+    });
+
+    test("gameArgs reports a missing login like args does", async () => {
+        delete saved["42"];
+
+        const failure = await launcher().gameArgs("42", { placeId: 1 }).catch((e) => e);
+
+        expect(failure.kind).toBe("missing");
     });
 
     test("an expired login is reported as expired", async () => {

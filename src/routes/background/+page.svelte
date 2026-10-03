@@ -7,6 +7,7 @@
   import { initDiscordRpc, clearActivity } from "$ts/roblox/discordRpc";
   import { loadAppState } from "$lib/appState.svelte";
   import { AppTray } from "$ts/tray";
+  import { DeepLinkHandler } from "$ts/deepLink";
   import { useIntlayer } from "svelte-intlayer";
   const trayContent = useIntlayer("tray");
 
@@ -21,8 +22,12 @@
       quit: $trayContent.quit.value,
     }).show();
 
+    // the page can load more than once (hot reload): drop the listeners of the last load first
     for (const unlisten of w.__glimmerBgUnlisten ?? []) unlisten();
     w.__glimmerBgUnlisten = [];
+
+    // this window is open as long as Glimmer is, so links are caught even with every other window closed
+    w.__glimmerBgUnlisten.push(await new DeepLinkHandler().start());
 
     w.__glimmerBgUnlisten.push(await watchRobloxLogs(processLogLine));
 

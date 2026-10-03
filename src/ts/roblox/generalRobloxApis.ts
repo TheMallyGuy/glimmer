@@ -113,11 +113,12 @@ export async function getUserName(userId: number) {
   }
 
   const json = (await res.json()) as {
+    /** the account's login name, which Roblox calls `name` */
+    name: string;
     displayName: string;
-    username: string;
   };
 
-  return json;
+  return { displayName: json.displayName, username: json.name };
 }
 
 export async function getUserHeadShot(userId: number) {
