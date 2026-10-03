@@ -19,7 +19,7 @@
     "customImageSettingsDescription": "Set a template URL and options for this preset.",
     "shareAccount": "Show account on Discord",
     "requiresDiscordRpc": "Discord Rich Presence is required turned on",
-    "allowFriendsToJoin": "Allow friends to join",
+    "allowFriendsToJoin": "Joinable button",
     "systemGroup": "System",
     "closeCrashHandler": "Close crash handler",
     "closeCrashHandlerDescription": "Kills Roblox crash handler on launch",

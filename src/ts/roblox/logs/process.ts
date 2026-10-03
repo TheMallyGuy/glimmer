@@ -141,6 +141,19 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
                 }]
             })
 
+            if (appState.integrations.discordRpc.join) {
+                await addActivity({
+                    buttons: [{
+                        label: "View Game",
+                        url: `https://roblox.com/games/${placeId}`
+                    },
+                    {
+                        label: "Join Game",
+                        url: `roblox-player:1+launchmode:play+gameinfo:${gameId}+launchtime:${Date.now()}`
+                    }]
+                })
+            }
+
             await applyHeadshot();
             await startTasxIfEnabled();
         },
@@ -196,7 +209,7 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
         handler: (m) => {
             const [, timestamp] = m;
             setGameState({ serverUptime: timestamp }) // TODO: will look at this back later
-            info(`Server uptime timestamp: ${timestamp}`);
+            info(`server uptime timestamp: ${timestamp}`);
         },
     },
 ];
