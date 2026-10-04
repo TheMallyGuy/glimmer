@@ -16,6 +16,7 @@ src/
 │   ├── rings.ts                   RingsEffect class: raw WebGL port of crush's red rings (the opt-in "Evil red rings" fun setting; shown by RingsOverlay)
 │   ├── toast.ts                   ToastQueue class: the toasts on screen, auto-dismiss with pause/resume (shown bottom left by ToastHost)
 │   ├── deepLink.ts                DeepLinkHandler class: links that open Glimmer (roblox-player:, roblox:), handed over by single-instance; started in the background window
+│   ├── overlayShortcut.ts         OverlayShortcut class: the Alt + G global shortcut of the in-game menu, told as one press and one release (used by the overlay window)
 │   ├── tray.ts                    AppTray class: the system tray icon and its menu (made in the hidden background window)
 │   ├── geo.ts                     IP geolocation lookup (server location notifier)
 │   ├── utils.ts
@@ -27,6 +28,7 @@ src/
 │       ├── game.ts                GameLink class: parses roblox://experiences/start game links, builds the roblox-player: play URI for a game (place, server or private server)
 │       ├── gameHistory.ts         GameHistory class: the games joined across sessions (games.json, kept apart from config.json), recorded by the log rules
 │       ├── gmLink.ts              GmLink class: sends the collected games to a link code of the glimmerlink API (the Discord bot in glimmerlinkbot makes the codes)
+│       ├── serverActions.ts       ServerActions class: what the in-game menu does with the server in `gameState` (copy an invite link, hop to another public server)
 │       ├── bloxstrapRpc.ts        BloxstrapRpc class: Bloxstrap's game RPC for Discord (SetRichPresence, SetLaunchData), read from `[BloxstrapRPC]` log lines
 │       ├── windowControl.ts       WindowControl class: Funkstrap window control, games retitle, move and fade the Roblox window with [BloxstrapRPC] log lines (Windows only; each game is allowed once, in config.json)
 │       ├── discordRpc.ts          Discord RPC client (talks to the Rust sidecar)
@@ -50,6 +52,8 @@ src/
 │   ├── theme.css                  design tokens (@theme) and base styles
 │   ├── utils.ts                   cn(): class joining with tailwind-merge; dictText(): text of a dictionary entry by runtime key
 │   ├── motion.ts                  prefersReducedMotion() and motionMs(): durations for Svelte transitions that drop to 0 for reduced motion
+│   ├── radial.ts                  geometry of the in-game radial menu: slice paths, which slot a mouse direction points at, stepping between slots
+│   ├── overlaySlots.ts            the slots of the in-game menu in one array (blank slots are null): a new action goes in place of one
 │   ├── window.ts                  window resize/center helpers
 │   ├── flags.ts                   Flag type and helpers
 │   ├── index.ts                   barrel: components, cn, flag helpers
@@ -67,6 +71,7 @@ src/
     ├── choose/                    Player/Studio chooser window
     ├── splash/                    launch progress window
     ├── background/                hidden window: log watching and Discord RPC
+    ├── overlay/                   the in-game radial menu (hold Alt + G): a transparent always-on-top window from tauri.conf.json, hidden until the shortcut shows it over Roblox. It owns the shortcut, follows the mouse and runs the actions, all in the frontend (capabilities/overlay.json). The settings window tells it to re-read the setting with the `overlay-refresh` event, and the background window sends it `gameState` changes with `game-state` (each window has its own copy of the state).
     └── (app)/                     main window (route group, not in the URL)
         ├── +layout.svelte         window chrome: header, tab bar, footer
         ├── <section>/+page.svelte one route per tab: integrations, mods, flags, installations, accounts, appearance, about
@@ -81,7 +86,7 @@ Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, h
 
 Accounts: a Roblox login is a `.ROBLOSECURITY` cookie. The whole flow lives in the frontend (`AccountLogin` in `account/login.ts`, `AccountLauncher` in `account/launcher.ts`). Rust only provides `keyring_*` (the OS credential store, service `glimmer-roblox-accounts`) and `webview_cookie`, because HttpOnly cookies of the login window are invisible to JS. The cookie goes keyring only: never into state, config.json, logs or error messages. `config.json` holds just `accounts.list` (id, name, displayName) and `accounts.activeId`. Requests that need Cookie/Origin/Referer use the http plugin, which has `unsafe-headers` enabled.
 
-Windows: `main` (the chooser), `splash`, `settings` (the `(app)` routes) and a hidden `background` window created in `src-tauri/src/lib.rs`. The background window also owns the system tray icon (`AppTray`, `src/ts/tray.ts`), so the icon stays while every other window is closed. A single-instance plugin hands second launches to the existing window.
+Windows: `main` (the chooser), `splash`, `settings` (the `(app)` routes), a hidden `background` window created in `src-tauri/src/lib.rs`, and the transparent `overlay` window of `tauri.conf.json`. The background window also owns the system tray icon (`AppTray`, `src/ts/tray.ts`), so the icon stays while every other window is closed. A single-instance plugin hands second launches to the existing window.
 
 Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/` (the intlayer dictionaries, built into the frontend by the vite plugin).
 
