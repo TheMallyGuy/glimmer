@@ -29,13 +29,21 @@ struct TailState {
     partial: String,
 }
 
-/// the most recently modified file directly inside `dir`, if any
+/// a log of the player. The folder holds other logs too, like the crash handler's (which Roblox writes to on its own
+/// and which is not what the log rules are about) and Studio's.
+fn is_player_log(path: &Path) -> bool {
+    path.file_name()
+        .and_then(|name| name.to_str())
+        .is_some_and(|name| name.contains("_Player_") && !name.contains("CrashHandler"))
+}
+
+/// the player log that was modified last in `dir`, if any
 fn latest_file_in(dir: &Path) -> Option<PathBuf> {
     let mut latest: Option<(SystemTime, PathBuf)> = None;
 
     for entry in fs::read_dir(dir).ok()?.flatten() {
         let path = entry.path();
-        if !path.is_file() {
+        if !path.is_file() || !is_player_log(&path) {
             continue;
         }
 
@@ -174,4 +182,68 @@ pub fn unwatch_latest_log(
         stop.store(true, Ordering::Relaxed);
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::Duration;
+
+    #[test]
+    fn only_player_logs_are_followed() {
+        assert!(is_player_log(Path::new("0.741.0.7411058_20261004T101409Z_Player_5578E_last.log")));
+        assert!(!is_player_log(Path::new("0.741.0.7411058_20261004T033436Z_Player_914ED_CrashHandler_last.log")));
+        assert!(!is_player_log(Path::new("0.741.0.7411058_20261004T033436Z_Studio_914ED_last.log")));
+        assert!(!is_player_log(Path::new("notes.txt")));
+    }
+
+    /// The watcher used to follow whichever file was written last, so when the crash handler's log (or another
+    /// player log) was written after the player log, it switched files and read the whole log again from the start:
+    /// every join in it was handled a second time.
+    #[test]
+    fn a_newer_crash_handler_log_does_not_take_the_place_of_the_player_log() {
+        let dir = std::env::temp_dir().join(format!("glimmer-{}-watcher", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+
+        let player = dir.join("0.741.0.7411058_20261004T153422Z_Player_33E70_last.log");
+        fs::write(&player, "joins").unwrap();
+        std::thread::sleep(Duration::from_millis(30));
+        fs::write(dir.join("0.741.0.7411058_20261004T153423Z_Player_914ED_CrashHandler_last.log"), "crash").unwrap();
+        std::thread::sleep(Duration::from_millis(30));
+        fs::write(dir.join("0.741.0.7411058_20261004T153424Z_Studio_AAAAA_last.log"), "studio").unwrap();
+
+        let latest = latest_file_in(&dir);
+
+        let _ = fs::remove_dir_all(&dir);
+        assert_eq!(latest, Some(player));
+    }
+
+    #[test]
+    fn a_newer_player_log_takes_over() {
+        let dir = std::env::temp_dir().join(format!("glimmer-{}-watcher2", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+
+        fs::write(dir.join("1_Player_AAAAA_last.log"), "old").unwrap();
+        std::thread::sleep(Duration::from_millis(30));
+        let newer = dir.join("2_Player_BBBBB_last.log");
+        fs::write(&newer, "new").unwrap();
+
+        let latest = latest_file_in(&dir);
+
+        let _ = fs::remove_dir_all(&dir);
+        assert_eq!(latest, Some(newer));
+    }
+
+    #[test]
+    fn a_folder_with_no_player_log_has_none() {
+        let dir = std::env::temp_dir().join(format!("glimmer-{}-watcher3", std::process::id()));
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(dir.join("1_Player_AAAAA_CrashHandler_last.log"), "crash").unwrap();
+
+        let latest = latest_file_in(&dir);
+
+        let _ = fs::remove_dir_all(&dir);
+        assert_eq!(latest, None);
+        assert_eq!(latest_file_in(&dir.join("missing")), None);
+    }
 }
