@@ -12,7 +12,6 @@
         { href: "/mods/manage", label: $modsLayoutContent.yourMods.value, count: mods.list.length },
         { href: "/mods/prebuilt", label: $modsLayoutContent.builtIn.value },
         { href: "/mods/community", label: $modsLayoutContent.community.value },
-        { href: "/mods/font-editor", label: $modsLayoutContent.fontEditor.value },
     ]);
 </script>
 

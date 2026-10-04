@@ -58,11 +58,6 @@ export class PathManager {
         return name ? join(root, name) : root;
     }
 
-    /** the icon font editor's working files */
-    async getFontEditorDir(): Promise<string> {
-        return join(await appDataDir(), "font-editor");
-    }
-
     /** the games joined across sessions (see GameHistory) */
     async getGameHistoryFile(): Promise<string> {
         return join(await appDataDir(), "games.json");

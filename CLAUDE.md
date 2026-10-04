@@ -45,7 +45,6 @@ src/
 │           ├── apply.ts           Applier: copies mods into an install, tracks hashes
 │           ├── stock.ts           StockRestorer class: restores stock files by extracting just those files from the cached packages (no full backup copy)
 │           ├── community.ts       Froststrap + Kliko library loader
-│           ├── fontEditor.ts      BuilderIcons font reading and editing
 │           └── presets/           one file per prebuilt mod (cursor, sounds, fonts, avatar background)
 ├── lib/
 │   ├── theme.css                  design tokens (@theme) and base styles
@@ -61,7 +60,6 @@ src/
 │   ├── installations.svelte.ts    installed versions list
 │   ├── accounts.svelte.ts         Accounts tab state: add, select, remove, expiry check (persists only `accounts` to config.json)
 │   ├── mods.svelte.ts             mods state and actions (TODOs = Tauri commands)
-│   └── iconEditor.svelte.ts       icon font editor state
 └── routes/
     ├── layout.css                 @import 'tailwindcss' + lib/theme.css
     ├── +layout.svelte             root layout
@@ -74,18 +72,18 @@ src/
         ├── <section>/+page.svelte one route per tab: integrations, mods, flags, installations, accounts, appearance, about
         ├── integrations/          +page, custom-image, link (collected games shared with a Discord link code)
         ├── flags/                 +layout, editor, presets
-        └── mods/                  +layout (view cards + banner), manage, prebuilt, community, font-editor
+        └── mods/                  +layout (view cards + banner), manage, prebuilt, community
 ```
 
 Tests live in `tests/`, one `<module>.test.ts` per module in `src/ts` or `src/lib`, run with `bun test`. `tests/setup.ts` (preloaded by `bunfig.toml`) replaces the Tauri plugins with in-memory fakes from `tests/helpers/` (`fakeFs`, `invoke` handlers, log spies); stub network calls by assigning `globalThis.fetch`. `.svelte.ts` rune modules can't load under Bun, so mock them with `mock.module` where a test needs them.
 
-Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, font_tool, hash, keyring, launch, log_watcher, mods, preps, TASX, webview_cookies, window_control), collected automatically via `tauri-helper`'s `#[auto_collect_command]` and exported to `src/ts/bindings.ts` by `tauri-specta` in debug builds. Call them as `commands.<name>()` from `$ts/bindings`.
+Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, hash, keyring, launch, log_watcher, mods, preps, TASX, webview_cookies, window_control), collected automatically via `tauri-helper`'s `#[auto_collect_command]` and exported to `src/ts/bindings.ts` by `tauri-specta` in debug builds. Call them as `commands.<name>()` from `$ts/bindings`.
 
 Accounts: a Roblox login is a `.ROBLOSECURITY` cookie. The whole flow lives in the frontend (`AccountLogin` in `account/login.ts`, `AccountLauncher` in `account/launcher.ts`). Rust only provides `keyring_*` (the OS credential store, service `glimmer-roblox-accounts`) and `webview_cookie`, because HttpOnly cookies of the login window are invisible to JS. The cookie goes keyring only: never into state, config.json, logs or error messages. `config.json` holds just `accounts.list` (id, name, displayName) and `accounts.activeId`. Requests that need Cookie/Origin/Referer use the http plugin, which has `unsafe-headers` enabled.
 
 Windows: `main` (the chooser), `splash`, `settings` (the `(app)` routes) and a hidden `background` window created in `src-tauri/src/lib.rs`. The background window also owns the system tray icon (`AppTray`, `src/ts/tray.ts`), so the icon stays while every other window is closed. A single-instance plugin hands second launches to the existing window.
 
-Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/` (the intlayer dictionaries, built into the frontend by the vite plugin). `src-tauri/external/` holds the BuildersColors sidecar used by the font editor.
+Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/` (the intlayer dictionaries, built into the frontend by the vite plugin).
 
 ## Design principles
 

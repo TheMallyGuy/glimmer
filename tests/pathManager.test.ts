@@ -30,7 +30,6 @@ describe("PathManager defaults", () => {
     });
 
     test("working folders and bundled files", async () => {
-        expect(await pm.getFontEditorDir()).toBe("/appdata/font-editor");
         expect(await pm.getBackgroundsDir()).toBe("/appdata/backgrounds");
         expect(await pm.getGameHistoryFile()).toBe("/appdata/games.json");
         expect(await pm.getBundledResource("resources/Mods/x.rbxl")).toBe("/resources/resources/Mods/x.rbxl");

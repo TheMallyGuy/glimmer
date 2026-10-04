@@ -22,9 +22,6 @@ pub use mods::*;
 pub mod preps;
 pub use preps::*;
 
-pub mod font_tool;
-pub use font_tool::*;
-
 pub mod TASX;
 pub use TASX::*;
 

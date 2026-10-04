@@ -20,11 +20,6 @@ import {
   setCustomDeathSound,
 } from "$ts/roblox/mod/presets/customDeathSound";
 import {
-  iconFontModName,
-  setIconFont,
-  type BuiltFont,
-} from "$ts/roblox/mod/presets/iconFont";
-import {
   customFontModName,
   setCustomFont,
 } from "$ts/roblox/mod/presets/customFont";
@@ -289,21 +284,6 @@ export async function applyDeathSound(soundPath: string | null) {
   }
 
   if (soundPath) await setCustomDeathSound(soundPath);
-
-  await loadMods();
-  await persist();
-}
-
-/** Replaces the icon font mod with one holding `fonts`. */
-export async function applyIconFont(fonts: BuiltFont[]) {
-  const m = await getManager();
-  await m.reIndex();
-
-  if (m.modificationPathIndex.some((e) => e.name === iconFontModName)) {
-    await m.deleteMod(iconFontModName);
-  }
-
-  await setIconFont(fonts);
 
   await loadMods();
   await persist();
