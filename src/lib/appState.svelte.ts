@@ -42,6 +42,10 @@ export const appState = $state({
     redRings: {
       enabled: false,
     },
+    windowControl: {
+      enabled: false,
+      allowedUniverses: [] as number[],
+    },
   },
   installations: {
     parallelDownloader: {

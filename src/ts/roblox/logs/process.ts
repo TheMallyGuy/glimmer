@@ -8,6 +8,7 @@ import {
 import type { LogLineEvent } from "./watcher";
 import { setActivity, addActivity } from "../discordRpc";
 import {
+  getAssetThumbnail,
   getGameInfo,
   getGameThumbnail,
   getUserHeadShot,
@@ -22,6 +23,51 @@ import {
   sendNotification,
 } from "@tauri-apps/plugin-notification";
 import { commands } from "$ts/bindings";
+import { Configuration } from "$ts/configuration";
+import { WindowControl, type WindowPrompt } from "../windowControl";
+import { BloxstrapRpc, PRESENCE_COMMANDS } from "../bloxstrapRpc";
+import { GameLink } from "../game";
+
+let windowPrompt: ((game: string) => WindowPrompt) | undefined;
+
+export function setWindowPrompt(prompt: (game: string) => WindowPrompt) {
+  windowPrompt = prompt;
+}
+
+/** remembers the game in config.json too, as only the allowed games change here and not the settings the settings window may have open */
+async function allowUniverse(universeId: number) {
+  const { allowedUniverses } = appState.integrations.windowControl;
+  if (!allowedUniverses.includes(universeId)) allowedUniverses.push(universeId);
+
+  const configuration = await Configuration.create();
+  let config: Record<string, any> = {};
+  try {
+    config = JSON.parse(await configuration.getAsText());
+  } catch {
+    // no config yet
+  }
+  config.integrations = {
+    ...config.integrations,
+    windowControl: { ...config.integrations?.windowControl, allowedUniverses: [...allowedUniverses] },
+  };
+  await configuration.saveRaw(JSON.stringify(config));
+}
+
+const windowControl = new WindowControl({
+  isAllowed: (universeId) => appState.integrations.windowControl.allowedUniverses.includes(universeId),
+  allow: allowUniverse,
+  prompt: (game) => {
+    if (!windowPrompt) throw new Error("the permission question has no text yet");
+    return windowPrompt(game);
+  },
+});
+
+const bloxstrapRpc = new BloxstrapRpc({
+  update: addActivity,
+  thumbnail: getAssetThumbnail,
+  accountShown: () => appState.integrations.discordRpc.shareAccount,
+  log: (message) => info(message),
+});
 
 async function notify(options: { title: string; body: string }) {
   let granted = await isPermissionGranted();
@@ -143,6 +189,14 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
         error(`failed to remember the game ${placeId}: ${err}`);
       }
 
+      if (appState.integrations.windowControl.enabled) {
+        try {
+          await windowControl.join(gameInfo.universeId, gameInfo.name);
+        } catch (err) {
+          error(`window control could not start: ${err}`);
+        }
+      }
+
       const udmx = gameState.serverIp;
 
       if (udmx && appState.integrations.serverLocNotifer.enabled) {
@@ -165,32 +219,25 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
         startTimestamp: Date.now(),
       };
 
-      await setActivity({
+      // the join button is a roblox:// link, so it can carry the launch data a game sets (SetLaunchData)
+      const buttons = (launchData?: string) => [
+        {
+          label: "View Game",
+          url: `https://roblox.com/games/${placeId}`,
+        },
+        ...(appState.integrations.discordRpc.join
+          ? [{ label: "Join Game", url: GameLink.format({ placeId, jobId: gameId, launchData }) }]
+          : []),
+      ];
+
+      const activity = {
         largeImage: activeSession.largeImage,
         state: activeSession.state,
         startTimestamp: activeSession.startTimestamp,
-        buttons: [
-          {
-            label: "View Game",
-            url: `https://roblox.com/games/${placeId}`,
-          },
-        ],
-      });
-
-      if (appState.integrations.discordRpc.join) {
-        await addActivity({
-          buttons: [
-            {
-              label: "View Game",
-              url: `https://roblox.com/games/${placeId}`,
-            },
-            {
-              label: "Join Game",
-              url: `roblox-player:1+launchmode:play+gameinfo:${gameId}+launchtime:${Date.now()}`,
-            },
-          ],
-        });
-      }
+        buttons: buttons(),
+      };
+      await setActivity(activity);
+      await bloxstrapRpc.begin(activity, buttons);
 
       await applyHeadshot();
       await startTasxIfEnabled();
@@ -202,6 +249,8 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
     handler: async (m) => {
       const [, code] = m;
       activeSession = null;
+      bloxstrapRpc.end();
+      await windowControl.leave().catch((err) => error(`window control could not reset the window: ${err}`));
       await setActivity({
         state: "In the app",
         largeImage:
@@ -209,6 +258,29 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
         startTimestamp: Date.now(),
       });
       info(`disconnected game with code id: ${code}`);
+    },
+  },
+  {
+    name: "bloxstrapRPC",
+    pattern: /\[BloxstrapRPC\] (.+)$/,
+    handler: async (m) => {
+      let message: { command?: unknown; data?: unknown };
+
+      try {
+        message = JSON.parse(m[1]);
+      } catch {
+        return; // not a message for us
+      }
+
+      if (typeof message.command !== "string") return;
+      info(`BloxstrapRPC: ${m[1].slice(0, 300)}`);
+
+      // Discord commands are Bloxstrap's, the rest are Funkstrap's window commands
+      if (PRESENCE_COMMANDS.includes(message.command)) {
+        if (appState.integrations.discordRpc.enabled) await bloxstrapRpc.handle(message.command, message.data);
+      } else if (appState.integrations.windowControl.enabled) {
+        await windowControl.handle({ command: message.command, data: message.data });
+      }
     },
   },
   {

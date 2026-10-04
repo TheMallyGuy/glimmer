@@ -100,6 +100,24 @@ export async function getGameThumbnail(
   return thumbnail?.imageUrl ?? null;
 }
 
+/** the picture of an asset (the id a game gives for its Discord presence images), or null when Roblox has none (yet) */
+export async function getAssetThumbnail(assetId: number): Promise<string | null> {
+  const res = await fetch(
+    `https://thumbnails.roproxy.com/v1/assets?assetIds=${assetId}&size=512x512&format=Png&isCircular=false`,
+  );
+  if (!res.ok) {
+    error(
+      `Failed to fetch the thumbnail of asset ${assetId}: ${res.status} ${res.statusText}`,
+    );
+    throw new Error(`Failed to fetch the thumbnail of asset ${assetId}`);
+  }
+
+  const json = (await res.json()) as {
+    data?: { state: string; imageUrl: string }[];
+  };
+  return json.data?.find((t) => t.state === "Completed")?.imageUrl ?? null;
+}
+
 export async function getUserName(userId: number) {
   const res = await fetch(`https://users.roproxy.com/v1/users/${userId}/`);
 

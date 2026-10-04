@@ -39,3 +39,5 @@ pub use webview_cookies::*;
 
 pub mod self_process;
 pub use self_process::*;
+pub mod window_control;
+pub use window_control::*;

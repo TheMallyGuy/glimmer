@@ -27,6 +27,8 @@ src/
 │       ├── game.ts                GameLink class: parses roblox://experiences/start game links, builds the roblox-player: play URI for a game (place, server or private server)
 │       ├── gameHistory.ts         GameHistory class: the games joined across sessions (games.json, kept apart from config.json), recorded by the log rules
 │       ├── gmLink.ts              GmLink class: sends the collected games to a link code of the glimmerlink API (the Discord bot in glimmerlinkbot makes the codes)
+│       ├── bloxstrapRpc.ts        BloxstrapRpc class: Bloxstrap's game RPC for Discord (SetRichPresence, SetLaunchData), read from `[BloxstrapRPC]` log lines
+│       ├── windowControl.ts       WindowControl class: Funkstrap window control, games retitle, move and fade the Roblox window with [BloxstrapRPC] log lines (Windows only; each game is allowed once, in config.json)
 │       ├── discordRpc.ts          Discord RPC client (talks to the Rust sidecar)
 │       ├── account/
 │       │   ├── login.ts           AccountLogin class (Roblox login window, saves the login to the keyring), login validity helpers, config.json merge
@@ -77,7 +79,7 @@ src/
 
 Tests live in `tests/`, one `<module>.test.ts` per module in `src/ts` or `src/lib`, run with `bun test`. `tests/setup.ts` (preloaded by `bunfig.toml`) replaces the Tauri plugins with in-memory fakes from `tests/helpers/` (`fakeFs`, `invoke` handlers, log spies); stub network calls by assigning `globalThis.fetch`. `.svelte.ts` rune modules can't load under Bun, so mock them with `mock.module` where a test needs them.
 
-Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, font_tool, hash, keyring, launch, log_watcher, mods, preps, TASX, webview_cookies), collected automatically via `tauri-helper`'s `#[auto_collect_command]` and exported to `src/ts/bindings.ts` by `tauri-specta` in debug builds. Call them as `commands.<name>()` from `$ts/bindings`.
+Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, font_tool, hash, keyring, launch, log_watcher, mods, preps, TASX, webview_cookies, window_control), collected automatically via `tauri-helper`'s `#[auto_collect_command]` and exported to `src/ts/bindings.ts` by `tauri-specta` in debug builds. Call them as `commands.<name>()` from `$ts/bindings`.
 
 Accounts: a Roblox login is a `.ROBLOSECURITY` cookie. The whole flow lives in the frontend (`AccountLogin` in `account/login.ts`, `AccountLauncher` in `account/launcher.ts`). Rust only provides `keyring_*` (the OS credential store, service `glimmer-roblox-accounts`) and `webview_cookie`, because HttpOnly cookies of the login window are invisible to JS. The cookie goes keyring only: never into state, config.json, logs or error messages. `config.json` holds just `accounts.list` (id, name, displayName) and `accounts.activeId`. Requests that need Cookie/Origin/Referer use the http plugin, which has `unsafe-headers` enabled.
 

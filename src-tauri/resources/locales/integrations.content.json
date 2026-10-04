@@ -28,6 +28,8 @@
     "closeCrashHandlerDescription": "Kills Roblox crash handler on launch",
     "trimMemory": "TASX Optimizer",
     "trimMemoryDescription": "An Roblox optimizer by 8damon. It is not useless. C++ Source code [8damon/TASX-Roblox-Optimizer/]",
+    "windowControl": "Window manipulation",
+    "windowControlDescription": "Let the game control the window for you! (Funkstrap feature)",
     "disableSystemTray": "Disable system tray icon",
     "disableSystemTrayDescription": "Disable Roblox's that annoying system tray icon",
     "disableFullscreenOptimization": "Disable fullscreen optimization",

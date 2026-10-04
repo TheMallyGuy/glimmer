@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import {
+    getAssetThumbnail,
     getGameInfo,
     getGameName,
     getGameThumbnail,
@@ -151,6 +152,28 @@ describe("getGameThumbnail", () => {
     test("throws on an HTTP error", async () => {
         stubFetch({ ...universe, "games/multiget/thumbnails": () => jsonResponse({}, { status: 500 }) });
         await expect(getGameThumbnail(7)).rejects.toThrow("Failed to fetch game thumbnail for universeId 70");
+    });
+});
+
+describe("getAssetThumbnail", () => {
+    test("returns the picture of an asset", async () => {
+        stubFetch({ "/v1/assets": () => jsonResponse({ data: [{ state: "Completed", imageUrl: "asset.png" }] }) });
+
+        expect(await getAssetThumbnail(123)).toBe("asset.png");
+        expect(urls[0]).toContain("assetIds=123");
+    });
+
+    test("is null while Roblox has not made the picture", async () => {
+        stubFetch({ "/v1/assets": () => jsonResponse({ data: [{ state: "Pending", imageUrl: "" }] }) });
+
+        expect(await getAssetThumbnail(123)).toBeNull();
+    });
+
+    test("throws and logs when the request fails", async () => {
+        stubFetch({ "/v1/assets": () => jsonResponse({}, { status: 500, statusText: "Server Error" }) });
+
+        await expect(getAssetThumbnail(123)).rejects.toThrow("Failed to fetch the thumbnail of asset 123");
+        expect(logSpies.error).toHaveBeenCalled();
     });
 });
 

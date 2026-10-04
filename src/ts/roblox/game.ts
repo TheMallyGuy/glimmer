@@ -5,6 +5,8 @@ export interface GameTarget {
     jobId?: string;
     /** join a private server by its link code */
     linkCode?: string;
+    /** what the game reads as its launch data (`SetLaunchData` in the BloxstrapRPC SDK sets it for invite links) */
+    launchData?: string;
 }
 
 /** the numbers and clock a launch URI needs, so it can be built the same way every time in a test */
@@ -34,7 +36,8 @@ export class GameLink {
 
         const jobId = url.searchParams.get("gameInstanceId") || undefined;
         const linkCode = url.searchParams.get("linkCode") || undefined;
-        return { placeId, ...(jobId && { jobId }), ...(linkCode && { linkCode }) };
+        const launchData = url.searchParams.get("launchData") || undefined;
+        return { placeId, ...(jobId && { jobId }), ...(linkCode && { linkCode }), ...(launchData && { launchData }) };
     }
 
     /** the `roblox://` link for a game, the one Glimmer's deep link handler understands */
@@ -42,6 +45,7 @@ export class GameLink {
         const params = new URLSearchParams({ placeId: String(target.placeId) });
         if (target.jobId) params.set("gameInstanceId", target.jobId);
         if (target.linkCode) params.set("linkCode", target.linkCode);
+        if (target.launchData) params.set("launchData", target.launchData);
         return `roblox://experiences/start?${params}`;
     }
 
@@ -78,6 +82,7 @@ export class GameLink {
             params.set("placeId", String(target.placeId));
             params.set("isPlayTogetherGame", "false");
         }
+        if (target.launchData) params.set("launchData", target.launchData);
 
         return params.toString();
     }

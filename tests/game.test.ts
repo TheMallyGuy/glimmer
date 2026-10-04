@@ -20,7 +20,14 @@ describe("GameLink.parse", () => {
     });
 
     test("allows a trailing slash and extra parameters", () => {
-        expect(GameLink.parse("roblox://experiences/start/?placeId=7&launchData=x")).toEqual({ placeId: 7 });
+        expect(GameLink.parse("roblox://experiences/start/?placeId=7&somethingElse=x")).toEqual({ placeId: 7 });
+    });
+
+    test("reads the launch data a game set for invites", () => {
+        expect(GameLink.parse("roblox://experiences/start?placeId=7&launchData=%7B%22a%22%3A1%7D")).toEqual({
+            placeId: 7,
+            launchData: '{"a":1}',
+        });
     });
 
     test.each([
@@ -47,6 +54,27 @@ describe("GameLink.format", () => {
 
     test("only includes the parts that are set", () => {
         expect(GameLink.format({ placeId: 1818 })).toBe("roblox://experiences/start?placeId=1818");
+    });
+});
+
+describe("GameLink launch data", () => {
+    test("is part of the link, and parse reads it back", () => {
+        const target = { placeId: 7, jobId: "job", launchData: "a b&c=d" };
+
+        expect(GameLink.parse(GameLink.format(target))).toEqual(target);
+    });
+
+    test("goes to the place launcher, whichever way the game is joined", () => {
+        const context = { ticket: "t", launchTimeMs: 1, browserTrackerId: 2 };
+        const launcher = (target: Parameters<typeof GameLink.launchUri>[0]) => {
+            const uri = GameLink.launchUri(target, context);
+            const encoded = /placelauncherurl:([^+]*)/.exec(uri)![1];
+            return new URL(decodeURIComponent(encoded)).searchParams;
+        };
+
+        expect(launcher({ placeId: 7, launchData: "x y" }).get("launchData")).toBe("x y");
+        expect(launcher({ placeId: 7, jobId: "job", launchData: "x" }).get("launchData")).toBe("x");
+        expect(launcher({ placeId: 7 }).has("launchData")).toBe(false);
     });
 });
 

@@ -1,0 +1,13 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "windowControl",
+  "content": {
+    "promptTitle": "Let this game control the window?",
+    "promptBody": {
+      "nodeType": "insertion",
+      "insertion": "{{game}} wants to move your Roblox window. You can turn this off for every game in Integrations."
+    },
+    "allow": "Allow",
+    "deny": "Not now"
+  }
+}

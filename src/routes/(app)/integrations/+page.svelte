@@ -126,6 +126,17 @@
     {/snippet}
   </SettingRow>
   <SettingRow
+    title={$integrationsContent.windowControl.value}
+    description={$integrationsContent.windowControlDescription.value}
+  >
+    {#snippet control()}
+      <Switch
+        label={$integrationsContent.windowControl.value}
+        bind:checked={appState.integrations.windowControl.enabled}
+      />
+    {/snippet}
+  </SettingRow>
+  <SettingRow
     title={$integrationsContent.disableSystemTray.value}
     description={$integrationsContent.disableSystemTrayDescription.value}
   >

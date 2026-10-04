@@ -8,7 +8,10 @@ const appState = {
     integrations: {
         serverLocNotifer: { enabled: false },
         trimMemWhenNotFocused: { enabled: false },
+        windowControl: { enabled: false, allowedUniverses: [] as number[] },
         discordRpc: {
+            enabled: false,
+            join: false,
             shareAccount: false,
             largeImagePreset: "icon",
             customImage: { svgUrl: "", overlay: "white", size: "512" },
@@ -39,6 +42,12 @@ mock.module("@tauri-apps/plugin-notification", () => ({
     sendNotification,
 }));
 
+// the window control rule pulls these in, and the real plugins need a webview
+mock.module("@tauri-apps/plugin-dialog", () => ({ ask: async () => true }));
+mock.module("$ts/configuration", () => ({
+    Configuration: { create: async () => ({ getAsText: async () => "{}", saveRaw: async () => { } }) },
+}));
+
 const { processLogLine } = await import("$ts/roblox/logs/process");
 
 const PLACE_ID = 4242;
@@ -64,6 +73,7 @@ function stubRobloxApis() {
         if (url.includes("games.roproxy.com")) {
             return jsonResponse({ data: [{ name: "Obby Land", description: "", playing: 1, visits: 2 }] });
         }
+        if (url.includes("/v1/assets")) return jsonResponse({ data: [{ state: "Completed", imageUrl: "asset.png" }] });
         if (url.includes("avatar-headshot")) return jsonResponse({ data: [{ state: "Completed", imageUrl: "head.png" }] });
         if (url.includes("/users/")) return jsonResponse({ displayName: "Cool Person", name: "coolperson" });
         if (url.includes("glimmerlink.mallyy.workers.dev")) return jsonResponse({ url: "https://img.example/icon.png" });
@@ -73,11 +83,16 @@ function stubRobloxApis() {
 
 beforeEach(() => {
     resetTauri();
+    fakeFs.reset();
     for (const key of Object.keys(gameState)) delete gameState[key];
     for (const spy of [setGameState, setActivity, addActivity, fetchLocation, sendNotification]) spy.mockClear();
 
     appState.integrations.serverLocNotifer.enabled = false;
     appState.integrations.trimMemWhenNotFocused.enabled = false;
+    appState.integrations.windowControl.enabled = false;
+    appState.integrations.windowControl.allowedUniverses = [];
+    appState.integrations.discordRpc.enabled = false;
+    appState.integrations.discordRpc.join = false;
     appState.integrations.discordRpc.shareAccount = false;
     appState.integrations.discordRpc.largeImagePreset = "icon";
     stubRobloxApis();
@@ -286,5 +301,160 @@ describe("processLogLine: leaving a game", () => {
         await waitFor(() => setGameState.mock.calls.length > 0);
         await new Promise((r) => setTimeout(r, 20));
         expect(addActivity).not.toHaveBeenCalled();
+    });
+});
+
+describe("processLogLine: window control", () => {
+    const titleLine = '[FLog::Output] [BloxstrapRPC] {"command":"SetWindowTitle","data":"Funky"}';
+
+    /** joins the game with the Roblox window found, and waits until window control has seen the join */
+    async function join() {
+        invokeHandlers.get_roblox_hwnd = () => "42";
+        invokeHandlers.window_exe_dir = () => "/appdata/versions/version-abc";
+        invokeHandlers.window_set_title = () => null;
+        feed(`[FLog::Network] ! Joining game '${GAME_ID}' place ${PLACE_ID} at 128.116.1.2`);
+        await waitFor(() => fakeFs.has("/appdata/versions/version-abc/content/bloxstrap/enabled.png"));
+    }
+
+    test("does nothing for game messages while it is off", async () => {
+        invokeHandlers.get_roblox_hwnd = () => "42";
+        feed(titleLine);
+
+        await new Promise((r) => setTimeout(r, 20));
+        expect(invokeCalls).toHaveLength(0);
+    });
+
+    test("sets the title a game asks for once it is on", async () => {
+        appState.integrations.windowControl.enabled = true;
+        await join();
+
+        feed(titleLine);
+
+        await waitFor(() => invokeCalls.some((c) => c.cmd === "window_set_title"));
+        expect(invokeCalls.find((c) => c.cmd === "window_set_title")?.args).toEqual({ hwnd: "42", title: "Funky" });
+    });
+
+    test("puts the title back when the game is left", async () => {
+        appState.integrations.windowControl.enabled = true;
+        await join();
+        feed(titleLine);
+        await waitFor(() => invokeCalls.some((c) => c.cmd === "window_set_title"));
+        invokeHandlers.window_set_layer = () => null;
+
+        feed("[FLog::Network] Sending disconnect with reason: 0");
+
+        await waitFor(() => invokeCalls.filter((c) => c.cmd === "window_set_title").length === 2);
+        expect(invokeCalls.filter((c) => c.cmd === "window_set_title")[1].args).toEqual({ hwnd: "42", title: "Roblox" });
+    });
+
+    test("ignores a message that is not JSON", async () => {
+        appState.integrations.windowControl.enabled = true;
+        await join();
+        invokeCalls.length = 0;
+
+        feed("[FLog::Output] [BloxstrapRPC] not json");
+
+        await new Promise((r) => setTimeout(r, 20));
+        expect(invokeCalls).toHaveLength(0);
+        expect(logSpies.error).not.toHaveBeenCalled();
+    });
+});
+
+describe("processLogLine: Bloxstrap RPC", () => {
+    const joinLine = `[FLog::Network] ! Joining game '${GAME_ID}' place ${PLACE_ID} at 128.116.1.2`;
+    const rpc = (command: string, data: unknown) => `[FLog::CreatorOutput] [BloxstrapRPC] ${JSON.stringify({ command, data })}`;
+    const joined = () => waitFor(() => setActivity.mock.calls.length > 0);
+
+    // the RPC state belongs to the game that is joined, so each test starts from a game that was left
+    beforeEach(async () => {
+        feed("[FLog::Network] Sending disconnect with reason: 0");
+        await waitFor(() => setActivity.mock.calls.length > 0);
+        setActivity.mockClear();
+        addActivity.mockClear();
+    });
+
+    test("changes the activity for a game once Discord RPC is on", async () => {
+        appState.integrations.discordRpc.enabled = true;
+        feed(joinLine);
+        await joined();
+
+        feed(rpc("SetRichPresence", { details: "Round 3", largeImage: { assetId: 5, hoverText: "Boss" } }));
+
+        await waitFor(() => addActivity.mock.calls.some((c) => c[0].details === "Round 3"));
+        expect(addActivity).toHaveBeenCalledWith({ details: "Round 3", largeText: "Boss", largeImage: "asset.png" });
+    });
+
+    test("handles what a game says before Glimmer has finished joining it", async () => {
+        appState.integrations.discordRpc.enabled = true;
+        feed(joinLine);
+        feed(rpc("SetRichPresence", { state: "early bird" }));
+
+        await waitFor(() => addActivity.mock.calls.some((c) => c[0].state === "early bird"));
+    });
+
+    test("does nothing while Discord RPC is off", async () => {
+        feed(joinLine);
+        await joined();
+        feed(rpc("SetRichPresence", { details: "Round 3" }));
+
+        await new Promise((r) => setTimeout(r, 20));
+        expect(addActivity).not.toHaveBeenCalled();
+    });
+
+    test("forgets the game when it is left", async () => {
+        appState.integrations.discordRpc.enabled = true;
+        feed(joinLine);
+        await joined();
+        feed("[FLog::Network] Sending disconnect with reason: 0");
+        await waitFor(() => setActivity.mock.calls.length > 1);
+
+        feed(rpc("SetRichPresence", { details: "after" }));
+
+        await new Promise((r) => setTimeout(r, 20));
+        expect(addActivity).not.toHaveBeenCalled();
+    });
+
+    test("the join button is a roblox:// link, and carries the launch data a game sets", async () => {
+        appState.integrations.discordRpc.enabled = true;
+        appState.integrations.discordRpc.join = true;
+        feed(joinLine);
+        await joined();
+
+        const join = (setActivity.mock.calls[0][0] as { buttons: { label: string; url: string }[] }).buttons[1];
+        expect(join.label).toBe("Join Game");
+        expect(join.url).toBe(`roblox://experiences/start?placeId=${PLACE_ID}&gameInstanceId=${GAME_ID}`);
+
+        feed(rpc("SetLaunchData", "room=7"));
+
+        await waitFor(() => addActivity.mock.calls.length > 0);
+        const buttons = (addActivity.mock.calls[0][0] as { buttons: { label: string; url: string }[] }).buttons;
+        expect(buttons[1].url).toBe(`roblox://experiences/start?placeId=${PLACE_ID}&gameInstanceId=${GAME_ID}&launchData=room%3D7`);
+    });
+
+    test("has no join button unless the person allows friends to join", async () => {
+        appState.integrations.discordRpc.enabled = true;
+        feed(joinLine);
+        await joined();
+
+        expect((setActivity.mock.calls[0][0] as { buttons: unknown[] }).buttons).toHaveLength(1);
+    });
+
+    test("leaves the window commands to window control, and does not send Discord commands there", async () => {
+        appState.integrations.discordRpc.enabled = true;
+        appState.integrations.windowControl.enabled = true;
+        invokeHandlers.get_roblox_hwnd = () => "42";
+        invokeHandlers.window_exe_dir = () => "/appdata/versions/version-abc";
+        invokeHandlers.window_set_title = () => null;
+        feed(joinLine);
+        await waitFor(() => fakeFs.has("/appdata/versions/version-abc/content/bloxstrap/enabled.png"));
+        await joined();
+
+        feed(rpc("SetRichPresence", { details: "Round 3" }));
+        feed(rpc("SetWindowTitle", "Funky"));
+
+        await waitFor(() => invokeCalls.some((c) => c.cmd === "window_set_title"));
+        await waitFor(() => addActivity.mock.calls.some((c) => c[0].details === "Round 3"));
+        expect(addActivity).toHaveBeenCalledTimes(1); // the title is not a Discord message
+        expect(invokeCalls.filter((c) => c.cmd === "window_set_title")).toHaveLength(1);
     });
 });

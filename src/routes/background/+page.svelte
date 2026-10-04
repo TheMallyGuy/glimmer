@@ -3,13 +3,14 @@
   import { isTauri } from "@tauri-apps/api/core";
   import { listen, type UnlistenFn } from "@tauri-apps/api/event";
   import { watchRobloxLogs } from "$ts/roblox/logs/watcher";
-  import { processLogLine } from "$ts/roblox/logs/process";
+  import { processLogLine, setWindowPrompt } from "$ts/roblox/logs/process";
   import { initDiscordRpc, clearActivity } from "$ts/roblox/discordRpc";
   import { loadAppState } from "$lib/appState.svelte";
   import { AppTray } from "$ts/tray";
   import { DeepLinkHandler } from "$ts/deepLink";
   import { useIntlayer } from "svelte-intlayer";
   const trayContent = useIntlayer("tray");
+  const windowContent = useIntlayer("windowControl");
 
   const w = window as unknown as { __glimmerBgUnlisten?: UnlistenFn[] };
 
@@ -21,6 +22,13 @@
       openSelector: $trayContent.openSelector.value,
       quit: $trayContent.quit.value,
     }).show();
+
+    setWindowPrompt((game) => ({
+      title: $windowContent.promptTitle.value,
+      body: $windowContent.promptBody({ game }).value,
+      allow: $windowContent.allow.value,
+      deny: $windowContent.deny.value,
+    }));
 
     // the page can load more than once (hot reload): drop the listeners of the last load first
     for (const unlisten of w.__glimmerBgUnlisten ?? []) unlisten();
