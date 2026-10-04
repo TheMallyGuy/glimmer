@@ -1,4 +1,5 @@
 import { isTauri } from "@tauri-apps/api/core";
+import { emit } from "@tauri-apps/api/event";
 import { closeWindow } from "$lib/window";
 import { appState } from "$lib/appState.svelte";
 import { Configuration } from "$ts/configuration";
@@ -18,6 +19,8 @@ export async function save() {
 
   const configuration = await Configuration.create();
   await configuration.saveRaw(JSON.stringify($state.snapshot(appState)));
+
+  await emit("overlay-refresh");
 }
 
 export async function discard() {

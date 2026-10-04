@@ -8,7 +8,7 @@ import {
   remove,
   writeFile,
 } from "@tauri-apps/plugin-fs";
-import { debug, info } from "@tauri-apps/plugin-log";
+import { debug, error, info } from "@tauri-apps/plugin-log";
 
 export interface InstallEntry {
   version: string;
@@ -26,7 +26,7 @@ export class Installation {
   installedVersions: InstallEntry[] = [];
   reIndexVar = false;
   private indexFile = "";
-  constructor(reIndexVar: boolean) {}
+  constructor(reIndexVar: boolean) { }
 
   static async create(
     reIndex = true,
@@ -117,6 +117,24 @@ export class Installation {
   /** the installed version currently marked as active, if any */
   getActiveVersion(): InstallEntry | undefined {
     return this.installedVersions.find((v) => v.active);
+  }
+
+  async getActiveVersionExe() {
+    const actIn = this.installedVersions.find((v) => v.active)?.path
+
+    if (!actIn) {
+      error(`cannot find active version folder`)
+      throw new Error("Cannot find active version folder")
+    }
+
+    const rbxexePath = await join(actIn, "RobloxPlayerBeta.exe")
+
+    if (!(await exists(rbxexePath))) {
+      error(`cannot find active version exe`)
+      throw new Error("Cannot find active version exe")
+    }
+
+    return rbxexePath;
   }
 
   /**

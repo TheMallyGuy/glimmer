@@ -35,6 +35,14 @@
   --color-danger-bg: #2a1a1a;
   --color-danger-bg-hover: #3a2020;
 
+  /* The in-game menu: fixed colours, as it floats over the game and is not tinted by the background setting */
+  --color-ring-active: #1a1a1a;
+  --color-ring-blank: #121212;
+  --color-ring-gap: #0b0b0b;
+  --color-ring-core: #111111;
+  --color-ring-icon: #d6d6d6;
+  --color-ring-backdrop: rgb(11 11 11 / 0.75);
+
   /* Type */
   --font-sans: "Geist", "Segoe UI", system-ui, sans-serif;
   --font-display: "Cal Sans", "Geist", system-ui, sans-serif;

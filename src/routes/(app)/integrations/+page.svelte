@@ -126,6 +126,17 @@
     {/snippet}
   </SettingRow>
   <SettingRow
+    title={$integrationsContent.inGameMenu.value}
+    description={$integrationsContent.inGameMenuDescription.value}
+  >
+    {#snippet control()}
+      <Switch
+        label={$integrationsContent.inGameMenu.value}
+        bind:checked={appState.integrations.inGameMenu.enabled}
+      />
+    {/snippet}
+  </SettingRow>
+  <SettingRow
     title={$integrationsContent.windowControl.value}
     description={$integrationsContent.windowControlDescription.value}
   >

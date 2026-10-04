@@ -179,6 +179,7 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
       const [, gameId, place, position] = m;
       info(`game join: gameId=${gameId} place=${place} position=${position}`);
       const placeId = Number(place);
+      setGameState({ gameId: placeId, gameServer: gameId });
       await loadAppState();
 
       const gameInfo = await getGameInfo(placeId);
@@ -249,6 +250,7 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
     handler: async (m) => {
       const [, code] = m;
       activeSession = null;
+      setGameState({ gameId: 0, gameServer: "" });
       bloxstrapRpc.end();
       await windowControl.leave().catch((err) => error(`window control could not reset the window: ${err}`));
       await setActivity({

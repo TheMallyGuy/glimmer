@@ -108,6 +108,8 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .manage(LogWatcherRegistry::default())
         .manage(commands::DiscordRpcState::default())
         .manage(commands::DiscordRpcDebugState::default())

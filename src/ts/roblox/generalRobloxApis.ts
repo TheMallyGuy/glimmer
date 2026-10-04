@@ -118,6 +118,36 @@ export async function getAssetThumbnail(assetId: number): Promise<string | null>
   return json.data?.find((t) => t.state === "Completed")?.imageUrl ?? null;
 }
 
+/** a server of the public list of a game */
+export interface PublicServer {
+  /** the job id */
+  id: string;
+  maxPlayers: number;
+  playing: number;
+}
+
+/** a request that never answers must not leave the caller waiting for ever */
+const PUBLIC_SERVERS_TIMEOUT_MS = 10_000;
+
+/** the first page of the public servers of a game, which is as many as one request gives (100) */
+export async function getPublicServers(placeId: number): Promise<PublicServer[]> {
+  const res = await fetch(
+    `https://games.roblox.com/v1/games/${placeId}/servers/Public?limit=100`,
+    { signal: AbortSignal.timeout(PUBLIC_SERVERS_TIMEOUT_MS) },
+  );
+  if (!res.ok) {
+    error(
+      `Failed to fetch public servers for placeId ${placeId}: ${res.status} ${res.statusText}`,
+    );
+    throw new Error(
+      `Roblox answered ${res.status} when asked for the servers of place ${placeId}`,
+    );
+  }
+
+  const json = (await res.json()) as { data?: PublicServer[] };
+  return json.data ?? [];
+}
+
 export async function getUserName(userId: number) {
   const res = await fetch(`https://users.roproxy.com/v1/users/${userId}/`);
 

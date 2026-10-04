@@ -1,6 +1,7 @@
 import type { Flag } from "./flags";
 import type { Account } from "$ts/roblox/account/login";
 import { isTauri } from "@tauri-apps/api/core";
+import { emit } from "@tauri-apps/api/event";
 import { Configuration } from "$ts/configuration";
 import { DEFAULT_ACCENT } from "$ts/theme";
 import { DEFAULT_BACKGROUND, DEFAULT_DIM } from "$ts/background";
@@ -40,6 +41,9 @@ export const appState = $state({
       enabled: false,
     },
     redRings: {
+      enabled: false,
+    },
+    inGameMenu: {
       enabled: false,
     },
     windowControl: {
@@ -86,7 +90,9 @@ export const appState = $state({
 
 export interface GameState {
   userId?: number;
+  /** the place */
   gameId?: number;
+  /** the running server (its job id) */
   gameServer?: string;
   serverIp?: string;
   serverUptime?: string;
@@ -95,13 +101,15 @@ export interface GameState {
 export const gameState: GameState = $state({
   userId: 0,
   gameId: 0,
-  gameServer: "",
+  gameServer: "", // server instance
   serverIp: "",
   serverUptime: "",
 });
 
 export function setGameState(inf: GameState) {
   Object.assign(gameState, inf);
+
+  if (isTauri()) emit("game-state", inf);
 }
 
 function deepMerge(

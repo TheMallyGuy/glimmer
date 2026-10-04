@@ -12,6 +12,20 @@
   "app": {
     "windows": [
       {
+        "label": "overlay",
+        "title": "glimmer overlay",
+        "url": "/overlay",
+        "width": 420,
+        "height": 420,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "resizable": false,
+        "shadow": false,
+        "visible": false
+      },
+      {
         "title": "glimmer",
         "width": 562,
         "height": 322,

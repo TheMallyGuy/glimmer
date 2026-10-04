@@ -1,0 +1,35 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "overlay",
+  "content": {
+    "menuLabel": "Quick actions",
+    "idleName": "Quick actions",
+    "idleDescription": "Move your cursor to an action",
+    "idleOffline": "Join a game to use these",
+    "hintHold": "Hold",
+    "keyAlt": "Alt",
+    "keyG": "G",
+    "hintPoint": "point at an action",
+    "hintRelease": "release to run",
+    "keyEsc": "Esc",
+    "hintCancel": "to cancel",
+    "actions": {
+      "copyInvite": {
+        "name": "Copy invite link",
+        "description": "Copy a link to this server",
+        "result": "Copied to clipboard"
+      },
+      "hop": {
+        "name": "Hop server",
+        "description": "Join a different server",
+        "result": "Finding a server…"
+      }
+    },
+    "errors": {
+      "notInGame": "You’re not in a game?",
+      "noOtherServers": "No other servers have space",
+      "unreachable": "Couldn’t reach Roblox",
+      "failed": "Something went wrong..."
+    }
+  }
+}
