@@ -36,3 +36,6 @@ pub use keyring::*;
 
 pub mod webview_cookies;
 pub use webview_cookies::*;
+
+pub mod self_process;
+pub use self_process::*;

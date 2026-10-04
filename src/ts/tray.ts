@@ -3,6 +3,7 @@ import { Menu, MenuItem } from "@tauri-apps/api/menu";
 import { TrayIcon, type TrayIconEvent } from "@tauri-apps/api/tray";
 import { focusExistingInstance } from "./windows/focus";
 import { openChooserWindow } from "./windows/chooser";
+import { commands } from "./bindings";
 
 const TRAY_ID = "glimmer";
 
@@ -19,7 +20,7 @@ export class AppTray {
         private readonly text: TrayText,
         private readonly focus: () => Promise<unknown> = focusExistingInstance,
         private readonly openSelector: () => Promise<unknown> = openChooserWindow,
-        private readonly quit: () => Promise<void> = () => exit(0),
+        private readonly quit: () => Promise<void> = () => commands.exit(),
     ) { }
 
     async show(): Promise<void> {
