@@ -48,6 +48,7 @@
           "url": "https://games.roblox.com/*"
         }
       ]
-    }
+    },
+    "notification:default"
   ]
 }

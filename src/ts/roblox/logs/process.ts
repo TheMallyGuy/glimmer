@@ -17,11 +17,7 @@ import {
 import { getCustomGameIcon } from "$ts/svg/api";
 import { GameHistory } from "../gameHistory";
 import { fetchLocation } from "$ts/geo";
-import {
-  isPermissionGranted,
-  requestPermission,
-  sendNotification,
-} from "@tauri-apps/plugin-notification";
+import { notify } from "$ts/notify";
 import { commands } from "$ts/bindings";
 import { Configuration } from "$ts/configuration";
 import { WindowControl, type WindowPrompt } from "../windowControl";
@@ -69,17 +65,7 @@ const bloxstrapRpc = new BloxstrapRpc({
   log: (message) => info(message),
 });
 
-async function notify(options: { title: string; body: string }) {
-  let granted = await isPermissionGranted();
-  if (!granted) {
-    granted = (await requestPermission()) === "granted";
-  }
-  if (granted) {
-    await sendNotification(options);
-  } else {
-    error("notification permission not granted, skipping notify");
-  }
-}
+
 
 async function getLargeImage(placeId: number): Promise<string | undefined> {
   const discordRpc = appState.integrations.discordRpc;

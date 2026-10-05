@@ -11,6 +11,7 @@
     PhysicalSize,
   } from "@tauri-apps/api/window";
   import { error } from "@tauri-apps/plugin-log";
+  import { notify } from "$ts/notify";
   import { useIntlayer } from "svelte-intlayer";
   import { cn } from "$lib";
   import {
@@ -46,8 +47,6 @@
   const inGame = $derived(!!gameState.gameId && !!gameState.gameServer);
   const enabled = $derived(radialSlots.map((slot) => slot !== null && inGame));
   const ICON_SIZE = 26;
-  const RESULT_MS = 700;
-  const ERROR_MS = 1500;
   const POLL_MS = 16;
 
   const actions = new ServerActions();
@@ -55,15 +54,12 @@
 
   let shown = $state(false);
   let selected = $state(-1);
-  /** what the middle says after an action ran */
-  let notice = $state<{ kind: "result" | "error"; text: string } | null>(null);
 
   /** the middle of the menu on screen (px) and the scale of that screen, which the mouse direction is measured from */
   let centre: { x: number; y: number; scale: number } | null = null;
   let lastCursor: string | null = null;
   let polling = false;
   let timer: ReturnType<typeof setInterval> | undefined;
-  let busy = false;
   /** goes up each time the menu opens or closes, so a late answer to an older menu is dropped */
   let session = 0;
 
@@ -109,9 +105,7 @@
       // the shortcut was let go while the window was being placed, so there is nothing to show
       if (mine !== session || !shortcut.held) return;
 
-      busy = false;
       selected = -1;
-      notice = null;
       lastCursor = null;
       shown = true;
       await appWindow!.show();
@@ -122,14 +116,13 @@
     }
   }
 
+  /** hides the menu at once, and forgets any answer that is still on its way to it */
   async function close() {
     session++;
     clearInterval(timer);
     timer = undefined;
     shown = false;
     selected = -1;
-    notice = null;
-    busy = false;
     await appWindow?.hide();
   }
 
@@ -157,47 +150,60 @@
     }
   }
 
-  function errorText(err: unknown) {
-    return err instanceof ServerActionError
-      ? $overlayContent.errors[err.failure].value
-      : $overlayContent.errors.failed.value;
+  /** what an error says in a notification: what happened, and the code or reason Roblox gave when it is a technical one */
+  function errorBody(err: unknown) {
+    const text = $overlayContent.errors[
+      err instanceof ServerActionError ? err.failure : "failed"
+    ].value;
+    const technical =
+      !(err instanceof ServerActionError) || err.failure === "unreachable";
+    return technical && err instanceof Error ? `${text}: ${err.message}` : text;
   }
 
+  /** a notification can't be allowed to fail the action it is about */
+  function tell(title: string, body: string) {
+    notify({ title, body }).catch((err) =>
+      error(`in-game menu: could not notify: ${err}`),
+    );
+  }
+
+  /**
+   * Runs the action of a slot. The menu closes at once, whatever the action takes, and the progress or the error
+   * comes as a notification.
+   */
   async function run(index: number) {
     const slot = radialSlots[index];
-    if (!slot || busy) return;
-    const mine = session;
-    busy = true;
+    if (!slot) return;
+    const name = $overlayContent.actions[slot.id].name.value;
+    const result = $overlayContent.actions[slot.id].result.value;
 
-    let result: NonNullable<typeof notice>;
+    const closing = close();
+    if (slot.notify === "start") tell(name, result);
+
     try {
       await slot.run(actions);
-      result = {
-        kind: "result",
-        text: $overlayContent.actions[slot.id].result.value,
-      };
+      if (slot.notify === "done") tell(name, result);
     } catch (err) {
       error(`in-game menu: ${slot.id} failed: ${err}`);
-      result = { kind: "error", text: errorText(err) };
+      tell(name, errorBody(err));
     }
-    if (mine !== session) return; // closed (or opened again) while it ran
-
-    notice = result;
-    await new Promise((resolve) =>
-      setTimeout(resolve, result.kind === "error" ? ERROR_MS : RESULT_MS),
-    );
-    if (mine === session) await close();
+    await closing;
   }
 
   /** the shortcut came up: run what is selected, or just close */
   async function release() {
-    if (!shown || busy) return;
+    if (!shown) return;
     if (selected < 0) await close();
     else await run(selected);
   }
 
+  /** a click runs the slot the mouse points at */
+  function onClick() {
+    if (shown && selected >= 0) run(selected);
+  }
+
   function onKey(event: KeyboardEvent) {
-    if (!shown || busy) return;
+    if (!shown) return;
 
     if (event.key === "Escape") close();
     else if (event.key === "ArrowRight" || event.key === "ArrowDown")
@@ -240,7 +246,7 @@
   });
 </script>
 
-<svelte:window onkeydown={onKey} />
+<svelte:window onkeydown={onKey} onclick={onClick} />
 
 <main class="relative size-[420px] overflow-hidden select-none">
   {#if shown}
@@ -310,31 +316,20 @@
         aria-live="polite"
         class="absolute top-1/2 left-1/2 flex w-[130px] -translate-x-1/2 -translate-y-1/2 flex-col items-center text-center"
       >
-        {#if notice}
-          <p
-            class={cn(
-              "font-display text-lg leading-tight font-normal tracking-[0.01em]",
-              notice.kind === "error" ? "text-danger" : "text-fg",
-            )}
-          >
-            {notice.text}
-          </p>
-        {:else}
-          <p
-            class="font-display text-lg leading-tight font-normal tracking-[0.01em] text-fg"
-          >
-            {current
-              ? $overlayContent.actions[current.id].name.value
-              : $overlayContent.idleName.value}
-          </p>
-          <p class="mt-1 text-xs text-muted">
-            {current
-              ? $overlayContent.actions[current.id].description.value
-              : inGame
-                ? $overlayContent.idleDescription.value
-                : $overlayContent.idleOffline.value}
-          </p>
-        {/if}
+        <p
+          class="font-display text-lg leading-tight font-normal tracking-[0.01em] text-fg"
+        >
+          {current
+            ? $overlayContent.actions[current.id].name.value
+            : $overlayContent.idleName.value}
+        </p>
+        <p class="mt-1 text-xs text-muted">
+          {current
+            ? $overlayContent.actions[current.id].description.value
+            : inGame
+              ? $overlayContent.idleDescription.value
+              : $overlayContent.idleOffline.value}
+        </p>
       </div>
 
       <p
