@@ -3,6 +3,7 @@ import { AppTray, type TrayText } from "$ts/tray";
 import { focusExistingInstance } from "$ts/windows/focus";
 import { fakeTray } from "./helpers/tray";
 import { fakeWebviews, WebviewWindow } from "./helpers/webview";
+import { invokeCalls, invokeHandlers } from "./helpers/tauri";
 
 const TEXT: TrayText = { tooltip: "Glimmer", openSelector: "Open selector", quit: "Quit" };
 
@@ -108,12 +109,15 @@ describe("AppTray.hide", () => {
 });
 
 describe("the default quit", () => {
-    test("exits the app with code 0", async () => {
+    test("quits through the exit command", async () => {
+        invokeHandlers.exit = () => undefined;
+
         await new AppTray(TEXT).show();
 
         icon().options.menu!.items[1].options.action!();
 
-        expect(fakeTray.exitCodes).toEqual([0]);
+        await Promise.resolve();
+        expect(invokeCalls.filter((c) => c.cmd === "exit")).toHaveLength(1);
     });
 });
 
