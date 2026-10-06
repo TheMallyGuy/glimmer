@@ -24,11 +24,17 @@
 
   // the rings are decorative motion, so they stay off when the system asks for less motion, and the hidden background window has nothing to draw on
   const reducedMotion = $state(
-    typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches,
+    typeof matchMedia === "function" &&
+      matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
+
   const showRings = $derived(
-    appState.integrations.redRings.enabled && !reducedMotion && page.url.pathname !== "/background",
+    appState.integrations.redRings.enabled &&
+      !reducedMotion &&
+      page.url.pathname !== "/background" &&
+      page.url.pathname !== "/overlay",
   );
+
   $effect(() => {
     const { color, image, dim } = appState.appearance.background;
     applyBackground(color, image, dim);
@@ -38,6 +44,7 @@
     if (!isTauri()) return; // e.g. open in the intlayer editor, where there are no Tauri APIs
 
     await loadAppState();
+    if (page.url.pathname === "/overlay") return; // the in-game menu only needs the saved settings
     const bubble: boolean = await commands.isBubblestrap();
 
     const i = await Installation.create();

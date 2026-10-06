@@ -1,0 +1,30 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "board",
+  "content": {
+    "backToIntegrations": "Back to integrations",
+    "blurb": "Pick a slice, then choose what it does. Changes apply once you save!",
+    "ringLabel": "GlimmerBoard slots",
+    "slotLabel": {
+      "nodeType": "insertion",
+      "insertion": "Slot {{number}}: {{action}}"
+    },
+    "slotEmptyLabel": {
+      "nodeType": "insertion",
+      "insertion": "Slot {{number}}: empty"
+    },
+    "chooseTitle": {
+      "nodeType": "insertion",
+      "insertion": "Slot {{number}} does"
+    },
+    "nothingName": "Nothing",
+    "nothingDescription": "Leave this slice blank",
+    "gameLabel": "Or join a game",
+    "gameHint": "Paste a game link from roblox.com, or its place id. The slice joins that game from anywhere.",
+    "gameUse": "Use this game",
+    "gameLooking": "Looking it up…",
+    "gameInvalid": "That is not a game link or place id. Paste the link of the game's page.",
+    "gameMissing": "Could not find that game. Check the link and your connection.",
+    "reset": "Reset to default"
+  }
+}

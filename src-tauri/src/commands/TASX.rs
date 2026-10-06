@@ -28,6 +28,14 @@ pub fn get_roblox_hwnd() -> Result<String, String> {
     Ok((hwnd.0 as isize).to_string())
 }
 
+/// whether Roblox is the window the player is using right now. False when Roblox is not open.
+#[tauri::command]
+#[specta::specta]
+#[auto_collect_command]
+pub fn is_roblox_focused() -> bool {
+    unsafe { FindWindowW(w!("WINDOWSCLIENT"), None) }.is_ok_and(is_hwnd_focused)
+}
+
 #[tauri::command]
 #[specta::specta]
 #[auto_collect_command]

@@ -28,6 +28,15 @@ mock.module("@tauri-apps/api/app", () => appModule);
 mock.module("@tauri-apps/plugin-deep-link", () => ({ onOpenUrl: async () => () => { }, getCurrent: async () => null }));
 mock.module("@tauri-apps/plugin-log", () => logSpies);
 
+// plugins whose JS needs the webview's channels, which the fake core above does not have. Tests that care stand in with their own.
+mock.module("@tauri-apps/plugin-global-shortcut", () => ({
+    register: async () => {},
+    unregister: async () => {},
+    isRegistered: async () => false,
+}));
+mock.module("@tauri-apps/plugin-clipboard-manager", () => ({ writeText: async () => {} }));
+mock.module("@tauri-apps/plugin-opener", () => ({ openUrl: async () => {} }));
+
 // SvelteKit modules only exist inside the app; outside Tauri the window helpers navigate with goto
 mock.module("$app/navigation", () => ({ goto: async () => {} }));
 

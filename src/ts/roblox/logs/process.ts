@@ -17,11 +17,7 @@ import {
 import { getCustomGameIcon } from "$ts/svg/api";
 import { GameHistory } from "../gameHistory";
 import { fetchLocation } from "$ts/geo";
-import {
-  isPermissionGranted,
-  requestPermission,
-  sendNotification,
-} from "@tauri-apps/plugin-notification";
+import { notify } from "$ts/notify";
 import { commands } from "$ts/bindings";
 import { Configuration } from "$ts/configuration";
 import { WindowControl, type WindowPrompt } from "../windowControl";
@@ -69,17 +65,7 @@ const bloxstrapRpc = new BloxstrapRpc({
   log: (message) => info(message),
 });
 
-async function notify(options: { title: string; body: string }) {
-  let granted = await isPermissionGranted();
-  if (!granted) {
-    granted = (await requestPermission()) === "granted";
-  }
-  if (granted) {
-    await sendNotification(options);
-  } else {
-    error("notification permission not granted, skipping notify");
-  }
-}
+
 
 async function getLargeImage(placeId: number): Promise<string | undefined> {
   const discordRpc = appState.integrations.discordRpc;
@@ -179,6 +165,7 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
       const [, gameId, place, position] = m;
       info(`game join: gameId=${gameId} place=${place} position=${position}`);
       const placeId = Number(place);
+      setGameState({ gameId: placeId, gameServer: gameId });
       await loadAppState();
 
       const gameInfo = await getGameInfo(placeId);
@@ -249,6 +236,7 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
     handler: async (m) => {
       const [, code] = m;
       activeSession = null;
+      setGameState({ gameId: 0, gameServer: "" });
       bloxstrapRpc.end();
       await windowControl.leave().catch((err) => error(`window control could not reset the window: ${err}`));
       await setActivity({

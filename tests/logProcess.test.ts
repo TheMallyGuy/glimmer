@@ -458,3 +458,15 @@ describe("processLogLine: Bloxstrap RPC", () => {
         expect(invokeCalls.filter((c) => c.cmd === "window_set_title")).toHaveLength(1);
     });
 });
+
+describe("processLogLine: the server in the game state", () => {
+    test("a join sets the place and the server, and leaving clears them", async () => {
+        feed(`[FLog::Output] ! Joining game '${GAME_ID}' place ${PLACE_ID} at 128.116.1.2`);
+        await waitFor(() => gameState.gameServer === GAME_ID);
+        expect(gameState.gameId).toBe(PLACE_ID);
+
+        feed("[FLog::Network] Sending disconnect with reason: 285");
+        await waitFor(() => gameState.gameServer === "");
+        expect(gameState.gameId).toBe(0);
+    });
+});

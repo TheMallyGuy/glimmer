@@ -1,9 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import {
     getAssetThumbnail,
+    getGameIcon,
     getGameInfo,
     getGameName,
     getGameThumbnail,
+    getPublicServers,
     getUserHeadShot,
     getUserName,
     resolveUniverseId,
@@ -114,6 +116,42 @@ describe("getGameInfo", () => {
     });
 });
 
+describe("getPublicServers", () => {
+    test("returns the first 100 public servers of the place", async () => {
+        const servers = [{ id: "a", maxPlayers: 15, playing: 3 }];
+        stubFetch({ "/games/42/servers/Public": () => jsonResponse({ data: servers }) });
+
+        expect(await getPublicServers(42)).toEqual(servers);
+        expect(urls[0]).toBe("https://games.roblox.com/v1/games/42/servers/Public?limit=100");
+    });
+
+    test("is empty when Roblox sends no list", async () => {
+        stubFetch({ "/servers/Public": () => jsonResponse({}) });
+
+        expect(await getPublicServers(42)).toEqual([]);
+    });
+
+    test("throws and logs when Roblox answers with an error", async () => {
+        stubFetch({ "/servers/Public": () => jsonResponse({}, { status: 429, statusText: "Too Many Requests" }) });
+
+        await expect(getPublicServers(42)).rejects.toThrow("Roblox answered 429 when asked for the servers of place 42");
+        expect(logSpies.error).toHaveBeenCalled();
+    });
+
+    test("gives up on a request that never answers", async () => {
+        let signal: AbortSignal | undefined;
+        globalThis.fetch = ((_url: RequestInfo | URL, init?: RequestInit) => {
+            signal = init?.signal ?? undefined;
+            return new Promise(() => {});
+        }) as unknown as typeof fetch;
+
+        void getPublicServers(42);
+        await new Promise((r) => setTimeout(r, 5));
+
+        expect(signal).toBeDefined(); // a timeout is attached
+    });
+});
+
 describe("getGameThumbnail", () => {
     const universe = { "/places/7/universe": () => jsonResponse({ universeId: 70 }) };
 
@@ -212,5 +250,37 @@ describe("getUserHeadShot", () => {
     test("throws on an HTTP error", async () => {
         stubFetch({ "avatar-headshot": () => jsonResponse({}, { status: 503, statusText: "Unavailable" }) });
         await expect(getUserHeadShot(5)).rejects.toThrow("Failed to resolve user headshot for id 5: 503 Unavailable");
+    });
+});
+
+describe("getGameIcon", () => {
+    const universe = { "/places/7/universe": () => jsonResponse({ universeId: 70 }) };
+
+    test("returns the first completed icon, asked for by universe", async () => {
+        stubFetch({
+            ...universe,
+            "games/icons": () =>
+                jsonResponse({
+                    data: [
+                        { state: "Pending", imageUrl: "pending.png" },
+                        { state: "Completed", imageUrl: "done.png" },
+                    ],
+                }),
+        });
+        expect(await getGameIcon(7)).toBe("done.png");
+        expect(urls[1]).toContain("universeIds=70");
+    });
+
+    test("returns null when none is completed, or the answer is empty", async () => {
+        stubFetch({ ...universe, "games/icons": () => jsonResponse({ data: [{ state: "Pending", imageUrl: "p.png" }] }) });
+        expect(await getGameIcon(7)).toBeNull();
+
+        stubFetch({ ...universe, "games/icons": () => jsonResponse({}) });
+        expect(await getGameIcon(7)).toBeNull();
+    });
+
+    test("throws on an HTTP error", async () => {
+        stubFetch({ ...universe, "games/icons": () => jsonResponse({}, { status: 500 }) });
+        await expect(getGameIcon(7)).rejects.toThrow("Failed to fetch game icon for universeId 70");
     });
 });
