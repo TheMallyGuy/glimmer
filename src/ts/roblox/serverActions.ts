@@ -54,6 +54,11 @@ export class ServerActions {
     await this.launch({ placeId, jobId: next.id });
   }
 
+  /** joins a game on any server, in or out of a game: it needs no server from the game state */
+  async joinGame(placeId: number) {
+    await this.launch({ placeId });
+  }
+
   /** runs the player with the link of the game: a player that is already open takes the join over, like Fishstrap's hop */
   private async launch(target: GameTarget) {
     // no re-index (it scans the install folders): the index of the last launch is what is needed

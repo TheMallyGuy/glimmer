@@ -19,6 +19,11 @@
         "description": "Copy a link to this server",
         "result": "Copied to clipboard"
       },
+      "game": {
+        "name": "Join a game",
+        "description": "Join this game",
+        "result": "Joining the game…"
+      },
       "hop": {
         "name": "Hop server",
         "description": "Join a different server",

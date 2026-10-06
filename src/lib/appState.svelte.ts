@@ -1,4 +1,5 @@
 import type { Flag } from "./flags";
+import { DEFAULT_SLOTS, type Slots } from "./boardSlots";
 import type { Account } from "$ts/roblox/account/login";
 import { isTauri } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
@@ -45,6 +46,7 @@ export const appState = $state({
     },
     inGameMenu: {
       enabled: false,
+      slots: [...DEFAULT_SLOTS] as Slots,
     },
     windowControl: {
       enabled: false,

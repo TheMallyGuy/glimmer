@@ -100,6 +100,26 @@ export async function getGameThumbnail(
   return thumbnail?.imageUrl ?? null;
 }
 
+/** the square icon of a game, or null when Roblox has none (yet) */
+export async function getGameIcon(placeId: number): Promise<string | null> {
+  const universeId = await resolveUniverseId(placeId);
+
+  const res = await fetch(
+    `https://thumbnails.roproxy.com/v1/games/icons?universeIds=${universeId}&size=150x150&format=Png&isCircular=false`,
+  );
+  if (!res.ok) {
+    error(
+      `Failed to fetch game icon for universeId ${universeId}: ${res.status} ${res.statusText}`,
+    );
+    throw new Error(`Failed to fetch game icon for universeId ${universeId}`);
+  }
+
+  const json = (await res.json()) as {
+    data?: { state: string; imageUrl: string }[];
+  };
+  return json.data?.find((t) => t.state === "Completed")?.imageUrl ?? null;
+}
+
 /** the picture of an asset (the id a game gives for its Discord presence images), or null when Roblox has none (yet) */
 export async function getAssetThumbnail(assetId: number): Promise<string | null> {
   const res = await fetch(

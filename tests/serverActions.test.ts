@@ -224,3 +224,24 @@ describe("ServerActions: hop server", () => {
         expect(signal).toBeDefined(); // a timeout is attached, so the menu is never stuck on it
     });
 });
+
+describe("ServerActions: join a game", () => {
+    test("joins the game on any server with a roblox:// link", async () => {
+        await actions().joinGame(1818);
+
+        expect(launches.map((l) => l.args)).toEqual([["roblox://experiences/start?placeId=1818"]]);
+    });
+
+    test("works out of a game, and asks Roblox nothing", async () => {
+        gameState.gameId = 0;
+        gameState.gameServer = "";
+        invokeHandlers.get_roblox_hwnd = () => {
+            throw new Error("Roblox is not open");
+        };
+
+        await actions().joinGame(1818);
+
+        expect(launches).toHaveLength(1);
+        expect(urls).toEqual([]);
+    });
+});

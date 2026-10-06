@@ -136,6 +136,14 @@
       />
     {/snippet}
   </SettingRow>
+  {#if appState.integrations.inGameMenu.enabled}
+    <SettingRow
+      title={$integrationsContent.boardEditor.value}
+      description={$integrationsContent.boardEditorDescription.value}
+      class="pl-9"
+      href="/integrations/board"
+    />
+  {/if}
   <SettingRow
     title={$integrationsContent.windowControl.value}
     description={$integrationsContent.windowControlDescription.value}

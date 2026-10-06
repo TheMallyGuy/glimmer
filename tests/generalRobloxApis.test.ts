@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import {
     getAssetThumbnail,
+    getGameIcon,
     getGameInfo,
     getGameName,
     getGameThumbnail,
@@ -249,5 +250,37 @@ describe("getUserHeadShot", () => {
     test("throws on an HTTP error", async () => {
         stubFetch({ "avatar-headshot": () => jsonResponse({}, { status: 503, statusText: "Unavailable" }) });
         await expect(getUserHeadShot(5)).rejects.toThrow("Failed to resolve user headshot for id 5: 503 Unavailable");
+    });
+});
+
+describe("getGameIcon", () => {
+    const universe = { "/places/7/universe": () => jsonResponse({ universeId: 70 }) };
+
+    test("returns the first completed icon, asked for by universe", async () => {
+        stubFetch({
+            ...universe,
+            "games/icons": () =>
+                jsonResponse({
+                    data: [
+                        { state: "Pending", imageUrl: "pending.png" },
+                        { state: "Completed", imageUrl: "done.png" },
+                    ],
+                }),
+        });
+        expect(await getGameIcon(7)).toBe("done.png");
+        expect(urls[1]).toContain("universeIds=70");
+    });
+
+    test("returns null when none is completed, or the answer is empty", async () => {
+        stubFetch({ ...universe, "games/icons": () => jsonResponse({ data: [{ state: "Pending", imageUrl: "p.png" }] }) });
+        expect(await getGameIcon(7)).toBeNull();
+
+        stubFetch({ ...universe, "games/icons": () => jsonResponse({}) });
+        expect(await getGameIcon(7)).toBeNull();
+    });
+
+    test("throws on an HTTP error", async () => {
+        stubFetch({ ...universe, "games/icons": () => jsonResponse({}, { status: 500 }) });
+        await expect(getGameIcon(7)).rejects.toThrow("Failed to fetch game icon for universeId 70");
     });
 });

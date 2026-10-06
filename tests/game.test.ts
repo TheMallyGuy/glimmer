@@ -128,3 +128,23 @@ describe("GameLink.launchUri", () => {
         expect(url.searchParams.get("request")).toBe("RequestPrivateGame");
     });
 });
+
+describe("GameLink.placeIdFrom", () => {
+    test.each([
+        ["1818", 1818],
+        ["  1818  ", 1818],
+        ["https://www.roblox.com/games/920587237/Adopt-Me", 920587237],
+        ["https://www.roblox.com/de/games/920587237", 920587237],
+        ["https://www.roblox.com/games/42?privateServerLinkCode=1", 42],
+        ["roblox://experiences/start?placeId=1818", 1818],
+    ])("%p is place %p", (input, placeId) => {
+        expect(GameLink.placeIdFrom(input)).toBe(placeId);
+    });
+
+    test.each(["", "not a link", "0", "-5", "1.5", "https://example.com/games/1818", "roblox://navigation/profile?userId=1"])(
+        "%p is no place",
+        (input) => {
+            expect(GameLink.placeIdFrom(input)).toBeNull();
+        },
+    );
+});

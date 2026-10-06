@@ -13,7 +13,7 @@
   import { error } from "@tauri-apps/plugin-log";
   import { notify } from "$ts/notify";
   import { useIntlayer } from "svelte-intlayer";
-  import { cn } from "$lib";
+  import { SlotImage, cn } from "$lib";
   import {
     appState,
     gameState,
@@ -21,7 +21,8 @@
     type GameState,
   } from "$lib/appState.svelte";
   import { motionMs } from "$lib/motion";
-  import { radialSlots } from "$lib/overlaySlots";
+  import { SLOT_COUNT } from "$lib/boardSlots";
+  import { resolveSlots, type RadialSlot } from "$lib/overlaySlots";
   import {
     BACKDROP_RADIUS,
     CENTRE_RADIUS,
@@ -42,11 +43,24 @@
 
   /** the window is this many logical px wide and high (see tauri.conf.json) */
   const WINDOW_SIZE = 420;
-  const COUNT = radialSlots.length;
+  const COUNT = SLOT_COUNT;
+  /** the board as saved in the settings (see the editor in Integrations) */
+  const radialSlots = $derived(
+    resolveSlots(appState.integrations.inGameMenu.slots),
+  );
   /** an action can only run in a game, so out of one every slot is dark and can't be chosen, like a blank one */
   const inGame = $derived(!!gameState.gameId && !!gameState.gameServer);
-  const enabled = $derived(radialSlots.map((slot) => slot !== null && inGame));
+  const enabled = $derived(
+    radialSlots.map((slot) => slot !== null && (inGame || !slot.needsGame)),
+  );
+
+  /** what a slot is called: the game, for a game slot */
+  function nameOf(slot: RadialSlot) {
+    return slot.game ?? $overlayContent.actions[slot.id].name.value;
+  }
   const ICON_SIZE = 26;
+  /** the icon of a game fills more of the slice than the action icons do */
+  const IMAGE_SIZE = 44;
   const POLL_MS = 16;
 
   const actions = new ServerActions();
@@ -174,7 +188,7 @@
   async function run(index: number) {
     const slot = radialSlots[index];
     if (!slot) return;
-    const name = $overlayContent.actions[slot.id].name.value;
+    const name = nameOf(slot);
     const result = $overlayContent.actions[slot.id].result.value;
 
     const closing = close();
@@ -266,13 +280,14 @@
             {#if slot}
               {@const Icon = slot.icon}
               {@const chosen = i === selected}
+              {@const usable = enabled[i]}
               {@const [cx, cy] = slotCentre(i, COUNT)}
               <g
                 role="menuitem"
                 tabindex="-1"
-                aria-label={$overlayContent.actions[slot.id].name.value}
+                aria-label={nameOf(slot)}
                 aria-current={chosen}
-                aria-disabled={!inGame}
+                aria-disabled={!usable}
               >
                 <path
                   d={slicePath(i, COUNT, OUTER_RADIUS, INNER_RADIUS)}
@@ -280,7 +295,7 @@
                   stroke-linejoin="round"
                   class={cn(
                     "stroke-ring-gap",
-                    chosen ? "fill-accent" : inGame ? "fill-ring-active" : "fill-ring-blank",
+                    chosen ? "fill-accent" : usable ? "fill-ring-active" : "fill-ring-blank",
                   )}
                 />
                 <Icon
@@ -288,8 +303,11 @@
                   y={cy - ICON_SIZE / 2}
                   size={ICON_SIZE}
                   strokeWidth={1.75}
-                  class={chosen ? "text-on-accent" : inGame ? "text-ring-icon" : "text-off"}
+                  class={chosen ? "text-on-accent" : usable ? "text-ring-icon" : "text-off"}
                 />
+                {#if slot.image}
+                  <SlotImage href={slot.image} {cx} {cy} size={IMAGE_SIZE} />
+                {/if}
               </g>
             {:else}
               <path
@@ -320,7 +338,7 @@
           class="font-display text-lg leading-tight font-normal tracking-[0.01em] text-fg"
         >
           {current
-            ? $overlayContent.actions[current.id].name.value
+            ? nameOf(current)
             : $overlayContent.idleName.value}
         </p>
         <p class="mt-1 text-xs text-muted">

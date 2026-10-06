@@ -40,6 +40,14 @@ export class GameLink {
         return { placeId, ...(jobId && { jobId }), ...(linkCode && { linkCode }), ...(launchData && { launchData }) };
     }
 
+    /** the place id in what a person pastes: a bare number, a roblox.com/games link or a roblox:// game link. null for anything else. */
+    static placeIdFrom(raw: string): number | null {
+        const text = raw.trim();
+        const web = /^https?:\/\/(?:[\w-]+\.)?roblox\.com\/(?:[a-z-]+\/)?games\/(\d+)/i.exec(text)?.[1];
+        const placeId = Number(/^\d+$/.test(text) ? text : (web ?? GameLink.parse(text)?.placeId));
+        return Number.isSafeInteger(placeId) && placeId > 0 ? placeId : null;
+    }
+
     /** the `roblox://` link for a game, the one Glimmer's deep link handler understands */
     static format(target: GameTarget): string {
         const params = new URLSearchParams({ placeId: String(target.placeId) });

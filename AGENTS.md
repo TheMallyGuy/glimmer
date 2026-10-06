@@ -25,10 +25,10 @@ src/
 │   └── roblox/
 │       ├── flags.ts               Fast Flag helpers
 │       ├── generalRobloxApis.ts   game, thumbnail and user lookups
-│       ├── game.ts                GameLink class: parses roblox://experiences/start game links, builds the roblox-player: play URI for a game (place, server or private server)
+│       ├── game.ts                GameLink class: parses roblox://experiences/start game links, finds the place id in a pasted game link (placeIdFrom), builds the roblox-player: play URI for a game (place, server or private server)
 │       ├── gameHistory.ts         GameHistory class: the games joined across sessions (games.json, kept apart from config.json), recorded by the log rules
 │       ├── gmLink.ts              GmLink class: sends the collected games to a link code of the glimmerlink API (the Discord bot in glimmerlinkbot makes the codes)
-│       ├── serverActions.ts       ServerActions class: what the in-game menu does with the server in `gameState` (copy an invite link, hop to another public server)
+│       ├── serverActions.ts       ServerActions class: what the in-game menu does with the server in `gameState` (copy an invite link, hop to another public server) and joining a game by place id from anywhere (joinGame, for game slots)
 │       ├── bloxstrapRpc.ts        BloxstrapRpc class: Bloxstrap's game RPC for Discord (SetRichPresence, SetLaunchData), read from `[BloxstrapRPC]` log lines
 │       ├── windowControl.ts       WindowControl class: Funkstrap window control, games retitle, move and fade the Roblox window with [BloxstrapRPC] log lines (Windows only; each game is allowed once, in config.json)
 │       ├── discordRpc.ts          Discord RPC client (talks to the Rust sidecar)
@@ -53,7 +53,8 @@ src/
 │   ├── utils.ts                   cn(): class joining with tailwind-merge; dictText(): text of a dictionary entry by runtime key
 │   ├── motion.ts                  prefersReducedMotion() and motionMs(): durations for Svelte transitions that drop to 0 for reduced motion
 │   ├── radial.ts                  geometry of the in-game radial menu: slice paths, which slot a mouse direction points at, stepping between slots
-│   ├── overlaySlots.ts            the slots of the in-game menu in one array (blank slots are null): a new action goes in place of one
+│   ├── boardSlots.ts              the GlimmerBoard slots as saved (`appState.integrations.inGameMenu.slots`): a slot is an action id, a game (`{ placeId, name, iconUrl? }`) or null; default board; normalizeSlots() for a saved list that is short, long or has an unknown action or a bad game
+│   ├── overlaySlots.ts            every action a slot can hold (`actionSlots`: icon and what it runs; a game slot carries the game icon as `image`) and resolveSlots(), which turns the saved slots into what the in-game menu draws. A new action goes in `ACTION_IDS`, `actionSlots` and the `overlay` dictionary
 │   ├── window.ts                  window resize/center helpers
 │   ├── flags.ts                   Flag type and helpers
 │   ├── index.ts                   barrel: components, cn, flag helpers
@@ -75,7 +76,7 @@ src/
     └── (app)/                     main window (route group, not in the URL)
         ├── +layout.svelte         window chrome: header, tab bar, footer
         ├── <section>/+page.svelte one route per tab: integrations, mods, flags, installations, accounts, appearance, about
-        ├── integrations/          +page, custom-image, link (collected games shared with a Discord link code)
+        ├── integrations/          +page, custom-image, board (GlimmerBoard editor: what each slice of the in-game menu does), link (collected games shared with a Discord link code)
         ├── flags/                 +layout, editor, presets
         └── mods/                  +layout (view cards + banner), manage, prebuilt, community
 ```
