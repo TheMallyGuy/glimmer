@@ -25,14 +25,14 @@ describe("getCustomGameIcon", () => {
         const url = await getCustomGameIcon(123);
 
         expect(url).toBe("https://img.example/icon.png");
-        expect(requested).toEqual(["https://glimmer.mallyy.workers.dev/thumbnail/place/123/url"]);
+        expect(requested).toEqual(["https://glimmer.mallyy.workers.dev/api/thumbnail/place/123/url"]);
     });
 
     test("sends the options as query parameters", async () => {
         await getCustomGameIcon(123, { svgUrl: "https://x.test/a.svg", overlay: "black", size: 256 });
 
         const url = new URL(requested[0]);
-        expect(url.pathname).toBe("/thumbnail/place/123/url");
+        expect(url.pathname).toBe("/api/thumbnail/place/123/url");
         expect(url.searchParams.get("url_svg")).toBe("https://x.test/a.svg");
         expect(url.searchParams.get("overlay")).toBe("black");
         expect(url.searchParams.get("size")).toBe("256");
@@ -46,9 +46,10 @@ describe("getCustomGameIcon", () => {
     });
 
     test("throws and logs when the service fails", async () => {
-        respond = () => jsonResponse({}, { status: 500 });
+        respond = () => jsonResponse({}, { status: 404, statusText: "Not Found" });
 
-        await expect(getCustomGameIcon(123)).rejects.toThrow("error when fetching custom svg");
+        await expect(getCustomGameIcon(123)).rejects.toThrow("error when fetching custom svg : 404 Not Found");
         expect(logSpies.error).toHaveBeenCalledTimes(1);
+        expect(String(logSpies.error.mock.calls[0][0])).toContain("404 Not Found");
     });
 });

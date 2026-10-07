@@ -2,7 +2,7 @@ import { joinUrl } from "$ts/utils";
 import { fetch } from "@tauri-apps/plugin-http";
 import { error } from "@tauri-apps/plugin-log";
 
-export const baseUrl = "https://glimmer.mallyy.workers.dev/";
+export const baseUrl = "https://glimmer.mallyy.workers.dev/api/";
 
 export interface CustomIconOptions {
   /** custom SVG template URL, same #GAME_THUMBNAIL structure requirement as the bundled template */
@@ -27,8 +27,9 @@ export async function getCustomGameIcon(
   const res = await fetch(await joinUrl(baseUrl, subUrl));
 
   if (!res.ok) {
-    error(`error when fetching custom svg : ${res.json}`);
-    throw new Error(`error when fetching custom svg : ${res.json}`);
+    const reason = `${res.status} ${res.statusText}`.trim();
+    error(`error when fetching custom svg : ${reason}`);
+    throw new Error(`error when fetching custom svg : ${reason}`);
   }
 
   return (await res.json()).url;
