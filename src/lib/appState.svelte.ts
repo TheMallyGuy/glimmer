@@ -52,6 +52,14 @@ export const appState = $state({
       enabled: false,
       allowedUniverses: [] as number[],
     },
+    fleasion: {
+      enabled: false,
+      settings: {
+        mirrorGlimmerFF: false,
+        verify: false,
+        gameCreator: false,
+      }
+    }
   },
   installations: {
     parallelDownloader: {

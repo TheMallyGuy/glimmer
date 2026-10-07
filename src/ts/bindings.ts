@@ -4,34 +4,45 @@ import { invoke as __TAURI_INVOKE } from "@tauri-apps/api/core";
 
 /** Commands */
 export const commands = {
-	/**  whether Roblox is the window the player is using right now. False when Roblox is not open. */
-	isRobloxFocused: () => __TAURI_INVOKE<boolean>("is_roblox_focused"),
-	extractPackageFiles: (sources: PackageSource[], destDir: string, paths: string[]) => typedError<string[], string>(__TAURI_INVOKE("extract_package_files", { sources, destDir, paths })),
-	keyringSet: (key: string, secret: string) => typedError<null, string>(__TAURI_INVOKE("keyring_set", { key, secret })),
-	writeLocalApp: (content: string, vng: boolean | null) => typedError<null, string>(__TAURI_INVOKE("write_local_app", { content, vng })),
-	exit: () => __TAURI_INVOKE<void>("exit"),
-	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
-	/**  the window's title bar text */
-	windowSetTitle: (hwnd: string, title: string) => typedError<null, string>(__TAURI_INVOKE("window_set_title", { hwnd, title })),
-	/**  where the window is, as `[x, y, width, height]` in screen pixels */
-	windowGetRect: (hwnd: string) => typedError<number[], string>(__TAURI_INVOKE("window_get_rect", { hwnd })),
-	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
-	readFullscreenProp: (rblxExe: string) => typedError<boolean, string>(__TAURI_INVOKE("read_fullscreen_prop", { rblxExe })),
 	/**
-	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
-	 *  don't need to be loaded into memory all at once
+	 *  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes.
+	 *  also watches the spawned process in the background and emits "roblox-exited"
+	 *  once it closes, so the frontend can clear Discord RPC's presence.
 	 */
-	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
-	/**  the secret saved under `key`, or null when there is none */
-	keyringGet: (key: string) => typedError<string | null, string>(__TAURI_INVOKE("keyring_get", { key })),
-	applyMod: (modDir: string, destDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir })),
-	/**  the folder of the program that owns the window (a Roblox version folder) */
-	windowExeDir: (hwnd: string) => typedError<string, string>(__TAURI_INVOKE("window_exe_dir", { hwnd })),
+	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
+	extractPackageFiles: (sources: PackageSource[], destDir: string, paths: string[]) => typedError<string[], string>(__TAURI_INVOKE("extract_package_files", { sources, destDir, paths })),
+	setFullscreenProp: (disable: boolean, rblxExe: string) => typedError<null, string>(__TAURI_INVOKE("set_fullscreen_prop", { disable, rblxExe })),
+	getLocalApp: (vng: boolean | null) => typedError<string, string>(__TAURI_INVOKE("get_local_app", { vng })),
 	/**
 	 *  hash every file under a directory (e.g. a mod folder) with md5, recursively
 	 *  returns pairs of (path relative to `dir`, hex digest), sorted by path
 	 */
 	md5Dir: (dir: string) => typedError<([string, string])[], string>(__TAURI_INVOKE("md5_dir", { dir })),
+	/**  moves and resizes the window, in screen pixels */
+	windowSetRect: (hwnd: string, x: number, y: number, width: number, height: number) => typedError<null, string>(__TAURI_INVOKE("window_set_rect", { hwnd, x, y, width, height })),
+	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
+	/**  the secret saved under `key`, or null when there is none */
+	keyringGet: (key: string) => typedError<string | null, string>(__TAURI_INVOKE("keyring_get", { key })),
+	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
+	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
+	getRobloxHwnd: () => typedError<string, string>(__TAURI_INVOKE("get_roblox_hwnd")),
+	/**  stop watching a log directory previously passed to `watch_latest_log` */
+	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
+	keyringSet: (key: string, secret: string) => typedError<null, string>(__TAURI_INVOKE("keyring_set", { key, secret })),
+	/**
+	 *  The value of a cookie in another window's webview, or null when the window or the cookie is
+	 *  not there. This is the one thing the frontend can't do itself: cookies marked HttpOnly (like
+	 *  Roblox's login) are hidden from page scripts and from fetch.
+	 */
+	webviewCookie: (label: string, name: string) => typedError<string | null, string>(__TAURI_INVOKE("webview_cookie", { label, name })),
+	discordRpcLogin: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_login")),
+	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
+	/**  deletes the secret saved under `key`. Deleting a secret that is not there is fine. */
+	keyringDelete: (key: string) => typedError<null, string>(__TAURI_INVOKE("keyring_delete", { key })),
+	greet: (name: string) => __TAURI_INVOKE<string>("greet", { name }),
+	/**  where the window is, as `[x, y, width, height]` in screen pixels */
+	windowGetRect: (hwnd: string) => typedError<number[], string>(__TAURI_INVOKE("window_get_rect", { hwnd })),
+	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
 	/**  hash raw bytes with md5, returning the lowercase hex digest */
 	md5Bytes: (data: number[]) => __TAURI_INVOKE<string>("md5_bytes", { data }),
 	/**
@@ -39,8 +50,29 @@ export const commands = {
 	 *  `roblox-log-line` event
 	 */
 	watchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("watch_latest_log", { dir })),
-	closeCrashHandler: () => typedError<null, string>(__TAURI_INVOKE("close_crash_handler")),
-	getRobloxHwnd: () => typedError<string, string>(__TAURI_INVOKE("get_roblox_hwnd")),
+	exit: () => __TAURI_INVOKE<void>("exit"),
+	/**
+	 *  hash a single file with md5, streaming it in chunks so large files (zips, packages)
+	 *  don't need to be loaded into memory all at once
+	 */
+	md5File: (path: string) => typedError<string, string>(__TAURI_INVOKE("md5_file", { path })),
+	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
+	/**  whether Roblox is the window the player is using right now. False when Roblox is not open. */
+	isRobloxFocused: () => __TAURI_INVOKE<boolean>("is_roblox_focused"),
+	writeLocalApp: (content: string, vng: boolean | null) => typedError<null, string>(__TAURI_INVOKE("write_local_app", { content, vng })),
+	/**  `true` if the debug connection is currently open */
+	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
+	/**  the folder of the program that owns the window (a Roblox version folder) */
+	windowExeDir: (hwnd: string) => typedError<string, string>(__TAURI_INVOKE("window_exe_dir", { hwnd })),
+	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
+	/**  the screen the window is on, as `[x, y, width, height]` in screen pixels */
+	windowGetMonitor: (hwnd: string) => typedError<number[], string>(__TAURI_INVOKE("window_get_monitor", { hwnd })),
+	readFullscreenProp: (rblxExe: string) => typedError<boolean, string>(__TAURI_INVOKE("read_fullscreen_prop", { rblxExe })),
+	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
+	tasx: (hwnd: string) => typedError<null, string>(__TAURI_INVOKE("tasx", { hwnd })),
+	/**  the window's title bar text */
+	windowSetTitle: (hwnd: string, title: string) => typedError<null, string>(__TAURI_INVOKE("window_set_title", { hwnd, title })),
+	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
 	/**
 	 *  makes the window see-through, the way Funkstrap does. With `use_alpha` the whole window fades to `alpha`
 	 *  (0 gone, 255 solid) and `key` is not used. Without it the window stays as it is except that every pixel
@@ -48,40 +80,8 @@ export const commands = {
 	 *  An `alpha` of 255 takes the effect off.
 	 */
 	windowSetLayer: (hwnd: string, alpha: number, key: number, useAlpha: boolean) => typedError<null, string>(__TAURI_INVOKE("window_set_layer", { hwnd, alpha, key, useAlpha })),
-	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
-	/**
-	 *  The value of a cookie in another window's webview, or null when the window or the cookie is
-	 *  not there. This is the one thing the frontend can't do itself: cookies marked HttpOnly (like
-	 *  Roblox's login) are hidden from page scripts and from fetch.
-	 */
-	webviewCookie: (label: string, name: string) => typedError<string | null, string>(__TAURI_INVOKE("webview_cookie", { label, name })),
-	/**  the screen the window is on, as `[x, y, width, height]` in screen pixels */
-	windowGetMonitor: (hwnd: string) => typedError<number[], string>(__TAURI_INVOKE("window_get_monitor", { hwnd })),
-	/**  stop watching a log directory previously passed to `watch_latest_log` */
-	unwatchLatestLog: (dir: string) => typedError<null, string>(__TAURI_INVOKE("unwatch_latest_log", { dir })),
-	/**  deletes the secret saved under `key`. Deleting a secret that is not there is fine. */
-	keyringDelete: (key: string) => typedError<null, string>(__TAURI_INVOKE("keyring_delete", { key })),
-	discordRpcSetActivity: (activity: DiscordActivityPayload) => typedError<null, string>(__TAURI_INVOKE("discord_rpc_set_activity", { activity })),
-	discordRpcClearActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_clear_activity")),
-	/**  closes the Discord IPC connection and cancels any in-flight reconnect attempt */
-	discordRpcStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_stop")),
-	extractZip: (zipPath: string, dest: string) => typedError<null, string>(__TAURI_INVOKE("extract_zip", { zipPath, dest })),
-	discordRpcDebugConnect: () => typedError<string, string>(__TAURI_INVOKE("discord_rpc_debug_connect")),
-	/**  `true` if the debug connection is currently open */
-	discordRpcDebugStatus: () => typedError<boolean, string>(__TAURI_INVOKE("discord_rpc_debug_status")),
-	/**
-	 *  spawn an installed Roblox executable and detach, so it keeps running after Glimmer closes.
-	 *  also watches the spawned process in the background and emits "roblox-exited"
-	 *  once it closes, so the frontend can clear Discord RPC's presence.
-	 */
-	launch: (exePath: string, args: string[]) => typedError<null, string>(__TAURI_INVOKE("launch", { exePath, args })),
-	getLocalApp: (vng: boolean | null) => typedError<string, string>(__TAURI_INVOKE("get_local_app", { vng })),
-	setFullscreenProp: (disable: boolean, rblxExe: string) => typedError<null, string>(__TAURI_INVOKE("set_fullscreen_prop", { disable, rblxExe })),
-	tasx: (hwnd: string) => typedError<null, string>(__TAURI_INVOKE("tasx", { hwnd })),
-	isBubblestrap: () => __TAURI_INVOKE<boolean>("is_bubblestrap"),
-	/**  moves and resizes the window, in screen pixels */
-	windowSetRect: (hwnd: string, x: number, y: number, width: number, height: number) => typedError<null, string>(__TAURI_INVOKE("window_set_rect", { hwnd, x, y, width, height })),
-	discordRpcDebugSetTestActivity: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_set_test_activity")),
+	applyMod: (modDir: string, destDir: string) => typedError<AppliedFile[], string>(__TAURI_INVOKE("apply_mod", { modDir, destDir })),
+	closeCrashHandler: () => typedError<null, string>(__TAURI_INVOKE("close_crash_handler")),
 };
 
 /* Types */

@@ -1,0 +1,7 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "fleasion",
+  "content": {
+    "backToIntegrations" : "Back to integration"
+  }
+}

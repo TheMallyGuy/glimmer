@@ -5,10 +5,13 @@
   const integrationsContent = useIntlayer("integrations");
 
   const largeImagePresets = [
-    { value: "aurora", label: $integrationsContent.presetAurora.value},
+    { value: "aurora", label: $integrationsContent.presetAurora.value },
     { value: "icon", label: $integrationsContent.presetGameIcon.value },
     { value: "gisl", label: $integrationsContent.presetGameIsLife.value },
-    { value: "interview", label: $integrationsContent.presetJobInterview.value },
+    {
+      value: "interview",
+      label: $integrationsContent.presetJobInterview.value,
+    },
     { value: "custom", label: $integrationsContent.presetCustom.value },
   ];
 </script>
@@ -167,7 +170,7 @@
       />
     {/snippet}
   </SettingRow>
-   <SettingRow
+  <SettingRow
     title={$integrationsContent.disableLaunchAtStartup.value}
     description={$integrationsContent.disableLaunchAtStartupDescription.value}
   >
@@ -180,7 +183,8 @@
   </SettingRow>
   <SettingRow
     title={$integrationsContent.disableFullscreenOptimization.value}
-    description={$integrationsContent.disableFullscreenOptimizationDescription.value}
+    description={$integrationsContent.disableFullscreenOptimizationDescription
+      .value}
   >
     {#snippet control()}
       <Switch
@@ -191,6 +195,15 @@
       />
     {/snippet}
   </SettingRow>
+</SettingGroup>
+<div class="h-7"></div>
+
+<SettingGroup label="Fleasion">
+  <SettingRow
+    title="Glimmer with Fleasion"
+    description="[danger]BANNABLE. EDITING CACHE IS BANNABLE. JUST SO YOU KNOW THAT."
+    href="/integrations/fleasion"
+  />
 </SettingGroup>
 
 <div class="h-7"></div>
