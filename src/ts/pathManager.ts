@@ -74,6 +74,16 @@ export class PathManager {
         return join(await localDataDir(), "FleasionNT");
     }
 
+    /** Fleasion's own settings (theme, cache clearing, proxy... and the username spoofer) */
+    async getFleasionSettingsFile(): Promise<string> {
+        return join(await this.getFleasionDir(), "settings.json");
+    }
+
+    /** the fast flags and replacements Fleasion applies */
+    async getFleasionModificationsFile(): Promise<string> {
+        return join(await this.getFleasionDir(), "modifications.json");
+    }
+
     /** a file shipped with the app, e.g. "resources/Mods/Sounds/x.ogg" */
     async getBundledResource(relativePath: string): Promise<string> {
         return resolveResource(relativePath);

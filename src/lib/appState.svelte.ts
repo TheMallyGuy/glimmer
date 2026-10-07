@@ -98,6 +98,12 @@ export const appState = $state({
   },
 });
 
+export const fleasionState = $state({ installed: false });
+
+export function setFleasionInstallation(installed: boolean) {
+  fleasionState.installed = installed;
+}
+
 export interface GameState {
   userId?: number;
   /** the place */

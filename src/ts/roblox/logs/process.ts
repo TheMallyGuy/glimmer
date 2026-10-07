@@ -150,6 +150,8 @@ async function applyHeadshot() {
 
 async function startTasxIfEnabled() {
   if (!appState.integrations.trimMemWhenNotFocused.enabled) return;
+  // Fleasion runs Roblox with more rights than Glimmer has, and Windows refuses the optimizer any change to it
+  if (appState.integrations.fleasion.enabled) return;
 
   const hwnd = await commands.getRobloxHwnd();
   if (hwnd.status === "error") {

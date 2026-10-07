@@ -27,6 +27,7 @@ import {
 import { GameLink, type GameTarget } from "$ts/roblox/game";
 import { LocalAppEditor } from "$ts/roblox/localApp";
 import { delay } from "$ts/utils";
+import { applyFleasionSettings } from "$ts/fleasion/apply";
 
 export type LaunchTarget = "player" | "studio";
 
@@ -257,6 +258,17 @@ async function launchInstall(
     await lca.launchAtStartup(
       !appState.integrations.disableLaunchAtStartup.enabled,
     );
+  }
+
+  if (!isStudio && appState.integrations.fleasion.enabled) {
+    try {
+      await applyFleasionSettings(
+        appState.integrations.fleasion.settings,
+        appState.fastflags.enabled ? flagsToObject(appState.fastflags.flags) : {},
+      );
+    } catch (e) {
+      console.error("failed to apply Fleasion settings before launch:", e);
+    }
   }
 
   report({ step: "launching", version }, null);

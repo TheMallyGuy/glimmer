@@ -31,6 +31,8 @@ describe("PathManager defaults", () => {
 
     test("Fleasion's folder is under the local app data, not Glimmer's own folder", async () => {
         expect(await pm.getFleasionDir()).toBe("/localdata/FleasionNT");
+        expect(await pm.getFleasionSettingsFile()).toBe("/localdata/FleasionNT/settings.json");
+        expect(await pm.getFleasionModificationsFile()).toBe("/localdata/FleasionNT/modifications.json");
     });
 
     test("working folders and bundled files", async () => {

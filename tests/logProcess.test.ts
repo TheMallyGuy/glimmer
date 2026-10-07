@@ -8,6 +8,7 @@ const appState = {
     integrations: {
         serverLocNotifer: { enabled: false },
         trimMemWhenNotFocused: { enabled: false },
+        fleasion: { enabled: false },
         windowControl: { enabled: false, allowedUniverses: [] as number[] },
         discordRpc: {
             enabled: false,
@@ -89,6 +90,7 @@ beforeEach(() => {
 
     appState.integrations.serverLocNotifer.enabled = false;
     appState.integrations.trimMemWhenNotFocused.enabled = false;
+    appState.integrations.fleasion.enabled = false;
     appState.integrations.windowControl.enabled = false;
     appState.integrations.windowControl.allowedUniverses = [];
     appState.integrations.discordRpc.enabled = false;
@@ -251,6 +253,19 @@ describe("processLogLine: joining a game", () => {
 
         await waitFor(() => invokeCalls.some((c) => c.cmd === "tasx"));
         expect(invokeCalls.find((c) => c.cmd === "tasx")?.args).toEqual({ hwnd: "0x1234" });
+    });
+
+    test("leaves the memory trimmer off while Fleasion is on, since Roblox then runs with more rights", async () => {
+        appState.integrations.trimMemWhenNotFocused.enabled = true;
+        appState.integrations.fleasion.enabled = true;
+        invokeHandlers.get_roblox_hwnd = () => "0x1234";
+        invokeHandlers.tasx = () => null;
+
+        feed(joinLine);
+
+        await waitFor(() => setActivity.mock.calls.length > 0);
+        await new Promise((r) => setTimeout(r, 20));
+        expect(invokeCalls.some((c) => c.cmd === "tasx")).toBe(false);
     });
 
     test("logs and carries on when the memory trimmer cannot find the window", async () => {
