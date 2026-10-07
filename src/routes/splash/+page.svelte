@@ -2,63 +2,21 @@
   import { onMount, onDestroy } from "svelte";
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import { isTauri } from "@tauri-apps/api/core";
-  import { listen, type UnlistenFn } from "@tauri-apps/api/event";
-  import { join } from "@tauri-apps/api/path";
+  import { type UnlistenFn } from "@tauri-apps/api/event";
   import { page } from "$app/state";
   import { sizeWindow } from "$lib/window";
   import { cn } from "$lib";
-  import {
-    Downloader,
-    type Distribution,
-    type WindowBinaryType,
-  } from "$ts/roblox/installation/download";
-  import {
-    Installation,
-    type InstallEntry,
-  } from "$ts/roblox/installation/installation";
-  import {
-    DEFAULT_BASE_URLS,
-    installVersion,
-    installName,
-  } from "$ts/roblox/installation";
-  import { PackageCache } from "$ts/roblox/installation/packageCache";
-  import { appState, loadAppState } from "$lib/appState.svelte";
-  import { loadMods, applyMods } from "$lib/mods.svelte";
-  import { FastFlagManager } from "$ts/roblox/flags";
-  import { flagsToObject } from "$lib/flags";
-  import { commands } from "$ts/bindings";
-  import {
-    AccountLauncher,
-    AccountLaunchError,
-  } from "$ts/roblox/account/launcher";
-  import { GameLink } from "$ts/roblox/game";
-  import { delay } from "$ts/utils";
+  import { loadAppState } from "$lib/appState.svelte";
+  import { launch, LaunchError, type LaunchStatus } from "$ts/launch";
   import { app } from "@tauri-apps/api";
-  import { LocalAppEditor } from "$ts/roblox/localApp";
   import { useIntlayer } from "svelte-intlayer";
   const commonContent = useIntlayer("common");
   const splashContent = useIntlayer("splash");
 
   // the chooser and the footer pass ?target=studio; anything else launches the player
   const isStudio = page.url.searchParams.get("target") === "studio";
-  // a link from the Roblox website or a deep link, to launch with as Roblox's own launcher would:
-  const link = !isStudio ? page.url.searchParams.get("link") : null;
-  const gameTarget = link ? GameLink.parse(link) : null;
-  const playerLink =
-    link && (/^roblox-player:/i.test(link) || (/^roblox:/i.test(link) && !gameTarget))
-      ? link
-      : null;
-  const binaryType: WindowBinaryType = isStudio
-    ? "WindowsStudio64"
-    : "WindowsPlayer";
-  const EXE_NAME = isStudio ? "RobloxStudioBeta.exe" : "RobloxPlayerBeta.exe";
-
-  interface LaunchProgress {
-    status: string;
-    progress: number | null;
-    done?: boolean;
-    error?: string;
-  }
+  // a link from the Roblox website or a deep link, to launch with as Roblox's own launcher would
+  const link = page.url.searchParams.get("link");
 
   let status = $state($splashContent.checkingForUpdates.value);
   let progress = $state<number | null>(null);
@@ -68,240 +26,68 @@
   const appWindow = isTauri() ? getCurrentWindow() : null;
   let unlisten: UnlistenFn | undefined;
 
-  /** downloads, extracts and installs a client version, then marks it active */
-  async function downloadAndInstall(
-    d: Downloader,
-    i: Installation,
-    version: string,
-  ) {
-    await installVersion(
-      d,
-      i,
-      version,
-      appState.installations.parallelDownloader.value,
-      (p) => {
-        switch (p.status) {
-          case "fetchingManifest":
-            status = $splashContent.fetchingManifest.value;
-            progress = null;
-            break;
-          case "downloading":
-            status = $splashContent.downloadingClient({
-              done: p.done,
-              total: p.total,
-            }).value;
-            progress = p.percent;
-            break;
-          case "extracting":
-            status = $splashContent.extractingClient({
-              done: p.done,
-              total: p.total,
-            }).value;
-            progress = p.percent;
-            break;
-          case "finishing":
-            status = $splashContent.finishingInstallation.value;
-            progress = null;
-            break;
-        }
-      },
-      binaryType,
-      !isStudio, // the player's zips are what mods restore stock files from
-    );
-
-    await i.setActiveVersion(installName(version, d.distribution));
-
-    // mods are only applied to the player, and only the active version's zips are needed to restore it
-    if (!isStudio) {
-      try {
-        await (
-          await PackageCache.create()
-        ).prune(installName(version, d.distribution));
-      } catch (e) {
-        console.error("failed to prune old package cache:", e);
-      }
-    }
-
-    progress = null;
-  }
-
-  /**
-   * the arguments that sign the player in as the selected account, or none to leave Roblox on its
-   * own login. Built right before launching because the login ticket expires within a minute.
-   */
-  async function accountLaunchArgs(): Promise<string[]> {
-    if (playerLink) return [playerLink];
-
-    if (gameTarget) {
-      const id = appState.accounts.activeId;
-      const account = appState.accounts.list.find((a) => a.id === id);
-      // a game link carries no login ticket, so only one of Glimmer's accounts can sign it in
-      if (!account) throw new Error($splashContent.accountNeeded.value);
-
-      status = $splashContent.signingIn({ name: account.displayName }).value;
-      try {
-        return await new AccountLauncher().gameArgs(account.id, gameTarget);
-      } catch (e) {
-        if (!(e instanceof AccountLaunchError)) throw e;
-        const name = account.displayName;
-        throw new Error(
-          e.kind === "expired"
-            ? $splashContent.accountExpired({ name }).value
-            : e.kind === "missing"
-              ? $splashContent.accountMissing({ name }).value
-              : $splashContent.accountFailed({ name, error: e.message }).value,
-        );
-      }
-    }
-
-    const id = appState.accounts.activeId;
-    const account = appState.accounts.list.find((a) => a.id === id);
-    if (isStudio || !account) return [];
-
-    status = $splashContent.signingIn({ name: account.displayName }).value;
-    try {
-      return await new AccountLauncher().args(account.id);
-    } catch (e) {
-      if (!(e instanceof AccountLaunchError)) throw e;
-      const name = account.displayName;
-      throw new Error(
-        e.kind === "expired"
-          ? $splashContent.accountExpired({ name }).value
-          : e.kind === "missing"
-            ? $splashContent.accountMissing({ name }).value
-            : $splashContent.accountFailed({ name, error: e.message }).value,
-      );
+  /** what the launch is doing, in the person's language */
+  function statusText(next: LaunchStatus) {
+    switch (next.step) {
+      case "downloadingClient":
+        return $splashContent.downloadingClient({
+          done: next.done,
+          total: next.total,
+        }).value;
+      case "extractingClient":
+        return $splashContent.extractingClient({
+          done: next.done,
+          total: next.total,
+        }).value;
+      case "downloadingModOriginals":
+        return $splashContent.downloadingModOriginals({
+          done: next.done,
+          total: next.total,
+        }).value;
+      case "signingIn":
+        return $splashContent.signingIn({ name: next.name }).value;
+      case "launching":
+        return $splashContent.launching({ version: next.version }).value;
+      default:
+        return $splashContent[next.step].value;
     }
   }
 
-  /** spawn the player or Studio executable from an installed version's folder */
-  async function launchInstall(installPath: string) {
-    const launchStatus = status;
+  function report(next: LaunchStatus, percent: number | null) {
+    status = statusText(next);
+    progress = percent;
+  }
 
-    if (!isStudio) {
-      status = $splashContent.applyingMods.value;
-      await loadMods();
-      try {
-        await applyMods((done, total, percent) => {
-          status = $splashContent.downloadingModOriginals({
-            done,
-            total,
+  /** why the launch failed, in the person's language */
+  function errorText(e: unknown) {
+    if (e instanceof LaunchError) {
+      switch (e.kind) {
+        case "accountNeeded":
+          return $splashContent.accountNeeded.value;
+        case "accountExpired":
+          return $splashContent.accountExpired({ name: e.account }).value;
+        case "accountMissing":
+          return $splashContent.accountMissing({ name: e.account }).value;
+        case "accountFailed":
+          return $splashContent.accountFailed({
+            name: e.account,
+            error: e.message,
           }).value;
-          progress = percent;
-        });
-      } catch (e) {
-        console.error("failed to apply mods before launch:", e);
       }
-      progress = null;
     }
-
-    const ffm = await FastFlagManager.create(installPath);
-
-    if (appState.fastflags.enabled) {
-      status = $splashContent.applyingFlags.value;
-      try {
-        await ffm.apply(flagsToObject(appState.fastflags.flags));
-      } catch (e) {
-        console.error("failed to apply fast flags before launch:", e);
-      }
-    } else {
-      await ffm.disableFlags();
-    }
-
-    status = $splashContent.prepare.value;
-
-    if (!isStudio) {
-      commands.setFullscreenProp(
-        appState.integrations.disableFullscreenOptimization.enabled,
-        await join(installPath, EXE_NAME),
-      );
-    }
-
-    if (!isStudio) {
-      const lca = await LocalAppEditor.create();
-      await lca.setMinimizeToTray(
-        appState.integrations.disableSystemTray.enabled,
-      );
-      await lca.launchAtStartup(
-        !appState.integrations.disableLaunchAtStartup.enabled,
-      );
-    }
-
-    status = launchStatus;
-
-    const exePath = await join(installPath, EXE_NAME);
-    const result = await commands.launch(exePath, await accountLaunchArgs());
-
-    if (result.status === "error") {
-      throw new Error(result.error);
-    }
+    if (e instanceof Error) return e.message;
+    if (typeof e === "string") return e;
+    return $splashContent.genericError.value;
   }
 
   async function checkAndLaunch() {
     try {
-      // VNG only distributes the player, so Studio always uses the global CDN
-      const distribution: Distribution =
-        !isStudio && appState.installations.vngDistribution.enabled
-          ? "vng"
-          : "global";
-      const d = await Downloader.create(DEFAULT_BASE_URLS, distribution);
-      const i = await Installation.create(true, isStudio ? "studio" : "player");
-
-      const existingInstallations: InstallEntry[] = await i.listInstallations();
-
-      if (existingInstallations.length === 0) {
-        const latest = await d.fetchLatestVersion(binaryType);
-        const name = installName(latest, distribution);
-        await downloadAndInstall(d, i, latest);
-
-        status = $splashContent.launching({ version: name }).value;
-
-        await launchInstall(await join(i.installationPath, name));
-      } else {
-        const active = i.getActiveVersion() ?? existingInstallations[0];
-
-        if (appState.installations.disableRobloxUpgrade.enabled) {
-          status = $splashContent.launching({ version: active.version }).value;
-
-          await launchInstall(active.path);
-        } else {
-          const latest = await d.fetchLatestVersion(binaryType);
-          const name = installName(latest, distribution);
-          const upToDate = existingInstallations.find(
-            (ver) => ver.version === name,
-          );
-
-          if (upToDate) {
-            status = $splashContent.launching({
-              version: upToDate.version,
-            }).value;
-
-            await launchInstall(upToDate.path);
-          } else {
-            await downloadAndInstall(d, i, latest);
-
-            status = $splashContent.launching({ version: name }).value;
-
-            await launchInstall(await join(i.installationPath, name));
-          }
-        }
-      }
-
-      if (!isStudio && appState.integrations.closeCrashHandler.enabled) {
-        await delay(5000);
-        await commands.closeCrashHandler();
-      }
+      await launch({ target: isStudio ? "studio" : "player", link }, report);
 
       // launched successfully: close just this window, not the whole app
       await appWindow?.close();
     } catch (e) {
-      if (e instanceof Error) {
-        error = e.message;
-      } else if (typeof e === "string") {
-        error = e;
-      } else {
-        error = $splashContent.genericError.value;
-      }
+      error = errorText(e);
     }
   }
 
