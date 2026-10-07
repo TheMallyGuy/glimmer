@@ -18,6 +18,7 @@ src/
 │   ├── deepLink.ts                DeepLinkHandler class: links that open Glimmer (roblox-player:, and any roblox:// link: a game, a profile...; all go to the player through the splash), handed over by single-instance; started in the background window
 │   ├── overlayShortcut.ts         OverlayShortcut class: the Alt + G global shortcut of the in-game menu, told as one press and one release (used by the overlay window)
 │   ├── tray.ts                    AppTray class: the system tray icon and its menu (made in the hidden background window)
+│   ├── launch.ts                  launch(): everything the splash does, as functions: pick or install the version, apply mods and flags, sign in as the account and start the player or Studio. It says what it is doing through a report callback (the splash words it) and fails with LaunchError when the account can not sign in. parseLaunchLink() and launchArgs() hold the link and account rules
 │   ├── geo.ts                     IP geolocation lookup (server location notifier)
 │   ├── utils.ts
 │   ├── svg/api.ts                 custom game icon thumbnails (glimmer-thumb)
@@ -70,7 +71,7 @@ src/
     ├── +layout.svelte             root layout
     ├── +page.ts                   redirects / to /choose
     ├── choose/                    Player/Studio chooser window
-    ├── splash/                    launch progress window
+    ├── splash/                    launch progress window (only shows what `launch()` from `$ts/launch` reports)
     ├── background/                hidden window: log watching and Discord RPC
     ├── overlay/                   the in-game radial menu (hold Alt + G): a transparent always-on-top window from tauri.conf.json, hidden until the shortcut shows it over Roblox. It owns the shortcut, follows the mouse and runs the actions, all in the frontend (capabilities/overlay.json). The settings window tells it to re-read the setting with the `overlay-refresh` event, and the background window sends it `gameState` changes with `game-state` (each window has its own copy of the state).
     └── (app)/                     main window (route group, not in the URL)
