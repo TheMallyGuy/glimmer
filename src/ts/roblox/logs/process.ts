@@ -78,6 +78,14 @@ async function getLargeImage(placeId: number): Promise<string | undefined> {
       size: 500,
     });
   }
+  if (discordRpc.largeImagePreset === "aurora") {
+    return getCustomGameIcon(placeId, {
+      svgUrl:
+        "https://raw.githubusercontent.com/TheMallyGuy/something-repo/refs/heads/main/glow.svg",
+      overlay: "white",
+      size: 500,
+    });
+  }
   if (discordRpc.largeImagePreset === "interview") {
     return getCustomGameIcon(placeId, {
       svgUrl:

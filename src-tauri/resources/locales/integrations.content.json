@@ -3,6 +3,7 @@
   "key": "integrations",
   "content": {
     "presetGameIcon": "Game icon",
+    "presetAurora" : "Aurora",
     "presetGameIsLife": "GAME IS LIFE!!!11",
     "presetJobInterview": "i accidentally said [GAME NAME] in a job interview",
     "presetHopOn": "bro hop on [GAME NAME]",

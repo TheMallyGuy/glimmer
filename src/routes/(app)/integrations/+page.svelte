@@ -5,6 +5,7 @@
   const integrationsContent = useIntlayer("integrations");
 
   const largeImagePresets = [
+    { value: "aurora", label: $integrationsContent.presetAurora.value},
     { value: "icon", label: $integrationsContent.presetGameIcon.value },
     { value: "gisl", label: $integrationsContent.presetGameIsLife.value },
     { value: "interview", label: $integrationsContent.presetJobInterview.value },

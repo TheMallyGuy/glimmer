@@ -19,7 +19,7 @@ export const appState = $state({
       enabled: false,
       shareAccount: false,
       join: false,
-      largeImagePreset: "icon",
+      largeImagePreset: "aurora",
       customImage: {
         svgUrl: "",
         overlay: "white",
