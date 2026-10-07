@@ -76,7 +76,7 @@ function stubRobloxApis() {
         if (url.includes("/v1/assets")) return jsonResponse({ data: [{ state: "Completed", imageUrl: "asset.png" }] });
         if (url.includes("avatar-headshot")) return jsonResponse({ data: [{ state: "Completed", imageUrl: "head.png" }] });
         if (url.includes("/users/")) return jsonResponse({ displayName: "Cool Person", name: "coolperson" });
-        if (url.includes("glimmer.mallyy.workers.dev/api/")) return jsonResponse({ url: "https://img.example/icon.png" });
+        if (url.includes("glimmer.mallyy.workers.dev/")) return jsonResponse({ url: "https://img.example/icon.png" });
         throw new Error(`unexpected url ${url}`);
     }) as typeof fetch;
 }
@@ -180,7 +180,7 @@ describe("processLogLine: joining a game", () => {
         feed(joinLine);
 
         await waitFor(() => setActivity.mock.calls.length > 0);
-        const thumb = new URL(requested.find((u) => u.includes("glimmer.mallyy.workers.dev/api/"))!);
+        const thumb = new URL(requested.find((u) => u.includes("glimmer.mallyy.workers.dev/"))!);
         expect(thumb.searchParams.get("overlay")).toBe("black");
         expect(thumb.searchParams.get("size")).toBe("500");
         expect(thumb.searchParams.get("url_svg")).toContain("games%20is%20life.svg");

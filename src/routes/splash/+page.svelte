@@ -42,10 +42,12 @@
   // the chooser and the footer pass ?target=studio; anything else launches the player
   const isStudio = page.url.searchParams.get("target") === "studio";
   // a link from the Roblox website or a deep link, to launch with as Roblox's own launcher would:
-  // a roblox-player: link goes to the player as it is, a roblox://experiences/start link names a game
   const link = !isStudio ? page.url.searchParams.get("link") : null;
-  const playerLink = link && /^roblox-player:/i.test(link) ? link : null;
   const gameTarget = link ? GameLink.parse(link) : null;
+  const playerLink =
+    link && (/^roblox-player:/i.test(link) || (/^roblox:/i.test(link) && !gameTarget))
+      ? link
+      : null;
   const binaryType: WindowBinaryType = isStudio
     ? "WindowsStudio64"
     : "WindowsPlayer";

@@ -1,7 +1,6 @@
 import { getCurrent, onOpenUrl } from "@tauri-apps/plugin-deep-link";
 import { info } from "@tauri-apps/plugin-log";
 import { focusExistingInstance } from "./windows/focus";
-import { GameLink } from "./roblox/game";
 import { openSplashWindow } from "./windows/splash";
 
 export interface DeepLink {
@@ -18,9 +17,8 @@ export class DeepLinkHandler {
         private readonly current: typeof getCurrent = getCurrent,
     ) { }
 
-    /** the default action for a link */
     static open(link: DeepLink) {
-        const launches = link.scheme === "roblox-player" || GameLink.parse(link.raw) !== null;
+        const launches = link.scheme === "roblox-player" || (link.scheme === "roblox" && link.rest !== "");
         return launches ? openSplashWindow("player", link.raw) : focusExistingInstance();
     }
 

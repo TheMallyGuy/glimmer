@@ -15,7 +15,7 @@ src/
 │   ├── background.ts              BackgroundTheme (background colour -> surface tokens, see-through over a picture) and BackgroundImage (picture copy kept in app data)
 │   ├── rings.ts                   RingsEffect class: raw WebGL port of crush's red rings (the opt-in "Evil red rings" fun setting; shown by RingsOverlay)
 │   ├── toast.ts                   ToastQueue class: the toasts on screen, auto-dismiss with pause/resume (shown bottom left by ToastHost)
-│   ├── deepLink.ts                DeepLinkHandler class: links that open Glimmer (roblox-player:, roblox:), handed over by single-instance; started in the background window
+│   ├── deepLink.ts                DeepLinkHandler class: links that open Glimmer (roblox-player:, and any roblox:// link: a game, a profile...; all go to the player through the splash), handed over by single-instance; started in the background window
 │   ├── overlayShortcut.ts         OverlayShortcut class: the Alt + G global shortcut of the in-game menu, told as one press and one release (used by the overlay window)
 │   ├── tray.ts                    AppTray class: the system tray icon and its menu (made in the hidden background window)
 │   ├── geo.ts                     IP geolocation lookup (server location notifier)

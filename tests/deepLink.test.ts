@@ -87,7 +87,7 @@ describe("DeepLinkHandler.start", () => {
         expect(stopped()).toBe(1);
     });
 
-    test("by default a link that is not a roblox-player: link brings the open window forward", async () => {
+    test("by default a link that is not a Roblox one brings the open window forward", async () => {
         const chooser = new WebviewWindow("main");
         const handler = new DeepLinkHandler(undefined, (async () => () => { }) as never, (async () => ["glimmer:x"]) as never);
 
@@ -115,9 +115,23 @@ describe("DeepLinkHandler.start", () => {
         expect(String(splash?.options.url)).toBe("/splash?target=player&link=" + encodeURIComponent(link));
     });
 
-    test("another roblox: link, like a profile, only brings the window forward", async () => {
+    test.each([
+        "roblox://navigation/profile?userId=1",
+        "roblox://navigation/game_details?placeId=1818",
+        "roblox://avatar",
+        "roblox:navigation/profile?userId=1",
+    ])("another roblox: link, %p, opens the splash with the link", async (link) => {
+        const handler = new DeepLinkHandler(undefined, (async () => () => { }) as never, (async () => [link]) as never);
+
+        await handler.start();
+
+        const splash = fakeWebviews.created.find((w) => w.label === "splash");
+        expect(String(splash?.options.url)).toBe("/splash?target=player&link=" + encodeURIComponent(link));
+    });
+
+    test.each(["roblox:", "roblox://"])("an empty roblox: link, %p, only brings the window forward", async (link) => {
         const chooser = new WebviewWindow("main");
-        const handler = new DeepLinkHandler(undefined, (async () => () => { }) as never, (async () => ["roblox://navigation/profile?userId=1"]) as never);
+        const handler = new DeepLinkHandler(undefined, (async () => () => { }) as never, (async () => [link]) as never);
 
         await handler.start();
 
