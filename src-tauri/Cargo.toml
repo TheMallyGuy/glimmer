@@ -61,6 +61,7 @@ keyring = { version = "3", features = ["windows-native"] }
 tauri-plugin-deep-link = "2"
 tauri-plugin-global-shortcut = "2.4.0"
 tauri-plugin-clipboard-manager = "2.4.1"
+runas = "1.2.0"
 
 [target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\"))".dependencies]
 tauri-plugin-single-instance = { version = "2.0.0", features = ["deep-link"] }

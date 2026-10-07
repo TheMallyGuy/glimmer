@@ -9,7 +9,7 @@ const appState = {
         activeId: null as string | null,
     },
 };
-mock.module("$lib/appState.svelte", () => ({ appState, gameState: {}, setGameState: () => { }, loadAppState: async () => { } }));
+mock.module("$lib/appState.svelte", () => ({ appState, gameState: {}, setGameState: () => { }, loadAppState: async () => { }, rememberFleasionPath: async () => { } }));
 mock.module("$lib/mods.svelte", () => ({ loadMods: async () => { }, applyMods: async () => { } }));
 
 const { LaunchError, launchArgs, parseLaunchLink } = await import("$ts/launch");

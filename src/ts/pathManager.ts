@@ -84,6 +84,11 @@ export class PathManager {
         return join(await this.getFleasionDir(), "modifications.json");
     }
 
+    /** what Fleasion writes about itself, kept across its runs (read to see when it is ready) */
+    async getFleasionLogFile(): Promise<string> {
+        return join(await this.getFleasionDir(), "logs", "fleasion.log");
+    }
+
     /** a file shipped with the app, e.g. "resources/Mods/Sounds/x.ogg" */
     async getBundledResource(relativePath: string): Promise<string> {
         return resolveResource(relativePath);

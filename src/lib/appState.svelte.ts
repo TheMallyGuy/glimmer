@@ -54,6 +54,7 @@ export const appState = $state({
     },
     fleasion: {
       enabled: false,
+      path: "",
       settings: {
         mirrorGlimmerFF: false,
         verify: false,
@@ -150,6 +151,23 @@ function deepMerge(
       target[key] = value;
     }
   }
+}
+
+/** keeps where Fleasion runs from, for the launches after this one */
+export async function rememberFleasionPath(path: string) {
+  appState.integrations.fleasion.path = path;
+  if (!isTauri()) return;
+
+  // only this key is written: this window's copy of the settings can be older than the file
+  const c = await Configuration.create();
+  let config: Record<string, any> = {};
+  try {
+    config = JSON.parse(await c.getAsText());
+  } catch {
+    // no config yet
+  }
+  ((config.integrations ??= {}).fleasion ??= {}).path = path;
+  await c.saveRaw(JSON.stringify(config));
 }
 
 export async function loadAppState() {

@@ -33,6 +33,7 @@ describe("PathManager defaults", () => {
         expect(await pm.getFleasionDir()).toBe("/localdata/FleasionNT");
         expect(await pm.getFleasionSettingsFile()).toBe("/localdata/FleasionNT/settings.json");
         expect(await pm.getFleasionModificationsFile()).toBe("/localdata/FleasionNT/modifications.json");
+        expect(await pm.getFleasionLogFile()).toBe("/localdata/FleasionNT/logs/fleasion.log");
     });
 
     test("working folders and bundled files", async () => {

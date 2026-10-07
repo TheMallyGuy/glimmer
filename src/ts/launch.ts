@@ -1,7 +1,7 @@
 // file for launching glimmer by func
 import { join } from "@tauri-apps/api/path";
 import { commands } from "$ts/bindings";
-import { appState } from "$lib/appState.svelte";
+import { appState, rememberFleasionPath } from "$lib/appState.svelte";
 import { flagsToObject } from "$lib/flags";
 import { applyMods, loadMods } from "$lib/mods.svelte";
 import {
@@ -27,7 +27,7 @@ import {
 import { GameLink, type GameTarget } from "$ts/roblox/game";
 import { LocalAppEditor } from "$ts/roblox/localApp";
 import { delay } from "$ts/utils";
-import { applyFleasionSettings } from "$ts/fleasion/apply";
+import { restartFleasion } from "$ts/fleasion/restart";
 
 export type LaunchTarget = "player" | "studio";
 
@@ -49,6 +49,8 @@ export type LaunchStatus =
         | "finishingInstallation"
         | "applyingMods"
         | "applyingFlags"
+        | "stoppingFleasion"
+        | "startingFleasion"
         | "prepare";
     }
   | {
@@ -262,12 +264,15 @@ async function launchInstall(
 
   if (!isStudio && appState.integrations.fleasion.enabled) {
     try {
-      await applyFleasionSettings(
-        appState.integrations.fleasion.settings,
+      const fleasion = appState.integrations.fleasion;
+      await restartFleasion(
+        fleasion.settings,
         appState.fastflags.enabled ? flagsToObject(appState.fastflags.flags) : {},
+        report,
+        { path: fleasion.path, onPathFound: rememberFleasionPath },
       );
     } catch (e) {
-      console.error("failed to apply Fleasion settings before launch:", e);
+      console.error("failed to restart Fleasion before launch:", e);
     }
   }
 
