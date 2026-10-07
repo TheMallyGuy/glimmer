@@ -19,6 +19,7 @@ src/
 │   ├── overlayShortcut.ts         OverlayShortcut class: the Alt + G global shortcut of the in-game menu, told as one press and one release (used by the overlay window)
 │   ├── tray.ts                    AppTray class: the system tray icon and its menu (made in the hidden background window)
 │   ├── launch.ts                  launch(): everything the splash does, as functions: pick or install the version, apply mods and flags, sign in as the account and start the player or Studio. It says what it is doing through a report callback (the splash words it) and fails with LaunchError when the account can not sign in. parseLaunchLink() and launchArgs() hold the link and account rules
+│   ├── fleasion/apply.ts          FleasionConfig class: reads and edits Fleasion's own settings.json and modifications.json in %LOCALAPPDATA%FleasionNT (edit() keeps every key it doesn't know, backs the file up once, never puts file content in an error)
 │   ├── geo.ts                     IP geolocation lookup (server location notifier)
 │   ├── utils.ts
 │   ├── svg/api.ts                 custom game icon thumbnails (glimmer-thumb)
@@ -90,6 +91,8 @@ Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, h
 Accounts: a Roblox login is a `.ROBLOSECURITY` cookie. The whole flow lives in the frontend (`AccountLogin` in `account/login.ts`, `AccountLauncher` in `account/launcher.ts`). Rust only provides `keyring_*` (the OS credential store, service `glimmer-roblox-accounts`) and `webview_cookie`, because HttpOnly cookies of the login window are invisible to JS. The cookie goes keyring only: never into state, config.json, logs or error messages. `config.json` holds just `accounts.list` (id, name, displayName) and `accounts.activeId`. Requests that need Cookie/Origin/Referer use the http plugin, which has `unsafe-headers` enabled.
 
 Windows: `main` (the chooser), `splash`, `settings` (the `(app)` routes), a hidden `background` window created in `src-tauri/src/lib.rs`, and the transparent `overlay` window of `tauri.conf.json`. The background window also owns the system tray icon (`AppTray`, `src/ts/tray.ts`), so the icon stays while every other window is closed. A single-instance plugin hands second launches to the existing window.
+
+Fleasion (`integrations.fleasion.enabled`) runs Roblox with administrator rights, and Windows keeps a normal Glimmer from changing that process, reading the keys held in front of it or handing it a join. So while Fleasion is on, GlimmerBoard (the overlay shortcut) and the TASX optimizer stay off, and their rows on the Integrations page are disabled with a note. Nothing in Glimmer asks for administrator rights.
 
 Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/` (the intlayer dictionaries, built into the frontend by the vite plugin).
 
