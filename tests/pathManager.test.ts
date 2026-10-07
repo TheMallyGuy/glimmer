@@ -29,6 +29,10 @@ describe("PathManager defaults", () => {
         expect(await pm.getPackageCacheDir("version-aaaa")).toBe("/cache/glimmer-downloads/version-aaaa");
     });
 
+    test("Fleasion's folder is under the local app data, not Glimmer's own folder", async () => {
+        expect(await pm.getFleasionDir()).toBe("/localdata/FleasionNT");
+    });
+
     test("working folders and bundled files", async () => {
         expect(await pm.getBackgroundsDir()).toBe("/appdata/backgrounds");
         expect(await pm.getGameHistoryFile()).toBe("/appdata/games.json");

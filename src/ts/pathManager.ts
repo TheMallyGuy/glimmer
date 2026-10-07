@@ -2,6 +2,7 @@ import {
     appCacheDir,
     appDataDir,
     join,
+    localDataDir,
     resolveResource,
 } from "@tauri-apps/api/path";
 import type { InstallKind } from "./roblox/installation/installation";
@@ -66,6 +67,11 @@ export class PathManager {
     /** the picture used as the app background */
     async getBackgroundsDir(): Promise<string> {
         return join(await appDataDir(), "backgrounds");
+    }
+
+    /** where Fleasion keeps its configs: %LOCALAPPDATA%\FleasionNT (not ours, so it is the one folder outside the app data that the fs scope opens) */
+    async getFleasionDir(): Promise<string> {
+        return join(await localDataDir(), "FleasionNT");
     }
 
     /** a file shipped with the app, e.g. "resources/Mods/Sounds/x.ogg" */

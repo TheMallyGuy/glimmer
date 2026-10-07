@@ -50,6 +50,12 @@
         },
         {
           "path": "$RESOURCE/**/*"
+        },
+        {
+          "path": "$LOCALDATA/FleasionNT"
+        },
+        {
+          "path": "$LOCALDATA/FleasionNT/**/*"
         }
       ]
     },
@@ -72,6 +78,12 @@
         },
         {
           "path": "$APPDATA/**/*"
+        },
+        {
+          "path": "$LOCALDATA/FleasionNT"
+        },
+        {
+          "path": "$LOCALDATA/FleasionNT/**/*"
         }
       ]
     },
