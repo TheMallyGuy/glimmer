@@ -52,10 +52,10 @@
           "path": "$RESOURCE/**/*"
         },
         {
-          "path": "$LOCALDATA/FleasionNT"
+          "path": "$LOCALDATA/FleasionNT/settings.json"
         },
         {
-          "path": "$LOCALDATA/FleasionNT/**/*"
+          "path": "$LOCALDATA/FleasionNT/modifications.json"
         }
       ]
     },
@@ -80,10 +80,10 @@
           "path": "$APPDATA/**/*"
         },
         {
-          "path": "$LOCALDATA/FleasionNT"
+          "path": "$LOCALDATA/FleasionNT/settings.json"
         },
         {
-          "path": "$LOCALDATA/FleasionNT/**/*"
+          "path": "$LOCALDATA/FleasionNT/modifications.json"
         }
       ]
     },
