@@ -123,8 +123,26 @@
   .splash-indeterminate {
     animation: splash-slide 1.2s ease-in-out infinite;
   }
+
+  /* [danger] text (see RichText): the danger colour with a lighter band that sweeps across, then rests. The static state is plain danger. */
+  @keyframes text-shimmer {
+    from { background-position: 100% 0; }
+    65%, to { background-position: 0% 0; }
+  }
+  .text-shimmer {
+    background-image: linear-gradient(105deg, var(--color-danger) 42%, var(--color-fg) 50%, var(--color-danger) 58%);
+    background-size: 250% 100%;
+    background-position: 100% 0;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-shimmer 2.6s ease-in-out infinite;
+  }
+  @media (forced-colors: active) {
+    .text-shimmer { background: none; -webkit-text-fill-color: currentColor; animation: none; }
+  }
   @media (prefers-reduced-motion: reduce) {
     .splash-indeterminate { animation: none; }
+    .text-shimmer { animation: none; }
 
     /* anything else that moves finishes at once */
     *, ::before, ::after, ::backdrop {

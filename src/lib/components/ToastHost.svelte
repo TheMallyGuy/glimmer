@@ -6,6 +6,7 @@
   import { fly } from 'svelte/transition';
   import { motionMs } from '../motion';
   import { cn } from '../utils';
+  import RichText from './RichText.svelte';
   import Button from './Button.svelte';
   import IconButton from './IconButton.svelte';
 
@@ -39,7 +40,7 @@
         aria-hidden="true"
         class={cn('mt-px shrink-0', item.kind === 'error' ? 'text-danger' : 'text-muted')}
       />
-      <p class="m-0 min-w-0 grow py-0.5 text-sm break-words text-fg">{item.message}</p>
+      <p class="m-0 min-w-0 grow py-0.5 text-sm break-words text-fg"><RichText text={item.message} /></p>
       {#if item.action}
         {@const action = item.action}
         <Button

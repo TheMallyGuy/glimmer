@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { HTMLInputAttributes } from "svelte/elements";
     import { cn } from "../utils";
+    import RichText from "./RichText.svelte";
 
     interface Props extends Omit<HTMLInputAttributes, "value"> {
         value?: string;
@@ -41,8 +42,8 @@
         {...rest}
     />
     {#if error}
-        <p id="{uid}-msg" class="m-0 text-[13px] text-danger">{error}</p>
+        <p id="{uid}-msg" class="m-0 text-[13px] text-danger"><RichText text={error} /></p>
     {:else if hint}
-        <p id="{uid}-msg" class="m-0 text-[13px] text-muted">{hint}</p>
+        <p id="{uid}-msg" class="m-0 text-[13px] text-muted"><RichText text={hint} /></p>
     {/if}
 </div>

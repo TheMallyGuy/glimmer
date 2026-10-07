@@ -56,6 +56,7 @@ src/
 │   ├── radial.ts                  geometry of the in-game radial menu: slice paths, which slot a mouse direction points at, stepping between slots
 │   ├── boardSlots.ts              the GlimmerBoard slots as saved (`appState.integrations.inGameMenu.slots`): a slot is an action id, a game (`{ placeId, name, iconUrl? }`) or null; default board; normalizeSlots() for a saved list that is short, long or has an unknown action or a bad game
 │   ├── overlaySlots.ts            every action a slot can hold (`actionSlots`: icon and what it runs; a game slot carries the game icon as `image`) and resolveSlots(), which turns the saved slots into what the in-game menu draws. A new action goes in `ACTION_IDS`, `actionSlots` and the `overlay` dictionary
+│   ├── richText.ts                tags in a string (`[danger]text[/danger]`, or unclosed to run to the end; also `accent`, `muted`, `mono`): parseRichText() splits it into runs, stripRichText() drops the tags for attributes and logs
 │   ├── window.ts                  window resize/center helpers
 │   ├── flags.ts                   Flag type and helpers
 │   ├── index.ts                   barrel: components, cn, flag helpers
@@ -103,7 +104,7 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/`
   - the selected state (tab underline, selected icon, checked switch, dropdown check),
   - notes and warnings.
 - No emoji, gradient backgrounds, glows or decorative shadows. The only shadows are on floating menus and dialogs.
-- Motion is short (under 300ms), ease-out and never blocks anything: entrances (tab content, rows, popups, dialogs, toasts), the sliding tab underline, press feedback and hovers. Use the animation tokens in `theme.css` (`animate-fade-in`, `animate-fade-up`, `animate-pop-in`) or Svelte transitions with `motionMs()` from `$lib/motion`. Nothing loops except the launch progress. Always add `motion-reduce:transition-none` to transitions: `theme.css` also finishes every animation at once when the system asks for less motion.
+- Motion is short (under 300ms), ease-out and never blocks anything: entrances (tab content, rows, popups, dialogs, toasts), the sliding tab underline, press feedback and hovers. Use the animation tokens in `theme.css` (`animate-fade-in`, `animate-fade-up`, `animate-pop-in`) or Svelte transitions with `motionMs()` from `$lib/motion`. Nothing loops except the launch progress and `[danger]` text (see `RichText`), which shimmers. Always add `motion-reduce:transition-none` to transitions: `theme.css` also finishes every animation at once when the system asks for less motion.
 
 ## Tokens (lib/theme.css)
 
@@ -184,6 +185,7 @@ Use these instead of writing new markup for the same job.
 | `Menu` | Context and popup menus (`MenuItem[]`), with arrow keys and focus return. |
 | `FlagTable` | Fast Flag editor. |
 | `InspiredBanner` | Froststrap credit at the bottom of the Mods pages. |
+| `RichText` | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]` in it, drawn in that look (danger shimmers in a loop, accent fades in once; reduced motion stops both). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
 | `ToastHost` | Bottom-left toasts. Already mounted in the root layout; show one with `toast.success(text)`, `toast.error(text)` or `toast.show(text, { action })` from `$lib`. Use for the result of an action, not for state that stays on screen. |
 
 ## Writing Svelte here
