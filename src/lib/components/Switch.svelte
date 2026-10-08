@@ -36,7 +36,7 @@
   class={cn(
     'group relative shrink-0 rounded-gl border-0 p-0 cursor-pointer bg-track transition-colors motion-reduce:transition-none',
     'aria-checked:bg-accent',
-    'disabled:cursor-not-allowed disabled:bg-[#1c1c1c] disabled:aria-checked:bg-[#4a4424]',
+    'disabled:cursor-not-allowed disabled:bg-[#1c1c1c] disabled:aria-checked:bg-accent/30',
     size === 'sm' ? 'w-[30px] h-[18px]' : 'w-[38px] h-[22px]',
     className
   )}
