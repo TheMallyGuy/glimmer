@@ -37,6 +37,8 @@ mock.module("@tauri-apps/plugin-global-shortcut", () => ({
 }));
 mock.module("@tauri-apps/plugin-clipboard-manager", () => ({ writeText: async () => {} }));
 mock.module("@tauri-apps/plugin-opener", () => ({ openUrl: async () => {} }));
+mock.module("@tauri-apps/plugin-process", () => ({ relaunch: async () => {} }));
+mock.module("@tauri-apps/plugin-updater", () => ({ check: async () => null }));
 
 // SvelteKit modules only exist inside the app; outside Tauri the window helpers navigate with goto
 mock.module("$app/navigation", () => ({ goto: async () => {} }));

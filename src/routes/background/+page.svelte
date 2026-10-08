@@ -8,9 +8,11 @@
   import { loadAppState } from "$lib/appState.svelte";
   import { AppTray } from "$ts/tray";
   import { DeepLinkHandler } from "$ts/deepLink";
+  import { checkForUpdate } from "$ts/updater";
   import { useIntlayer } from "svelte-intlayer";
   const trayContent = useIntlayer("tray");
   const windowContent = useIntlayer("windowControl");
+  const updaterContent = useIntlayer("updater");
 
   const w = window as unknown as { __glimmerBgUnlisten?: UnlistenFn[] };
 
@@ -45,5 +47,15 @@
 
     await loadAppState();
     initDiscordRpc();
+
+    // a dev build has no release to update to
+    if (!import.meta.env.DEV) {
+      void checkForUpdate((version) => ({
+        title: $updaterContent.title.value,
+        body: $updaterContent.body({ version }).value,
+        install: $updaterContent.install.value,
+        later: $updaterContent.later.value,
+      }));
+    }
   });
 </script>
