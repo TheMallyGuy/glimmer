@@ -4,8 +4,9 @@ import { invokeCalls, invokeHandlers, jsonResponse, resetTauri } from "./helpers
 import { GameLink } from "$ts/roblox/game";
 
 // appState.svelte.ts uses runes, so it is swapped for a plain object with the same shape
-const gameState: { gameId?: number; gameServer?: string } = {};
-mock.module("$lib/appState.svelte", () => ({ gameState }));
+const gameState: { gameId?: number; gameServer?: string; userId?: number } = {};
+const appState = { integrations: { discordRpc: { customImage: { svgUrl: undefined as string | undefined } } } };
+mock.module("$lib/appState.svelte", () => ({ gameState, appState }));
 
 const { ServerActionError, ServerActions } = await import("$ts/roblox/serverActions");
 
@@ -49,6 +50,8 @@ beforeEach(() => {
     invokeHandlers.get_roblox_hwnd = () => "42"; // Roblox is open
     gameState.gameId = PLACE;
     gameState.gameServer = JOB;
+    gameState.userId = undefined;
+    appState.integrations.discordRpc.customImage.svgUrl = undefined;
     copied = [];
     launches = [];
     fakeFs.reset();
@@ -62,10 +65,21 @@ beforeEach(() => {
 });
 
 describe("ServerActions: copy invite link", () => {
+    const INVITE = "https://glimmer.mallyy.workers.dev/join";
+
     test("copies a link to the server the player is in", async () => {
         await actions().copyInvite();
 
-        expect(copied).toEqual([`https://www.roblox.com/games/start?placeId=${PLACE}&gameInstanceId=${JOB}`]);
+        expect(copied).toEqual([`${INVITE}?placeId=${PLACE}&jobId=${JOB}&userId=0&svg=`]);
+    });
+
+    test("puts the player's user id and custom icon in the link when there are some", async () => {
+        gameState.userId = 123;
+        appState.integrations.discordRpc.customImage.svgUrl = "https://example.com/icon.svg";
+
+        await actions().copyInvite();
+
+        expect(copied).toEqual([`${INVITE}?placeId=${PLACE}&jobId=${JOB}&userId=123&svg=https://example.com/icon.svg`]);
     });
 
     test("says the player is not in a game, and copies nothing", async () => {
