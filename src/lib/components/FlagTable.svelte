@@ -1,11 +1,15 @@
 <script lang="ts">
   import { tick } from 'svelte';
-  import { Plus, Upload, Trash2 } from '@lucide/svelte';
+  import { Plus, Upload, Trash2, ClipboardPaste } from '@lucide/svelte';
+  import { isTauri } from '@tauri-apps/api/core';
+  import { save } from '@tauri-apps/plugin-dialog';
+  import { writeFile } from '@tauri-apps/plugin-fs';
   import Button from './Button.svelte';
   import IconButton from './IconButton.svelte';
   import SearchField from './SearchField.svelte';
   import Dialog from './Dialog.svelte';
-  import { flagType, newFlag, parseFlagsJson, flagsToObject, type Flag } from '../flags';
+  import { flagType, flagValueProblem, mergeFlags, newFlag, parseFlagsJson, flagsToObject, type Flag } from '../flags';
+  import { toast } from '../toasts.svelte';
   import { cn } from '../utils';
   import { useIntlayer } from "svelte-intlayer";
   const commonContent = useIntlayer("common");
@@ -22,14 +26,19 @@
 
   let { flags = $bindable([]), exportName = 'fastflags.json', class: className = '', onchange }: Props = $props();
 
+  const uid = $props.id();
   let query = $state('');
   let error = $state('');
   let confirmReset = $state(false);
+  let pasteOpen = $state(false);
+  let pasteText = $state('');
+  let pasteError = $state('');
   let fileInput: HTMLInputElement;
   let nameInputs: Record<string, HTMLInputElement> = {};
+  let valueInputs: Record<string, HTMLInputElement> = {};
   let justAdded = $state<string | null>(null);
 
-  const grid = 'grid grid-cols-[minmax(0,1fr)_200px_110px_44px] items-center gap-x-3';
+  const grid = 'grid grid-cols-[minmax(0,1fr)_200px_140px_44px] items-center gap-x-3';
   const cell =
     'h-9 w-full rounded-gl border-0 bg-transparent px-2 font-mono text-[13px] text-fg placeholder:text-subtle hover:bg-hover focus:bg-tonal focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent';
 
@@ -57,8 +66,12 @@
     get Empty() { return $flagTableContent.typeEmpty.value; },
   };
 
+  /** the type column: a duplicate name first, then a value that doesn't fit the type, then the type */
   function typeLabel(f: Flag) {
     if ((counts.get(f.name.trim()) ?? 0) > 1) return { text: $flagTableContent.typeDuplicate.value, bad: true };
+    const problem = flagValueProblem(f.name, f.value);
+    if (problem === 'notBoolean') return { text: $flagTableContent.valueNotBoolean.value, bad: true };
+    if (problem === 'notInteger') return { text: $flagTableContent.valueNotInteger.value, bad: true };
     const t = flagType(f.name);
     return t === 'Empty' ? { text: typeLabels.Empty, bad: false } : { text: typeLabels[t], bad: t === 'Unknown prefix' };
   }
@@ -78,8 +91,25 @@
 
   function remove(id: string) {
     const i = flags.findIndex((f) => f.id === id);
-    if (i >= 0) flags.splice(i, 1);
+    if (i < 0) return;
+    const [gone] = flags.splice(i, 1);
     changed();
+    toast.show($flagTableContent.removedFlag({ name: gone.name.trim() || $flagTableContent.removeFlagFallback.value }).value, {
+      action: {
+        label: $flagTableContent.undo.value,
+        run: () => {
+          flags.splice(Math.min(i, flags.length), 0, gone);
+          changed();
+        },
+      },
+    });
+  }
+
+  /** merges JSON text into the table and says what changed; throws when the text isn't a flag object */
+  function importText(text: string) {
+    const { added, updated } = mergeFlags(flags, parseFlagsJson(text));
+    changed();
+    toast.success($flagTableContent.imported({ added, updated }).value);
   }
 
   async function onFile(e: Event) {
@@ -88,25 +118,57 @@
     input.value = '';
     if (!file) return;
     try {
-      const incoming = parseFlagsJson(await file.text());
-      for (const f of incoming) {
-        const existing = flags.find((x) => x.name === f.name);
-        if (existing) existing.value = f.value;
-        else flags.push(f);
-      }
+      importText(await file.text());
       error = '';
-      changed();
     } catch (err) {
       error = `${$flagTableContent.importErrorPrefix({ file: file.name }).value}: ${err instanceof Error ? err.message : $flagTableContent.importErrorFallback.value}`;
     }
   }
 
-  function exportJson() {
-    const blob = new Blob([JSON.stringify(flagsToObject(flags), null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = Object.assign(document.createElement('a'), { href: url, download: exportName });
-    a.click();
-    URL.revokeObjectURL(url);
+  function openPaste() {
+    pasteText = '';
+    pasteError = '';
+    pasteOpen = true;
+  }
+
+  function importPasted() {
+    try {
+      importText(pasteText);
+      pasteOpen = false;
+    } catch (err) {
+      pasteError = err instanceof Error ? err.message : $flagTableContent.importErrorFallback.value;
+    }
+  }
+
+  const json = () => JSON.stringify(flagsToObject(flags), null, 2);
+
+  async function copyJson() {
+    try {
+      await navigator.clipboard.writeText(json());
+      toast.success($flagTableContent.copied.value);
+    } catch {
+      toast.error($flagTableContent.copyFailed.value);
+    }
+  }
+
+  async function exportJson() {
+    // a plain browser (and the intlayer editor) has no save dialog, so it downloads the file instead
+    if (!isTauri()) {
+      const url = URL.createObjectURL(new Blob([json()], { type: 'application/json' }));
+      Object.assign(document.createElement('a'), { href: url, download: exportName }).click();
+      URL.revokeObjectURL(url);
+      return;
+    }
+
+    try {
+      const path = await save({ defaultPath: exportName, filters: [{ name: 'JSON', extensions: ['json'] }] });
+      if (!path) return;
+      await writeFile(path, new TextEncoder().encode(json()));
+      const count = Object.keys(flagsToObject(flags)).length;
+      toast.success($flagTableContent.exported(count)({ count }).value);
+    } catch (err) {
+      toast.error(`${$flagTableContent.exportFailed.value}: ${err instanceof Error ? err.message : String(err)}`);
+    }
   }
 
   function resetAll() {
@@ -120,6 +182,9 @@
   <div class="flex items-center gap-2">
     <SearchField label={$flagTableContent.filterFlags.value} bind:value={query} width="300px" />
     <div class="grow"></div>
+    <Button variant="secondary" size="sm" class="h-10" onclick={openPaste}>
+      <ClipboardPaste size={16} strokeWidth={1.75} aria-hidden="true" /> {$flagTableContent.pasteJson.value}
+    </Button>
     <Button variant="secondary" size="sm" class="h-10" onclick={() => fileInput.click()}>
       <Upload size={16} strokeWidth={1.75} aria-hidden="true" /> {$flagTableContent.importJson.value}
     </Button>
@@ -148,6 +213,12 @@
               bind:this={nameInputs[flag.id]}
               bind:value={flag.name}
               oninput={changed}
+              onkeydown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  valueInputs[flag.id]?.focus();
+                }
+              }}
               class={cell}
               aria-label={$flagTableContent.flagName.value}
               placeholder={$flagTableContent.flagNamePlaceholder.value}
@@ -157,10 +228,18 @@
           </div>
           <div role="cell">
             <input
+              bind:this={valueInputs[flag.id]}
               bind:value={flag.value}
               oninput={changed}
+              onkeydown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  add();
+                }
+              }}
               class={cell}
               aria-label={$flagTableContent.valueForFlag({ name: flag.name || $flagTableContent.newFlagFallback.value }).value}
+              aria-invalid={flagValueProblem(flag.name, flag.value) ? true : undefined}
               placeholder={$flagTableContent.valuePlaceholder.value}
               spellcheck="false"
               autocomplete="off"
@@ -183,6 +262,7 @@
 
   <div class="flex items-center gap-1 pt-1">
     <span class="grow text-[13px] text-muted">{$flagTableContent.flagCount(flags.length)({ count: flags.length }).value}</span>
+    <Button variant="ghost" size="sm" onclick={copyJson} disabled={flags.length === 0}>{$flagTableContent.copyJson.value}</Button>
     <Button variant="ghost" size="sm" onclick={exportJson} disabled={flags.length === 0}>{$flagTableContent.exportJson.value}</Button>
     <Button
       variant="ghost"
@@ -195,6 +275,34 @@
     </Button>
   </div>
 </div>
+
+<Dialog bind:open={pasteOpen} title={$flagTableContent.pasteDialogTitle.value} width="520px">
+  <div class="flex flex-col gap-1.5">
+    <label for="{uid}-paste" class="text-[13px] text-muted">{$flagTableContent.pasteLabel.value}</label>
+    <textarea
+      id="{uid}-paste"
+      bind:value={pasteText}
+      rows="10"
+      spellcheck="false"
+      autocomplete="off"
+      placeholder={'{ "FFlagName": "True" }'}
+      aria-invalid={pasteError ? true : undefined}
+      aria-describedby={pasteError ? `${uid}-paste-error` : undefined}
+      class={cn(
+        'w-full resize-y rounded-gl border-0 bg-field p-3.5 font-mono text-[13px] text-fg placeholder:text-subtle',
+        'focus:outline-2 focus:outline-offset-2 focus:outline-accent',
+        pasteError && 'outline-2 outline-offset-2 outline-danger',
+      )}
+    ></textarea>
+    {#if pasteError}
+      <p id="{uid}-paste-error" class="m-0 text-[13px] text-danger" role="alert">{pasteError}</p>
+    {/if}
+  </div>
+  {#snippet actions()}
+    <Button variant="ghost" onclick={() => (pasteOpen = false)}>{$commonContent.cancel.value}</Button>
+    <Button variant="primary" onclick={importPasted} disabled={!pasteText.trim()}>{$flagTableContent.importFlags.value}</Button>
+  {/snippet}
+</Dialog>
 
 <Dialog bind:open={confirmReset} title={$flagTableContent.resetDialogTitle.value}>
   <p>{$flagTableContent.resetDialogBody.value}</p>

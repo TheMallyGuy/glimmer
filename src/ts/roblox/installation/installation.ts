@@ -15,6 +15,8 @@ export interface InstallEntry {
   path: string;
   active: boolean;
   vng?: boolean;
+  /** launches use this version and skip updates while it is set; only the active version is ever pinned */
+  pinned?: boolean;
 }
 
 export type InstallKind = "player" | "studio";
@@ -106,6 +108,7 @@ export class Installation {
         path,
         active: version.name === previousActive,
         vng: previousByVersion.get(version.name)?.vng,
+        pinned: previousByVersion.get(version.name)?.pinned,
       });
     }
 
@@ -117,6 +120,11 @@ export class Installation {
   /** the installed version currently marked as active, if any */
   getActiveVersion(): InstallEntry | undefined {
     return this.installedVersions.find((v) => v.active);
+  }
+
+  /** the version launches stay on, if one is pinned */
+  getPinnedVersion(): InstallEntry | undefined {
+    return this.installedVersions.find((v) => v.pinned);
   }
 
   async getActiveVersionExe() {
@@ -138,7 +146,8 @@ export class Installation {
   }
 
   /**
-   * mark one installed version as active, deactivating every other one, and persist it
+   * mark one installed version as active, deactivating every other one, and persist it.
+   * A pin on any other version is dropped, since only the active version can be pinned
    */
   async setActiveVersion(version: string) {
     const entry = this.installedVersions.find((v) => v.version === version);
@@ -149,10 +158,26 @@ export class Installation {
 
     for (const v of this.installedVersions) {
       v.active = v.version === version;
+      if (!v.active) delete v.pinned;
     }
 
     await this.writeIndex();
     info(`set active version to ${version}`);
+  }
+
+  /** pins a version (making it the active one), so launches use it and skip updates; null unpins */
+  async setPinnedVersion(version: string | null) {
+    if (version === null) {
+      for (const v of this.installedVersions) delete v.pinned;
+      await this.writeIndex();
+      info("unpinned the installed version");
+      return;
+    }
+
+    await this.setActiveVersion(version);
+    this.installedVersions.find((v) => v.version === version)!.pinned = true;
+    await this.writeIndex();
+    info(`pinned version ${version}`);
   }
 
   /** deletes an installed version's files and drops it from the index */

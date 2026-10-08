@@ -40,7 +40,7 @@ src/
 │       │   └── launcher.ts        AccountLauncher class (trades a saved login for a launch ticket and builds the roblox-player: args)
 │       ├── installation/
 │       │   ├── download.ts        Downloader class: region pick, manifest fetch, package download/extract
-│       │   ├── installation.ts    Installation class: tracks installed versions on disk (`versions/` for Player, `studio-versions/` for Studio)
+│       │   ├── installation.ts    Installation class: tracks installed versions on disk (`versions/` for Player, `studio-versions/` for Studio); one version can be pinned (`setPinnedVersion`), and launches then start it and skip the update check
 │       │   ├── packageCache.ts    PackageCache class: downloaded package zips kept per install (cache dir), pruned to the active version
 │       │   ├── watcher.ts         loads installed versions into installationsState
 │       │   └── index.ts           orchestrates download.ts + installation.ts step by step
@@ -119,6 +119,7 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/`
 | Setting rows, cards | `bg-row` | #151515 |
 | Inputs | `bg-field` | #161616 |
 | Row or ghost hover | `bg-hover` | #1a1a1a |
+| Dropdown hover | `bg-field-hover` | #222222 |
 | Secondary button | `bg-tonal` / `bg-tonal-hover` | #1f1f1f / #292929 |
 | Menus | `bg-menu` / `bg-menu-active` | #1c1c1c / #262626 |
 | Switch off, disabled fill | `bg-track` | #2a2a2a |
@@ -127,6 +128,7 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/`
 | Secondary text | `text-muted` | #8f8f8f |
 | Placeholders, hints | `text-subtle` | #7c7c7c |
 | Disabled text | `text-off` | #6b6b6b |
+| Disabled description, disabled knob or arrow | `text-off-dim` / `bg-off-faint` | #5e5e5e / #4a4a4a |
 | Accent | `bg-accent` `text-accent` (+ `-hover`, `-press`) | #ffe54e |
 | Text on accent | `text-on-accent` | #0d0d0d |
 | Danger | `text-danger` / `bg-danger-bg` | #ff8f80 / #2a1a1a |
@@ -187,7 +189,7 @@ Use these instead of writing new markup for the same job.
 | `SettingGroup` | Stack of rows with an optional sentence-case label. |
 | `Dialog` | Confirmations and small forms. Uses native `<dialog>`. Buttons go in the `actions` snippet: ghost Cancel first, then the action. |
 | `Menu` | Context and popup menus (`MenuItem[]`), with arrow keys and focus return. |
-| `FlagTable` | Fast Flag editor. |
+| `FlagTable` | Fast Flag editor: import from a file or pasted JSON (merged, with an added/updated toast), copy or export (save dialog) as JSON, undo on remove, and a type column that also marks duplicates and values that don't fit the type (`flagValueProblem` in `lib/flags.ts`). |
 | `InspiredBanner` | Froststrap credit at the bottom of the Mods pages. |
 | `RichText` | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]` in it, drawn in that look (danger shimmers in a loop, accent fades in once; reduced motion stops both). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
 | `ToastHost` | Bottom-left toasts. Already mounted in the root layout; show one with `toast.success(text)`, `toast.error(text)` or `toast.show(text, { action })` from `$lib`. Use for the result of an action, not for state that stays on screen. |

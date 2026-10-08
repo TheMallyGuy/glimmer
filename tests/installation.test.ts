@@ -237,3 +237,70 @@ describe("removeInstallation", () => {
         await expect(i.removeInstallation("version-nope")).rejects.toThrow('No installed version found for "version-nope"');
     });
 });
+
+describe("setPinnedVersion", () => {
+    async function twoInstalls() {
+        seedInstall("version-aaaa");
+        seedInstall("version-bbbb");
+        const i = await Installation.create();
+        await i.reIndex();
+        await i.setActiveVersion("version-bbbb");
+        return i;
+    }
+
+    test("pins a version and makes it the active one", async () => {
+        const i = await twoInstalls();
+
+        await i.setPinnedVersion("version-aaaa");
+
+        expect(i.getPinnedVersion()?.version).toBe("version-aaaa");
+        expect(i.getActiveVersion()?.version).toBe("version-aaaa");
+        expect(readIndex().find((v) => v.pinned)?.version).toBe("version-aaaa");
+    });
+
+    test("null unpins, and the version stays active", async () => {
+        const i = await twoInstalls();
+        await i.setPinnedVersion("version-aaaa");
+
+        await i.setPinnedVersion(null);
+
+        expect(i.getPinnedVersion()).toBeUndefined();
+        expect(i.getActiveVersion()?.version).toBe("version-aaaa");
+        expect(readIndex().some((v) => v.pinned)).toBe(false);
+    });
+
+    test("activating another version drops the pin", async () => {
+        const i = await twoInstalls();
+        await i.setPinnedVersion("version-aaaa");
+
+        await i.setActiveVersion("version-bbbb");
+
+        expect(i.getPinnedVersion()).toBeUndefined();
+    });
+
+    test("activating the pinned version again keeps the pin", async () => {
+        const i = await twoInstalls();
+        await i.setPinnedVersion("version-aaaa");
+
+        await i.setActiveVersion("version-aaaa");
+
+        expect(i.getPinnedVersion()?.version).toBe("version-aaaa");
+    });
+
+    test("the pin survives a re-index, as a launch does one", async () => {
+        const i = await twoInstalls();
+        await i.setPinnedVersion("version-aaaa");
+
+        const next = await Installation.create();
+        await next.listInstallations();
+
+        expect(next.getPinnedVersion()?.version).toBe("version-aaaa");
+    });
+
+    test("throws for an unknown version and pins nothing", async () => {
+        const i = await twoInstalls();
+
+        await expect(i.setPinnedVersion("version-nope")).rejects.toThrow('No installed version found for "version-nope"');
+        expect(i.getPinnedVersion()).toBeUndefined();
+    });
+});

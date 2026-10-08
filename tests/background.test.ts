@@ -24,6 +24,7 @@ describe("BackgroundTheme.surfaces", () => {
         expect(near(s["--color-row"], "#151515")).toBe(true);
         expect(near(s["--color-tonal"], "#1f1f1f")).toBe(true);
         expect(near(s["--color-footer"], "#0b0b0b")).toBe(true);
+        expect(near(s["--color-field-hover"], "#222222")).toBe(true);
     });
 
     test("a tinted background tints every surface and keeps their order", () => {

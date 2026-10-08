@@ -18,6 +18,19 @@
     },
     "active": "Active",
     "vngTag": "VNG",
+    "pinned": "Pinned",
+    "pinVersion": {
+      "nodeType": "insertion",
+      "insertion": "Pin {{version}}: launches use it and skip updates"
+    },
+    "unpinVersion": {
+      "nodeType": "insertion",
+      "insertion": "Unpin {{version}}: launches update again"
+    },
+    "pinnedNote": {
+      "nodeType": "insertion",
+      "insertion": "Launches stay on {{version}} and skip updates until you unpin it."
+    },
     "setActive": "Set active",
     "openFolder": "Open folder",
     "openFolderForVersion": {

@@ -27,7 +27,7 @@
   } from "$ts/roblox/installation";
   import { openPath } from "@tauri-apps/plugin-opener";
   import { error as logError } from "@tauri-apps/plugin-log";
-  import { Plus, FolderOpen, Trash2 } from "@lucide/svelte";
+  import { Plus, FolderOpen, Trash2, Pin, PinOff } from "@lucide/svelte";
   import { useIntlayer } from "svelte-intlayer";
   const commonContent = useIntlayer("common");
   const installationsContent = useIntlayer("installations");
@@ -44,6 +44,17 @@
     await i.setActiveVersion(entry.version);
     installationsState.versions = i.installedVersions;
   }
+
+  async function togglePin(entry: InstallEntry) {
+    const i = await Installation.create(false);
+    i.installedVersions = installationsState.versions;
+    await i.setPinnedVersion(entry.pinned ? null : entry.version);
+    installationsState.versions = i.installedVersions;
+  }
+
+  const pinnedVersion = $derived(
+    installationsState.versions.find((v) => v.pinned)?.version,
+  );
 
   async function openFolder(entry: InstallEntry) {
     try {
@@ -180,6 +191,11 @@
         {#if installationsState.versions.length}
           {$installationsManageContent.versionCount(installationsState.versions.length)({ count: installationsState.versions.length }).value}
         {/if}
+        {#if pinnedVersion}
+          <span class="block text-accent">
+            {$installationsManageContent.pinnedNote({ version: pinnedVersion }).value}
+          </span>
+        {/if}
       </p>
       <Button variant="primary" size="sm" onclick={openAdd}>
         <Plus size={16} strokeWidth={1.75} aria-hidden="true" />
@@ -210,6 +226,11 @@
                     >{$installationsManageContent.active.value}</span
                   >
                 {/if}
+                {#if entry.pinned}
+                  <span class="shrink-0 text-xs text-muted"
+                    >{$installationsManageContent.pinned.value}</span
+                  >
+                {/if}
                 {#if entry.vng}
                   <span class="shrink-0 text-xs text-muted"
                     >{$installationsManageContent.vngTag.value}</span
@@ -228,6 +249,22 @@
                   {$installationsManageContent.setActive.value}
                 </Button>
               {/if}
+              <IconButton
+                label={entry.pinned
+                  ? $installationsManageContent.unpinVersion({ version: entry.version }).value
+                  : $installationsManageContent.pinVersion({ version: entry.version }).value}
+                variant="ghost"
+                size="sm"
+                aria-pressed={entry.pinned ?? false}
+                class={entry.pinned ? "text-accent hover:enabled:text-accent" : undefined}
+                onclick={() => togglePin(entry)}
+              >
+                {#if entry.pinned}
+                  <PinOff size={16} strokeWidth={1.75} aria-hidden="true" />
+                {:else}
+                  <Pin size={16} strokeWidth={1.75} aria-hidden="true" />
+                {/if}
+              </IconButton>
               <IconButton
                 label={$installationsManageContent.openFolderForVersion({ version: entry.version }).value}
                 variant="ghost"

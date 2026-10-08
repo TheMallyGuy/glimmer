@@ -53,6 +53,7 @@ const SURFACES: Record<string, number> = {
   "--color-menu": 28,
   "--color-tonal": 31,
   "--color-progress-track": 34,
+  "--color-field-hover": 34,
   "--color-menu-active": 38,
   "--color-tonal-hover": 41,
   "--color-track": 42,

@@ -325,8 +325,12 @@ export async function launch(options: LaunchOptions, report: LaunchReport) {
     launchInstall(context, exeName, path, version);
 
   const existingInstallations: InstallEntry[] = await i.listInstallations();
+  const pinned = i.getPinnedVersion();
 
-  if (existingInstallations.length === 0) {
+  if (pinned) {
+    // a pinned version stays as it is, whatever the latest one is
+    await start(pinned.path, pinned.version);
+  } else if (existingInstallations.length === 0) {
     const latest = await d.fetchLatestVersion(binaryType);
     const name = installName(latest, distribution);
     await install(latest);
