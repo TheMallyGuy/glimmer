@@ -108,14 +108,14 @@
     {disabled}
     class={cn(
       'group flex w-full cursor-pointer items-center justify-between gap-2 rounded-gl border-0 text-sm text-fg transition-colors motion-reduce:transition-none',
-      size === 'sm' ? 'h-9 bg-tonal pl-3 pr-2.5' : 'h-10 bg-[#1a1a1a] pl-3.5 pr-3',
-      'hover:enabled:bg-[#222222] disabled:cursor-not-allowed disabled:bg-row disabled:text-[#5e5e5e]'
+      size === 'sm' ? 'h-9 bg-tonal pl-3 pr-2.5' : 'h-10 bg-hover pl-3.5 pr-3',
+      'hover:enabled:bg-field-hover disabled:cursor-not-allowed disabled:bg-row disabled:text-off-dim'
     )}
     onclick={() => (open ? hide() : show())}
     onkeydown={onTriggerKey}
   >
     <span class={cn('min-w-0 truncate', !selected && 'text-muted')}>{selected?.label ?? placeholder}</span>
-    <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-muted group-disabled:text-[#4a4a4a]" />
+    <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-muted group-disabled:text-off-faint" />
   </button>
 
   {#if open}

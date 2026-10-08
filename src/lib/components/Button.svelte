@@ -34,9 +34,9 @@
     primary:
       'px-4 bg-accent text-on-accent font-display font-normal tracking-[0.01em] hover:enabled:bg-accent-hover active:enabled:bg-accent-press disabled:bg-track disabled:text-off',
     secondary:
-      'bg-tonal text-fg hover:enabled:bg-tonal-hover disabled:bg-[#171717] disabled:text-[#5e5e5e]',
+      'bg-tonal text-fg hover:enabled:bg-tonal-hover disabled:bg-field disabled:text-off-dim',
     ghost:
-      'px-4 bg-transparent text-fg-3 font-normal hover:enabled:bg-hover hover:enabled:text-fg disabled:text-[#5e5e5e]',
+      'px-4 bg-transparent text-fg-3 font-normal hover:enabled:bg-hover hover:enabled:text-fg disabled:text-off-dim',
     danger:
       'bg-danger-bg text-danger hover:enabled:bg-danger-bg-hover disabled:opacity-50'
   };

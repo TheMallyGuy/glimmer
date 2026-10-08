@@ -29,7 +29,7 @@
   <div class="flex min-w-0 grow flex-col gap-[3px]">
     <div class={cn('text-[15px] font-medium', disabled && 'text-off')}>{title}</div>
     {#if description}
-      <div class={cn('text-[13px] text-muted', disabled && 'text-[#5e5e5e]')}><RichText text={description} /></div>
+      <div class={cn('text-[13px] text-muted', disabled && 'text-off-dim')}><RichText text={description} /></div>
     {/if}
     {#if note}<div class="pt-0.5 text-xs text-accent"><RichText text={note} /></div>{/if}
   </div>

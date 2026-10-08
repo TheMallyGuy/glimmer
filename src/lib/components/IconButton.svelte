@@ -22,7 +22,7 @@
   }: Props = $props();
 
   const variants = {
-    tonal: 'bg-tonal text-[#d6d6d6] hover:enabled:bg-tonal-hover hover:enabled:text-fg',
+    tonal: 'bg-tonal text-icon hover:enabled:bg-tonal-hover hover:enabled:text-fg',
     ghost: 'bg-transparent text-muted hover:enabled:bg-hover hover:enabled:text-fg'
   };
 </script>

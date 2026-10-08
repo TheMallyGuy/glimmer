@@ -125,6 +125,7 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/`
 | Switch off, disabled fill | `bg-track` | #2a2a2a |
 | Footer | `bg-footer` | #0b0b0b |
 | Text | `text-fg` / `text-fg-2` / `text-fg-3` | #f2f2f2 / #b4b4b4 / #a8a8a8 |
+| Icon-only buttons at rest | `text-icon` | #d6d6d6 |
 | Secondary text | `text-muted` | #8f8f8f |
 | Placeholders, hints | `text-subtle` | #7c7c7c |
 | Disabled text | `text-off` | #6b6b6b |

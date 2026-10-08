@@ -86,7 +86,7 @@
       class={cn(
         'group relative inline-flex h-12 shrink-0 cursor-pointer items-center gap-2 border-0 bg-transparent px-3.5',
         'font-display text-[15px] tracking-[0.01em] transition-colors motion-reduce:transition-none focus-visible:-outline-offset-2',
-        selected ? 'text-white' : 'text-[#9c9c9c] hover:text-[#e0e0e0]'
+        selected ? 'text-white' : 'text-fg-3 hover:text-fg'
       )}
       onclick={() => select(tab.id)}
       onkeydown={(e) => onkeydown(e, i)}
@@ -96,12 +96,12 @@
           size={16}
           strokeWidth={1.75}
           aria-hidden="true"
-          class={cn('transition-colors', selected ? 'text-accent' : 'text-[#7a7a7a] group-hover:text-[#bdbdbd]')}
+          class={cn('transition-colors', selected ? 'text-accent' : 'text-subtle group-hover:text-fg-2')}
         />
       {/if}
       {tab.label}
       <span
-        class={cn('absolute inset-x-3.5 bottom-0 h-0.5', !selected && 'bg-transparent group-hover:bg-[#3a3a3a]')}
+        class={cn('absolute inset-x-3.5 bottom-0 h-0.5', !selected && 'bg-transparent group-hover:bg-track')}
       ></span>
     </button>
   {/each}

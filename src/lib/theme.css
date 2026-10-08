@@ -7,6 +7,7 @@
   --color-row: #151515;
   --color-field: #161616;
   --color-hover: #1a1a1a;
+  --color-field-hover: #222222;
   --color-tonal: #1f1f1f;
   --color-tonal-hover: #292929;
   --color-menu: #1c1c1c;
@@ -20,9 +21,15 @@
   --color-fg: #f2f2f2;
   --color-fg-2: #b4b4b4;
   --color-fg-3: #a8a8a8;
+  /* icon-only buttons at rest */
+  --color-icon: #d6d6d6;
   --color-muted: #8f8f8f;
   --color-subtle: #7c7c7c;
   --color-off: #6b6b6b;
+  /* a disabled description, under a disabled title in off */
+  --color-off-dim: #5e5e5e;
+  /* disabled parts that are not text: a switch knob, a dropdown arrow */
+  --color-off-faint: #4a4a4a;
 
   /* Accent */
   --color-accent: #ffe54e;
