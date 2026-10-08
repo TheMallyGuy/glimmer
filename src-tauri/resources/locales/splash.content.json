@@ -26,6 +26,8 @@
     "genericError": "Something went wrong. Please try again.",
     "launchProgress": "Launch progress",
     "prepare": "Preparing...",
+    "stoppingFleasion": "Closing Fleasion",
+    "startingFleasion": "Starting Fleasion",
     "signingIn": {
       "nodeType": "insertion",
       "insertion": "Signing in as {{name}}"

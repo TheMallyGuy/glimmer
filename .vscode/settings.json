@@ -7,4 +7,7 @@
     "src-tauri/resources/locales"
   ],
   "i18n-ally.keystyle": "nested",
+  "cSpell.words": [
+    "fleasion"
+  ],
 }

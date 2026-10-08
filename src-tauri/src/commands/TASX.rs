@@ -2,7 +2,7 @@
 // inspired by how TASX work, please check them out! https://github.com/8damon/TASX-Roblox-Optimizer/
 
 use tauri_helper::auto_collect_command;
-use windows::Win32::Foundation::{CloseHandle, HANDLE, HWND};
+use windows::Win32::Foundation::{CloseHandle, E_ACCESSDENIED, HANDLE, HWND};
 use windows::Win32::System::SystemInformation::{GetSystemInfo, SYSTEM_INFO};
 use windows::Win32::System::Threading::{
     OpenProcess, SetPriorityClass, SetProcessAffinityMask, SetProcessWorkingSetSize,
@@ -61,6 +61,21 @@ fn start_tasx(hwnd: HWND) {
         }
     }
 
+    // one handle for the whole run: Roblox is opened once, so a refusal is told once instead of on every focus change
+    let roblox = match RobloxProcess::open(pid) {
+        Ok(roblox) => roblox,
+        Err(e) if e.code() == E_ACCESSDENIED => {
+            log::error!(
+                "optimizer stopped: Windows refused access to roblox (pid {pid}). Roblox runs with more rights than Glimmer, e.g. it was started as administrator by another tool. Start Roblox without administrator rights, or run Glimmer as administrator. {e}"
+            );
+            return;
+        }
+        Err(e) => {
+            log::error!("optimizer stopped: failed to open roblox process {e}");
+            return;
+        }
+    };
+
     log::info!("optimizer running, pid={}", pid);
 
     loop {
@@ -78,14 +93,14 @@ fn start_tasx(hwnd: HWND) {
                 log::info!("focused on pid {}", pid);
 
                 let priority = ABOVE_NORMAL_PRIORITY_CLASS; // get_priority(&app_handle).unwrap_or(ABOVE_NORMAL_PRIORITY_CLASS);
-                set_affinity(pid, full_mask);
-                set_priority(pid, priority);
+                set_affinity(&roblox, full_mask);
+                set_priority(&roblox, priority);
             } else {
                 log::info!("NOT focused on pid {}", pid);
 
-                set_affinity(pid, limited_mask);
-                trim_working_set(pid);
-                set_priority(pid, IDLE_PRIORITY_CLASS);
+                set_affinity(&roblox, limited_mask);
+                trim_working_set(&roblox);
+                set_priority(&roblox, IDLE_PRIORITY_CLASS);
             }
         }
 
@@ -110,54 +125,37 @@ fn is_hwnd_focused(hwnd: HWND) -> bool {
 //     parse_priority(priority_str)
 // }
 
-fn set_priority(pid: u32, priority: PROCESS_CREATION_FLAGS) {
-    unsafe {
-        let roblox = OpenProcess(PROCESS_SET_INFORMATION, false, pid);
-        match roblox {
-            Ok(h) => {
-                if let Err(e) = SetPriorityClass(h, priority) {
-                    log::error!("failed to set priority for roblox {e}");
-                }
-                let _ = CloseHandle(h);
-            }
-            Err(ref e) => log::error!("failed to open roblox process {e}"),
-        }
+/// Roblox's process, opened with the two rights the optimizer needs. The handle is closed when this is dropped.
+struct RobloxProcess(HANDLE);
+
+impl RobloxProcess {
+    fn open(pid: u32) -> Result<Self, Error> {
+        unsafe { OpenProcess(PROCESS_SET_INFORMATION | PROCESS_SET_QUOTA, false, pid) }
+            .map(Self)
     }
 }
 
-fn trim_working_set(pid: u32) {
-    let roblox: Result<HANDLE, Error>;
-
-    unsafe {
-        roblox = OpenProcess(PROCESS_SET_QUOTA, false, pid);
-        match roblox {
-            Ok(h) => {
-                if let Err(e) = SetProcessWorkingSetSize(h, usize::MAX, usize::MAX) {
-                    log::error!("failed to trim roblox {e}");
-                }
-                let _ = CloseHandle(h);
-            }
-
-            Err(ref e) => log::error!("failed to open roblox process {e}"),
-        }
+impl Drop for RobloxProcess {
+    fn drop(&mut self) {
+        let _ = unsafe { CloseHandle(self.0) };
     }
 }
 
-fn set_affinity(pid: u32, mask: usize) {
-    let roblox: Result<HANDLE, Error>;
+fn set_priority(roblox: &RobloxProcess, priority: PROCESS_CREATION_FLAGS) {
+    if let Err(e) = unsafe { SetPriorityClass(roblox.0, priority) } {
+        log::error!("failed to set priority for roblox {e}");
+    }
+}
 
-    unsafe {
-        roblox = OpenProcess(PROCESS_SET_INFORMATION, false, pid);
-        match roblox {
-            Ok(h) => {
-                if let Err(e) = SetProcessAffinityMask(h, mask) {
-                    log::error!("failed to set affinity roblox {e}");
-                }
-                let _ = CloseHandle(h);
-            }
+fn trim_working_set(roblox: &RobloxProcess) {
+    if let Err(e) = unsafe { SetProcessWorkingSetSize(roblox.0, usize::MAX, usize::MAX) } {
+        log::error!("failed to trim roblox {e}");
+    }
+}
 
-            Err(ref e) => log::error!("failed to open roblox process {e}"),
-        }
+fn set_affinity(roblox: &RobloxProcess, mask: usize) {
+    if let Err(e) = unsafe { SetProcessAffinityMask(roblox.0, mask) } {
+        log::error!("failed to set affinity roblox {e}");
     }
 }
 

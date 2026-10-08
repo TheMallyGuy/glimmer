@@ -18,6 +18,9 @@ src/
 │   ├── deepLink.ts                DeepLinkHandler class: links that open Glimmer (roblox-player:, and any roblox:// link: a game, a profile...; all go to the player through the splash), handed over by single-instance; started in the background window
 │   ├── overlayShortcut.ts         OverlayShortcut class: the Alt + G global shortcut of the in-game menu, told as one press and one release (used by the overlay window)
 │   ├── tray.ts                    AppTray class: the system tray icon and its menu (made in the hidden background window)
+│   ├── launch.ts                  launch(): everything the splash does, as functions: pick or install the version, apply mods and flags, sign in as the account and start the player or Studio. It says what it is doing through a report callback (the splash words it) and fails with LaunchError when the account can not sign in. parseLaunchLink() and launchArgs() hold the link and account rules
+│   ├── fleasion/restart.ts        restartFleasion(): closes Fleasion (Rust `fleasion_stop`), writes its settings while it is down, opens it again (`fleasion_start`) and waits for its log to say it is ready, so Roblox starts after it and it takes the launch over. Rust side (`fleasion.rs`) uses cross-platform crates only: `sysinfo` finds and kills the processes, `runas` closes it with the system's administrator/root prompt when the plain kill is refused, `tauri-plugin-opener` (`open` on Linux: spawn) opens it. It opens Fleasion from `integrations.fleasion.path`, which Glimmer learns from the process it stops (and keeps in config.json); Windows also has the Start menu shortcut Fleasion makes as a fallback. Fleasion usually runs as administrator, so closing and opening it each ask for the prompt
+│   ├── fleasion/apply.ts          FleasionConfig class: reads and edits Fleasion's own settings.json and modifications.json in %LOCALAPPDATA%FleasionNT (edit() keeps every key it doesn't know, backs the file up once, never puts file content in an error; applyFleasionSettings() writes the Fleasion page into it. Fleasion keeps its username spoofer off while `username_spoofer.self_name` is empty, so the page has a name field, and an empty one falls back to the username of the active account)
 │   ├── geo.ts                     IP geolocation lookup (server location notifier)
 │   ├── utils.ts
 │   ├── svg/api.ts                 custom game icon thumbnails (glimmer-thumb)
@@ -55,6 +58,7 @@ src/
 │   ├── radial.ts                  geometry of the in-game radial menu: slice paths, which slot a mouse direction points at, stepping between slots
 │   ├── boardSlots.ts              the GlimmerBoard slots as saved (`appState.integrations.inGameMenu.slots`): a slot is an action id, a game (`{ placeId, name, iconUrl? }`) or null; default board; normalizeSlots() for a saved list that is short, long or has an unknown action or a bad game
 │   ├── overlaySlots.ts            every action a slot can hold (`actionSlots`: icon and what it runs; a game slot carries the game icon as `image`) and resolveSlots(), which turns the saved slots into what the in-game menu draws. A new action goes in `ACTION_IDS`, `actionSlots` and the `overlay` dictionary
+│   ├── richText.ts                tags in a string (`[danger]text[/danger]`, or unclosed to run to the end; also `accent`, `muted`, `mono`): parseRichText() splits it into runs, stripRichText() drops the tags for attributes and logs
 │   ├── window.ts                  window resize/center helpers
 │   ├── flags.ts                   Flag type and helpers
 │   ├── index.ts                   barrel: components, cn, flag helpers
@@ -70,7 +74,7 @@ src/
     ├── +layout.svelte             root layout
     ├── +page.ts                   redirects / to /choose
     ├── choose/                    Player/Studio chooser window
-    ├── splash/                    launch progress window
+    ├── splash/                    launch progress window (only shows what `launch()` from `$ts/launch` reports)
     ├── background/                hidden window: log watching and Discord RPC
     ├── overlay/                   the in-game radial menu (hold Alt + G): a transparent always-on-top window from tauri.conf.json, hidden until the shortcut shows it over Roblox. It owns the shortcut, follows the mouse and runs the actions, all in the frontend (capabilities/overlay.json). The settings window tells it to re-read the setting with the `overlay-refresh` event, and the background window sends it `gameState` changes with `game-state` (each window has its own copy of the state).
     └── (app)/                     main window (route group, not in the URL)
@@ -83,11 +87,13 @@ src/
 
 Tests live in `tests/`, one `<module>.test.ts` per module in `src/ts` or `src/lib`, run with `bun test`. `tests/setup.ts` (preloaded by `bunfig.toml`) replaces the Tauri plugins with in-memory fakes from `tests/helpers/` (`fakeFs`, `invoke` handlers, log spies); stub network calls by assigning `globalThis.fetch`. `.svelte.ts` rune modules can't load under Bun, so mock them with `mock.module` where a test needs them.
 
-Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, hash, keyring, launch, log_watcher, mods, preps, TASX, webview_cookies, window_control), collected automatically via `tauri-helper`'s `#[auto_collect_command]` and exported to `src/ts/bindings.ts` by `tauri-specta` in debug builds. Call them as `commands.<name>()` from `$ts/bindings`.
+Rust commands live in `src-tauri/src/commands/` (archive, bubble, discord_rpc, fleasion, hash, keyring, launch, log_watcher, mods, preps, TASX, webview_cookies, window_control), collected automatically via `tauri-helper`'s `#[auto_collect_command]` and exported to `src/ts/bindings.ts` by `tauri-specta` in debug builds. Call them as `commands.<name>()` from `$ts/bindings`.
 
 Accounts: a Roblox login is a `.ROBLOSECURITY` cookie. The whole flow lives in the frontend (`AccountLogin` in `account/login.ts`, `AccountLauncher` in `account/launcher.ts`). Rust only provides `keyring_*` (the OS credential store, service `glimmer-roblox-accounts`) and `webview_cookie`, because HttpOnly cookies of the login window are invisible to JS. The cookie goes keyring only: never into state, config.json, logs or error messages. `config.json` holds just `accounts.list` (id, name, displayName) and `accounts.activeId`. Requests that need Cookie/Origin/Referer use the http plugin, which has `unsafe-headers` enabled.
 
 Windows: `main` (the chooser), `splash`, `settings` (the `(app)` routes), a hidden `background` window created in `src-tauri/src/lib.rs`, and the transparent `overlay` window of `tauri.conf.json`. The background window also owns the system tray icon (`AppTray`, `src/ts/tray.ts`), so the icon stays while every other window is closed. A single-instance plugin hands second launches to the existing window.
+
+Fleasion (`integrations.fleasion.enabled`) runs Roblox with administrator rights, and Windows keeps a normal Glimmer from changing that process, reading the keys held in front of it or handing it a join. So while Fleasion is on, GlimmerBoard (the overlay shortcut) and the TASX optimizer stay off, and their rows on the Integrations page are disabled with a note. Nothing in Glimmer asks for administrator rights.
 
 Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/` (the intlayer dictionaries, built into the frontend by the vite plugin).
 
@@ -102,7 +108,7 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/`
   - the selected state (tab underline, selected icon, checked switch, dropdown check),
   - notes and warnings.
 - No emoji, gradient backgrounds, glows or decorative shadows. The only shadows are on floating menus and dialogs.
-- Motion is short (under 300ms), ease-out and never blocks anything: entrances (tab content, rows, popups, dialogs, toasts), the sliding tab underline, press feedback and hovers. Use the animation tokens in `theme.css` (`animate-fade-in`, `animate-fade-up`, `animate-pop-in`) or Svelte transitions with `motionMs()` from `$lib/motion`. Nothing loops except the launch progress. Always add `motion-reduce:transition-none` to transitions: `theme.css` also finishes every animation at once when the system asks for less motion.
+- Motion is short (under 300ms), ease-out and never blocks anything: entrances (tab content, rows, popups, dialogs, toasts), the sliding tab underline, press feedback and hovers. Use the animation tokens in `theme.css` (`animate-fade-in`, `animate-fade-up`, `animate-pop-in`) or Svelte transitions with `motionMs()` from `$lib/motion`. Nothing loops except the launch progress and `[danger]` text (see `RichText`), which shimmers. Always add `motion-reduce:transition-none` to transitions: `theme.css` also finishes every animation at once when the system asks for less motion.
 
 ## Tokens (lib/theme.css)
 
@@ -183,6 +189,7 @@ Use these instead of writing new markup for the same job.
 | `Menu` | Context and popup menus (`MenuItem[]`), with arrow keys and focus return. |
 | `FlagTable` | Fast Flag editor. |
 | `InspiredBanner` | Froststrap credit at the bottom of the Mods pages. |
+| `RichText` | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]` in it, drawn in that look (danger shimmers in a loop, accent fades in once; reduced motion stops both). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
 | `ToastHost` | Bottom-left toasts. Already mounted in the root layout; show one with `toast.success(text)`, `toast.error(text)` or `toast.show(text, { action })` from `$lib`. Use for the result of an action, not for state that stays on screen. |
 
 ## Writing Svelte here

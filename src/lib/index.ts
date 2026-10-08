@@ -22,5 +22,7 @@ export { default as InspiredBanner } from "./components/InspiredBanner.svelte";
 export { default as Menu } from "./components/Menu.svelte";
 export { default as GlimmerLogo } from "./components/GlimmerLogo.svelte";
 export { default as SlotImage } from "./components/SlotImage.svelte";
+export { default as RichText } from "./components/RichText.svelte";
+export { parseRichText, stripRichText } from "./richText";
 export { default as RingsOverlay } from "./components/RingsOverlay.svelte";
 export type { MenuItem } from "./components/Menu.svelte";

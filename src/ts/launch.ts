@@ -1,7 +1,7 @@
 // file for launching glimmer by func
 import { join } from "@tauri-apps/api/path";
 import { commands } from "$ts/bindings";
-import { appState } from "$lib/appState.svelte";
+import { appState, rememberFleasionPath } from "$lib/appState.svelte";
 import { flagsToObject } from "$lib/flags";
 import { applyMods, loadMods } from "$lib/mods.svelte";
 import {
@@ -27,6 +27,7 @@ import {
 import { GameLink, type GameTarget } from "$ts/roblox/game";
 import { LocalAppEditor } from "$ts/roblox/localApp";
 import { delay } from "$ts/utils";
+import { restartFleasion } from "$ts/fleasion/restart";
 
 export type LaunchTarget = "player" | "studio";
 
@@ -42,19 +43,21 @@ export interface LaunchOptions {
 /** what a launch is doing, for the window to say in the person's language */
 export type LaunchStatus =
   | {
-      step:
-        | "checkingForUpdates"
-        | "fetchingManifest"
-        | "finishingInstallation"
-        | "applyingMods"
-        | "applyingFlags"
-        | "prepare";
-    }
+    step:
+    | "checkingForUpdates"
+    | "fetchingManifest"
+    | "finishingInstallation"
+    | "applyingMods"
+    | "applyingFlags"
+    | "stoppingFleasion"
+    | "startingFleasion"
+    | "prepare";
+  }
   | {
-      step: "downloadingClient" | "extractingClient" | "downloadingModOriginals";
-      done: number;
-      total: number;
-    }
+    step: "downloadingClient" | "extractingClient" | "downloadingModOriginals";
+    done: number;
+    total: number;
+  }
   | { step: "signingIn"; name: string }
   | { step: "launching"; version: string };
 
@@ -97,7 +100,7 @@ export function parseLaunchLink(link: string | null | undefined) {
   const game = link ? GameLink.parse(link) : null;
   const playerLink =
     link &&
-    (/^roblox-player:/i.test(link) || (/^roblox:/i.test(link) && !game))
+      (/^roblox-player:/i.test(link) || (/^roblox:/i.test(link) && !game))
       ? link
       : null;
   return { playerLink, game };
@@ -257,6 +260,27 @@ async function launchInstall(
     await lca.launchAtStartup(
       !appState.integrations.disableLaunchAtStartup.enabled,
     );
+  }
+
+  if (!isStudio && appState.integrations.fleasion.enabled) {
+    try {
+      const fleasion = appState.integrations.fleasion;
+      const account = appState.accounts.list.find((a) => a.id === appState.accounts.activeId);
+      const name = fleasion.settings.name.trim() || account?.name || "";
+
+      if (!name && (fleasion.settings.verify || fleasion.settings.gameCreator)) {
+        console.warn("Fleasion keeps its username spoofer off with no name: set one on the Fleasion page");
+      }
+
+      await restartFleasion(
+        { ...fleasion.settings, name },
+        appState.fastflags.enabled ? flagsToObject(appState.fastflags.flags) : {},
+        report,
+        { path: fleasion.path, onPathFound: rememberFleasionPath },
+      );
+    } catch (e) {
+      console.error("failed to restart Fleasion before launch:", e);
+    }
   }
 
   report({ step: "launching", version }, null);

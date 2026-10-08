@@ -1,15 +1,31 @@
 <script lang="ts">
   import { SettingGroup, SettingRow, Switch, Dropdown } from "$lib";
-  import { appState } from "$lib/appState.svelte";
+  import {
+    appState,
+    fleasionState,
+    setFleasionInstallation,
+  } from "$lib/appState.svelte";
+  import { isTauri } from "@tauri-apps/api/core";
+  import { FleasionConfig } from "$ts/fleasion";
+  import { onMount } from "svelte";
   import { useIntlayer } from "svelte-intlayer";
   const integrationsContent = useIntlayer("integrations");
 
   const largeImagePresets = [
+    { value: "aurora", label: $integrationsContent.presetAurora.value },
     { value: "icon", label: $integrationsContent.presetGameIcon.value },
     { value: "gisl", label: $integrationsContent.presetGameIsLife.value },
-    { value: "interview", label: $integrationsContent.presetJobInterview.value },
+    {
+      value: "interview",
+      label: $integrationsContent.presetJobInterview.value,
+    },
     { value: "custom", label: $integrationsContent.presetCustom.value },
   ];
+
+  onMount(async () => {
+    if (!isTauri()) return;
+    setFleasionInstallation(await new FleasionConfig().isInstalled());
+  });
 </script>
 
 <SettingGroup>
@@ -116,27 +132,35 @@
   </SettingRow>
   <SettingRow
     title={$integrationsContent.trimMemory.value}
-    description={$integrationsContent.trimMemoryDescription.value}
+    description={appState.integrations.fleasion.enabled
+      ? $integrationsContent.offWithFleasion.value
+      : $integrationsContent.trimMemoryDescription.value}
+    disabled={appState.integrations.fleasion.enabled}
   >
     {#snippet control()}
       <Switch
         label={$integrationsContent.trimMemory.value}
         bind:checked={appState.integrations.trimMemWhenNotFocused.enabled}
+        disabled={appState.integrations.fleasion.enabled}
       />
     {/snippet}
   </SettingRow>
   <SettingRow
     title={$integrationsContent.inGameMenu.value}
-    description={$integrationsContent.inGameMenuDescription.value}
+    description={appState.integrations.fleasion.enabled
+      ? $integrationsContent.offWithFleasion.value
+      : $integrationsContent.inGameMenuDescription.value}
+    disabled={appState.integrations.fleasion.enabled}
   >
     {#snippet control()}
       <Switch
         label={$integrationsContent.inGameMenu.value}
         bind:checked={appState.integrations.inGameMenu.enabled}
+        disabled={appState.integrations.fleasion.enabled}
       />
     {/snippet}
   </SettingRow>
-  {#if appState.integrations.inGameMenu.enabled}
+  {#if appState.integrations.inGameMenu.enabled && !appState.integrations.fleasion.enabled}
     <SettingRow
       title={$integrationsContent.boardEditor.value}
       description={$integrationsContent.boardEditorDescription.value}
@@ -166,7 +190,7 @@
       />
     {/snippet}
   </SettingRow>
-   <SettingRow
+  <SettingRow
     title={$integrationsContent.disableLaunchAtStartup.value}
     description={$integrationsContent.disableLaunchAtStartupDescription.value}
   >
@@ -179,7 +203,8 @@
   </SettingRow>
   <SettingRow
     title={$integrationsContent.disableFullscreenOptimization.value}
-    description={$integrationsContent.disableFullscreenOptimizationDescription.value}
+    description={$integrationsContent.disableFullscreenOptimizationDescription
+      .value}
   >
     {#snippet control()}
       <Switch
@@ -191,8 +216,19 @@
     {/snippet}
   </SettingRow>
 </SettingGroup>
-
 <div class="h-7"></div>
+
+{#if fleasionState.installed}
+  <SettingGroup label="Fleasion">
+    <SettingRow
+      title={$integrationsContent.fleasion}
+      description={`[danger]${$integrationsContent.fleasionDescription}`}
+      href="/integrations/fleasion"
+    />
+  </SettingGroup>
+
+  <div class="h-7"></div>
+{/if}
 
 <SettingGroup label={$integrationsContent.friendsGroup.value}>
   <SettingRow

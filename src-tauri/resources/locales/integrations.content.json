@@ -3,6 +3,7 @@
   "key": "integrations",
   "content": {
     "presetGameIcon": "Game icon",
+    "presetAurora" : "Aurora",
     "presetGameIsLife": "GAME IS LIFE!!!11",
     "presetJobInterview": "i accidentally said [GAME NAME] in a job interview",
     "presetHopOn": "bro hop on [GAME NAME]",
@@ -30,6 +31,9 @@
     "trimMemoryDescription": "An Roblox optimizer by 8damon. It is not useless. C++ Source code [8damon/TASX-Roblox-Optimizer/]",
     "inGameMenu": "GlimmerBoard",
     "inGameMenuDescription": "Quick access stuff using GlimmerBoard. Hold Alt + G to open it in game.",
+    "offWithFleasion": "Off while Fleasion is on. Fleasion took roblox from us and its will have some conflicts if these features are enabled.",
+    "fleasion" : "Fleasion with Glimmer",
+    "fleasionDescription" : "FLEASION IS BANNABLE. USE AT YOUR ON RISK. GLIMMER CONTRIBUTORS (or developer) ACCEPT NO LIABILITY." ,
     "boardEditor": "Edit GlimmerBoard",
     "boardEditorDescription": "Choose what each slice of the menu does.",
     "windowControl": "Window manipulation",

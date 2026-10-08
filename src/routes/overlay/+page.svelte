@@ -233,7 +233,11 @@
   async function applySetting() {
     try {
       await loadAppState();
-      await shortcut.set(appState.integrations.inGameMenu.enabled);
+      // off while Fleasion is on: it runs Roblox with more rights than Glimmer has, so the menu can't join or hop
+      await shortcut.set(
+        appState.integrations.inGameMenu.enabled &&
+          !appState.integrations.fleasion.enabled,
+      );
     } catch (err) {
       error(`in-game menu: could not set the shortcut: ${err}`);
     }
