@@ -1,6 +1,6 @@
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
 import { commands } from "$ts/bindings";
-import { gameState } from "$lib/appState.svelte";
+import { appState, gameState } from "$lib/appState.svelte";
 import { getPublicServers } from "./generalRobloxApis";
 import { GameLink, type GameTarget } from "./game";
 import { Installation } from "./installation/installation";
@@ -35,7 +35,7 @@ export class ServerActions {
   /** the link a friend can use to join this server */
   async inviteLink(): Promise<string> {
     const { placeId, jobId } = await this.server();
-    return `https://www.roblox.com/games/start?placeId=${placeId}&gameInstanceId=${jobId}`;
+    return `https://glimmer.mallyy.workers.dev/join?placeId=${placeId}&jobId=${jobId}&userId=${gameState.userId ?? 0}&svg=${appState.integrations.discordRpc.customImage.svgUrl ?? ""}`; // get a JOB!!!
   }
 
   async copyInvite() {
