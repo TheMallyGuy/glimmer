@@ -59,6 +59,8 @@ export const appState = $state({
         mirrorGlimmerFF: false,
         verify: false,
         gameCreator: false,
+        multiInstance: false,
+        name: "",
       }
     }
   },

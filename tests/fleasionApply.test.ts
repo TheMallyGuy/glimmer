@@ -140,7 +140,7 @@ describe("FleasionConfig.edit", () => {
 });
 
 describe("applyFleasionSettings", () => {
-    const off: FleasionOptions = { mirrorGlimmerFF: false, verify: false, gameCreator: false };
+    const off: FleasionOptions = { mirrorGlimmerFF: false, verify: false, gameCreator: false, name: "" };
     const applied = () => JSON.parse(fakeFs.text(SETTINGS)!);
 
     test("writes the verified and game creator options to the username spoofer, on and off", async () => {
@@ -161,6 +161,22 @@ describe("applyFleasionSettings", () => {
 
         await applyFleasionSettings({ ...off, gameCreator: true }, {});
         expect(applied().username_spoofer.self_apply_ingame).toBe(true);
+    });
+
+    test("writes the name the spoofer shows, trimmed", async () => {
+        fakeFs.seed(SETTINGS, SETTINGS_TEXT);
+
+        await applyFleasionSettings({ ...off, verify: true, name: "  Cool Person " }, {});
+
+        expect(applied().username_spoofer.self_name).toBe("Cool Person");
+    });
+
+    test("an empty name keeps the one already in Fleasion", async () => {
+        fakeFs.seed(SETTINGS, SETTINGS_TEXT);
+
+        await applyFleasionSettings({ ...off, verify: true, name: "   " }, {});
+
+        expect(applied().username_spoofer.self_name).toBe("x");
     });
 
     test("makes the username spoofer when Fleasion has none", async () => {
@@ -202,7 +218,7 @@ describe("applyFleasionSettings", () => {
     test("never answers Fleasion's own custom flags warning", async () => {
         fakeFs.seed(SETTINGS, '{"custom_fflags_warning_accepted":false}');
 
-        await applyFleasionSettings({ mirrorGlimmerFF: true, verify: true, gameCreator: true }, { A: "1" });
+        await applyFleasionSettings({ mirrorGlimmerFF: true, verify: true, gameCreator: true, name: "" }, { A: "1" });
 
         expect(applied().custom_fflags_warning_accepted).toBe(false);
     });
@@ -210,7 +226,7 @@ describe("applyFleasionSettings", () => {
     test("keeps every key it doesn't know", async () => {
         fakeFs.seed(SETTINGS, SETTINGS_TEXT);
 
-        await applyFleasionSettings({ mirrorGlimmerFF: true, verify: true, gameCreator: false }, { A: "1" });
+        await applyFleasionSettings({ mirrorGlimmerFF: true, verify: true, gameCreator: false, name: "" }, { A: "1" });
 
         expect(applied()).toMatchObject({ theme: "System", upstream_socks5_password: "hunter2" });
     });

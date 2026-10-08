@@ -2,6 +2,9 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "fleasion",
   "content": {
-    "backToIntegrations" : "Back to integration"
+    "backToIntegrations" : "Back to integration",
+    "spoofName": "Names",
+    "spoofNameHint": "Fleasion keeps verified and game creator off without a name. Leave empty to use the username of your active account.",
+    "spoofNamePlaceholder": "Your username"
   }
 }

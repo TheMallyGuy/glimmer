@@ -11,7 +11,7 @@ const LOG = `${DIR}/logs/fleasion.log`;
 const READY = "[23:09:23] [Info] Fleasion Proxy Active\n";
 const FAST = { timeoutMs: 60, pollMs: 5 };
 
-const options: FleasionOptions = { mirrorGlimmerFF: false, verify: true, gameCreator: false };
+const options: FleasionOptions = { mirrorGlimmerFF: false, verify: true, gameCreator: false, name: "" };
 
 let steps: string[];
 let reported: LaunchStatus[];

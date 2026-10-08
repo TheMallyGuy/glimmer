@@ -5,6 +5,7 @@
     import RichText from "$lib/components/RichText.svelte";
     import SettingGroup from "$lib/components/SettingGroup.svelte";
     import SettingRow from "$lib/components/SettingRow.svelte";
+    import TextField from "$lib/components/TextField.svelte";
     import Switch from "$lib/components/Switch.svelte";
     import { ArrowLeft } from "@lucide/svelte";
     import { useIntlayer } from "svelte-intlayer";
@@ -41,6 +42,20 @@
             />
         {/snippet}
     </SettingRow>
+
+    <SettingRow
+        title="Enable Multi-instance"
+        description="Multi instance is bannable."
+    >
+        {#snippet control()}
+            <Switch
+                label=""
+                bind:checked={
+                    appState.integrations.fleasion.settings.multiInstance
+                }
+            />
+        {/snippet}
+    </SettingRow>
 </SettingGroup>
 
 <div class="h-7"></div>
@@ -56,6 +71,7 @@
                 bind:checked={
                     appState.integrations.fleasion.settings.mirrorGlimmerFF
                 }
+                disabled={!appState.integrations.fleasion.enabled}
             />
         {/snippet}
     </SettingRow>
@@ -71,9 +87,8 @@
         {#snippet control()}
             <Switch
                 label=""
-                bind:checked={
-                    appState.integrations.fleasion.settings.verify
-                }
+                bind:checked={appState.integrations.fleasion.settings.verify}
+                disabled={!appState.integrations.fleasion.enabled}
             />
         {/snippet}
     </SettingRow>
@@ -87,7 +102,16 @@
                 bind:checked={
                     appState.integrations.fleasion.settings.gameCreator
                 }
+                disabled={!appState.integrations.fleasion.enabled}
             />
         {/snippet}
     </SettingRow>
 </SettingGroup>
+
+<TextField
+    class="mt-0.5 bg-row px-[18px] py-4"
+    label={$fleasionContent.spoofName.value}
+    hint={$fleasionContent.spoofNameHint.value}
+    placeholder={$fleasionContent.spoofNamePlaceholder.value}
+    bind:value={appState.integrations.fleasion.settings.name}
+/>

@@ -63,6 +63,8 @@ export interface FleasionOptions {
     mirrorGlimmerFF: boolean;
     verify: boolean;
     gameCreator: boolean;
+    name: string;
+    multiInstance: boolean;
 }
 
 
@@ -75,7 +77,12 @@ export async function applyFleasionSettings(
         const spoofer = (json.username_spoofer ??= {});
         spoofer.self_verified = options.verify;
         spoofer.self_game_creator = options.gameCreator;
+
+        if (options.name.trim()) spoofer.self_name = options.name.trim();
         if (options.verify || options.gameCreator) spoofer.self_apply_ingame = true;
+
+
+        json.multi_instance_launching = options.multiInstance 
 
         if (options.mirrorGlimmerFF && Object.keys(flags).length > 0) {
             json.custom_fflags_enabled = true;
