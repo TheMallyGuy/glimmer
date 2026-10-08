@@ -1,9 +1,9 @@
 name: Release
 
-# a merge into `release` is a push to it
+# a merge into `release` is a stable release, a merge into `master` is a nightly one
 on:
   push:
-    branches: [release]
+    branches: [release, master]
   workflow_dispatch:
 
 concurrency:
@@ -13,6 +13,8 @@ concurrency:
 env:
   # your CrabNebula Cloud organization and app slugs
   CN_APPLICATION: "glim/glimmer"
+  # master builds go to the nightly channel; no flag is the stable channel
+  CN_CHANNEL: ${{ github.ref_name == 'master' && '--channel nightly' || '' }}
 
 jobs:
   verify:
@@ -34,10 +36,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - if: github.ref_name == 'master'
+        run: node .github/scripts/set-nightly.mjs ${{ github.run_number }}
+
       # makes the release for the version in tauri.conf.json; the build uploads into it
       - uses: crabnebula-dev/cloud-release@v0
         with:
-          command: release draft ${{ env.CN_APPLICATION }} --framework tauri
+          command: release draft ${{ env.CN_APPLICATION }} --framework tauri ${{ env.CN_CHANNEL }}
           api-key: ${{ secrets.CN_API_KEY }}
 
   build:
@@ -45,6 +50,9 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
+      - if: github.ref_name == 'master'
+        run: node .github/scripts/set-nightly.mjs ${{ github.run_number }}
 
       - uses: oven-sh/setup-bun@v2
 
@@ -64,7 +72,7 @@ jobs:
 
       - uses: crabnebula-dev/cloud-release@v0
         with:
-          command: release upload ${{ env.CN_APPLICATION }} --framework tauri
+          command: release upload ${{ env.CN_APPLICATION }} --framework tauri ${{ env.CN_CHANNEL }}
           api-key: ${{ secrets.CN_API_KEY }}
 
   publish:
@@ -73,7 +81,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - if: github.ref_name == 'master'
+        run: node .github/scripts/set-nightly.mjs ${{ github.run_number }}
+
       - uses: crabnebula-dev/cloud-release@v0
         with:
-          command: release publish ${{ env.CN_APPLICATION }} --framework tauri
+          command: release publish ${{ env.CN_APPLICATION }} --framework tauri ${{ env.CN_CHANNEL }}
           api-key: ${{ secrets.CN_API_KEY }}
