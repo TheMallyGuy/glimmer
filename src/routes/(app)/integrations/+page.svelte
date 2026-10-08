@@ -221,8 +221,8 @@
 {#if fleasionState.installed}
   <SettingGroup label="Fleasion">
     <SettingRow
-      title="Glimmer with Fleasion"
-      description="[danger]BANNABLE. EDITING CACHE IS BANNABLE. JUST SO YOU KNOW THAT."
+      title={$integrationsContent.fleasion}
+      description={`[danger]${$integrationsContent.fleasionDescription}`}
       href="/integrations/fleasion"
     />
   </SettingGroup>

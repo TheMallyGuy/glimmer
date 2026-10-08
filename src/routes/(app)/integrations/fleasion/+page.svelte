@@ -26,27 +26,25 @@
 <div class="h-7"></div>
 
 <div class="flex flex-col gap-0.5">
-    <RichText
-        text="[danger]Please notice that using Fleasion is BANNABLE. Using this can put your account at risk. We're adding this option for our use cases (lol). "
-    />
+    <RichText text={`[danger]${$fleasionContent.fleasionWarn}`} />
 </div>
 
 <div class="h-7"></div>
 
 <SettingGroup label="General">
-    <SettingRow title="Enable" description="remember folks: this is bannable">
+    <SettingRow
+        title={$fleasionContent.enableFleasion}
+        description={$fleasionContent.enableFleasionDescription}
+    >
         {#snippet control()}
             <Switch
-                label=""
+                label={$fleasionContent.enableFleasion}
                 bind:checked={appState.integrations.fleasion.enabled}
             />
         {/snippet}
     </SettingRow>
 
-    <SettingRow
-        title="Enable Multi-instance"
-        description="Multi instance is bannable."
-    >
+    <SettingRow title={$fleasionContent.multiInstance}>
         {#snippet control()}
             <Switch
                 label=""
@@ -62,8 +60,8 @@
 
 <SettingGroup label="Fast-flags">
     <SettingRow
-        title="Mirror Glimmer's fast-flags to Fleasion"
-        description="Easier to use i guess"
+        title={$fleasionContent.mirrorFastFlags}
+        description={$fleasionContent.mirrorFastFlagsDescription}
     >
         {#snippet control()}
             <Switch
@@ -79,10 +77,10 @@
 
 <div class="h-7"></div>
 
-<SettingGroup label="Client sided modification">
+<SettingGroup label={$fleasionContent.clientSidedGroup}>
     <SettingRow
-        title="I'm verified!"
-        description="Verifies yourself. Only you can see it"
+        title={$fleasionContent.verifySelf}
+        description={$fleasionContent.verifySelfDescription}
     >
         {#snippet control()}
             <Switch
@@ -93,8 +91,8 @@
         {/snippet}
     </SettingRow>
     <SettingRow
-        title="I'm the game creator!"
-        description="Makes you the game creator. Only you can see it"
+        title={$fleasionContent.gameCreator}
+        description={$fleasionContent.gameCreatorDescription}
     >
         {#snippet control()}
             <Switch
