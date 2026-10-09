@@ -3,7 +3,7 @@
   "key": "fleasion",
   "content": {
     "backToIntegrations" : "Back to integration",
-    "fleasionWarn" : "Please notice that using Fleasion is BANNABLE. Using this can put your account at risk. Glimmer itself is not bannable. We're providing Fleasion as an option for a better user experience. If you do not want to put your account at risk you can not use this option. Its your own will.",
+    "fleasionWarn" : "Fleasion is bannable but theres currently there's no way to detect it. We're providing this option for a user-friendly experience",
     "enableFleasion" : "Enable and let Glimmer manage Fleasion",
     "enableFleasionDescription" : "remember folks: this is bannable",
     "multiInstance" : "Enable Multi-instance",
