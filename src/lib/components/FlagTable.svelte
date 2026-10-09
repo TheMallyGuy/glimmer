@@ -22,9 +22,14 @@
     exportName?: string;
     class?: string;
     onchange?: (flags: Flag[]) => void;
+    /** Shows "Load from Roblox": reads the flags of the installed Roblox into the table. */
+    onload?: () => void | Promise<void>;
+    /** Shows "Apply now": writes the table to the installed Roblox. */
+    onapply?: () => void | Promise<void>;
+    applyDisabled?: boolean;
   }
 
-  let { flags = $bindable([]), exportName = 'fastflags.json', class: className = '', onchange }: Props = $props();
+  let { flags = $bindable([]), exportName = 'fastflags.json', class: className = '', onchange, onload, onapply, applyDisabled = false }: Props = $props();
 
   const uid = $props.id();
   let query = $state('');
@@ -262,6 +267,12 @@
 
   <div class="flex items-center gap-1 pt-1">
     <span class="grow text-[13px] text-muted">{$flagTableContent.flagCount(flags.length)({ count: flags.length }).value}</span>
+    {#if onload}
+      <Button variant="ghost" size="sm" onclick={onload}>{$flagTableContent.loadFromRoblox.value}</Button>
+    {/if}
+    {#if onapply}
+      <Button variant="ghost" size="sm" onclick={onapply} disabled={applyDisabled || flags.length === 0}>{$flagTableContent.applyNow.value}</Button>
+    {/if}
     <Button variant="ghost" size="sm" onclick={copyJson} disabled={flags.length === 0}>{$flagTableContent.copyJson.value}</Button>
     <Button variant="ghost" size="sm" onclick={exportJson} disabled={flags.length === 0}>{$flagTableContent.exportJson.value}</Button>
     <Button

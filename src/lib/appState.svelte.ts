@@ -60,6 +60,7 @@ export const appState = $state({
         verify: false,
         gameCreator: false,
         multiInstance: false,
+        deVng: true,
         name: "",
       }
     }

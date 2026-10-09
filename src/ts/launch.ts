@@ -19,7 +19,8 @@ import {
   installName,
 } from "$ts/roblox/installation";
 import { PackageCache } from "$ts/roblox/installation/packageCache";
-import { FastFlagManager } from "$ts/roblox/flags";
+import { FastFlagManager } from "$ts/roblox/fastflag/flags";
+import { hiddenFlags } from "$ts/roblox/fastflag/fleasionPresets";
 import {
   AccountLauncher,
   AccountLaunchError,
@@ -231,11 +232,13 @@ async function launchInstall(
   }
 
   const ffm = await FastFlagManager.create(installPath);
+  const hidden = await hiddenFlags(appState.integrations.fleasion);
 
-  if (appState.fastflags.enabled) {
+  if (appState.fastflags.enabled || Object.keys(hidden).length > 0) {
     report({ step: "applyingFlags" }, null);
+
     try {
-      await ffm.apply(flagsToObject(appState.fastflags.flags));
+      await ffm.apply(appState.fastflags.enabled ? flagsToObject(appState.fastflags.flags) : {}, hidden);
     } catch (e) {
       console.error("failed to apply fast flags before launch:", e);
     }
@@ -274,7 +277,7 @@ async function launchInstall(
 
       await restartFleasion(
         { ...fleasion.settings, name },
-        appState.fastflags.enabled ? flagsToObject(appState.fastflags.flags) : {},
+        { ...hidden, ...(appState.fastflags.enabled ? flagsToObject(appState.fastflags.flags) : {}) },
         report,
         { path: fleasion.path, onPathFound: rememberFleasionPath },
       );

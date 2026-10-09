@@ -73,6 +73,19 @@
             />
         {/snippet}
     </SettingRow>
+
+    <SettingRow
+        title={$fleasionContent.deVngPreset}
+        description={$fleasionContent.deVngPresetDescription}
+    >
+        {#snippet control()}
+            <Switch
+                label=""
+                bind:checked={appState.integrations.fleasion.settings.deVng}
+                disabled={!appState.integrations.fleasion.enabled}
+            />
+        {/snippet}
+    </SettingRow>
 </SettingGroup>
 
 <div class="h-7"></div>

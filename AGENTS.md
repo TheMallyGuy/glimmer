@@ -27,7 +27,7 @@ src/
 │   ├── svg/api.ts                 custom game icon thumbnails (glimmer-thumb)
 │   ├── windows/                   open/focus helpers for the chooser, splash and settings windows (focus.ts: bring the chooser or splash forward)
 │   └── roblox/
-│       ├── flags.ts               Fast Flag helpers
+│       ├── fastflag/              flags.ts (FastFlagManager: reads, writes and removes an install's ClientAppSettings.json; `hiddenFlags` go under the person's), installed.ts (readInstalledFlags / applyInstalledFlags: the same on the active install, for the editor's Load from Roblox and Apply now buttons), fleasionPresets.ts (hiddenFlags(): the flags a Fleasion option such as De-VNG asks for, written under the person's own flags at launch and by Apply now; the person's flag table is never touched)
 │       ├── generalRobloxApis.ts   game, thumbnail and user lookups
 │       ├── game.ts                GameLink class: parses roblox://experiences/start game links, finds the place id in a pasted game link (placeIdFrom), builds the roblox-player: play URI for a game (place, server or private server)
 │       ├── gameHistory.ts         GameHistory class: the games joined across sessions (games.json, kept apart from config.json), recorded by the log rules
@@ -191,7 +191,7 @@ Use these instead of writing new markup for the same job.
 | `SettingGroup` | Stack of rows with an optional sentence-case label. |
 | `Dialog` | Confirmations and small forms. Uses native `<dialog>`. Buttons go in the `actions` snippet: ghost Cancel first, then the action. |
 | `Menu` | Context and popup menus (`MenuItem[]`), with arrow keys and focus return. |
-| `FlagTable` | Fast Flag editor: import from a file or pasted JSON (merged, with an added/updated toast), copy or export (save dialog) as JSON, undo on remove, and a type column that also marks duplicates and values that don't fit the type (`flagValueProblem` in `lib/flags.ts`). |
+| `FlagTable` | Fast Flag editor (optional `onload` / `onapply` add Load from Roblox and Apply now): import from a file or pasted JSON (merged, with an added/updated toast), copy or export (save dialog) as JSON, undo on remove, and a type column that also marks duplicates and values that don't fit the type (`flagValueProblem` in `lib/flags.ts`). |
 | `InspiredBanner` | Froststrap credit at the bottom of the Mods pages. |
 | `RichText` | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]` in it, drawn in that look (danger shimmers in a loop, accent fades in once; reduced motion stops both). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
 | `ToastHost` | Bottom-left toasts. Already mounted in the root layout; show one with `toast.success(text)`, `toast.error(text)` or `toast.show(text, { action })` from `$lib`. Use for the result of an action, not for state that stays on screen. |

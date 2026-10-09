@@ -63,6 +63,23 @@
       "nodeType": "insertion",
       "insertion": "{{added}} added, {{updated}} updated"
     },
+    "loadFromRoblox": "Load from Roblox",
+    "applyNow": "Apply now",
+    "loaded": {
+      "nodeType": "insertion",
+      "insertion": "Loaded from Roblox: {{added}} added, {{updated}} updated!"
+    },
+    "loadedNothing": "Roblox has no Fast Flags set.",
+    "loadFailedNoInstall": "No Roblox version is installed yet. Install one first.",
+    "loadFailedInvalid": "The Fast Flags file of Roblox isn’t valid JSON...? Apply your flags to replace it.",
+    "applied": {
+      "nodeType": "enumeration",
+      "enumeration": {
+        "1": { "nodeType": "insertion", "insertion": "Applied {{count}} flag to Roblox!" },
+        "fallback": { "nodeType": "insertion", "insertion": "Applied {{count}} flags to Roblox!" }
+      }
+    },
+    "applyFailed": "Couldn’t write the flags to Roblox",
     "copyJson": "Copy JSON",
     "copied": "Copied the flags as JSON.",
     "copyFailed": "Couldn’t copy. Use Export JSON instead.",
