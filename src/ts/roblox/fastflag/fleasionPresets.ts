@@ -6,8 +6,8 @@ export class FleasionPreset {
     static async deVng() {
         return {
             // chat keys
-            DFLogAlternateChatKey13OrOverVng: true,
-            DFLogAlternateChatKeyUnder13Vng: true,
+            DFLogAlternateChatKey13OrOverVng: '/',
+            DFLogAlternateChatKeyUnder13Vng: '/',
 
             FFlagEnableVNGDUARSignupCompliance3: false,
             FFlagEnableVNGNewAppAvailableModal: false,
