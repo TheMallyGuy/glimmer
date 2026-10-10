@@ -16,7 +16,7 @@ describe("hiddenFlags", () => {
         const flags = await hiddenFlags(on);
 
         expect(flags.FFlagVngAppUpsellPcLayout).toBe("false");
-        expect(flags.DFLogAlternateChatKey13OrOverVng).toBe("true");
+        expect(flags.DFLogAlternateChatKey13OrOverVng).toBe("/");
         expect(flags.FStringVNGWebshopUrl).toStartWith("https://");
         expect(Object.values(flags).every((v) => typeof v === "string")).toBe(true);
         expect(Object.keys(flags).sort()).toEqual(Object.keys(await FleasionPreset.deVng()).sort());
