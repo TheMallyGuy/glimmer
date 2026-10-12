@@ -6,7 +6,7 @@ import { isAndroid } from "$ts/glimmer/android/platform";
 const LABEL = "settings";
 
 export async function openSettingsWindow() {
-  if (!isTauri() || isAndroid()) return goto("/mods");
+  if (!isTauri() || isAndroid()) return goto(isAndroid() ? "/flags" : "/mods");
 
   const existing = await WebviewWindow.getByLabel(LABEL);
   if (existing) {

@@ -33,6 +33,7 @@
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
   import { useIntlayer } from "svelte-intlayer";
+    import { appState } from "$lib/appState.svelte";
   const appLayoutContent = useIntlayer("appLayout");
   const commonContent = useIntlayer("common");
 
@@ -52,30 +53,41 @@
       );
     }
   }
-  const android = isAndroid();
 
-  const tabs: Tab[] = [
+  appState.android = isAndroid();
+
+  const tabs: Tab[] = $derived([
     {
       id: "integrations",
       label: $appLayoutContent.tabIntegrations.value,
-      icon: Plug,
+      icon: Plug, // dont hide integration.
     },
-    { id: "mods", label: $appLayoutContent.tabMods.value, icon: Package },
+    {
+      id: "mods",
+      label: $appLayoutContent.tabMods.value,
+      icon: Package,
+      hidden: appState.android,
+    },
     { id: "flags", label: $appLayoutContent.tabFastFlags.value, icon: Flag },
     {
       id: "installations",
       label: $appLayoutContent.tabInstallations.value,
       icon: HardDriveDownload,
-      hidden: android,
+      hidden: appState.android,
     },
-    { id: "accounts", label: $appLayoutContent.tabAccounts.value, icon: Users },
+    {
+      id: "accounts",
+      label: $appLayoutContent.tabAccounts.value,
+      icon: Users,
+      hidden: appState.android,
+    },
     {
       id: "appearance",
       label: $appLayoutContent.tabAppearance.value,
       icon: Palette,
     },
     { id: "about", label: $appLayoutContent.tabAbout.value, icon: Info },
-  ].filter((tab) => !tab.hidden);
+  ].filter((tab) => !tab.hidden));
 
   const titles: Record<string, [string, string]> = {
     integrations: [
@@ -125,6 +137,7 @@
     appWindow?.setResizable(true);
 
     stopWatching = await watchInstallations();
+
   });
 
   onDestroy(() => stopWatching?.());
