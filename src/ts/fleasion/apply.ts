@@ -1,5 +1,5 @@
 import { copyFile, exists, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
-import { PathManager } from "$ts/pathManager";
+import { PathManager } from "$ts/glimmer/pathManager";
 
 export type FleasionFile = "settings" | "modifications";
 

@@ -1,6 +1,6 @@
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { debug, error } from "@tauri-apps/plugin-log";
-import { commands, type DiscordActivityPayload } from "$ts/bindings";
+import { commands, type DiscordActivityPayload } from "$ts/glimmer/bindings";
 import { appState } from "$lib/appState.svelte";
 
 let running = false;

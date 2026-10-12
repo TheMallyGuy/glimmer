@@ -1,7 +1,7 @@
 import { readTextFile } from "@tauri-apps/plugin-fs";
-import { commands } from "$ts/bindings";
-import { PathManager } from "$ts/pathManager";
-import type { LaunchReport } from "$ts/launch";
+import { commands } from "$ts/glimmer/bindings";
+import { PathManager } from "$ts/glimmer/pathManager";
+import type { LaunchReport } from "$ts/glimmer/launch";
 import { applyFleasionSettings, type FleasionOptions } from "./apply";
 
 /** the line Fleasion writes to its log once its proxy takes connections */

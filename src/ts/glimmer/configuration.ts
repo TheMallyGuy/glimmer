@@ -1,4 +1,4 @@
-import { PathManager } from "$ts/pathManager";
+import { PathManager } from "$ts/glimmer/pathManager";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { load, Store } from "@tauri-apps/plugin-store";
 

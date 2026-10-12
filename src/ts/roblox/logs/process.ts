@@ -16,10 +16,10 @@ import {
 } from "../generalRobloxApis";
 import { getCustomGameIcon } from "$ts/svg/api";
 import { GameHistory } from "../gameHistory";
-import { fetchLocation } from "$ts/geo";
-import { notify } from "$ts/notify";
-import { commands } from "$ts/bindings";
-import { Configuration } from "$ts/configuration";
+import { fetchLocation } from "$ts/glimmer/geo";
+import { notify } from "$ts/glimmer/notify";
+import { commands } from "$ts/glimmer/bindings";
+import { Configuration } from "$ts/glimmer/configuration";
 import { WindowControl, type WindowPrompt } from "../windowControl";
 import { BloxstrapRpc, PRESENCE_COMMANDS } from "../bloxstrapRpc";
 import { GameLink } from "../game";

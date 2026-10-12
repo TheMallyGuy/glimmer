@@ -5,7 +5,7 @@ import {
     localDataDir,
     resolveResource,
 } from "@tauri-apps/api/path";
-import type { InstallKind } from "./roblox/installation/installation";
+import type { InstallKind } from "$ts/roblox/installation/installation";
 
 const INSTALL_FOLDERS: Record<InstallKind, string> = {
     player: "versions",

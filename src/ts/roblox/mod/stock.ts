@@ -1,7 +1,7 @@
 import { join } from "@tauri-apps/api/path";
 import { exists, remove } from "@tauri-apps/plugin-fs";
 import { info, warn } from "@tauri-apps/plugin-log";
-import { commands, type PackageSource } from "../../bindings";
+import { commands, type PackageSource } from "$ts/glimmer/bindings";
 import { Downloader } from "../installation/download";
 import { DEFAULT_BASE_URLS, parseInstallName } from "../installation";
 import { PackageCache, type FillProgress } from "../installation/packageCache";

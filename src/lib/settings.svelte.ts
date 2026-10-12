@@ -2,7 +2,7 @@ import { isTauri } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
 import { closeWindow } from "$lib/window";
 import { appState } from "$lib/appState.svelte";
-import { Configuration } from "$ts/configuration";
+import { Configuration } from "$ts/glimmer/configuration";
 import { openChooserWindow } from "$ts/windows/chooser";
 import { openSplashWindow } from "$ts/windows/splash";
 

@@ -6,9 +6,9 @@
   import { processLogLine, setWindowPrompt } from "$ts/roblox/logs/process";
   import { initDiscordRpc, clearActivity } from "$ts/roblox/discordRpc";
   import { loadAppState } from "$lib/appState.svelte";
-  import { AppTray } from "$ts/tray";
-  import { DeepLinkHandler } from "$ts/deepLink";
-  import { checkForUpdate } from "$ts/updater";
+  import { AppTray } from "$ts/glimmer/tray";
+  import { DeepLinkHandler } from "$ts/glimmer/deepLink";
+  import { checkForUpdate } from "$ts/glimmer/updater";
   import { useIntlayer } from "svelte-intlayer";
   const trayContent = useIntlayer("tray");
   const windowContent = useIntlayer("windowControl");

@@ -1,6 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http";
 import { baseUrl } from "$ts/svg/api";
-import { joinUrl } from "$ts/utils";
+import { joinUrl } from "$ts/glimmer/utils";
 
 export class GmLink {
   constructor(private readonly base = baseUrl) {}

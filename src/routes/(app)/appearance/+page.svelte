@@ -3,7 +3,7 @@
   import { open } from "@tauri-apps/plugin-dialog";
   import { Button, SettingGroup, SettingRow, TextField, cn } from "$lib";
   import { appState } from "$lib/appState.svelte";
-  import { ACCENT_PRESETS, AccentTheme, DEFAULT_ACCENT } from "$ts/theme";
+  import { ACCENT_PRESETS, AccentTheme, DEFAULT_ACCENT } from "$ts/glimmer/theme";
   import {
     BACKGROUND_PRESETS,
     BackgroundImage,

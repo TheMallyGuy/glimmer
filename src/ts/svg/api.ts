@@ -1,4 +1,4 @@
-import { joinUrl } from "$ts/utils";
+import { joinUrl } from "$ts/glimmer/utils";
 import { fetch } from "@tauri-apps/plugin-http";
 import { error } from "@tauri-apps/plugin-log";
 

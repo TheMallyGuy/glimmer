@@ -11,7 +11,7 @@
     PhysicalSize,
   } from "@tauri-apps/api/window";
   import { error } from "@tauri-apps/plugin-log";
-  import { notify } from "$ts/notify";
+  import { notify } from "$ts/glimmer/notify";
   import { useIntlayer } from "svelte-intlayer";
   import { SlotImage, cn } from "$lib";
   import {
@@ -35,8 +35,8 @@
     slotCentre,
     stepSlot,
   } from "$lib/radial";
-  import { commands } from "$ts/bindings";
-  import { OverlayShortcut } from "$ts/overlayShortcut";
+  import { commands } from "$ts/glimmer/bindings";
+  import { OverlayShortcut } from "$ts/glimmer/overlayShortcut";
   import { ServerActionError, ServerActions } from "$ts/roblox/serverActions";
 
   const overlayContent = useIntlayer("overlay");

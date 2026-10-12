@@ -1,4 +1,4 @@
-import { PathManager } from "$ts/pathManager";
+import { PathManager } from "$ts/glimmer/pathManager";
 import { join } from "@tauri-apps/api/path";
 import {
   exists,

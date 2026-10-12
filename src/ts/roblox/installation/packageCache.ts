@@ -1,7 +1,7 @@
 import { join } from "@tauri-apps/api/path";
-import { PathManager } from "$ts/pathManager";
+import { PathManager } from "$ts/glimmer/pathManager";
 import { exists, mkdir, readDir, remove } from "@tauri-apps/plugin-fs";
-import type { PackageSource } from "../../bindings";
+import type { PackageSource } from "$ts/glimmer/bindings";
 import { EXTRACT_ROOTS, type Downloader } from "./download";
 
 /** `done` of `total` packages downloaded, `percent` of the bytes */

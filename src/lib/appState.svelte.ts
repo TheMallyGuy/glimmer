@@ -3,9 +3,9 @@ import { DEFAULT_SLOTS, type Slots } from "./boardSlots";
 import type { Account } from "$ts/roblox/account/login";
 import { isTauri } from "@tauri-apps/api/core";
 import { emit } from "@tauri-apps/api/event";
-import { Configuration } from "$ts/configuration";
-import { DEFAULT_ACCENT } from "$ts/theme";
-import { DEFAULT_BACKGROUND, DEFAULT_DIM } from "$ts/background";
+import { Configuration } from "$ts/glimmer/configuration";
+import { DEFAULT_ACCENT } from "$ts/glimmer/theme";
+import { DEFAULT_BACKGROUND, DEFAULT_DIM } from "$ts/glimmer/background";
 
 export const appState = $state({
   integrations: {
