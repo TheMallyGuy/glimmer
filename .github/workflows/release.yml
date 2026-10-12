@@ -72,7 +72,7 @@ jobs:
 
       - uses: crabnebula-dev/cloud-release@v0
         with:
-          command: release upload ${{ env.CN_APPLICATION }} --framework tauri ${{ env.CN_CHANNEL }} --channel prod
+          command: release upload ${{ env.CN_APPLICATION }} --framework tauri ${{ env.CN_CHANNEL }}
           api-key: ${{ secrets.CN_API_KEY }}
 
   publish:
