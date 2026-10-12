@@ -1,3 +1,4 @@
+#[cfg(desktop)]
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
 use tauri_helper::{auto_collect_command, specta_collect_commands};
 pub mod commands;
@@ -11,11 +12,20 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+// tauri-helper collects commands by name and ignores cfg, so on mobile (where commands::desktop is
+// not built) the commands are listed by hand
+#[cfg(desktop)]
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
     tauri_specta::Builder::<tauri::Wry>::new().commands(specta_collect_commands!())
 }
 
+#[cfg(mobile)]
+fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
+    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![greet])
+}
+
 // see https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
+#[cfg(desktop)]
 fn vng_distribution_enabled_in_config(app: &AppHandle) -> bool {
     let Ok(app_data_dir) = app.path().app_data_dir() else {
         return false;
@@ -35,6 +45,7 @@ fn vng_distribution_enabled_in_config(app: &AppHandle) -> bool {
 }
 
 // focus the chooser window if it's already open, otherwise create it
+#[cfg(desktop)]
 fn open_selector_window(app: &AppHandle) {
     if let Some(win) = app.get_webview_window("main") {
         let _ = win.unminimize();
@@ -53,6 +64,7 @@ fn open_selector_window(app: &AppHandle) {
         .build();
 }
 
+#[cfg(desktop)]
 fn focus_existing_instance(app: &AppHandle) {
     for label in ["main", "splash"] {
         if let Some(win) = app.get_webview_window(label) {
@@ -66,35 +78,12 @@ fn focus_existing_instance(app: &AppHandle) {
     open_selector_window(app);
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
-    let builder = specta_builder();
-
-    #[cfg(debug_assertions)]
-    builder
-        .export(
-            specta_typescript::Typescript::default(),
-            "../src/ts/bindings.ts",
-        )
-        .expect("failed to export typescript bindings");
-
+// the plugins every platform has
+fn base_builder() -> tauri::Builder<tauri::Wry> {
     tauri::Builder::default()
-        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
-            let opened_by_link = args
-                .iter()
-                .skip(1)
-                .any(|a| a.starts_with("roblox:") || a.starts_with("roblox-player:"));
-            if opened_by_link {
-                return;
-            }
-
-            let app = app.clone();
-            tauri::async_runtime::spawn(async move { focus_existing_instance(&app) });
-        }))
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(
@@ -110,12 +99,29 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_clipboard_manager::init())
+}
+
+#[cfg(desktop)]
+fn desktop_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::Wry> {
+    builder
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            let opened_by_link = args
+                .iter()
+                .skip(1)
+                .any(|a| a.starts_with("roblox:") || a.starts_with("roblox-player:"));
+            if opened_by_link {
+                return;
+            }
+
+            let app = app.clone();
+            tauri::async_runtime::spawn(async move { focus_existing_instance(&app) });
+        }))
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
         .manage(LogWatcherRegistry::default())
         .manage(commands::DiscordRpcState::default())
         .manage(commands::DiscordRpcDebugState::default())
         .setup(|app| {
-
             #[cfg(all(debug_assertions, any(windows, target_os = "linux")))]
             {
                 use tauri_plugin_deep_link::DeepLinkExt;
@@ -155,12 +161,47 @@ pub fn run() {
 
             Ok(())
         })
-        .invoke_handler(builder.invoke_handler())
+}
+
+#[cfg(mobile)]
+fn mobile_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::Wry> {
+    // Shizuku gives the app shell-level rights on Android (see AGENTS.md)
+    #[cfg(target_os = "android")]
+    let builder = builder.plugin(tauri_plugin_shizuku::init());
+
+    builder
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    let builder = specta_builder();
+
+    // the bindings come from the desktop build, which has every command
+    #[cfg(all(debug_assertions, desktop))]
+    builder
+        .export(
+            specta_typescript::Typescript::default(),
+            "../src/ts/bindings.ts",
+        )
+        .expect("failed to export typescript bindings");
+
+    let app = base_builder();
+
+    #[cfg(desktop)]
+    let app = desktop_builder(app);
+    #[cfg(mobile)]
+    let app = mobile_builder(app);
+
+    app.invoke_handler(builder.invoke_handler())
         .build(tauri::generate_context!())
         .expect("error while building tauri application")
         .run(|_app_handle, event| {
+            // desktop keeps running in the tray after the last window closes
+            #[cfg(desktop)]
             if let tauri::RunEvent::ExitRequested { api, .. } = event {
                 api.prevent_exit();
             }
+            #[cfg(mobile)]
+            let _ = event;
         });
 }
