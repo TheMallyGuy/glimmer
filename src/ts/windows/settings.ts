@@ -1,11 +1,12 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { goto } from "$app/navigation";
+import { isAndroid } from "$ts/glimmer/android/platform";
 
 const LABEL = "settings";
 
 export async function openSettingsWindow() {
-  if (!isTauri()) return goto("/mods");
+  if (!isTauri() || isAndroid()) return goto("/mods");
 
   const existing = await WebviewWindow.getByLabel(LABEL);
   if (existing) {

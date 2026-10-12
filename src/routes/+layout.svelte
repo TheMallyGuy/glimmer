@@ -11,6 +11,7 @@
   import { message } from "@tauri-apps/plugin-dialog";
   import { exit } from "@tauri-apps/api/app";
   import { isTauri } from "@tauri-apps/api/core";
+  import { isAndroid } from "$ts/glimmer/android/platform";
   import { setupIntlayer, useIntlayer } from "svelte-intlayer";
   const rootLayoutContent = useIntlayer("rootLayout");
 
@@ -45,7 +46,8 @@
 
     await loadAppState();
     if (page.url.pathname === "/overlay") return; // the in-game menu only needs the saved settings
-    const bubble: boolean = await commands.isBubblestrap();
+    const android = isAndroid(); // the desktop-only commands below do not exist there
+    const bubble: boolean = android ? false : await commands.isBubblestrap();
 
     const i = await Installation.create();
 

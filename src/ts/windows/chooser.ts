@@ -1,11 +1,12 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { goto } from "$app/navigation";
+import { isAndroid } from "$ts/glimmer/android/platform";
 
 const LABEL = "main";
 
 export async function openChooserWindow() {
-  if (!isTauri()) return goto("/choose");
+  if (!isTauri() || isAndroid()) return goto("/choose");
 
   const existing = await WebviewWindow.getByLabel(LABEL);
   if (existing) {

@@ -1,0 +1,47 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "onboarding",
+  "content": {
+    "stepOf": {
+      "nodeType": "insertion",
+      "insertion": "Step {{current}} of {{total}}"
+    },
+    "welcomeTitle": "Welcome to Glimmer",
+    "welcomeBlurb": "Glimmer manages Roblox on this phone through Shizuku. Setup takes about a minute.",
+    "getStarted": "Get started",
+    "skip": "Skip setup",
+    "back": "Back",
+    "next": "Next",
+    "continue": "Continue",
+    "checkAgain": "Check again",
+    "shizukuTitle": "Start Shizuku",
+    "shizukuBlurb": "Glimmer needs the Shizuku service to work with Roblox.",
+    "shizukuStep1": "Open Shizuku.",
+    "shizukuStep2": "Start it with wireless debugging (Android 11 and up) or with adb from a computer.",
+    "shizukuStep3": "Come back here. Glimmer checks by itself.",
+    "openShizuku": "Open Shizuku",
+    "shizukuStatus": "Shizuku service",
+    "running": "Running",
+    "notRunning": "Not running",
+    "permissionTitle": "Allow Glimmer",
+    "permissionBlurb": "Shizuku asks you to confirm that Glimmer may use it.",
+    "permissionStatus": "Permission",
+    "allowed": "Allowed",
+    "waiting": "Not allowed yet",
+    "needsShizuku": "Start Shizuku first",
+    "allow": "Allow Glimmer",
+    "robloxTitle": "Find Roblox",
+    "robloxBlurb": "Glimmer needs the Roblox app installed on this phone.",
+    "robloxStatus": "Roblox",
+    "installed": "Installed",
+    "missing": "Not installed",
+    "unknown": "Not checked yet",
+    "robloxVersion": {
+      "nodeType": "insertion",
+      "insertion": "Version {{version}}"
+    },
+    "getRoblox": "Get Roblox on Google Play",
+    "doneTitle": "You are ready",
+    "doneBlurb": "Shizuku and Roblox are set up. Pick a game and play."
+  }
+}

@@ -1,12 +1,13 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { goto } from "$app/navigation";
+import { isAndroid } from "$ts/glimmer/android/platform";
 
 const LABEL = "splash";
 
 export async function openSplashWindow(target = "player", link?: string) {
   const url = `/splash?target=${encodeURIComponent(target)}${link ? `&link=${encodeURIComponent(link)}` : ""}`;
-  if (!isTauri()) return goto(url);
+  if (!isTauri() || isAndroid()) return goto(url);
 
   const existing = await WebviewWindow.getByLabel(LABEL);
   if (existing) {
