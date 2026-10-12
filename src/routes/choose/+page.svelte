@@ -12,6 +12,8 @@
   } from "@lucide/svelte";
   import { IconButton, Menu, GlimmerLogo, cn, type MenuItem } from "$lib";
   import { prefs, launch } from "$lib/settings.svelte";
+  import { toast } from "$lib";
+  import { dictText } from "$lib/utils";
   import { appState } from "$lib/appState.svelte";
   import { avatars, loadAvatars, selectAccount } from "$lib/accounts.svelte";
   import { sizeWindow, closeWindow } from "$lib/window";
@@ -22,6 +24,7 @@
   import type { UnlistenFn } from "@tauri-apps/api/event";
   import { useIntlayer } from "svelte-intlayer";
   const chooseContent = useIntlayer("choose");
+  const androidLaunchContent = useIntlayer("androidLaunch");
   const commonContent = useIntlayer("common");
 
   const DISCORD_INVITE = "https://discord.gg/UX5E9ppKFg";
@@ -113,6 +116,14 @@
     targetButtons[next]?.focus();
   }
 
+  async function play() {
+    const result = await launch(prefs.target);
+    if (!result) return;
+    const text = dictText($androidLaunchContent[result]);
+    if (result === "started") toast.success(text);
+    else toast.error(text);
+  }
+
   async function openSettings() {
     await openSettingsWindow();
     await closeWindow();
@@ -172,7 +183,7 @@
           "bg-accent text-on-accent hover:bg-accent-hover active:bg-accent-press",
         )}
         style:animation-delay="0ms"
-        onclick={() => launch(prefs.target)}
+        onclick={play}
       >
         <LaunchIcon size={22} strokeWidth={1.75} aria-hidden="true" />
         <span class="flex flex-col gap-0.5">
