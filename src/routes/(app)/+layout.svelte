@@ -29,6 +29,7 @@
     type Tab,
   } from "$lib";
   import { prefs, save, discard, launch } from "$lib/settings.svelte";
+  import { dictText } from "$lib/utils";
   import { installationsState } from "$lib/installations.svelte";
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
@@ -36,10 +37,19 @@
     import { appState } from "$lib/appState.svelte";
   const appLayoutContent = useIntlayer("appLayout");
   const commonContent = useIntlayer("common");
+  const androidLaunchContent = useIntlayer("androidLaunch");
 
   let { children }: { children: Snippet } = $props();
 
   const toastContent = useIntlayer("toast");
+
+  async function play(target: string) {
+    const result = await launch(target);
+    if (!result) return;
+    const text = dictText($androidLaunchContent[result]);
+    if (result === "started") toast.success(text);
+    else toast.error(text);
+  }
 
   async function saveSettings() {
     try {
@@ -202,7 +212,7 @@
     >
     <Button onclick={saveSettings}>{$commonContent.save.value}</Button>
     {#if isAndroid()}
-      <Button variant="primary" class="ml-1" onclick={() => launch("player")}
+      <Button variant="primary" class="ml-1" onclick={() => play("player")}
         >{$appLayoutContent.saveAndLaunch.value}</Button
       >
     {:else}
@@ -222,7 +232,7 @@
             description: $appLayoutContent.launchStudioDescription.value,
           },
         ]}
-        onclick={launch}
+        onclick={play}
       />
     {/if}
   </footer>
