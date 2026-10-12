@@ -1,6 +1,6 @@
 import { Shizuku } from "./shizuku/shizukuCom";
 
-export const ROBLOX_PACKAGE = "com.roblox.client";
+export const ROBLOX_PACKAGE = ["com.roblox.client", "com.roblox.client.vnggames"];
 
 /** where Shizuku stands: its service is down, it waits for Glimmer's permission, or Glimmer can use it */
 export type ShizukuState = "notRunning" | "needsPermission" | "ready";
@@ -41,16 +41,18 @@ export async function checkAndroidSetup(shizuku: SetupShizuku = new Shizuku()): 
   }
   if (state !== "ready") return { shizuku: state, roblox: null, robloxVersion: null };
 
+  let installed: string | undefined;
   try {
     const packages = await shizuku.listPackages({ includeSystem: false, limit: 10000 });
-    if (!packages.includes(ROBLOX_PACKAGE)) return { shizuku: state, roblox: false, robloxVersion: null };
+    installed = ROBLOX_PACKAGE.find((p) => packages.includes(p));
+    if (!installed) return { shizuku: state, roblox: false, robloxVersion: null };
   } catch {
     return { shizuku: state, roblox: null, robloxVersion: null };
   }
 
   let robloxVersion: string | null = null;
   try {
-    const dump = await shizuku.executeAdb(`dumpsys package ${ROBLOX_PACKAGE}`);
+    const dump = await shizuku.executeAdb(`dumpsys package ${installed}`);
     if (dump.exitCode === 0) robloxVersion = parseVersionName(dump.stdout);
   } catch {
     // the version is only shown, so a failure leaves it out
