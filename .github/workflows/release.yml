@@ -13,8 +13,8 @@ concurrency:
 env:
   # your CrabNebula Cloud organization and app slugs
   CN_APPLICATION: "glim/glimmer"
-  # master builds go to the nightly channel; no flag is the stable channel
-  CN_CHANNEL: ${{ github.ref_name == 'master' && '--channel nightly' || '' }}
+  # master builds go to the nightly channel; no flag is the prod channel
+  CN_CHANNEL: ${{ github.ref_name == 'master' && '--channel nightly' || '--channel prod' }}
 
 jobs:
   verify:
