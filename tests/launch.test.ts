@@ -12,8 +12,8 @@ const appState = {
 mock.module("$lib/appState.svelte", () => ({ appState, gameState: {}, setGameState: () => { }, loadAppState: async () => { }, rememberFleasionPath: async () => { } }));
 mock.module("$lib/mods.svelte", () => ({ loadMods: async () => { }, applyMods: async () => { } }));
 
-const { LaunchError, launchArgs, parseLaunchLink } = await import("$ts/launch");
-import type { LaunchContext, LaunchStatus } from "$ts/launch";
+const { LaunchError, launchArgs, parseLaunchLink } = await import("$ts/glimmer/launch");
+import type { LaunchContext, LaunchStatus } from "$ts/glimmer/launch";
 
 const GAME_LINK = "roblox://experiences/start?placeId=1818&gameInstanceId=abc";
 const PLAYER_LINK = "roblox-player:1+launchmode:play+gameinfo:T";

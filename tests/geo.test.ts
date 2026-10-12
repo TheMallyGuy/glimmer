@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, test } from "bun:test";
-import { GeoLocator } from "$ts/geo";
+import { GeoLocator } from "$ts/glimmer/geo";
 
 const realFetch = globalThis.fetch;
 const HANOI = { success: true, city: "Hanoi", country: "Vietnam", continent: "Asia" };
@@ -65,12 +65,19 @@ describe("GeoLocator.locate", () => {
         expect(waits).toEqual([3000]);
     });
 
-    test("fails with the status when the retry is also limited, and does not remember it", async () => {
+    test("asks geojs when ipwho.is is still limited after the retry, and turns the continent code into a name", async () => {
+        stub(json({}, { status: 429 }), json({}, { status: 429 }), json({ city: "Singapore", country: "Singapore", continent_code: "AS" }));
+
+        expect(await locator().locate("1.2.3.4")).toEqual({ city: "Singapore", country: "Singapore", continent: "Asia" });
+        expect(urls[2]).toBe("https://get.geojs.io/v1/ip/geo/1.2.3.4.json");
+    });
+
+    test("fails with the status of ipwho.is when geojs cannot answer either, and does not remember it", async () => {
         stub(json({}, { status: 429 }));
         const geo = locator();
 
         await expect(geo.locate("1.2.3.4")).rejects.toThrow("cannot fetch geolocation for 1.2.3.4: 429");
-        expect(urls).toHaveLength(2);
+        expect(urls).toHaveLength(3);
 
         stub(json(HANOI));
         expect((await geo.locate("1.2.3.4")).city).toBe("Hanoi");
