@@ -1,6 +1,6 @@
 #[cfg(desktop)]
 use tauri::{AppHandle, Manager, WebviewUrl, WebviewWindowBuilder};
-use tauri_helper::{auto_collect_command, specta_collect_commands};
+use tauri_helper::auto_collect_command;
 pub mod commands;
 pub use commands::*;
 
@@ -16,7 +16,7 @@ fn greet(name: &str) -> String {
 // not built) the commands are listed by hand
 #[cfg(desktop)]
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
-    tauri_specta::Builder::<tauri::Wry>::new().commands(specta_collect_commands!())
+    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_helper::specta_collect_commands!())
 }
 
 #[cfg(mobile)]
@@ -181,7 +181,7 @@ pub fn run() {
     builder
         .export(
             specta_typescript::Typescript::default(),
-            "../src/ts/bindings.ts",
+            "../src/ts/glimmer/bindings.ts",
         )
         .expect("failed to export typescript bindings");
 
