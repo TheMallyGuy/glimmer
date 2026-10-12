@@ -205,7 +205,7 @@
                 class="mt-2"
                 onclick={() =>
                   openUrl(
-                    `https://play.google.com/store/apps/details?id=${ROBLOX_PACKAGE}`,
+                    `https://play.google.com/store/apps/details?id=${ROBLOX_PACKAGE[0]}`,
                   )}
               >
                 {$t.getRoblox.value}
