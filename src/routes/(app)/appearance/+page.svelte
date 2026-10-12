@@ -10,7 +10,7 @@
     BackgroundTheme,
     IMAGE_EXTENSIONS,
     MAX_DIM,
-  } from "$ts/background";
+  } from "$ts/glimmer/background";
   import { useIntlayer } from "svelte-intlayer";
   const appearanceContent = useIntlayer("appearance");
 
