@@ -21,7 +21,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 
 #[cfg(mobile)]
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
-    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![greet])
+    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![greet, commands::watch_latest_log, commands::unwatch_latest_log])
 }
 
 // see https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
@@ -81,6 +81,7 @@ fn focus_existing_instance(app: &AppHandle) {
 // the plugins every platform has
 fn base_builder() -> tauri::Builder<tauri::Wry> {
     tauri::Builder::default()
+        .manage(LogWatcherRegistry::default())
         .plugin(tauri_plugin_deep_link::init())
         .plugin(tauri_plugin_notification::init())
         .plugin(tauri_plugin_process::init())
@@ -118,7 +119,6 @@ fn desktop_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri:
         }))
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
-        .manage(LogWatcherRegistry::default())
         .manage(commands::DiscordRpcState::default())
         .manage(commands::DiscordRpcDebugState::default())
         .setup(|app| {
