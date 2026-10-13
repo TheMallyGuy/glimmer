@@ -1,0 +1,47 @@
+name: Android
+
+# builds an APK that is signed with the debug key, so it installs as it is; there is no store release yet
+on:
+  push:
+    branches: [android]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      # x86_64 is for emulators, aarch64 for phones
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-linux-android,x86_64-linux-android
+
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: bun install --frozen-lockfile
+
+      # the runner image already has the Android SDK and NDK
+      - run: bun run tauri android build --debug --apk --target aarch64 --target x86_64
+        env:
+          NDK_HOME: ${{ env.ANDROID_NDK_LATEST_HOME }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: glimmer-android-debug
+          path: src-tauri/gen/android/app/build/outputs/apk/**/*.apk
+          if-no-files-found: error
