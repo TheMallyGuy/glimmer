@@ -50,9 +50,9 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "./resources/mods/**/*.png",
-      "./resources/mods/**/*.mp3",
-      "./resources/mods/**/*.rbxl"
+      "./resources/Mods/**/*.png",
+      "./resources/Mods/**/*.mp3",
+      "./resources/Mods/**/*.rbxl"
     ]
   },
   "plugins": {
