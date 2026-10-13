@@ -30,6 +30,14 @@ export const commands = {
 	 */
 	webviewCookie: (label: string, name: string) => typedError<string | null, string>(__TAURI_INVOKE("webview_cookie", { label, name })),
 	extractPackageFiles: (sources: PackageSource[], destDir: string, paths: string[]) => typedError<string[], string>(__TAURI_INVOKE("extract_package_files", { sources, destDir, paths })),
+	/**  connects to the Discord app's RPC service, as the Discord application `applicationId` (Android only) */
+	discordAndroidConnect: (applicationId: string, version: string | null) => typedError<null, string>(__TAURI_INVOKE("discord_android_connect", { applicationId, version })),
+	/**  sends one frame and gives what Discord says within `waitMs` (Android only) */
+	discordAndroidSend: (frame: string, waitMs: number | null) => typedError<string[], string>(__TAURI_INVOKE("discord_android_send", { frame, waitMs })),
+	/**  what Discord said since the last call (Android only) */
+	discordAndroidDrain: () => typedError<string[], string>(__TAURI_INVOKE("discord_android_drain")),
+	/**  closes the connection to the Discord app (Android only) */
+	discordAndroidDisconnect: () => typedError<null, string>(__TAURI_INVOKE("discord_android_disconnect")),
 	discordRpcDebugStop: () => typedError<null, string>(__TAURI_INVOKE("discord_rpc_debug_stop")),
 	keyringSet: (key: string, secret: string) => typedError<null, string>(__TAURI_INVOKE("keyring_set", { key, secret })),
 	/**  moves and resizes the window, in screen pixels */
