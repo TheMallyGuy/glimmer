@@ -1,5 +1,5 @@
 import { join } from "@tauri-apps/api/path";
-import { PathManager } from "$ts/pathManager";
+import { PathManager } from "$ts/glimmer/pathManager";
 import { Installation } from "../installation/installation";
 import { debug, info, warn } from "@tauri-apps/plugin-log";
 import {

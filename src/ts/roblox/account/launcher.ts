@@ -1,7 +1,7 @@
 import { fetch } from "@tauri-apps/plugin-http";
-import { Keyring } from "../../keyring";
+import { Keyring } from "$ts/glimmer/keyring";
 import { COOKIE_NAME } from "./login";
-import { launchUri } from "$ts/utils";
+import { launchUri } from "$ts/glimmer/utils";
 import { GameLink, type GameTarget } from "../game";
 
 const TICKET_URL = "https://auth.roblox.com/v1/authentication-ticket";

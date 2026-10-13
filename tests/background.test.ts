@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { BACKGROUND_PRESETS, BackgroundImage, BackgroundTheme, DEFAULT_BACKGROUND } from "$ts/background";
+import { BACKGROUND_PRESETS, BackgroundImage, BackgroundTheme, DEFAULT_BACKGROUND } from "$ts/glimmer/background";
 import { fakeFs } from "./helpers/fakeFs";
 
 /** the bit of <html> that `apply` touches */

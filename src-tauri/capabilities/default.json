@@ -178,7 +178,7 @@
           "url": "https://setup.rbxcdn.com"
         },
         {
-          "url" : "https://glimmer.mallyy.workers.dev/"
+          "url": "https://glimmer.mallyy.workers.dev/"
         },
         {
           "url": "https://users.roproxy.com/"
@@ -205,6 +205,9 @@
           "url": "https://ipwho.is"
         },
         {
+          "url": "https://get.geojs.io"
+        },
+        {
           "url": "https://auth.roblox.com"
         },
         {
@@ -223,7 +226,6 @@
     "dialog:default",
     "process:default",
     "process:allow-restart",
-    "updater:default",
     "notification:default",
     "deep-link:default"
   ]

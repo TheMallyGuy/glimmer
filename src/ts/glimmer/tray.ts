@@ -1,8 +1,8 @@
 import { defaultWindowIcon, exit } from "@tauri-apps/api/app";
 import { Menu, MenuItem } from "@tauri-apps/api/menu";
 import { TrayIcon, type TrayIconEvent } from "@tauri-apps/api/tray";
-import { focusExistingInstance } from "./windows/focus";
-import { openChooserWindow } from "./windows/chooser";
+import { focusExistingInstance } from "$ts/windows/focus";
+import { openChooserWindow } from "$ts/windows/chooser";
 import { commands } from "./bindings";
 
 const TRAY_ID = "glimmer";

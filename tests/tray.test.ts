@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { AppTray, type TrayText } from "$ts/tray";
+import { AppTray, type TrayText } from "$ts/glimmer/tray";
 import { focusExistingInstance } from "$ts/windows/focus";
 import { fakeTray } from "./helpers/tray";
 import { fakeWebviews, WebviewWindow } from "./helpers/webview";

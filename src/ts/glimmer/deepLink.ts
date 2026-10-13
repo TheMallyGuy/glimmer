@@ -1,7 +1,7 @@
 import { getCurrent, onOpenUrl } from "@tauri-apps/plugin-deep-link";
 import { info } from "@tauri-apps/plugin-log";
-import { focusExistingInstance } from "./windows/focus";
-import { openSplashWindow } from "./windows/splash";
+import { focusExistingInstance } from "$ts/windows/focus";
+import { openSplashWindow } from "$ts/windows/splash";
 
 export interface DeepLink {
     raw: string;

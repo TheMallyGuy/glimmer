@@ -24,7 +24,9 @@
       toast.error(
         e instanceof InstalledFlagsError && e.kind === "invalid"
           ? $flagTableContent.loadFailedInvalid.value
-          : $flagTableContent.loadFailedNoInstall.value,
+          : e instanceof InstalledFlagsError && e.kind === "noShizuku"
+            ? $flagTableContent.noShizuku.value
+            : $flagTableContent.loadFailedNoInstall.value,
       );
     }
   }
@@ -37,7 +39,9 @@
     } catch (e) {
       toast.error(
         e instanceof InstalledFlagsError
-          ? $flagTableContent.loadFailedNoInstall.value
+          ? e.kind === "noShizuku"
+            ? $flagTableContent.noShizuku.value
+            : $flagTableContent.loadFailedNoInstall.value
           : `${$flagTableContent.applyFailed.value}: ${e instanceof Error ? e.message : String(e)}`,
       );
     }

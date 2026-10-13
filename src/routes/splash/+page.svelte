@@ -7,7 +7,7 @@
   import { sizeWindow } from "$lib/window";
   import { cn } from "$lib";
   import { loadAppState } from "$lib/appState.svelte";
-  import { launch, LaunchError, type LaunchStatus } from "$ts/launch";
+  import { launch, LaunchError, type LaunchStatus } from "$ts/glimmer/launch";
   import { app } from "@tauri-apps/api";
   import { useIntlayer } from "svelte-intlayer";
   const commonContent = useIntlayer("common");

@@ -70,6 +70,7 @@
       "insertion": "Loaded from Roblox: {{added}} added, {{updated}} updated!"
     },
     "loadedNothing": "Roblox has no Fast Flags set.",
+    "noShizuku": "Shizuku isn’t ready. Start it and allow Glimmer, then try again.",
     "loadFailedNoInstall": "No Roblox version is installed yet. Install one first.",
     "loadFailedInvalid": "The Fast Flags file of Roblox isn’t valid JSON...? Apply your flags to replace it.",
     "applied": {

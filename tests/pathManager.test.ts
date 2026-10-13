@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { PathManager } from "$ts/pathManager";
+import { PathManager } from "$ts/glimmer/pathManager";
 
 // the test setup puts the app data folder at /appdata and the cache at /cache
 

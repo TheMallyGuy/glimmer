@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 import { AccountLaunchError, AccountLauncher } from "$ts/roblox/account/launcher";
 import { AccountLogin, loginStillValid, removeLogin, withAccounts } from "$ts/roblox/account/login";
-import { Keyring } from "$ts/keyring";
+import { Keyring } from "$ts/glimmer/keyring";
 import { fakeWebviews, WebviewWindow } from "./helpers/webview";
 import { invokeCalls, invokeHandlers, resetTauri } from "./helpers/tauri";
-import { launchUri } from "$ts/utils";
+import { launchUri } from "$ts/glimmer/utils";
 import { GameLink } from "$ts/roblox/game";
 
 const ACCOUNT = { id: "42", name: "builderman", displayName: "Builderman" };

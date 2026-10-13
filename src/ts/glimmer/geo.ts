@@ -10,6 +10,17 @@ export interface Location {
 
 const MAX_RETRY_WAIT_MS = 3000;
 
+/** geojs answers with the code of the continent, not its name */
+const CONTINENTS: Record<string, string> = {
+  AF: "Africa",
+  AN: "Antarctica",
+  AS: "Asia",
+  EU: "Europe",
+  NA: "North America",
+  OC: "Oceania",
+  SA: "South America",
+};
+
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export class GeoLocator {
@@ -36,6 +47,12 @@ export class GeoLocator {
       res = await this.request(ip);
     }
 
+    if (res.status === 429) {
+      // ipwho.is limits by address, and phones share addresses a lot: another service has its own limit
+      const other = await this.fallback(ip).catch(() => null);
+      if (other) return other;
+    }
+
     if (!res.ok) {
       throw new Error(`cannot fetch geolocation for ${ip}: ${res.status}`);
     }
@@ -52,6 +69,22 @@ export class GeoLocator {
       city: data.city,
       country: data.country,
       continent: data.continent,
+    };
+    this.cache.set(ip, location);
+    return location;
+  }
+
+  private async fallback(ip: string): Promise<Location> {
+    const res = await fetch(`https://get.geojs.io/v1/ip/geo/${ip}.json`);
+    if (!res.ok) throw new Error(`cannot fetch geolocation for ${ip}: ${res.status}`);
+
+    const data = await res.json();
+    if (!data.country) throw new Error(`cannot fetch geolocation for ${ip}: no country`);
+
+    const location = {
+      city: data.city ?? "",
+      country: data.country,
+      continent: CONTINENTS[data.continent_code] ?? data.continent_code ?? "",
     };
     this.cache.set(ip, location);
     return location;

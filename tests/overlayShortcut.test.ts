@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { OVERLAY_SHORTCUT, OverlayShortcut, type ShortcutPlugin } from "$ts/overlayShortcut";
+import { OVERLAY_SHORTCUT, OverlayShortcut, type ShortcutPlugin } from "$ts/glimmer/overlayShortcut";
 
 type Handler = Parameters<ShortcutPlugin["register"]>[1];
 

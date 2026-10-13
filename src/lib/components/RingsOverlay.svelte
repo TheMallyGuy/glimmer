@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { RingsEffect } from '../../ts/rings';
+  import { RingsEffect } from '$ts/glimmer/rings';
 
   interface Props {
     /** "#rrggbb": the colour of the first ring. */

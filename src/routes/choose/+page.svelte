@@ -12,27 +12,37 @@
   } from "@lucide/svelte";
   import { IconButton, Menu, GlimmerLogo, cn, type MenuItem } from "$lib";
   import { prefs, launch } from "$lib/settings.svelte";
+  import { toast } from "$lib";
+  import { dictText } from "$lib/utils";
   import { appState } from "$lib/appState.svelte";
   import { avatars, loadAvatars, selectAccount } from "$lib/accounts.svelte";
   import { sizeWindow, closeWindow } from "$lib/window";
+  import { isAndroid } from "$ts/glimmer/android/platform";
   import { openSettingsWindow } from "$ts/windows/settings";
   import { installationsState } from "$lib/installations.svelte";
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
   import { useIntlayer } from "svelte-intlayer";
   const chooseContent = useIntlayer("choose");
+  const androidLaunchContent = useIntlayer("androidLaunch");
   const commonContent = useIntlayer("common");
 
   const DISCORD_INVITE = "https://discord.gg/UX5E9ppKFg";
 
+  const android = isAndroid();
   const targets = [
     { value: "player", label: $commonContent.player.value, icon: Gamepad2 },
-    {
-      value: "studio",
-      label: $commonContent.studio.value,
-      icon: DraftingCompass,
-    },
+    ...(android
+      ? []
+      : [
+          {
+            value: "studio",
+            label: $commonContent.studio.value,
+            icon: DraftingCompass,
+          },
+        ]),
   ];
+
   const current = $derived(
     targets.find((t) => t.value === prefs.target) ?? targets[0],
   );
@@ -90,6 +100,7 @@
   let stopWatching: UnlistenFn | undefined;
 
   onMount(async () => {
+    if (android) prefs.target = "player"; // a target saved on desktop
     sizeWindow(560, 320);
     stopWatching = await watchInstallations();
   });
@@ -103,6 +114,14 @@
     const next = (i + 1) % targets.length;
     prefs.target = targets[next].value;
     targetButtons[next]?.focus();
+  }
+
+  async function play() {
+    const result = await launch(prefs.target);
+    if (!result) return;
+    const text = dictText($androidLaunchContent[result]);
+    if (result === "started") toast.success(text);
+    else toast.error(text);
   }
 
   async function openSettings() {
@@ -119,7 +138,7 @@
     data-tauri-drag-region
     class="flex h-14 shrink-0 items-center pr-2 pl-5"
   >
-    <GlimmerLogo class="-ml-1.5 h-[26px] w-auto" />
+    <GlimmerLogo markOnly={android} class="-ml-1.5 h-[26px] w-auto" />
     <div data-tauri-drag-region class="h-full grow"></div>
     {#if showAccounts}
       <button
@@ -144,17 +163,19 @@
         {/if}
       </button>
     {/if}
-    <IconButton
-      label={$commonContent.close.value}
-      variant="ghost"
-      onclick={closeWindow}
-    >
-      <X size={14} strokeWidth={1.5} />
-    </IconButton>
+    {#if !android}
+      <IconButton
+        label={$commonContent.close.value}
+        variant="ghost"
+        onclick={closeWindow}
+      >
+        <X size={14} strokeWidth={1.5} />
+      </IconButton>
+    {/if}
   </header>
 
   <main class="flex grow flex-col justify-center gap-4 px-5">
-    <div class="grid grid-cols-3 gap-0.5">
+    <div class={cn("grid gap-0.5", android ? "grid-cols-1" : "grid-cols-3")}>
       <button
         type="button"
         class={cn(
@@ -162,7 +183,7 @@
           "bg-accent text-on-accent hover:bg-accent-hover active:bg-accent-press",
         )}
         style:animation-delay="0ms"
-        onclick={() => launch(prefs.target)}
+        onclick={play}
       >
         <LaunchIcon size={22} strokeWidth={1.75} aria-hidden="true" />
         <span class="flex flex-col gap-0.5">
@@ -231,35 +252,37 @@
     </div>
 
     <div class="flex items-center gap-3">
-      <span id="target-label" class="text-[13px] text-muted"
-        >{$chooseContent.launchAs.value}</span
-      >
-      <div
-        role="radiogroup"
-        aria-labelledby="target-label"
-        class="flex gap-0.5"
-      >
-        {#each targets as t, i (t.value)}
-          {@const checked = prefs.target === t.value}
-          <button
-            bind:this={targetButtons[i]}
-            type="button"
-            role="radio"
-            aria-checked={checked}
-            tabindex={checked ? 0 : -1}
-            class={cn(
-              "h-8 cursor-pointer rounded-gl border-0 px-3 text-[13px] transition-colors motion-reduce:transition-none",
-              checked
-                ? "bg-accent/15 text-accent"
-                : "bg-row text-fg-3 hover:bg-hover hover:text-fg",
-            )}
-            onclick={() => (prefs.target = t.value)}
-            onkeydown={(e) => onTargetKey(e, i)}
-          >
-            {t.label}
-          </button>
-        {/each}
-      </div>
+      {#if targets.length > 1}
+        <span id="target-label" class="text-[13px] text-muted"
+          >{$chooseContent.launchAs.value}</span
+        >
+        <div
+          role="radiogroup"
+          aria-labelledby="target-label"
+          class="flex gap-0.5"
+        >
+          {#each targets as t, i (t.value)}
+            {@const checked = prefs.target === t.value}
+            <button
+              bind:this={targetButtons[i]}
+              type="button"
+              role="radio"
+              aria-checked={checked}
+              tabindex={checked ? 0 : -1}
+              class={cn(
+                "h-8 cursor-pointer rounded-gl border-0 px-3 text-[13px] transition-colors motion-reduce:transition-none",
+                checked
+                  ? "bg-accent/15 text-accent"
+                  : "bg-row text-fg-3 hover:bg-hover hover:text-fg",
+              )}
+              onclick={() => (prefs.target = t.value)}
+              onkeydown={(e) => onTargetKey(e, i)}
+            >
+              {t.label}
+            </button>
+          {/each}
+        </div>
+      {/if}
       <span class="ml-auto text-xs text-muted">{bottomVerionText}</span>
     </div>
   </main>

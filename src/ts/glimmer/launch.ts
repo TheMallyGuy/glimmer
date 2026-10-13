@@ -1,6 +1,6 @@
 // file for launching glimmer by func
 import { join } from "@tauri-apps/api/path";
-import { commands } from "$ts/bindings";
+import { commands } from "$ts/glimmer/bindings";
 import { appState, rememberFleasionPath } from "$lib/appState.svelte";
 import { flagsToObject } from "$lib/flags";
 import { applyMods, loadMods } from "$lib/mods.svelte";
@@ -27,7 +27,7 @@ import {
 } from "$ts/roblox/account/launcher";
 import { GameLink, type GameTarget } from "$ts/roblox/game";
 import { LocalAppEditor } from "$ts/roblox/localApp";
-import { delay } from "$ts/utils";
+import { delay } from "$ts/glimmer/utils";
 import { restartFleasion } from "$ts/fleasion/restart";
 
 export type LaunchTarget = "player" | "studio";

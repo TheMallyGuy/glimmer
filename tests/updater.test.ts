@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test";
-import { checkForUpdate, type UpdaterDeps, type UpdatePrompt } from "$ts/updater";
+import { checkForUpdate, type UpdaterDeps, type UpdatePrompt } from "$ts/glimmer/updater";
 import { logSpies, resetTauri } from "./helpers/tauri";
 
 const prompt = (version: string): UpdatePrompt => ({

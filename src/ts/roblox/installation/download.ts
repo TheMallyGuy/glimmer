@@ -1,7 +1,7 @@
 import { join } from "@tauri-apps/api/path";
 import { exists, writeFile } from "@tauri-apps/plugin-fs";
-import { joinUrl } from "../../utils";
-import { commands } from "../../bindings";
+import { joinUrl } from "$ts/glimmer/utils";
+import { commands } from "$ts/glimmer/bindings";
 import { fetch } from "@tauri-apps/plugin-http";
 import { debug, error, info } from "@tauri-apps/plugin-log";
 

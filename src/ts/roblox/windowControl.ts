@@ -1,7 +1,7 @@
 import { join } from "@tauri-apps/api/path";
 import { ask } from "@tauri-apps/plugin-dialog";
 import { mkdir, readDir, remove, writeFile } from "@tauri-apps/plugin-fs";
-import { commands } from "$ts/bindings";
+import { commands } from "$ts/glimmer/bindings";
 
 const FLAGS_PNG = Uint8Array.from(
   atob("iVBORw0KGgoAAAANSUhEUgAAAAYAAAABCAYAAAD9yd/wAAAADklEQVR4nGP4jwQYkAAA3TsL9WxSRxoAAAAASUVORK5CYII="),

@@ -13,3 +13,10 @@ vite.config.ts.timestamp-*
 .intlayer
 
 src-tauri/.tauri
+
+# JVM crash reports from Gradle
+hs_err_pid*.log
+
+# Android release key
+*.jks
+glimmerb64

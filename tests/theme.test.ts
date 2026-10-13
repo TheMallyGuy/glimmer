@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { ACCENT_PRESETS, AccentTheme, DEFAULT_ACCENT } from "$ts/theme";
+import { ACCENT_PRESETS, AccentTheme, DEFAULT_ACCENT } from "$ts/glimmer/theme";
 
 /** the bit of <html> that `apply` touches */
 function fakeRoot() {
