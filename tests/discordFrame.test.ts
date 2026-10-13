@@ -25,7 +25,7 @@ describe("setActivityFrame", () => {
             args: {
                 pid: 0,
                 activity: {
-                    name: "Roblox",
+                    name: "Roblox on Android",
                     details: "Blox Fruits",
                     state: "In a game",
                     timestamps: { start: 1000 },
@@ -38,7 +38,7 @@ describe("setActivityFrame", () => {
     });
 
     test("leaves out what is not set, and null clears the activity", () => {
-        expect(JSON.parse(setActivityFrame({ details: "a" }, "n")).args.activity).toEqual({ name: "Roblox", details: "a" });
+        expect(JSON.parse(setActivityFrame({ details: "a" }, "n")).args.activity).toEqual({ name: "Roblox on Android", details: "a" });
         expect(JSON.parse(setActivityFrame(null, "n")).args).toEqual({ pid: 0 });
     });
 });
