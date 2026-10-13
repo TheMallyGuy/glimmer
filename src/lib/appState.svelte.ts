@@ -100,6 +100,7 @@ export const appState = $state({
     /** the account the next launch signs in as */
     activeId: null as string | null,
   },
+  page: "/mods/manage",
   android: false
 });
 
@@ -157,12 +158,8 @@ function deepMerge(
   }
 }
 
-/** keeps where Fleasion runs from, for the launches after this one */
-export async function rememberFleasionPath(path: string) {
-  appState.integrations.fleasion.path = path;
-  if (!isTauri()) return;
-
-  // only this key is written: this window's copy of the settings can be older than the file
+/** changes config.json in place: this window's copy of the settings can be older than the file, so only the keys `change` touches are written */
+async function patchConfig(change: (config: Record<string, any>) => void) {
   const c = await Configuration.create();
   let config: Record<string, any> = {};
   try {
@@ -170,8 +167,27 @@ export async function rememberFleasionPath(path: string) {
   } catch {
     // no config yet
   }
-  ((config.integrations ??= {}).fleasion ??= {}).path = path;
+  change(config);
   await c.saveRaw(JSON.stringify(config));
+}
+
+/** keeps where Fleasion runs from, for the launches after this one */
+export async function rememberFleasionPath(path: string) {
+  appState.integrations.fleasion.path = path;
+  if (!isTauri()) return;
+  await patchConfig((config) => {
+    ((config.integrations ??= {}).fleasion ??= {}).path = path;
+  });
+}
+
+/** keeps the page the person is on, so the settings window opens there next time (no Save needed) */
+export async function rememberPage(path: string) {
+  if (path === appState.page || path === "/mods") return; // /mods only redirects to a saved page
+  appState.page = path;
+  if (!isTauri()) return;
+  await patchConfig((config) => {
+    config.page = path;
+  });
 }
 
 export async function loadAppState() {

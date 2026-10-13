@@ -16,7 +16,7 @@ export async function openSettingsWindow() {
   }
 
   const win = new WebviewWindow(LABEL, {
-    url: "/mods",
+    url: "/mods?last",
     title: "glimmer",
     width: 1184,
     height: 834,

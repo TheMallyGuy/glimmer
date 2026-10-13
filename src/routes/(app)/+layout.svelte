@@ -2,7 +2,7 @@
   import type { Snippet } from "svelte";
   import { onMount, onDestroy } from "svelte";
   import { page } from "$app/state";
-  import { goto } from "$app/navigation";
+  import { afterNavigate, goto } from "$app/navigation";
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import { isTauri } from "@tauri-apps/api/core";
   import { sizeWindow } from "$lib/window";
@@ -34,7 +34,7 @@
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
   import { useIntlayer } from "svelte-intlayer";
-  import { appState } from "$lib/appState.svelte";
+  import { appState, rememberPage } from "$lib/appState.svelte";
   const appLayoutContent = useIntlayer("appLayout");
   const commonContent = useIntlayer("common");
   const androidLaunchContent = useIntlayer("androidLaunch");
@@ -152,6 +152,10 @@
   });
 
   onDestroy(() => stopWatching?.());
+
+  afterNavigate(() => {
+    rememberPage(page.url.pathname);
+  });
 </script>
 
 <div class="flex h-screen flex-col bg-app">
