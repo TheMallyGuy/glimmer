@@ -34,7 +34,7 @@
   import { watchInstallations } from "$ts/roblox/installation/watcher";
   import type { UnlistenFn } from "@tauri-apps/api/event";
   import { useIntlayer } from "svelte-intlayer";
-    import { appState } from "$lib/appState.svelte";
+  import { appState } from "$lib/appState.svelte";
   const appLayoutContent = useIntlayer("appLayout");
   const commonContent = useIntlayer("common");
   const androidLaunchContent = useIntlayer("androidLaunch");
@@ -66,38 +66,40 @@
 
   appState.android = isAndroid();
 
-  const tabs: Tab[] = $derived([
-    {
-      id: "integrations",
-      label: $appLayoutContent.tabIntegrations.value,
-      icon: Plug, // dont hide integration.
-    },
-    {
-      id: "mods",
-      label: $appLayoutContent.tabMods.value,
-      icon: Package,
-      hidden: appState.android,
-    },
-    { id: "flags", label: $appLayoutContent.tabFastFlags.value, icon: Flag },
-    {
-      id: "installations",
-      label: $appLayoutContent.tabInstallations.value,
-      icon: HardDriveDownload,
-      hidden: appState.android,
-    },
-    {
-      id: "accounts",
-      label: $appLayoutContent.tabAccounts.value,
-      icon: Users,
-      hidden: appState.android,
-    },
-    {
-      id: "appearance",
-      label: $appLayoutContent.tabAppearance.value,
-      icon: Palette,
-    },
-    { id: "about", label: $appLayoutContent.tabAbout.value, icon: Info },
-  ].filter((tab) => !tab.hidden));
+  const tabs: Tab[] = $derived(
+    [
+      {
+        id: "integrations",
+        label: $appLayoutContent.tabIntegrations.value,
+        icon: Plug, // dont hide integration.
+      },
+      {
+        id: "mods",
+        label: $appLayoutContent.tabMods.value,
+        icon: Package,
+        hidden: appState.android,
+      },
+      { id: "flags", label: $appLayoutContent.tabFastFlags.value, icon: Flag },
+      {
+        id: "installations",
+        label: $appLayoutContent.tabInstallations.value,
+        icon: HardDriveDownload,
+        hidden: appState.android,
+      },
+      {
+        id: "accounts",
+        label: $appLayoutContent.tabAccounts.value,
+        icon: Users,
+        hidden: appState.android,
+      },
+      {
+        id: "appearance",
+        label: $appLayoutContent.tabAppearance.value,
+        icon: Palette,
+      },
+      { id: "about", label: $appLayoutContent.tabAbout.value, icon: Info },
+    ].filter((tab) => !tab.hidden),
+  );
 
   const titles: Record<string, [string, string]> = {
     integrations: [
@@ -147,7 +149,6 @@
     appWindow?.setResizable(true);
 
     stopWatching = await watchInstallations();
-
   });
 
   onDestroy(() => stopWatching?.());
@@ -155,7 +156,10 @@
 
 <div class="flex h-screen flex-col bg-app">
   <header class="shrink-0 bg-surface pt-[env(safe-area-inset-top)]">
-    <div data-tauri-drag-region class="flex h-16 items-center gap-2 pr-2 pl-6 max-sm:h-14 max-sm:pl-4">
+    <div
+      data-tauri-drag-region
+      class="flex h-16 items-center gap-2 pr-2 pl-6 max-sm:h-14 max-sm:pl-4"
+    >
       <GlimmerLogo markOnly={isAndroid()} />
       <div data-tauri-drag-region class="h-full grow"></div>
       <SearchField
@@ -195,7 +199,9 @@
       >
         {heading}
       </h1>
-      <p class="m-0 mb-7 max-w-[520px] text-sm text-muted max-sm:mb-4">{blurb}</p>
+      <p class="m-0 mb-7 max-w-[520px] text-sm text-muted max-sm:mb-4">
+        {blurb}
+      </p>
       <!-- keyed on the tab, so switching tabs plays the entrance but moving inside one does not reload it -->
       {#key section}
         <div class="animate-fade-up">
@@ -209,9 +215,11 @@
     class="flex min-h-16 shrink-0 items-center gap-1 bg-footer pr-6 pl-8 max-sm:px-3 max-sm:pb-[env(safe-area-inset-bottom)]"
   >
     <span class="grow text-xs text-muted">{bottomVerionText}</span>
-    <Button variant="ghost" onclick={discard}
-      >{$commonContent.discard.value}</Button
-    >
+    {#if !isAndroid()}
+      <Button variant="ghost" onclick={discard}
+        >{$commonContent.discard.value}</Button
+      >
+    {/if}
     <Button onclick={saveSettings}>{$commonContent.save.value}</Button>
     {#if isAndroid()}
       <Button variant="primary" class="ml-1" onclick={() => play("player")}
