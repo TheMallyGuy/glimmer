@@ -138,7 +138,7 @@
     data-tauri-drag-region
     class="flex h-14 shrink-0 items-center pr-2 pl-5"
   >
-    <GlimmerLogo class="-ml-1.5 h-[26px] w-auto" />
+    <GlimmerLogo markOnly={android} class="-ml-1.5 h-[26px] w-auto" />
     <div data-tauri-drag-region class="h-full grow"></div>
     {#if showAccounts}
       <button

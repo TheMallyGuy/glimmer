@@ -22,11 +22,11 @@
 
   let { title, description, note, disabled = false, href, value, control, class: className = '', onclick }: Props = $props();
 
-  const row = 'flex items-center gap-6 bg-row px-[18px] py-4 text-fg no-underline';
+  const row = 'flex items-center gap-6 bg-row px-[18px] py-4 text-fg no-underline max-sm:flex-wrap max-sm:gap-x-4 max-sm:gap-y-3';
 </script>
 
 {#snippet text()}
-  <div class="flex min-w-0 grow flex-col gap-[3px]">
+  <div class="flex min-w-0 grow flex-col gap-[3px] max-sm:min-w-[12rem]">
     <div class={cn('text-[15px] font-medium', disabled && 'text-off')}>{title}</div>
     {#if description}
       <div class={cn('text-[13px] text-muted', disabled && 'text-off-dim')}><RichText text={description} /></div>

@@ -102,7 +102,7 @@
 
 <div class="flex h-screen w-screen flex-col bg-app text-fg">
   <header class="flex h-14 shrink-0 items-center gap-4 pr-5 pl-5">
-    <GlimmerLogo class="-ml-1.5 h-[26px] w-auto" />
+    <GlimmerLogo markOnly class="-ml-1.5 h-[26px] w-auto" />
     <span class="grow"></span>
     {#if step > 0 && step < LAST}
       <span class="text-xs text-muted"

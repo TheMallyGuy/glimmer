@@ -154,9 +154,9 @@
 </script>
 
 <div class="flex h-screen flex-col bg-app">
-  <header class="shrink-0 bg-surface">
-    <div data-tauri-drag-region class="flex h-16 items-center gap-2 pr-2 pl-6">
-      <GlimmerLogo />
+  <header class="shrink-0 bg-surface pt-[env(safe-area-inset-top)]">
+    <div data-tauri-drag-region class="flex h-16 items-center gap-2 pr-2 pl-6 max-sm:h-14 max-sm:pl-4">
+      <GlimmerLogo markOnly={isAndroid()} />
       <div data-tauri-drag-region class="h-full grow"></div>
       <SearchField
         label={$appLayoutContent.searchAllSettings.value}
@@ -188,14 +188,14 @@
     />
   </header>
 
-  <main class="min-h-0 grow overflow-auto px-8 py-7">
+  <main class="min-h-0 grow overflow-auto px-8 py-7 max-sm:px-3 max-sm:py-4">
     <div role="tabpanel" aria-labelledby="gl-tab-{section}">
       <h1
-        class="m-0 mb-1.5 font-display text-[32px] font-normal tracking-[0.01em]"
+        class="m-0 mb-1.5 font-display text-[32px] font-normal tracking-[0.01em] max-sm:text-2xl"
       >
         {heading}
       </h1>
-      <p class="m-0 mb-7 max-w-[520px] text-sm text-muted">{blurb}</p>
+      <p class="m-0 mb-7 max-w-[520px] text-sm text-muted max-sm:mb-4">{blurb}</p>
       <!-- keyed on the tab, so switching tabs plays the entrance but moving inside one does not reload it -->
       {#key section}
         <div class="animate-fade-up">
@@ -205,7 +205,9 @@
     </div>
   </main>
 
-  <footer class="flex h-16 shrink-0 items-center gap-1 bg-footer pr-6 pl-8">
+  <footer
+    class="flex min-h-16 shrink-0 items-center gap-1 bg-footer pr-6 pl-8 max-sm:px-3 max-sm:pb-[env(safe-area-inset-bottom)]"
+  >
     <span class="grow text-xs text-muted">{bottomVerionText}</span>
     <Button variant="ghost" onclick={discard}
       >{$commonContent.discard.value}</Button
