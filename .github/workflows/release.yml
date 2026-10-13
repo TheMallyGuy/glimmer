@@ -107,6 +107,9 @@ jobs:
       - if: github.ref_name == 'master'
         run: node .github/scripts/set-nightly.mjs ${{ github.run_number }}
 
+      - name: Read the release version
+        run: echo "RELEASE_VERSION=$(node -p "require('./src-tauri/tauri.conf.json').version")" >> "$GITHUB_ENV"
+
       - uses: oven-sh/setup-bun@v2
 
       - uses: actions/setup-java@v4
@@ -149,7 +152,7 @@ jobs:
 
       - uses: crabnebula-dev/cloud-release@v0
         with:
-          command: release upload ${{ env.CN_APPLICATION }} ${{ env.CN_CHANNEL }} --channel prod --file src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
+          command: release upload ${{ env.CN_APPLICATION }} ${{ env.RELEASE_VERSION }} ${{ env.CN_CHANNEL }} --file src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
           api-key: ${{ secrets.CN_API_KEY }}
 
   publish:
