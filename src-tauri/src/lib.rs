@@ -21,7 +21,7 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 
 #[cfg(mobile)]
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
-    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![greet, commands::watch_latest_log, commands::unwatch_latest_log])
+    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![greet, commands::watch_latest_log, commands::unwatch_latest_log, commands::discord_android_connect, commands::discord_android_send, commands::discord_android_drain, commands::discord_android_disconnect])
 }
 
 // see https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
