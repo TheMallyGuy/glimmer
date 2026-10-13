@@ -1,6 +1,6 @@
 import { isTauri } from "@tauri-apps/api/core";
 import { appState } from "$lib/appState.svelte";
-import { Configuration } from "$ts/configuration";
+import { Configuration } from "$ts/glimmer/configuration";
 import { getUserHeadShot } from "$ts/roblox/generalRobloxApis";
 import {
   AccountLogin,

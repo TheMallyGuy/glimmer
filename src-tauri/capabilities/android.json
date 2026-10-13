@@ -1,0 +1,8 @@
+{
+  "$schema": "../gen/schemas/mobile-schema.json",
+  "identifier": "android",
+  "description": "Shizuku, which only exists on Android",
+  "platforms": ["android"],
+  "windows": ["main"],
+  "permissions": ["shizuku:default"]
+}

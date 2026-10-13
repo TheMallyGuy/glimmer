@@ -1,7 +1,7 @@
 import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
 import { fetch } from "@tauri-apps/plugin-http";
-import { commands } from "../../bindings";
-import { Keyring } from "../../keyring";
+import { commands } from "$ts/glimmer/bindings";
+import { Keyring } from "$ts/glimmer/keyring";
 
 /** the non-secret part of a saved account. The login itself stays in the OS credential store. */
 export interface Account {

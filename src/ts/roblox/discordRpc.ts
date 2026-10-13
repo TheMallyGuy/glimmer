@@ -1,7 +1,9 @@
 import { listen, type UnlistenFn } from "@tauri-apps/api/event";
 import { debug, error } from "@tauri-apps/plugin-log";
-import { commands, type DiscordActivityPayload } from "$ts/bindings";
+import { commands, type DiscordActivityPayload } from "$ts/glimmer/bindings";
 import { appState } from "$lib/appState.svelte";
+import { isAndroid } from "$ts/glimmer/android/platform";
+import { DISCORD_APPLICATION_ID, setActivityFrame } from "$ts/glimmer/android/discordFrame";
 
 let running = false;
 let unlisten: UnlistenFn | undefined;
@@ -44,6 +46,12 @@ export async function initDiscordRpc() {
 
   try {
     loginPromise = (async () => {
+      if (isAndroid()) {
+        const result = await commands.discordAndroidConnect(DISCORD_APPLICATION_ID, null);
+        if (result.status === "error") throw new Error(result.error);
+        running = true;
+        return;
+      }
       unlisten = await listen<string>("discord-rpc-event", (e) =>
         handleSidecarLine(e.payload),
       );
@@ -69,7 +77,7 @@ export async function shutdownDiscordRpc() {
   }
 
   try {
-    const result = await commands.discordRpcStop();
+    const result = isAndroid() ? await commands.discordAndroidDisconnect() : await commands.discordRpcStop();
     if (result.status === "error") throw new Error(result.error);
 
     unlisten?.();
@@ -99,6 +107,14 @@ export type ActivityOptions = {
 };
 
 let currentActivity: ActivityOptions = {};
+
+/** Discord answers a frame with a frame; one that says ERROR is a failure */
+async function sendAndroidFrame(frame: string) {
+  const result = await commands.discordAndroidSend(frame, null);
+  if (result.status === "error") return result;
+  const failed = result.data.find((f) => f.includes('"evt":"ERROR"'));
+  return failed ? { status: "error" as const, error: failed } : { status: "ok" as const, data: null };
+}
 
 async function sendActivity(opts: ActivityOptions) {
   if (!appState.integrations.discordRpc.enabled) {
@@ -132,7 +148,9 @@ async function sendActivity(opts: ActivityOptions) {
 
   debug(`Discord RPC: setActivity payload -> ${JSON.stringify(activity)}`);
 
-  const result = await commands.discordRpcSetActivity(activity);
+  const result = isAndroid()
+    ? await sendAndroidFrame(setActivityFrame(opts, crypto.randomUUID()))
+    : await commands.discordRpcSetActivity(activity);
   if (result.status === "error") {
     error(`Failed to set Discord RPC activity: ${result.error}`);
   } else {
@@ -180,7 +198,9 @@ export async function clearActivity() {
 
   currentActivity = {};
 
-  const result = await commands.discordRpcClearActivity();
+  const result = isAndroid()
+    ? await sendAndroidFrame(setActivityFrame(null, crypto.randomUUID()))
+    : await commands.discordRpcClearActivity();
   if (result.status === "error") {
     error(`Failed to clear Discord RPC activity: ${result.error}`);
   } else {

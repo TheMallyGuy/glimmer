@@ -1,5 +1,5 @@
 import { isTauri } from "@tauri-apps/api/core";
-import { BackgroundImage, BackgroundTheme } from "$ts/background";
+import { BackgroundImage, BackgroundTheme } from "$ts/glimmer/background";
 
 const images = new BackgroundImage();
 

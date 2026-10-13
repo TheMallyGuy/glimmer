@@ -45,7 +45,7 @@
 
   const grid = 'grid grid-cols-[minmax(0,1fr)_200px_140px_44px] items-center gap-x-3';
   const cell =
-    'h-9 w-full rounded-gl border-0 bg-transparent px-2 font-mono text-[13px] text-fg placeholder:text-subtle hover:bg-hover focus:bg-tonal focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent';
+    'h-9 w-full rounded-gl border-0 bg-transparent px-2 font-mono text-[13px] max-sm:h-11 max-sm:bg-field max-sm:text-sm text-fg placeholder:text-subtle hover:bg-hover focus:bg-tonal focus:outline-none focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-accent';
 
   const counts = $derived.by(() => {
     const c = new Map<string, number>();
@@ -184,16 +184,18 @@
 </script>
 
 <div class={cn('flex min-h-0 flex-col gap-3', className)}>
-  <div class="flex items-center gap-2">
-    <SearchField label={$flagTableContent.filterFlags.value} bind:value={query} width="300px" />
-    <div class="grow"></div>
-    <Button variant="secondary" size="sm" class="h-10" onclick={openPaste}>
+  <div class="flex items-center gap-2 max-sm:flex-wrap">
+    <div class="w-[300px] max-sm:w-full">
+      <SearchField label={$flagTableContent.filterFlags.value} bind:value={query} width="100%" />
+    </div>
+    <div class="grow max-sm:hidden"></div>
+    <Button variant="secondary" size="sm" class="h-10 max-sm:h-11 max-sm:flex-1" onclick={openPaste}>
       <ClipboardPaste size={16} strokeWidth={1.75} aria-hidden="true" /> {$flagTableContent.pasteJson.value}
     </Button>
-    <Button variant="secondary" size="sm" class="h-10" onclick={() => fileInput.click()}>
+    <Button variant="secondary" size="sm" class="h-10 max-sm:h-11 max-sm:flex-1" onclick={() => fileInput.click()}>
       <Upload size={16} strokeWidth={1.75} aria-hidden="true" /> {$flagTableContent.importJson.value}
     </Button>
-    <Button variant="primary" size="sm" class="h-10" onclick={add}>
+    <Button variant="primary" size="sm" class="h-10 max-sm:h-11 max-sm:flex-1" onclick={add}>
       <Plus size={16} strokeWidth={1.75} aria-hidden="true" /> {$flagTableContent.addFlag.value}
     </Button>
     <input bind:this={fileInput} type="file" accept=".json,application/json" hidden onchange={onFile} />
@@ -202,7 +204,7 @@
   {#if error}<p class="m-0 text-[13px] text-danger" role="alert">{error}</p>{/if}
 
   <div class="flex min-h-0 grow flex-col" role="table" aria-label={$flagTableContent.fastFlagsTable.value}>
-    <div class={cn(grid, 'h-9 pl-[18px] pr-2 text-[13px] text-muted')} role="row">
+    <div class={cn(grid, 'h-9 pl-[18px] pr-2 text-[13px] text-muted max-sm:hidden')} role="row">
       <div role="columnheader">{$flagTableContent.columnName.value}</div>
       <div role="columnheader" class="pl-2">{$flagTableContent.columnValue.value}</div>
       <div role="columnheader">{$flagTableContent.columnType.value}</div>
@@ -212,8 +214,8 @@
     <div class="flex min-h-0 flex-col gap-0.5 overflow-auto" role="rowgroup">
       {#each shown as flag (flag.id)}
         {@const t = typeLabel(flag)}
-        <div class={cn(grid, 'h-13 shrink-0 bg-row pl-2.5 pr-2')} role="row">
-          <div role="cell">
+        <div class={cn(grid, 'h-13 shrink-0 bg-row pl-2.5 pr-2 max-sm:flex max-sm:h-auto max-sm:flex-wrap max-sm:gap-x-2 max-sm:gap-y-2 max-sm:p-3')} role="row">
+          <div role="cell" class="max-sm:basis-full">
             <input
               bind:this={nameInputs[flag.id]}
               bind:value={flag.name}
@@ -231,7 +233,7 @@
               autocomplete="off"
             />
           </div>
-          <div role="cell">
+          <div role="cell" class="max-sm:min-w-0 max-sm:flex-1">
             <input
               bind:this={valueInputs[flag.id]}
               bind:value={flag.value}
@@ -250,7 +252,7 @@
               autocomplete="off"
             />
           </div>
-          <div role="cell" class={cn('text-[13px]', t.bad ? 'text-danger' : 'text-fg-2')}>{t.text}</div>
+          <div role="cell" class={cn('text-[13px] max-sm:shrink-0', t.bad ? 'text-danger' : 'text-fg-2')}>{t.text}</div>
           <div role="cell">
             <IconButton label={$flagTableContent.removeFlag({ name: flag.name || $flagTableContent.removeFlagFallback.value }).value} variant="ghost" size="sm" onclick={() => remove(flag.id)}>
               <Trash2 size={16} strokeWidth={1.75} aria-hidden="true" />
@@ -265,8 +267,8 @@
     </div>
   </div>
 
-  <div class="flex items-center gap-1 pt-1">
-    <span class="grow text-[13px] text-muted">{$flagTableContent.flagCount(flags.length)({ count: flags.length }).value}</span>
+  <div class="flex items-center gap-1 pt-1 max-sm:flex-wrap">
+    <span class="grow text-[13px] text-muted max-sm:basis-full">{$flagTableContent.flagCount(flags.length)({ count: flags.length }).value}</span>
     {#if onload}
       <Button variant="ghost" size="sm" onclick={onload}>{$flagTableContent.loadFromRoblox.value}</Button>
     {/if}

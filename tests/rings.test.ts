@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { RingsEffect } from "$ts/rings";
+import { RingsEffect } from "$ts/glimmer/rings";
 
 describe("RingsEffect.pointer", () => {
     test("is 0,0 in the middle of the window", () => {

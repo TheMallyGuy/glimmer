@@ -34,7 +34,7 @@ const addActivity = mock(async (_activity: Record<string, unknown>) => { });
 mock.module("$ts/roblox/discordRpc", () => ({ setActivity, addActivity }));
 
 const fetchLocation = mock(async (_ip: string) => ({ city: "Hanoi", country: "Vietnam", continent: "Asia" }));
-mock.module("$ts/geo", () => ({ fetchLocation }));
+mock.module("$ts/glimmer/geo", () => ({ fetchLocation }));
 
 const sendNotification = mock((_options: { title: string; body: string }) => { });
 mock.module("@tauri-apps/plugin-notification", () => ({
@@ -45,7 +45,7 @@ mock.module("@tauri-apps/plugin-notification", () => ({
 
 // the window control rule pulls these in, and the real plugins need a webview
 mock.module("@tauri-apps/plugin-dialog", () => ({ ask: async () => true }));
-mock.module("$ts/configuration", () => ({
+mock.module("$ts/glimmer/configuration", () => ({
     Configuration: { create: async () => ({ getAsText: async () => "{}", saveRaw: async () => { } }) },
 }));
 

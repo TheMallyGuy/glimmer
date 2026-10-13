@@ -72,7 +72,7 @@
 
 <svelte:window onresize={placeUnderline} />
 
-<div class={cn('relative flex gap-0.5 overflow-x-auto [scrollbar-width:none]', className)} role="tablist" aria-label={label}>
+<div class={cn('relative flex gap-0.5 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden', className)} role="tablist" aria-label={label}>
   {#each tabs as tab, i (tab.id)}
     {@const selected = tab.id === value}
     {@const Icon = tab.icon}

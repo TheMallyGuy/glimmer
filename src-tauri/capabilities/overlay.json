@@ -1,6 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "overlay",
+  "platforms": ["macOS", "windows", "linux"],
   "description": "The in-game radial menu",
   "windows": [
     "overlay"

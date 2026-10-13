@@ -24,6 +24,7 @@
         "svelte-dnd-action": "^0.9.79",
         "svelte-intlayer": "^9.6.0",
         "tailwind-merge": "^3.7.0",
+        "tauri-plugin-shizuku-api": "^0.1.1",
       },
       "devDependencies": {
         "@sveltejs/adapter-static": "^3.0.10",
@@ -716,6 +717,8 @@
     "tailwindcss": ["tailwindcss@4.3.3", "", {}, "sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ=="],
 
     "tapable": ["tapable@2.3.3", "", {}, "sha512-uxc/zpqFg6x7C8vOE7lh6Lbda8eEL9zmVm/PLeTPBRhh1xCgdWaQ+J1CUieGpIfm2HdtsUpRv+HshiasBMcc6A=="],
+
+    "tauri-plugin-shizuku-api": ["tauri-plugin-shizuku-api@0.1.1", "", { "dependencies": { "@tauri-apps/api": "^2.0.0" } }, "sha512-3gYAdSCbxXHRe31k+V1R0SD+hM++g3e1EA6IIPh2gBSCAG5cL1nSSIIm9Hly7x3ngDrpn77us9aTNJCTmrrybQ=="],
 
     "thread-stream": ["thread-stream@4.2.0", "", { "dependencies": { "real-require": "^1.0.0" } }, "sha512-e2zZ96wSChazBsbENf/Pcm/4swHt2cEKQ92rhUjkL9GCKiTDJIaTBenjE/m9DXi0QBmTMDkFDdOomUy20A1tDQ=="],
 

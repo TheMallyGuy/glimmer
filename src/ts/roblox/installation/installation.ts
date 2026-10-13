@@ -1,4 +1,5 @@
-import { PathManager } from "$ts/pathManager";
+import { isAndroid } from "$ts/glimmer/android/platform";
+import { PathManager } from "$ts/glimmer/pathManager";
 import { join } from "@tauri-apps/api/path";
 import {
   exists,
@@ -71,6 +72,8 @@ export class Installation {
 
   async reIndex() {
     info("reindexing installations");
+    if (isAndroid()) return info("android, skipping reindex");
+
     const isExists = await exists(this.installationPath);
     if (!isExists) {
       info("version folder doesnt exist, creating one");

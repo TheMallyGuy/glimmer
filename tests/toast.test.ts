@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { ToastQueue, type Toast } from "$ts/toast";
+import { ToastQueue, type Toast } from "$ts/glimmer/toast";
 
 /** a clock and timers that only move when the test says so */
 class FakeClock {

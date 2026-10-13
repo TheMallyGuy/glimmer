@@ -1,4 +1,4 @@
-import { commands } from "$ts/bindings";
+import { commands } from "$ts/glimmer/bindings";
 import { info } from "@tauri-apps/plugin-log";
 
 export class LocalAppEditor {

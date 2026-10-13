@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { DeepLinkHandler, type DeepLink } from "$ts/deepLink";
+import { DeepLinkHandler, type DeepLink } from "$ts/glimmer/deepLink";
 import { logSpies, resetTauri } from "./helpers/tauri";
 import { fakeWebviews, WebviewWindow } from "./helpers/webview";
 

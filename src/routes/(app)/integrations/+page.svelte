@@ -9,6 +9,7 @@
   import { FleasionConfig } from "$ts/fleasion";
   import { onMount } from "svelte";
   import { useIntlayer } from "svelte-intlayer";
+
   const integrationsContent = useIntlayer("integrations");
 
   const largeImagePresets = [
@@ -118,105 +119,107 @@
 
 <div class="h-7"></div>
 
-<SettingGroup label={$integrationsContent.systemGroup.value}>
-  <SettingRow
-    title={$integrationsContent.closeCrashHandler.value}
-    description={$integrationsContent.closeCrashHandlerDescription.value}
-  >
-    {#snippet control()}
-      <Switch
-        label={$integrationsContent.closeCrashHandler.value}
-        bind:checked={appState.integrations.closeCrashHandler.enabled}
-      />
-    {/snippet}
-  </SettingRow>
-  <SettingRow
-    title={$integrationsContent.trimMemory.value}
-    description={appState.integrations.fleasion.enabled
-      ? $integrationsContent.offWithFleasion.value
-      : $integrationsContent.trimMemoryDescription.value}
-    disabled={appState.integrations.fleasion.enabled}
-  >
-    {#snippet control()}
-      <Switch
-        label={$integrationsContent.trimMemory.value}
-        bind:checked={appState.integrations.trimMemWhenNotFocused.enabled}
-        disabled={appState.integrations.fleasion.enabled}
-      />
-    {/snippet}
-  </SettingRow>
-  <SettingRow
-    title={$integrationsContent.inGameMenu.value}
-    description={appState.integrations.fleasion.enabled
-      ? $integrationsContent.offWithFleasion.value
-      : $integrationsContent.inGameMenuDescription.value}
-    disabled={appState.integrations.fleasion.enabled}
-  >
-    {#snippet control()}
-      <Switch
-        label={$integrationsContent.inGameMenu.value}
-        bind:checked={appState.integrations.inGameMenu.enabled}
-        disabled={appState.integrations.fleasion.enabled}
-      />
-    {/snippet}
-  </SettingRow>
-  {#if appState.integrations.inGameMenu.enabled && !appState.integrations.fleasion.enabled}
+{#if !appState.android}
+  <SettingGroup label={$integrationsContent.systemGroup.value}>
     <SettingRow
-      title={$integrationsContent.boardEditor.value}
-      description={$integrationsContent.boardEditorDescription.value}
-      class="pl-9"
-      href="/integrations/board"
-    />
-  {/if}
-  <SettingRow
-    title={$integrationsContent.windowControl.value}
-    description={$integrationsContent.windowControlDescription.value}
-  >
-    {#snippet control()}
-      <Switch
-        label={$integrationsContent.windowControl.value}
-        bind:checked={appState.integrations.windowControl.enabled}
+      title={$integrationsContent.closeCrashHandler.value}
+      description={$integrationsContent.closeCrashHandlerDescription.value}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.closeCrashHandler.value}
+          bind:checked={appState.integrations.closeCrashHandler.enabled}
+        />
+      {/snippet}
+    </SettingRow>
+    <SettingRow
+      title={$integrationsContent.trimMemory.value}
+      description={appState.integrations.fleasion.enabled
+        ? $integrationsContent.offWithFleasion.value
+        : $integrationsContent.trimMemoryDescription.value}
+      disabled={appState.integrations.fleasion.enabled}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.trimMemory.value}
+          bind:checked={appState.integrations.trimMemWhenNotFocused.enabled}
+          disabled={appState.integrations.fleasion.enabled}
+        />
+      {/snippet}
+    </SettingRow>
+    <SettingRow
+      title={$integrationsContent.inGameMenu.value}
+      description={appState.integrations.fleasion.enabled
+        ? $integrationsContent.offWithFleasion.value
+        : $integrationsContent.inGameMenuDescription.value}
+      disabled={appState.integrations.fleasion.enabled}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.inGameMenu.value}
+          bind:checked={appState.integrations.inGameMenu.enabled}
+          disabled={appState.integrations.fleasion.enabled}
+        />
+      {/snippet}
+    </SettingRow>
+    {#if appState.integrations.inGameMenu.enabled && !appState.integrations.fleasion.enabled}
+      <SettingRow
+        title={$integrationsContent.boardEditor.value}
+        description={$integrationsContent.boardEditorDescription.value}
+        class="pl-9"
+        href="/integrations/board"
       />
-    {/snippet}
-  </SettingRow>
-  <SettingRow
-    title={$integrationsContent.disableSystemTray.value}
-    description={$integrationsContent.disableSystemTrayDescription.value}
-  >
-    {#snippet control()}
-      <Switch
-        label={$integrationsContent.disableSystemTray.value}
-        bind:checked={appState.integrations.disableSystemTray.enabled}
-      />
-    {/snippet}
-  </SettingRow>
-  <SettingRow
-    title={$integrationsContent.disableLaunchAtStartup.value}
-    description={$integrationsContent.disableLaunchAtStartupDescription.value}
-  >
-    {#snippet control()}
-      <Switch
-        label={$integrationsContent.disableLaunchAtStartup.value}
-        bind:checked={appState.integrations.disableLaunchAtStartup.enabled}
-      />
-    {/snippet}
-  </SettingRow>
-  <SettingRow
-    title={$integrationsContent.disableFullscreenOptimization.value}
-    description={$integrationsContent.disableFullscreenOptimizationDescription
-      .value}
-  >
-    {#snippet control()}
-      <Switch
-        label={$integrationsContent.disableFullscreenOptimization.value}
-        bind:checked={
-          appState.integrations.disableFullscreenOptimization.enabled
-        }
-      />
-    {/snippet}
-  </SettingRow>
-</SettingGroup>
-<div class="h-7"></div>
+    {/if}
+    <SettingRow
+      title={$integrationsContent.windowControl.value}
+      description={$integrationsContent.windowControlDescription.value}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.windowControl.value}
+          bind:checked={appState.integrations.windowControl.enabled}
+        />
+      {/snippet}
+    </SettingRow>
+    <SettingRow
+      title={$integrationsContent.disableSystemTray.value}
+      description={$integrationsContent.disableSystemTrayDescription.value}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.disableSystemTray.value}
+          bind:checked={appState.integrations.disableSystemTray.enabled}
+        />
+      {/snippet}
+    </SettingRow>
+    <SettingRow
+      title={$integrationsContent.disableLaunchAtStartup.value}
+      description={$integrationsContent.disableLaunchAtStartupDescription.value}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.disableLaunchAtStartup.value}
+          bind:checked={appState.integrations.disableLaunchAtStartup.enabled}
+        />
+      {/snippet}
+    </SettingRow>
+    <SettingRow
+      title={$integrationsContent.disableFullscreenOptimization.value}
+      description={$integrationsContent.disableFullscreenOptimizationDescription
+        .value}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.disableFullscreenOptimization.value}
+          bind:checked={
+            appState.integrations.disableFullscreenOptimization.enabled
+          }
+        />
+      {/snippet}
+    </SettingRow>
+  </SettingGroup>
+  <div class="h-7"></div>
+{/if}
 
 {#if fleasionState.installed}
   <SettingGroup label="Fleasion">

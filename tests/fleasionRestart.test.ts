@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from "bun:test";
 import { restartFleasion } from "$ts/fleasion/restart";
 import type { FleasionOptions } from "$ts/fleasion/apply";
-import type { LaunchStatus } from "$ts/launch";
+import type { LaunchStatus } from "$ts/glimmer/launch";
 import { fakeFs } from "./helpers/fakeFs";
 import { invokeCalls, invokeHandlers, resetTauri } from "./helpers/tauri";
 

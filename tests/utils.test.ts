@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { cn } from "$lib/utils";
-import { delay, joinUrl } from "$ts/utils";
+import { delay, joinUrl } from "$ts/glimmer/utils";
 
 describe("joinUrl", () => {
     test("joins with exactly one slash", () => {

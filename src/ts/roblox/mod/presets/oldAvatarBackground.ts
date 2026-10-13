@@ -1,5 +1,5 @@
 import { join } from "@tauri-apps/api/path";
-import { PathManager } from "$ts/pathManager";
+import { PathManager } from "$ts/glimmer/pathManager";
 import { error } from "@tauri-apps/plugin-log";
 import { copyFile, mkdir } from "@tauri-apps/plugin-fs";
 import { ModificationManager } from "../manager";

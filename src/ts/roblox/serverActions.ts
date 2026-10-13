@@ -1,5 +1,5 @@
 import { writeText } from "@tauri-apps/plugin-clipboard-manager";
-import { commands } from "$ts/bindings";
+import { commands } from "$ts/glimmer/bindings";
 import { appState, gameState } from "$lib/appState.svelte";
 import { getPublicServers } from "./generalRobloxApis";
 import { GameLink, type GameTarget } from "./game";
