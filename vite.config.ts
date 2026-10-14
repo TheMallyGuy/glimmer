@@ -34,6 +34,16 @@ export default defineConfig(() => ({
       ]
     }
   },
+  // the webviews (WebView2, Android System WebView) are current, so nothing is transpiled down, and the
+  // bundle is minified with Oxc (JS) and Lightning CSS (CSS) with no sourcemaps and no modulepreload polyfill
+  build: {
+    target: "esnext",
+    minify: "oxc",
+    cssMinify: "lightningcss",
+    sourcemap: false,
+    modulePreload: { polyfill: false },
+    reportCompressedSize: false,
+  },
   resolve: {
     alias: {
       $lib: resolve("./src/lib"),
