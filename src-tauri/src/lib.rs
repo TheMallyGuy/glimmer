@@ -192,8 +192,12 @@ pub fn run() {
     #[cfg(mobile)]
     let app = mobile_builder(app);
 
-    app.invoke_handler(builder.invoke_handler())
-        .build(tauri::generate_context!())
+    // the OTA plugin reads its settings from the context, so it hands the context back
+    let (ota_updater, context) = tauri_plugin_ota_updater::init(tauri::generate_context!());
+
+    app.plugin(ota_updater)
+        .invoke_handler(builder.invoke_handler())
+        .build(context)
         .expect("error while building tauri application")
         .run(|_app_handle, event| {
             // desktop keeps running in the tray after the last window closes

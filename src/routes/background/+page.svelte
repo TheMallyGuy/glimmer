@@ -9,6 +9,7 @@
   import { AppTray } from "$ts/glimmer/tray";
   import { DeepLinkHandler } from "$ts/glimmer/deepLink";
   import { checkForUpdate } from "$ts/glimmer/updater";
+  import { checkForOta } from "$ts/glimmer/ota";
   import { useIntlayer } from "svelte-intlayer";
   const trayContent = useIntlayer("tray");
   const windowContent = useIntlayer("windowControl");
@@ -50,12 +51,13 @@
 
     // a dev build has no release to update to
     if (!import.meta.env.DEV) {
+      // a new installer comes first: it carries the newest frontend too, so the OTA check only runs without one
       void checkForUpdate((version) => ({
         title: $updaterContent.title.value,
         body: $updaterContent.body({ version }).value,
         install: $updaterContent.install.value,
         later: $updaterContent.later.value,
-      }));
+      })).then((installing) => installing || checkForOta());
     }
   });
 </script>

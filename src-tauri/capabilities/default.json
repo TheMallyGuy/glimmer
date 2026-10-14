@@ -17,6 +17,7 @@
     "core:window:allow-toggle-maximize",
     "core:window:allow-start-dragging",
     "core:window:allow-set-size",
+    "ota-updater:default",
     "core:window:allow-set-resizable",
     "core:window:allow-center",
     "core:window:allow-show",
