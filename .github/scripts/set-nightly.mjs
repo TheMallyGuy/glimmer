@@ -8,7 +8,7 @@ const conf = JSON.parse(readFileSync(path, "utf8"));
 
 conf.version = `${conf.version.split("-")[0]}-${build}`;
 conf.plugins.updater.endpoints = conf.plugins.updater.endpoints.map(
-  (url) => `${url}${url.includes("?") ? "&" : "?"}channel=nightly`,
+  (url) => url.replace("channel=prod", "channel=nightly"),
 );
 
 writeFileSync(path, JSON.stringify(conf, null, 2) + "\n");
