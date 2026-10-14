@@ -1,7 +1,7 @@
 import { check } from "@tauri-apps/plugin-updater";
 import { ask } from "@tauri-apps/plugin-dialog";
 import { relaunch } from "@tauri-apps/plugin-process";
-import { error, info } from "@tauri-apps/plugin-log";
+import { info, warn } from "@tauri-apps/plugin-log";
 
 export interface UpdatePrompt {
   title: string;
@@ -44,7 +44,7 @@ export async function checkForUpdate(
     await deps.relaunch();
     return true;
   } catch (e) {
-    error(`update check failed: ${e}`);
+    warn(`update check skipped: ${e}`); 
     return false;
   }
 }

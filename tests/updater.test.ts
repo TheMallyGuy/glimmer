@@ -51,7 +51,7 @@ describe("checkForUpdate", () => {
         check.mockImplementation(async () => { throw new Error("offline"); });
 
         expect(await checkForUpdate(prompt, deps())).toBe(false);
-        expect(logSpies.error).toHaveBeenCalled();
+        expect(logSpies.warn).toHaveBeenCalled();
     });
 
     test("a failed install does not restart", async () => {

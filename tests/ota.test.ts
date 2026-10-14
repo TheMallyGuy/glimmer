@@ -44,7 +44,7 @@ describe("checkForOta", () => {
         check.mockImplementation(async () => { throw new Error("offline"); });
 
         expect(await checkForOta(deps())).toBe(false);
-        expect(logSpies.error).toHaveBeenCalled();
+        expect(logSpies.warn).toHaveBeenCalled();
     });
 
     test("a failed apply does not reload", async () => {

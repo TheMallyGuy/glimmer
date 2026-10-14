@@ -1,5 +1,5 @@
 import { check } from "@crabnebula/plugin-ota-updater";
-import { error, info } from "@tauri-apps/plugin-log";
+import { info, warn } from "@tauri-apps/plugin-log";
 
 /** set once an update was applied in this session, so a check that keeps finding one cannot reload the page in a loop */
 const APPLIED_KEY = "glimmer-ota-applied";
@@ -41,7 +41,7 @@ export async function checkForOta(deps: OtaDeps = plugins): Promise<boolean> {
     deps.reload();
     return true;
   } catch (e) {
-    error(`frontend update failed: ${e}`);
+    warn(`frontend update skipped: ${e}`);
     return false;
   }
 }
