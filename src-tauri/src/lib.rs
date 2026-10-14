@@ -105,7 +105,7 @@ fn base_builder() -> tauri::Builder<tauri::Wry> {
 
 fn create_config_windows(app: &mut tauri::App) -> tauri::Result<()> {
     for config in app.config().app.windows.clone() {
-        WebviewWindowBuilder::from_config(app.handle(), &config)?.build()?;
+        tauri::WebviewWindowBuilder::from_config(app.handle(), &config)?.build()?;
     }
     Ok(())
 }
