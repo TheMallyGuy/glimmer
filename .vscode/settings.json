@@ -4,7 +4,7 @@
     "*.css": "tailwindcss"
   },
   "i18n-ally.localesPaths": [
-    "src-tauri/resources/locales"
+    "src/lib/translations"
   ],
   "i18n-ally.keystyle": "nested",
   "cSpell.words": [

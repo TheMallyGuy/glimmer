@@ -10,7 +10,7 @@ const config: IntlayerConfig = {
     applicationURL: "http://127.0.0.1:1420",
   },
   content: {
-    contentDir: ["./src-tauri/resources/locales"],
+    contentDir: ["./src/lib/translations"],
   },
 };
 

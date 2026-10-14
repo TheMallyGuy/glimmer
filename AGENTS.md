@@ -105,7 +105,7 @@ Windows: `main` (the chooser), `splash`, `settings` (the `(app)` routes), a hidd
 
 Fleasion (`integrations.fleasion.enabled`) runs Roblox with administrator rights, and Windows keeps a normal Glimmer from changing that process, reading the keys held in front of it or handing it a join. So while Fleasion is on, GlimmerBoard (the overlay shortcut) and the TASX optimizer stay off, and their rows on the Integrations page are disabled with a note. Nothing in Glimmer asks for administrator rights.
 
-Other resources: `src-tauri/resources/` holds the bundled `Mods/` and `locales/` (the intlayer dictionaries, built into the frontend by the vite plugin).
+Other resources: `src-tauri/resources/` holds the bundled `Mods/`. The intlayer dictionaries live in `src/lib/translations/` (built into the frontend by the vite plugin).
 
 ## Design principles
 
@@ -217,7 +217,7 @@ Use these instead of writing new markup for the same job.
 - **Shared state:** lives in `lib/*.svelte.ts` as exported `$state` objects (`appState`, `prefs`, `installationsState`). Mutate their properties; never reassign the export.
 - **Imports:** get components from `$lib`, and icons from `@lucide/svelte` at `strokeWidth={1.75}` (16px in buttons and tabs, 18px in rows).
 - **i18n:**
-  - Every user-visible string comes from an [intlayer](https://intlayer.org) dictionary in `src-tauri/resources/locales/<section>.content.json`. Never hard-code text, and reuse the `common` dictionary where it fits.
+  - Every user-visible string comes from an [intlayer](https://intlayer.org) dictionary in `src/lib/translations/<section>.content.json`. Never hard-code text, and reuse the `common` dictionary where it fits.
   - In a component, call `const sectionContent = useIntlayer("section")` from `svelte-intlayer` once at the top of the script, then read `$sectionContent.key.value`. Always use `.value` so the result is a plain string, which attributes and script code need.
   - Strings with `{name}` values are `{ "nodeType": "insertion", "insertion": "Hello {{name}}" }` entries (plain `{{name}}` strings are not detected): `$sectionContent.key({ name }).value`. Counts use an `enumeration` node whose `1` and `fallback` entries are insertions: `$sectionContent.key(n)({ count: n }).value`.
   - `bun run editor` starts the intlayer visual editor (run `bun run dev` first). `intlayer-editor@9.6.0` ships with its UI dictionaries missing and a launcher that breaks on paths with spaces, so `patches/intlayer-editor@9.6.0.patch` (applied by bun) fills the dictionaries in. Drop the patch when upstream fixes it.
