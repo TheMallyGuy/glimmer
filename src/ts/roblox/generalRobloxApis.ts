@@ -1,5 +1,6 @@
 import { fetch } from "@tauri-apps/plugin-http";
 import { error } from "@tauri-apps/plugin-log";
+import { getRobloxUrl } from "./proxies";
 
 export interface GameInfo {
   universeId: number;
@@ -13,9 +14,10 @@ export interface GameInfo {
 
 /** placeId -> universeId. Most Roblox game info APIs only accept universeId. */
 export async function resolveUniverseId(placeId: number): Promise<number> {
-  const res = await fetch(
-    `https://apis.roproxy.com/universes/v1/places/${placeId}/universe`,
+  const res = await getRobloxUrl(
+    `https://apis.roblox.com/universes/v1/places/${placeId}/universe`,
   );
+
   if (!res.ok) {
     error(
       `Failed to resolve universeId for placeId ${placeId}: ${res.status} ${res.statusText}`,
@@ -34,8 +36,8 @@ export async function resolveUniverseId(placeId: number): Promise<number> {
 export async function getGameInfo(placeId: number): Promise<GameInfo> {
   const universeId = await resolveUniverseId(placeId);
 
-  const res = await fetch(
-    `https://games.roproxy.com/v1/games?universeIds=${universeId}`,
+  const res = await getRobloxUrl(
+    `https://games.roblox.com/v1/games?universeIds=${universeId}`,
   );
   if (!res.ok) {
     error(
@@ -79,8 +81,8 @@ export async function getGameThumbnail(
 ): Promise<string | null> {
   const universeId = await resolveUniverseId(placeId);
 
-  const res = await fetch(
-    `https://thumbnails.roproxy.com/v1/games/multiget/thumbnails?universeIds=${universeId}&size=768x432&format=Png&isCircular=false`,
+  const res = await getRobloxUrl(
+    `https://thumbnails.roblox.com/v1/games/multiget/thumbnails?universeIds=${universeId}&size=768x432&format=Png&isCircular=false`,
   );
   if (!res.ok) {
     error(
@@ -104,8 +106,8 @@ export async function getGameThumbnail(
 export async function getGameIcon(placeId: number): Promise<string | null> {
   const universeId = await resolveUniverseId(placeId);
 
-  const res = await fetch(
-    `https://thumbnails.roproxy.com/v1/games/icons?universeIds=${universeId}&size=150x150&format=Png&isCircular=false`,
+  const res = await getRobloxUrl(
+    `https://thumbnails.roblox.com/v1/games/icons?universeIds=${universeId}&size=150x150&format=Png&isCircular=false`,
   );
   if (!res.ok) {
     error(
@@ -122,8 +124,8 @@ export async function getGameIcon(placeId: number): Promise<string | null> {
 
 /** the picture of an asset (the id a game gives for its Discord presence images), or null when Roblox has none (yet) */
 export async function getAssetThumbnail(assetId: number): Promise<string | null> {
-  const res = await fetch(
-    `https://thumbnails.roproxy.com/v1/assets?assetIds=${assetId}&size=512x512&format=Png&isCircular=false`,
+  const res = await getRobloxUrl(
+    `https://thumbnails.roblox.com/v1/assets?assetIds=${assetId}&size=512x512&format=Png&isCircular=false`,
   );
   if (!res.ok) {
     error(
@@ -169,7 +171,7 @@ export async function getPublicServers(placeId: number): Promise<PublicServer[]>
 }
 
 export async function getUserName(userId: number) {
-  const res = await fetch(`https://users.roproxy.com/v1/users/${userId}/`);
+  const res = await getRobloxUrl(`https://users.roblox.com/v1/users/${userId}/`);
 
   if (!res.ok) {
     error(
@@ -190,8 +192,8 @@ export async function getUserName(userId: number) {
 }
 
 export async function getUserHeadShot(userId: number) {
-  const res = await fetch(
-    `https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`,
+  const res = await getRobloxUrl(
+    `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${userId}&size=420x420&format=Png&isCircular=false`,
   );
 
   if (!res.ok) {
