@@ -5,7 +5,7 @@
     "started": "Roblox is starting.",
     "startedNoFlags": "Roblox is starting, but the Fast Flags couldn’t be written. Check Shizuku.",
     "shizukuNotReady": "Shizuku isn’t ready. Start it and allow Glimmer, then try again.",
-    "notInstalled": "Roblox isn’t installed on this phone. Get it from Google Play first.",
+    "notInstalled": "Roblox isn’t installed on this phone. Get it from Google Play first",
     "failed": "Couldn’t start Roblox. Check that Shizuku is running and try again."
   }
 }
