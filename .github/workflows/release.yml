@@ -146,7 +146,7 @@ jobs:
           status: ${{ job.status }}
           nodetail: true
           title: "build-android"
-          description: "Android build failed"
+          description: "Android build failed lol. check the gh CI"
           content: "<@&1559571354825531492>"
           color: 0xff0000
 
@@ -165,9 +165,28 @@ jobs:
         run: node .github/scripts/set-nightly.mjs ${{ github.run_number }}
 
       - uses: crabnebula-dev/cloud-release@v0
+        id: publish
         with:
           command: release publish ${{ env.CN_APPLICATION }} --framework tauri ${{ env.CN_CHANNEL }}
           api-key: ${{ secrets.CN_API_KEY }}
+
+      - name: Parse release JSON
+        id: release
+        env:
+          RELEASE_STDOUT: ${{ steps.publish.outputs.stdout }}
+        run: |
+          echo "$RELEASE_STDOUT" | sed -n '/^{/,$p' > release.json
+
+          echo "id=$(jq -r '.id' release.json)" >> "$GITHUB_OUTPUT"
+          echo "version=$(jq -r '.version' release.json)" >> "$GITHUB_OUTPUT"
+          echo "channel=$(jq -r '.channel' release.json)" >> "$GITHUB_OUTPUT"
+
+          # multi-line values need a heredoc-style delimiter
+          {
+            echo "assets<<ASSETS_EOF"
+            jq -r '.assets[] | "• \(.publicPlatform): \(.filename)"' release.json
+            echo "ASSETS_EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Report failure to Discord
         if: failure()
@@ -180,3 +199,21 @@ jobs:
           description: "Release publish failed"
           content: "<@&1559571354825531492>"
           color: 0xff0000
+
+      - name: Report success
+        if: success()
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          status: ${{ job.status }}
+          nodetail: true
+          title: "publish"
+          description: |
+            New version **${{ steps.release.outputs.version }}** is now available on `${{ steps.release.outputs.channel }}!`
+            View on [crabebula](https://web.crabnebula.cloud/org/glim/glimmer/releases/${{ steps.release.outputs.id }})
+
+            ```
+              ${{ steps.release.outputs.assets }}
+            ``
+          content: "<@&1559571354825531492>"
+          color: 0x00ff00
