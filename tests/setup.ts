@@ -14,6 +14,7 @@ import { invoke, logSpies } from "./helpers/tauri";
 mock.module("@tauri-apps/api/path", () => ({
     appDataDir: async () => "/appdata",
     appCacheDir: async () => "/cache",
+    appLogDir: async () => "/logs",
     dataDir: async () => "/data",
     localDataDir: async () => "/localdata",
     resolveResource: async (p: string) => `/resources/${p}`,
