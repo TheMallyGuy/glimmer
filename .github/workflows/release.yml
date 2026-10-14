@@ -212,8 +212,6 @@ jobs:
             New version **${{ steps.release.outputs.version }}** is now available on `${{ steps.release.outputs.channel }}!`
             View on [crabebula](https://web.crabnebula.cloud/org/glim/glimmer/releases/${{ steps.release.outputs.id }})
 
-            ```
-              ${{ steps.release.outputs.assets }}
-            ``
+            ${{ steps.release.outputs.assets }}
           content: "<@&1559571354825531492>"
           color: 0x00ff00
