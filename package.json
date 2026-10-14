@@ -17,6 +17,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@crabnebula/plugin-ota-updater": "^2.0.1",
     "@lucide/svelte": "^1.48.0",
     "@tauri-apps/api": "^2.12.0",
     "@tauri-apps/plugin-clipboard-manager": "^2.4.1",
