@@ -42,6 +42,11 @@
   --color-danger-bg: #2a1a1a;
   --color-danger-bg-hover: #3a2020;
 
+  /* [aurora] text (see RichText): three light hues, each readable on the canvas (4.5:1) */
+  --color-aurora-1: #7cf5c8;
+  --color-aurora-2: #8fb4ff;
+  --color-aurora-3: #d6a6ff;
+
   /* The in-game menu: fixed colours, as it floats over the game and is not tinted by the background setting */
   --color-ring-active: #1a1a1a;
   --color-ring-blank: #121212;
@@ -77,6 +82,16 @@
   --radius-gl: 2px;
   --shadow-menu: 0 12px 32px rgb(0 0 0 / 0.5);
   --shadow-dialog: 0 24px 64px rgb(0 0 0 / 0.6);
+}
+
+@property --aurora-t {
+  syntax: "<angle>";
+  inherits: true;
+  initial-value: 0deg;
+}
+
+@keyframes text-aurora {
+  to { --aurora-t: 360deg; }
 }
 
 @layer base {
@@ -144,12 +159,40 @@
     -webkit-text-fill-color: transparent;
     animation: text-shimmer 2.6s ease-in-out infinite;
   }
+  /* [aurora] text (see RichText): letters filled by three blobs of light that circle through the box (right and left, up and down), each on its own ring and one the other
+     way round, over a base hue so no letter has a hole. A blurred copy of the text sits behind, so it glows. --aurora-t is the angle every blob follows; the glow reads it from the
+     text, so the two never drift apart. RichText puts the text in data-text for the glow. */
+  .text-aurora {
+    position: relative;
+    isolation: isolate;
+    background-image:
+      radial-gradient(ellipse 70% 150% at calc(50% + cos(var(--aurora-t) + 0turn) * 55%) calc(50% + sin(var(--aurora-t) + 0turn) * 70%), var(--color-aurora-1), transparent),
+      radial-gradient(ellipse 70% 150% at calc(50% + cos(var(--aurora-t) + 0.33turn) * 40%) calc(50% + sin(var(--aurora-t) + 0.33turn) * 90%), var(--color-aurora-2), transparent),
+      radial-gradient(ellipse 70% 150% at calc(50% + cos(-1 * var(--aurora-t) + 0.66turn) * 50%) calc(50% + sin(-1 * var(--aurora-t) + 0.66turn) * 80%), var(--color-aurora-3), transparent),
+      linear-gradient(var(--color-aurora-2), var(--color-aurora-2));
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-aurora 10s linear infinite;
+  }
+  .text-aurora::before {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: inherit;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: blur(7px) saturate(1.4);
+    opacity: 0.85;
+    pointer-events: none;
+  }
   @media (forced-colors: active) {
-    .text-shimmer { background: none; -webkit-text-fill-color: currentColor; animation: none; }
+    .text-shimmer, .text-aurora { background: none; -webkit-text-fill-color: currentColor; animation: none; }
+    .text-aurora::before { display: none; }
   }
   @media (prefers-reduced-motion: reduce) {
     .splash-indeterminate { animation: none; }
-    .text-shimmer { animation: none; }
+    .text-shimmer, .text-aurora { animation: none; }
 
     /* anything else that moves finishes at once */
     *, ::before, ::after, ::backdrop {

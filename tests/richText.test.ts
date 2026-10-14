@@ -37,6 +37,13 @@ describe("parseRichText", () => {
         });
     }
 
+    test("aurora runs tagged and unknown tags stay plain", () => {
+        expect(parseRichText("[aurora]new[/aurora] [glow]x[/glow]")).toEqual([
+            { text: "new", tag: "aurora" },
+            { text: " [glow]x[/glow]" },
+        ]);
+    });
+
     test("a tagged run can span lines", () => {
         expect(parseRichText("[danger]one\ntwo[/danger]")).toEqual([{ text: "one\ntwo", tag: "danger" }]);
     });
