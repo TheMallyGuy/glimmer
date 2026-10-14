@@ -102,6 +102,14 @@ fn base_builder() -> tauri::Builder<tauri::Wry> {
         .plugin(tauri_plugin_clipboard_manager::init())
 }
 
+
+fn create_config_windows(app: &mut tauri::App) -> tauri::Result<()> {
+    for config in app.config().app.windows.clone() {
+        WebviewWindowBuilder::from_config(app.handle(), &config)?.build()?;
+    }
+    Ok(())
+}
+
 #[cfg(desktop)]
 fn desktop_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::Wry> {
     builder
@@ -122,6 +130,8 @@ fn desktop_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri:
         .manage(commands::DiscordRpcState::default())
         .manage(commands::DiscordRpcDebugState::default())
         .setup(|app| {
+            create_config_windows(app)?;
+
             #[cfg(all(debug_assertions, any(windows, target_os = "linux")))]
             {
                 use tauri_plugin_deep_link::DeepLinkExt;
@@ -169,7 +179,10 @@ fn mobile_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri::
     #[cfg(target_os = "android")]
     let builder = builder.plugin(tauri_plugin_shizuku::init());
 
-    builder
+    builder.setup(|app| {
+        create_config_windows(app)?;
+        Ok(())
+    })
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

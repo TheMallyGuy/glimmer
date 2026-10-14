@@ -13,6 +13,7 @@
     "windows": [
       {
         "label": "overlay",
+        "create": false,
         "title": "glimmer overlay",
         "url": "/overlay",
         "width": 420,
@@ -26,6 +27,7 @@
         "visible": false
       },
       {
+        "create": false,
         "title": "glimmer",
         "width": 562,
         "height": 322,
