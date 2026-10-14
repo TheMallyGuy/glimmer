@@ -152,7 +152,7 @@ jobs:
 
       - uses: crabnebula-dev/cloud-release@v0
         with:
-          command: release upload ${{ env.CN_APPLICATION }} ${{ env.RELEASE_VERSION }} ${{ env.CN_CHANNEL }} --file src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
+          command: release upload ${{ env.CN_APPLICATION }} ${{ env.RELEASE_VERSION }} ${{ env.CN_CHANNEL }} --public-platform apk-aarch64 --file src-tauri/gen/android/app/build/outputs/apk/universal/release/app-universal-release.apk
           api-key: ${{ secrets.CN_API_KEY }}
 
   publish:
