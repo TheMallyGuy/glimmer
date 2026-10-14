@@ -21,7 +21,15 @@ fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
 
 #[cfg(mobile)]
 fn specta_builder() -> tauri_specta::Builder<tauri::Wry> {
-    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![greet, commands::watch_latest_log, commands::unwatch_latest_log, commands::discord_android_connect, commands::discord_android_send, commands::discord_android_drain, commands::discord_android_disconnect])
+    tauri_specta::Builder::<tauri::Wry>::new().commands(tauri_specta::collect_commands![
+        greet,
+        commands::watch_latest_log,
+        commands::unwatch_latest_log,
+        commands::discord_android_connect,
+        commands::discord_android_send,
+        commands::discord_android_drain,
+        commands::discord_android_disconnect
+    ])
 }
 
 // see https://github.com/fishstrap/fishstrap/commit/988db40e3e259489f95e4c7ec40f8dbf5685f309
@@ -102,7 +110,6 @@ fn base_builder() -> tauri::Builder<tauri::Wry> {
         .plugin(tauri_plugin_clipboard_manager::init())
 }
 
-
 fn create_config_windows(app: &mut tauri::App) -> tauri::Result<()> {
     for config in app.config().app.windows.clone() {
         tauri::WebviewWindowBuilder::from_config(app.handle(), &config)?.build()?;
@@ -131,6 +138,22 @@ fn desktop_builder(builder: tauri::Builder<tauri::Wry>) -> tauri::Builder<tauri:
         .manage(commands::DiscordRpcDebugState::default())
         .setup(|app| {
             create_config_windows(app)?;
+
+            log::info!(
+                r#"-=[ Seaweed, the otter! ]=-
+
+        .-"""-.
+       /      o\
+      |    o   0).-.
+      |       .-;(_/     .-.
+       \     /  /)).---._|  `\   ,
+        '.  '  /((       `'-./ _/|
+          \  .'  )        .-.;`  /
+           '.             |  `\-'
+             '._        -'    /
+       jgs      ``""--`------`"#
+            );
+            log::info!("By joan stark [https://web.archive.org/web/20090803204335/http://geocities.com/SoHo/7373/wildlife.htm]");
 
             #[cfg(all(debug_assertions, any(windows, target_os = "linux")))]
             {
