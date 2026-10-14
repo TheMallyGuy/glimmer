@@ -103,8 +103,28 @@ describe("getGameInfo", () => {
     });
 
     test("throws on an HTTP error", async () => {
-        stubFetch({ ...universe, "universeIds=70": () => jsonResponse({}, { status: 429 }) });
+        stubFetch({ ...universe, "universeIds=70": () => jsonResponse({}, { status: 500 }) });
         await expect(getGameInfo(7)).rejects.toThrow("Failed to fetch game info for universeId 70");
+    });
+
+    test("throws when both proxies are rate limited", async () => {
+        stubFetch({ ...universe, "universeIds=70": () => jsonResponse({}, { status: 429 }) });
+        await expect(getGameInfo(7)).rejects.toThrow("Cannot fetch domain");
+    });
+
+    test("falls back to the second proxy when the first is rate limited", async () => {
+        const answer = { data: [{ name: "Obby", description: "", playing: 0, visits: 0, creator: { name: "Ann" } }] };
+        globalThis.fetch = (async (input: RequestInfo | URL) => {
+            const url = String(input);
+            urls.push(url);
+            if (url.includes("universeIds=70")) {
+                return url.includes("roproxy.com") ? jsonResponse({}, { status: 429 }) : jsonResponse(answer);
+            }
+            return universe["/places/7/universe"]();
+        }) as typeof fetch;
+
+        expect((await getGameInfo(7)).name).toBe("Obby");
+        expect(urls.some((u) => u.includes("rotunnel.com"))).toBe(true);
     });
 
     test("getGameName returns just the name", async () => {
