@@ -65,7 +65,7 @@ src/
 │   ├── radial.ts                  geometry of the in-game radial menu: slice paths, which slot a mouse direction points at, stepping between slots
 │   ├── boardSlots.ts              the GlimmerBoard slots as saved (`appState.integrations.inGameMenu.slots`): a slot is an action id, a game (`{ placeId, name, iconUrl? }`) or null; default board; normalizeSlots() for a saved list that is short, long or has an unknown action or a bad game
 │   ├── overlaySlots.ts            every action a slot can hold (`actionSlots`: icon and what it runs; a game slot carries the game icon as `image`) and resolveSlots(), which turns the saved slots into what the in-game menu draws. A new action goes in `ACTION_IDS`, `actionSlots` and the `overlay` dictionary
-│   ├── richText.ts                tags in a string (`[danger]text[/danger]`, or unclosed to run to the end; also `accent`, `muted`, `mono`): parseRichText() splits it into runs, stripRichText() drops the tags for attributes and logs
+│   ├── richText.ts                tags in a string (`[danger]text[/danger]`, or unclosed to run to the end; also `accent`, `muted`, `mono`, `aurora`): parseRichText() splits it into runs, stripRichText() drops the tags for attributes and logs
 │   ├── window.ts                  window resize/center helpers
 │   ├── flags.ts                   Flag type and helpers
 │   ├── index.ts                   barrel: components, cn, flag helpers
@@ -202,7 +202,7 @@ Use these instead of writing new markup for the same job.
 | `Menu` | Context and popup menus (`MenuItem[]`), with arrow keys and focus return. |
 | `FlagTable` | Fast Flag editor (optional `onload` / `onapply` add Load from Roblox and Apply now): import from a file or pasted JSON (merged, with an added/updated toast), copy or export (save dialog) as JSON, undo on remove, and a type column that also marks duplicates and values that don't fit the type (`flagValueProblem` in `lib/flags.ts`). |
 | `InspiredBanner` | Froststrap credit at the bottom of the Mods pages. |
-| `RichText` | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]` in it, drawn in that look (danger shimmers in a loop, accent fades in once; reduced motion stops both). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
+| `RichText` | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]` or `[aurora]…[/aurora]` in it, drawn in that look (danger shimmers in a loop, aurora drifts through three light hues in a slow loop, accent fades in once; reduced motion stops all of it). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
 | `ToastHost` | Bottom-left toasts. Already mounted in the root layout; show one with `toast.success(text)`, `toast.error(text)` or `toast.show(text, { action })` from `$lib`. Use for the result of an action, not for state that stays on screen. |
 
 ## Writing Svelte here

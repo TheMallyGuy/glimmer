@@ -2,6 +2,7 @@ import {
     appCacheDir,
     appDataDir,
     join,
+    appLogDir,
     localDataDir,
     resolveResource,
 } from "@tauri-apps/api/path";
@@ -92,5 +93,10 @@ export class PathManager {
     /** a file shipped with the app, e.g. "resources/Mods/Sounds/x.ogg" */
     async getBundledResource(relativePath: string): Promise<string> {
         return resolveResource(relativePath);
+    }
+
+    /** get logs folder */
+    async getLogsFolder(): Promise<string> {
+        return await appLogDir()
     }
 }

@@ -4,6 +4,8 @@
   "content": {
     "glimmer": "Glimmer",
     "version": "[v0.0.0]",
+    "logs" : "Logs",
+    "logsCopied" : "Logs copied to clipboard!",
     "sourceCode": "Source code",
     "funGroup": "fun",
     "redRings": "Evil red rings",
