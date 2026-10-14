@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import { defineConfig, type UserConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 import { intlayer } from "vite-intlayer";
 import process from "node:process";
@@ -8,7 +8,7 @@ import { resolve } from "node:path";
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
-export default defineConfig(() => ({
+export default defineConfig((): UserConfig => ({
   // intlayer goes before sveltekit so content declarations are built first
   plugins: [tailwindcss(), intlayer(), sveltekit()],
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
