@@ -21,5 +21,6 @@ jobs:
 
       - run: bunx @crabnebula/ota-updater upload
         env:
-          PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          PRIVATE_KEY: ${{ secrets.OTA_SIGNING_PRIVATE_KEY }}
+          PRIVATE_KEY_PASSWORD: ${{ secrets.OTA_SIGNING_PRIVATE_KEY_PASSWORD }}
           CN_API_KEY: ${{ secrets.CN_API_KEY }}
