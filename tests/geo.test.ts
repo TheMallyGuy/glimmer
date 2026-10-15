@@ -34,6 +34,16 @@ describe("GeoLocator.locate", () => {
         expect(urls).toEqual(["https://ipwho.is/1.2.3.4"]);
     });
 
+    test("looks up this device's own address when no address is given", async () => {
+        stub(json(HANOI, { status: 429 }), json(HANOI, { status: 429 }), json({ country: "Vietnam", continent_code: "AS" }));
+        const geo = locator();
+
+        await geo.locate();
+        await geo.locate("  ");
+
+        expect(urls).toEqual(["https://ipwho.is/", "https://ipwho.is/", "https://get.geojs.io/v1/ip/geo.json"]);
+    });
+
     test("remembers an answer, so the same server is only looked up once", async () => {
         stub(json(HANOI));
         const geo = locator();

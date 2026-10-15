@@ -7,7 +7,7 @@
   import { initDiscordRpc, clearActivity } from "$ts/roblox/discordRpc";
   import { loadAppState } from "$lib/appState.svelte";
   import { AppTray } from "$ts/glimmer/tray";
-  import { DeepLinkHandler } from "$ts/glimmer/deepLink";
+  import { DeepLinkHandler } from "$ts/glimmer/deepLinkHandler";
   import { checkForUpdate } from "$ts/glimmer/updater";
   import { checkForOta } from "$ts/glimmer/ota";
   import { useIntlayer } from "svelte-intlayer";

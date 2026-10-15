@@ -1,0 +1,3 @@
+[submodule "src/ts/vendor/DeeplinkParser"]
+	path = src/ts/vendor/DeeplinkParser
+	url = https://github.com/RoSeal-Extension/Roblox-DeepLink-Parser.git

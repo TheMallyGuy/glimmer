@@ -22,12 +22,12 @@ const PROFILE_LINK = "roblox://navigation/profile?userId=1";
 let reported: LaunchStatus[];
 let launcher: { args: ReturnType<typeof mock>; gameArgs: ReturnType<typeof mock> };
 
-const context = (link: string | null, isStudio = false): LaunchContext => ({
+const context = async (link: string | null, isStudio = false): Promise<LaunchContext> => ({
     isStudio,
-    link: parseLaunchLink(link),
+    link: await parseLaunchLink(link),
     report: (status) => void reported.push(status),
 });
-const args = (link: string | null, isStudio = false) => launchArgs(context(link, isStudio), launcher as never);
+const args = async (link: string | null, isStudio = false) => launchArgs(await context(link, isStudio), launcher as never);
 
 function signedInAs(displayName = "Cool Person") {
     appState.accounts.list = [{ id: "7", name: "coolperson", displayName }];
@@ -45,20 +45,32 @@ beforeEach(() => {
 });
 
 describe("parseLaunchLink", () => {
-    test("a roblox-player: link goes to the player as it is", () => {
-        expect(parseLaunchLink(PLAYER_LINK)).toEqual({ playerLink: PLAYER_LINK, game: null });
+    test("a roblox-player: link goes to the player as it is", async () => {
+        expect(await parseLaunchLink(PLAYER_LINK)).toEqual({ playerLink: PLAYER_LINK, game: null });
     });
 
-    test("a game link names a game, and is not passed on as it is", () => {
-        expect(parseLaunchLink(GAME_LINK)).toEqual({ playerLink: null, game: { placeId: 1818, jobId: "abc" } });
+    test("a game link names a game, and is not passed on as it is", async () => {
+        expect(await parseLaunchLink(GAME_LINK)).toEqual({ playerLink: null, game: { placeId: 1818, jobId: "abc" } });
     });
 
-    test("any other roblox:// link goes to the player as it is", () => {
-        expect(parseLaunchLink(PROFILE_LINK)).toEqual({ playerLink: PROFILE_LINK, game: null });
+    test("a private server link keeps its link code", async () => {
+        expect(await parseLaunchLink("roblox://experiences/start?placeId=7&linkCode=9876")).toEqual({
+            playerLink: null,
+            game: { placeId: 7, linkCode: "9876" },
+        });
     });
 
-    test.each([null, undefined, "", "https://www.roblox.com/games/1818", "glimmer:open"])("%p is no launch link", (link) => {
-        expect(parseLaunchLink(link)).toEqual({ playerLink: null, game: null });
+    test("a join link with a bad place id is not a game", async () => {
+        const link = "roblox://experiences/start?placeId=abc";
+        expect(await parseLaunchLink(link)).toEqual({ playerLink: link, game: null });
+    });
+
+    test("any other roblox:// link goes to the player as it is", async () => {
+        expect(await parseLaunchLink(PROFILE_LINK)).toEqual({ playerLink: PROFILE_LINK, game: null });
+    });
+
+    test.each([null, undefined, "", "https://www.roblox.com/games/1818", "glimmer:open"])("%p is no launch link", async (link) => {
+        expect(await parseLaunchLink(link)).toEqual({ playerLink: null, game: null });
     });
 });
 

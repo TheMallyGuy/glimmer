@@ -221,6 +221,12 @@
           "url": "https://get.geojs.io"
         },
         {
+          "url": "https://ipinfo.io/*"
+        },
+        {
+          "url": "https://apis.rovalra.com/*"
+        },
+        {
           "url": "https://auth.roblox.com"
         },
         {

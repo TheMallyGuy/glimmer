@@ -4,6 +4,7 @@ export { default as SplitButton } from "./components/SplitButton.svelte";
 export { default as Switch } from "./components/Switch.svelte";
 export { default as TabBar } from "./components/TabBar.svelte";
 export { default as Dropdown } from "./components/Dropdown.svelte";
+export { default as LanguageDropdown } from "./components/LanguageDropdown.svelte";
 export { default as SearchField } from "./components/SearchField.svelte";
 export { default as SettingRow } from "./components/SettingRow.svelte";
 export { default as SettingGroup } from "./components/SettingGroup.svelte";

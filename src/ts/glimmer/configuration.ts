@@ -1,4 +1,5 @@
 import { PathManager } from "$ts/glimmer/pathManager";
+import { RobloxDLParser } from "$ts/vendor";
 import { readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { load, Store } from "@tauri-apps/plugin-store";
 
