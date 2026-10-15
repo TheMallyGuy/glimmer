@@ -1,0 +1,19 @@
+{
+  "$schema": "https://intlayer.org/schema.json",
+  "key": "tour",
+  "content": {
+    "welcomeTitle": "Welcome to Glimmer",
+    "welcomeBlurb": "This a guide to quickly configure Glimmer and get going!",
+    "getStarted": "Get started",
+    "skip": "Skip",
+    "back": "Back",
+    "next": "Next",
+    "languageTitle": "Language",
+    "languageBlurb": "Glimmer is in English for now.",
+    "languageLabel": "Language",
+    "english": "English",
+    "doneTitle": "Finished",
+    "doneBlurb": "Glimmer is ready. Pick Player or Studio in the next window.",
+    "finish": "Open Glimmer"
+  }
+}

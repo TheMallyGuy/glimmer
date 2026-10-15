@@ -100,6 +100,7 @@ export const appState = $state({
     /** the account the next launch signs in as */
     activeId: null as string | null,
   },
+  onboarded: false,
   page: "/mods/manage",
   android: false
 });
@@ -193,6 +194,11 @@ export async function rememberPage(path: string) {
 export async function loadAppState() {
   if (!isTauri()) return; // keep the defaults when the page runs outside Tauri
   const c = await Configuration.create();
-  const text = await c.getAsText();
+  let text = "";
+  try {
+    text = await c.getAsText();
+  } catch {
+    return; // first launch: no config.json yet, keep the defaults
+  }
   if (text) deepMerge(appState, JSON.parse(text));
 }
