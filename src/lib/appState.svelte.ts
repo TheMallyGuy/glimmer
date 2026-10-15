@@ -15,6 +15,10 @@ export const appState = $state({
     serverLocNotifer: {
       enabled: true,
     },
+    nearbyServer: {
+      enabled: false,
+      randomize: false,
+    },
     discordRpc: {
       enabled: false,
       shareAccount: false,
