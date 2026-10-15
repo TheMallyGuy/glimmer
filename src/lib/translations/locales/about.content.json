@@ -4,6 +4,10 @@
   "content": {
     "glimmer": "Glimmer",
     "version": "[v0.0.0]",
+    "webBuild": {
+      "nodeType": "insertion",
+      "insertion": "OTA {{build}}"
+    },
     "logs" : "Logs",
     "logsCopied" : "Logs copied to clipboard!",
     "sourceCode": "Source code",

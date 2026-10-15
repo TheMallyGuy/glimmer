@@ -11,6 +11,9 @@ import { WebviewWindow } from "./helpers/webview";
 import { FakeMenu, FakeMenuItem, FakeTrayIcon, appModule } from "./helpers/tray";
 import { invoke, logSpies } from "./helpers/tauri";
 
+// vite fills this in at build time
+(globalThis as { __BUILD_ID__?: string }).__BUILD_ID__ = "test";
+
 mock.module("@tauri-apps/api/path", () => ({
     appDataDir: async () => "/appdata",
     appCacheDir: async () => "/cache",

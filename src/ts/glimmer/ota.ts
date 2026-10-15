@@ -31,6 +31,7 @@ const plugins: OtaDeps = {
 export async function checkForOta(deps: OtaDeps = plugins): Promise<boolean> {
   try {
     if (deps.applied.get()) return false;
+    info(`web build ${__BUILD_ID__}, checking for a frontend update`);
 
     const update = await deps.check();
     if (!update) return false;

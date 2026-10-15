@@ -4,8 +4,11 @@ import { sveltekit } from "@sveltejs/kit/vite";
 import { intlayer } from "vite-intlayer";
 import process from "node:process";
 import { resolve } from "node:path";
+import { execSync } from "node:child_process";
 
 const host = process.env.TAURI_DEV_HOST;
+
+const buildId = (process.env.GITHUB_SHA ?? (() => { try { return execSync("git rev-parse HEAD").toString(); } catch { return "dev"; } })()).trim().slice(0, 7);
 
 // https://vite.dev/config/
 export default defineConfig((): UserConfig => ({
@@ -44,6 +47,7 @@ export default defineConfig((): UserConfig => ({
     modulePreload: { polyfill: false },
     reportCompressedSize: false,
   },
+  define: { __BUILD_ID__: JSON.stringify(buildId) },
   resolve: {
     alias: {
       $lib: resolve("./src/lib"),
