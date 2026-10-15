@@ -8,7 +8,6 @@
     "notInstalled": "Roblox isn’t installed on this phone. Get it from Google Play first",
     "failed": "Couldn’t start Roblox. Check that Shizuku is running and try again."
   },
-  "location": "remote",
   "title": "Android Roblox launch messages",
   "description": "User-facing messages for the Android Roblox launch flow, covering start status, Shizuku dependency checks, missing installation, and failure handling.",
   "tags": [
