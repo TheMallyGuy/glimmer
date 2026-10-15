@@ -52,6 +52,33 @@
       />
     {/snippet}
   </SettingRow>
+  {#if !appState.android}
+    <SettingRow
+      title={$integrationsContent.nearbyServer.value}
+      description={$integrationsContent.nearbyServerDescription.value}
+    >
+      {#snippet control()}
+        <Switch
+          label={$integrationsContent.nearbyServer.value}
+          bind:checked={appState.integrations.nearbyServer.enabled}
+        />
+      {/snippet}
+    </SettingRow>
+    {#if appState.integrations.nearbyServer.enabled}
+      <SettingRow
+        title={$integrationsContent.nearbyServerRandomize.value}
+        description={$integrationsContent.nearbyServerRandomizeDescription.value}
+        class="pl-9"
+      >
+        {#snippet control()}
+          <Switch
+            label={$integrationsContent.nearbyServerRandomize.value}
+            bind:checked={appState.integrations.nearbyServer.randomize}
+          />
+        {/snippet}
+      </SettingRow>
+    {/if}
+  {/if}
   <SettingRow
     title={$integrationsContent.discordRichPresence.value}
     description={$integrationsContent.discordRichPresenceDescription.value}

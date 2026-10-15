@@ -4,6 +4,7 @@ import { appState, gameState } from "$lib/appState.svelte";
 import { getPublicServers } from "./generalRobloxApis";
 import { GameLink, type GameTarget } from "./game";
 import { Installation } from "./installation/installation";
+import { nearbyServer } from "$ts/glimmer/launch/args";
 
 /** what went wrong in an action, so the menu can say it in the person's language */
 export type ServerActionFailure = "notInGame" | "noOtherServers" | "unreachable";
@@ -56,7 +57,8 @@ export class ServerActions {
 
   /** joins a game on any server, in or out of a game: it needs no server from the game state */
   async joinGame(placeId: number) {
-    await this.launch({ placeId });
+    const jobId = await nearbyServer(placeId);
+    await this.launch(jobId ? { placeId, jobId } : { placeId });
   }
 
   /** runs the player with the link of the game: a player that is already open takes the join over, like Fishstrap's hop */

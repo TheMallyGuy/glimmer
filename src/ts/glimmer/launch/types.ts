@@ -22,7 +22,8 @@ export type LaunchStatus =
     | "applyingFlags"
     | "stoppingFleasion"
     | "startingFleasion"
-    | "prepare";
+    | "prepare"
+    | "findingServer";
   }
   | {
     step: "downloadingClient" | "extractingClient" | "downloadingModOriginals";

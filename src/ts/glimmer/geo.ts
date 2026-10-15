@@ -6,6 +6,10 @@ export interface Location {
   city: string;
   country: string;
   continent: string;
+  /** ISO code, like "VN" */
+  countryCode: string;
+  latitude: number;
+  longitude: number;
 }
 
 const MAX_RETRY_WAIT_MS = 3000;
@@ -30,7 +34,9 @@ export class GeoLocator {
     private readonly wait: (ms: number) => Promise<unknown> = delay,
   ) {}
 
-  async locate(ip: string): Promise<Location> {
+  /** where `ip` is, or where this device is when `ip` is empty (both services answer for the caller then) */
+  async locate(ip = ""): Promise<Location> {
+    ip = ip.trim();
     const known = this.cache.get(ip);
     if (known) return known;
 
@@ -69,13 +75,16 @@ export class GeoLocator {
       city: data.city,
       country: data.country,
       continent: data.continent,
+      countryCode: data.country_code,
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
     };
     this.cache.set(ip, location);
     return location;
   }
 
   private async fallback(ip: string): Promise<Location> {
-    const res = await fetch(`https://get.geojs.io/v1/ip/geo/${ip}.json`);
+    const res = await fetch(ip ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : "https://get.geojs.io/v1/ip/geo.json");
     if (!res.ok) throw new Error(`cannot fetch geolocation for ${ip}: ${res.status}`);
 
     const data = await res.json();
@@ -85,6 +94,9 @@ export class GeoLocator {
       city: data.city ?? "",
       country: data.country,
       continent: CONTINENTS[data.continent_code] ?? data.continent_code ?? "",
+      countryCode: data.country_code,
+      latitude: Number(data.latitude),
+      longitude: Number(data.longitude),
     };
     this.cache.set(ip, location);
     return location;
@@ -101,5 +113,5 @@ export class GeoLocator {
 
 const shared = new GeoLocator();
 
-export const fetchLocation = (ip: string): Promise<Location> =>
+export const fetchLocation = (ip?: string): Promise<Location> =>
   shared.locate(ip);

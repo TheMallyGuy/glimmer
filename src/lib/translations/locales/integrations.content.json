@@ -72,6 +72,34 @@
         "vi": "Thông báo vị trí máy chủ hiện tại."
       }
     },
+    "nearbyServer": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Join a nearby server",
+        "vi": "Vào máy chủ gần bạn"
+      }
+    },
+    "nearbyServerDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Joins a server in your country, or the nearest one, for lower ping. Uses [shimmer]RoValra's[/shimmer] server list. When no nearby server is found, Roblox picks one as usual.",
+        "vi": "Vào máy chủ ở quốc gia của bạn, hoặc gần nhất, để ping thấp hơn. Dùng danh sách máy chủ của [shimmer]RoValra[/shimmer]. Khi không tìm thấy máy chủ gần, Roblox chọn như bình thường."
+      }
+    },
+    "nearbyServerRandomize": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Pick a random nearby server",
+        "vi": "Chọn ngẫu nhiên máy chủ gần"
+      }
+    },
+    "nearbyServerRandomizeDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Spreads players over the servers of the region instead of always the first one.",
+        "vi": "Chia người chơi ra các máy chủ trong khu vực thay vì luôn vào máy chủ đầu tiên."
+      }
+    },
     "discordRichPresence": {
       "nodeType": "translation",
       "translation": {

@@ -2,7 +2,7 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { GeoLocator } from "$ts/glimmer/geo";
 
 const realFetch = globalThis.fetch;
-const HANOI = { success: true, city: "Hanoi", country: "Vietnam", continent: "Asia" };
+const HANOI = { success: true, city: "Hanoi", country: "Vietnam", continent: "Asia", country_code: "VN", latitude: 21.03, longitude: 105.85 };
 
 let urls: string[];
 let waits: number[];
@@ -30,7 +30,7 @@ describe("GeoLocator.locate", () => {
     test("returns the city, country and continent", async () => {
         stub(json(HANOI));
 
-        expect(await locator().locate("1.2.3.4")).toEqual({ city: "Hanoi", country: "Vietnam", continent: "Asia" });
+        expect(await locator().locate("1.2.3.4")).toEqual({ city: "Hanoi", country: "Vietnam", continent: "Asia", countryCode: "VN", latitude: 21.03, longitude: 105.85 });
         expect(urls).toEqual(["https://ipwho.is/1.2.3.4"]);
     });
 
@@ -76,9 +76,9 @@ describe("GeoLocator.locate", () => {
     });
 
     test("asks geojs when ipwho.is is still limited after the retry, and turns the continent code into a name", async () => {
-        stub(json({}, { status: 429 }), json({}, { status: 429 }), json({ city: "Singapore", country: "Singapore", continent_code: "AS" }));
+        stub(json({}, { status: 429 }), json({}, { status: 429 }), json({ city: "Singapore", country: "Singapore", continent_code: "AS", country_code: "SG", latitude: "1.35", longitude: "103.82" }));
 
-        expect(await locator().locate("1.2.3.4")).toEqual({ city: "Singapore", country: "Singapore", continent: "Asia" });
+        expect(await locator().locate("1.2.3.4")).toEqual({ city: "Singapore", country: "Singapore", continent: "Asia", countryCode: "SG", latitude: 1.35, longitude: 103.82 });
         expect(urls[2]).toBe("https://get.geojs.io/v1/ip/geo/1.2.3.4.json");
     });
 

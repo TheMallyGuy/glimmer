@@ -5,6 +5,7 @@ import {
 } from "$ts/roblox/account/launcher";
 import type { GameTarget } from "$ts/roblox/game";
 import { RobloxDLParser } from "$ts/vendor";
+import { RoValra } from "$ts/glimmer/roValra";
 import { LaunchError, type LaunchContext } from "./types";
 
 const parser = new RobloxDLParser();
@@ -37,6 +38,41 @@ export async function parseLaunchLink(link: string | null | undefined) {
   return { playerLink: game ? null : link, game };
 }
 
+/**
+ * a server of `placeId` near the person (`integrations.nearbyServer`), or "" to let Roblox pick one:
+ * when the setting is off, when RoValra knows no server, and when the lookup fails
+ */
+export async function nearbyServer(placeId: number, roValra = new RoValra()): Promise<string> {
+  const setting = appState.integrations.nearbyServer;
+  if (!setting.enabled) return "";
+  try {
+    return await roValra.getClosestServer(placeId, setting.randomize);
+  } catch (e) {
+    console.error("failed to find a nearby server, Roblox picks one:", e);
+    return "";
+  }
+}
+
+/**
+ * a roblox-player: link from the website's Play button, sent to the server `find` gives for its place.
+ * Only a plain game join (RequestGame) is changed: following a friend or a private server keeps its link.
+ */
+export async function withServer(link: string, find: (placeId: number) => Promise<string>): Promise<string> {
+  const match = /placelauncherurl:([^+]+)/i.exec(link);
+  if (!match) return link;
+
+  const launcher = new URL(decodeURIComponent(match[1]));
+  const placeId = Number(launcher.searchParams.get("placeId"));
+  if (launcher.searchParams.get("request") !== "RequestGame" || !placeId) return link;
+
+  const jobId = await find(placeId);
+  if (!jobId) return link;
+
+  launcher.searchParams.set("request", "RequestGameJob");
+  launcher.searchParams.set("gameId", jobId);
+  return link.replace(match[0], () => `placelauncherurl:${encodeURIComponent(launcher.toString())}`);
+}
+
 /** a failure of the account launch as one the window can word, anything else as it is */
 function accountFailure(e: unknown, name: string) {
   if (!(e instanceof AccountLaunchError)) return e;
@@ -58,8 +94,15 @@ function accountFailure(e: unknown, name: string) {
 export async function launchArgs(
   { isStudio, link, report }: LaunchContext,
   launcher: Pick<AccountLauncher, "args" | "gameArgs"> = new AccountLauncher(),
+  findServer: (placeId: number) => Promise<string> = nearbyServer,
 ): Promise<string[]> {
-  if (link.playerLink) return [link.playerLink];
+  const near = async (placeId: number) => {
+    if (isStudio || !appState.integrations.nearbyServer.enabled) return "";
+    report({ step: "findingServer" }, null);
+    return findServer(placeId);
+  };
+
+  if (link.playerLink) return [await withServer(link.playerLink, near)];
 
   const id = appState.accounts.activeId;
   const account = appState.accounts.list.find((a) => a.id === id);
@@ -68,9 +111,14 @@ export async function launchArgs(
     // a game link carries no login ticket, so only one of Glimmer's accounts can sign it in
     if (!account) throw new LaunchError("accountNeeded", "", "");
 
+    // a link that already names a server (or a private one) keeps it
+    const jobId = link.game.jobId || link.game.linkCode ? "" : await near(link.game.placeId);
+    const game = jobId ? { ...link.game, jobId } : link.game;
+
+    // signed in after the server is found, since the ticket expires within a minute
     report({ step: "signingIn", name: account.displayName }, null);
     try {
-      return await launcher.gameArgs(account.id, link.game);
+      return await launcher.gameArgs(account.id, game);
     } catch (e) {
       throw accountFailure(e, account.displayName);
     }

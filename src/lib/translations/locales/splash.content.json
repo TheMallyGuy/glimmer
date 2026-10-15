@@ -98,6 +98,12 @@
         "en": "Starting Fleasion"
       }
     },
+    "findingServer": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Finding a nearby server"
+      }
+    },
     "signingIn": {
       "nodeType": "translation",
       "translation": {

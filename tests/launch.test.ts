@@ -8,11 +8,15 @@ const appState = {
         list: [] as { id: string; name: string; displayName: string }[],
         activeId: null as string | null,
     },
+    integrations: {
+        nearbyServer: { enabled: false, randomize: false },
+    },
 };
 mock.module("$lib/appState.svelte", () => ({ appState, gameState: {}, setGameState: () => { }, loadAppState: async () => { }, rememberFleasionPath: async () => { } }));
 mock.module("$lib/mods.svelte", () => ({ loadMods: async () => { }, applyMods: async () => { } }));
 
 const { LaunchError, launchArgs, parseLaunchLink } = await import("$ts/glimmer/launch");
+const { nearbyServer, withServer } = await import("$ts/glimmer/launch/args");
 import type { LaunchContext, LaunchStatus } from "$ts/glimmer/launch";
 
 const GAME_LINK = "roblox://experiences/start?placeId=1818&gameInstanceId=abc";
@@ -27,7 +31,9 @@ const context = async (link: string | null, isStudio = false): Promise<LaunchCon
     link: await parseLaunchLink(link),
     report: (status) => void reported.push(status),
 });
-const args = async (link: string | null, isStudio = false) => launchArgs(await context(link, isStudio), launcher as never);
+let findServer: ReturnType<typeof mock>;
+const args = async (link: string | null, isStudio = false) =>
+    launchArgs(await context(link, isStudio), launcher as never, findServer as never);
 
 function signedInAs(displayName = "Cool Person") {
     appState.accounts.list = [{ id: "7", name: "coolperson", displayName }];
@@ -38,6 +44,8 @@ beforeEach(() => {
     reported = [];
     appState.accounts.list = [];
     appState.accounts.activeId = null;
+    appState.integrations.nearbyServer = { enabled: false, randomize: false };
+    findServer = mock(async () => "near");
     launcher = {
         args: mock(async (id: string) => [`launch:${id}`]),
         gameArgs: mock(async (id: string, game: { placeId: number }) => [`game:${id}:${game.placeId}`]),
@@ -169,5 +177,104 @@ describe("launchArgs: an account that can't sign in", () => {
         });
 
         expect(await args(null).catch((e) => e)).toBe(boom);
+    });
+});
+
+describe("launchArgs: join a nearby server", () => {
+    const WEB_LINK =
+        "roblox-player:1+launchmode:play+gameinfo:T+launchtime:1" +
+        `+placelauncherurl:${encodeURIComponent("https://www.roblox.com/Game/PlaceLauncher.ashx?request=RequestGame&browserTrackerId=1&placeId=1818&isPlayTogetherGame=false")}` +
+        "+browsertrackerid:1+robloxLocale:en_us";
+    const launcherOf = (link: string) => new URL(decodeURIComponent(/placelauncherurl:([^+]+)/.exec(link)![1])).searchParams;
+
+    beforeEach(() => {
+        appState.integrations.nearbyServer.enabled = true;
+    });
+
+    test("sends a game link with no server to the nearby one, found before signing in", async () => {
+        signedInAs("Cool Person");
+
+        await args("roblox://experiences/start?placeId=1818");
+
+        expect(findServer).toHaveBeenCalledWith(1818);
+        expect(launcher.gameArgs).toHaveBeenCalledWith("7", { placeId: 1818, jobId: "near" });
+        expect(reported).toEqual([{ step: "findingServer" }, { step: "signingIn", name: "Cool Person" }]);
+    });
+
+    test("keeps the server or private server a link already names", async () => {
+        signedInAs();
+
+        await args(GAME_LINK);
+        await args("roblox://experiences/start?placeId=1&linkCode=9876");
+
+        expect(findServer).not.toHaveBeenCalled();
+    });
+
+    test("joins any server when none is found", async () => {
+        signedInAs();
+        findServer = mock(async () => "");
+
+        await args("roblox://experiences/start?placeId=1818");
+
+        expect(launcher.gameArgs).toHaveBeenCalledWith("7", { placeId: 1818 });
+    });
+
+    test("turns the website's Play link into a join of the nearby server, keeping the rest", async () => {
+        const [link] = await args(WEB_LINK);
+
+        expect(findServer).toHaveBeenCalledWith(1818);
+        expect(launcherOf(link).get("request")).toBe("RequestGameJob");
+        expect(launcherOf(link).get("gameId")).toBe("near");
+        expect(launcherOf(link).get("placeId")).toBe("1818");
+        expect(link.startsWith("roblox-player:1+launchmode:play+gameinfo:T+launchtime:1+placelauncherurl:")).toBe(true);
+        expect(link.endsWith("+browsertrackerid:1+robloxLocale:en_us")).toBe(true);
+    });
+
+    test("leaves following a friend and other links as they are", async () => {
+        const follow = WEB_LINK.replace("RequestGame", "RequestFollowUser");
+
+        expect(await args(follow)).toEqual([follow]);
+        expect(await args(PLAYER_LINK)).toEqual([PLAYER_LINK]);
+        expect(await args(PROFILE_LINK)).toEqual([PROFILE_LINK]);
+        expect(findServer).not.toHaveBeenCalled();
+    });
+
+    test("does nothing while the setting is off", async () => {
+        appState.integrations.nearbyServer.enabled = false;
+
+        expect(await args(WEB_LINK)).toEqual([WEB_LINK]);
+        expect(findServer).not.toHaveBeenCalled();
+        expect(reported).toEqual([]);
+    });
+});
+
+describe("nearbyServer", () => {
+    const roValra = (getClosestServer: (placeId: number, randomize: boolean) => Promise<string>) => ({ getClosestServer }) as never;
+
+    test("asks RoValra with the randomize setting", async () => {
+        appState.integrations.nearbyServer = { enabled: true, randomize: true };
+        const get = mock(async () => "job");
+
+        expect(await nearbyServer(1818, roValra(get))).toBe("job");
+        expect(get).toHaveBeenCalledWith(1818, true);
+    });
+
+    test("gives no server when the lookup fails, so Roblox picks one", async () => {
+        appState.integrations.nearbyServer.enabled = true;
+
+        expect(await nearbyServer(1818, roValra(async () => { throw new Error("offline"); }))).toBe("");
+    });
+
+    test("asks nothing while the setting is off", async () => {
+        const get = mock(async () => "job");
+
+        expect(await nearbyServer(1818, roValra(get))).toBe("");
+        expect(get).not.toHaveBeenCalled();
+    });
+});
+
+describe("withServer", () => {
+    test("leaves a link with no place launcher as it is", async () => {
+        expect(await withServer(PLAYER_LINK, async () => "job")).toBe(PLAYER_LINK);
     });
 });

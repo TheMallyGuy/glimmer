@@ -5,7 +5,7 @@ import { GameLink } from "$ts/roblox/game";
 
 // appState.svelte.ts uses runes, so it is swapped for a plain object with the same shape
 const gameState: { gameId?: number; gameServer?: string; userId?: number } = {};
-const appState = { integrations: { discordRpc: { customImage: { svgUrl: undefined as string | undefined } } } };
+const appState = { integrations: { discordRpc: { customImage: { svgUrl: undefined as string | undefined } }, nearbyServer: { enabled: false, randomize: false } } };
 mock.module("$lib/appState.svelte", () => ({ gameState, appState }));
 
 const { ServerActionError, ServerActions } = await import("$ts/roblox/serverActions");
