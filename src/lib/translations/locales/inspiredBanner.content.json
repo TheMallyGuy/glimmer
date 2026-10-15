@@ -2,6 +2,20 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "inspiredBanner",
   "content": {
-    "inspiredFrom": "Inspired from"
-  }
+    "inspiredFrom": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Inspired from",
+        "vi": "Được lấy cảm hứng từ"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Inspired Banner",
+  "description": "Banner content inspired from source text, localized for English locale.",
+  "tags": [
+    "banner",
+    "translation",
+    "localization"
+  ]
 }

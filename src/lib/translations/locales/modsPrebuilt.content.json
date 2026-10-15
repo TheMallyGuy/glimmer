@@ -2,30 +2,173 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "modsPrebuilt",
   "content": {
-    "presetsGroup": "Presets",
-    "yourFilesGroup": "Your files",
-    "cursorDefault": "Default",
-    "cursor2006": "From 2006",
-    "cursor2013": "From 2013",
-    "cursorPurpleCross": "Purple cross",
-    "cursorDot": "Black and white dot",
-    "mouseCursor": "Mouse cursor",
-    "mouseCursorDescription": "Swap the in-game cursor for a classic one.",
-    "oldCharacterSounds": "Old character sounds",
-    "oldCharacterSoundsDescription": "Bring back the original walking, jumping and death sounds.",
-    "oldAvatarBackground": "Old avatar editor background",
-    "oldAvatarBackgroundDescription": "Use the plain background from the older avatar editor.",
-    "customFont": "Custom font",
-    "usingFile": {
-      "nodeType": "insertion",
-      "insertion": "Using {{file}}"
+    "presetsGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Presets",
+        "vi": "Cài đặt trước"
+      }
     },
-    "customFontDescription": "Replace the in-game UI font with a .ttf or .otf file.",
-    "customDeathSound": "Custom death sound",
-    "customDeathSoundDescription": "Play your own sound when your character resets.",
-    "chooseFont": "Choose font",
-    "changeFont": "Change font",
-    "chooseSound": "Choose sound",
-    "changeSound": "Change sound"
-  }
+    "yourFilesGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Your files",
+        "vi": "Tệp của bạn"
+      }
+    },
+    "cursorDefault": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Default",
+        "vi": "Mặc định"
+      }
+    },
+    "cursor2006": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "From 2006",
+        "vi": "Từ năm 2006"
+      }
+    },
+    "cursor2013": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "From 2013",
+        "vi": "Từ năm 2013"
+      }
+    },
+    "cursorPurpleCross": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Purple cross",
+        "vi": "Thập tử tím"
+      }
+    },
+    "cursorDot": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Black and white dot",
+        "vi": "Chấm đen trắng"
+      }
+    },
+    "mouseCursor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Mouse cursor",
+        "vi": "Con trỏ chuột"
+      }
+    },
+    "mouseCursorDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Swap the in-game cursor for a classic one.",
+        "vi": "Thay con trỏ trong trò chơi bằng một con trỏ cổ điển."
+      }
+    },
+    "oldCharacterSounds": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Old character sounds",
+        "vi": "Âm thanh nhân vật cũ"
+      }
+    },
+    "oldCharacterSoundsDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Bring back the original walking, jumping and death sounds.",
+        "vi": "Khôi phục lại các âm thanh đi bộ, nhảy và chết gốc."
+      }
+    },
+    "oldAvatarBackground": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Old avatar editor background",
+        "vi": "Nền trình chỉnh sửa avatar cũ"
+      }
+    },
+    "oldAvatarBackgroundDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Use the plain background from the older avatar editor.",
+        "vi": "Sử dụng nền đơn giản từ trình chỉnh sửa avatar cũ."
+      }
+    },
+    "customFont": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom font",
+        "vi": "Phông chữ tùy chỉnh"
+      }
+    },
+    "usingFile": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Using {{file}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Sử dụng {{file}}"
+        }
+      }
+    },
+    "customFontDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Replace the in-game UI font with a .ttf or .otf file.",
+        "vi": "Thay thế phông chữ giao diện trong trò chơi bằng tệp .ttf hoặc .otf."
+      }
+    },
+    "customDeathSound": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom death sound",
+        "vi": "Âm thanh chết tùy chỉnh"
+      }
+    },
+    "customDeathSoundDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Play your own sound when your character resets.",
+        "vi": "Phát âm thanh của bạn khi nhân vật của bạn được đặt lại."
+      }
+    },
+    "chooseFont": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Choose font",
+        "vi": "Chọn phông chữ"
+      }
+    },
+    "changeFont": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Change font",
+        "vi": "Thay đổi phông chữ"
+      }
+    },
+    "chooseSound": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Choose sound",
+        "vi": "Chọn âm thanh"
+      }
+    },
+    "changeSound": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Change sound",
+        "vi": "Thay đổi âm thanh"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Mods prebuilt",
+  "description": "Content declaration for prebuilt mods UI strings, providing labels and descriptions for various mod options and settings.",
+  "tags": [
+    "mods",
+    "prebuilt",
+    "ui"
+  ]
 }

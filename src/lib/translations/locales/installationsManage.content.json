@@ -2,74 +2,224 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "installationsManage",
   "content": {
-    "installedVersions": "Installed versions",
+    "installedVersions": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Installed versions"
+      }
+    },
     "versionCount": {
-      "nodeType": "enumeration",
-      "enumeration": {
-        "1": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} version installed"
-        },
-        "fallback": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} versions installed"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} version installed"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} versions installed"
+            }
+          }
         }
       }
     },
-    "active": "Active",
-    "vngTag": "VNG",
-    "pinned": "Pinned",
+    "active": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Active"
+      }
+    },
+    "vngTag": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "VNG"
+      }
+    },
+    "pinned": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Pinned"
+      }
+    },
     "pinVersion": {
-      "nodeType": "insertion",
-      "insertion": "Pin {{version}}: launches use it and skip updates"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Pin {{version}}: launches use it and skip updates"
+        }
+      }
     },
     "unpinVersion": {
-      "nodeType": "insertion",
-      "insertion": "Unpin {{version}}: launches update again"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Unpin {{version}}: launches update again"
+        }
+      }
     },
     "pinnedNote": {
-      "nodeType": "insertion",
-      "insertion": "Launches stay on {{version}} and skip updates until you unpin it."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Launches stay on {{version}} and skip updates until you unpin it."
+        }
+      }
     },
-    "setActive": "Set active",
-    "openFolder": "Open folder",
+    "setActive": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Set active"
+      }
+    },
+    "openFolder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Open folder"
+      }
+    },
     "openFolderForVersion": {
-      "nodeType": "insertion",
-      "insertion": "Open folder for {{version}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Open folder for {{version}}"
+        }
+      }
     },
-    "delete": "Delete",
+    "delete": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Delete"
+      }
+    },
     "deleteVersion": {
-      "nodeType": "insertion",
-      "insertion": "Delete {{version}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Delete {{version}}"
+        }
+      }
     },
-    "cantDeleteActive": "Switch to another version before deleting this one.",
-    "emptyNoInstallations": "No installations yet. Add one to get started.",
-    "addInstallation": "Add installation",
-    "versionHash": "Version hash",
-    "versionHashPlaceholder": "[version hash]",
-    "versionHashHint": "Leave blank to install the latest version.",
-    "installAsVng": "Install Roblox VNG Games",
-    "installAsVngHint": "Download Roblox's Vietnamese distribution instead of the global client [DO NOT CHECK THIS IF YOU DON'T KNOW WHAT'S DOING]",
+    "cantDeleteActive": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Switch to another version before deleting this one."
+      }
+    },
+    "emptyNoInstallations": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "No installations yet. Add one to get started."
+      }
+    },
+    "addInstallation": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Add installation"
+      }
+    },
+    "versionHash": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Version hash"
+      }
+    },
+    "versionHashPlaceholder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "[version hash]"
+      }
+    },
+    "versionHashHint": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Leave blank to install the latest version."
+      }
+    },
+    "installAsVng": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Install Roblox VNG Games"
+      }
+    },
+    "installAsVngHint": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Download Roblox's Vietnamese distribution instead of the global client [DO NOT CHECK THIS IF YOU DON'T KNOW WHAT'S DOING]"
+      }
+    },
     "alreadyInstalled": {
-      "nodeType": "insertion",
-      "insertion": "{{version}} is already installed."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "{{version}} is already installed."
+        }
+      }
     },
-    "fetchingManifest": "Fetching manifest",
+    "fetchingManifest": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fetching manifest"
+      }
+    },
     "downloadingClient": {
-      "nodeType": "insertion",
-      "insertion": "Downloading client ({{done}}/{{total}})"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Downloading client ({{done}}/{{total}})"
+        }
+      }
     },
     "extractingClient": {
-      "nodeType": "insertion",
-      "insertion": "Extracting client ({{done}}/{{total}})"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Extracting client ({{done}}/{{total}})"
+        }
+      }
     },
-    "finishingInstallation": "Finishing installation",
-    "install": "Install",
-    "deleteInstallationTitle": "Delete installation",
+    "finishingInstallation": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Finishing installation"
+      }
+    },
+    "install": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Install"
+      }
+    },
+    "deleteInstallationTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Delete installation"
+      }
+    },
     "deleteInstallationBody": {
-      "nodeType": "insertion",
-      "insertion": "This removes {{version}} from disk. This can't be undone."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "This removes {{version}} from disk. This can't be undone."
+        }
+      }
     },
-    "settingsGroup": "Download settings"
+    "settingsGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Download settings"
+      }
+    }
   }
 }

@@ -2,11 +2,53 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "flagsLayout",
   "content": {
-    "enableFastFlags": "Enable Fast Flags",
-    "enableFastFlagsDescription": "Disable/Enable feature flags",
-    "applyOnLaunch": "Apply Fast Flags on launch",
-    "viewEditor": "Editor",
-    "viewPresets": "Presets",
-    "flagViewsNav": "Fast Flag views"
-  }
+    "enableFastFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Enable Fast Flags",
+        "vi": "Bật Fast Flags"
+      }
+    },
+    "enableFastFlagsDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable/Enable feature flags",
+        "vi": "Tắt/Bật cờ tính năng"
+      }
+    },
+    "applyOnLaunch": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Apply Fast Flags on launch",
+        "vi": "Áp dụng Fast Flags khi khởi động"
+      }
+    },
+    "viewEditor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Editor",
+        "vi": "Trình soạn thảo"
+      }
+    },
+    "viewPresets": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Presets",
+        "vi": "Cài đặt mặc định"
+      }
+    },
+    "flagViewsNav": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fast Flag views",
+        "vi": "Chế độ xem Fast Flag"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Flags Layout",
+  "description": "Content for the flags layout, including labels and descriptions for feature flags and their views.",
+  "tags": [
+    "page metadata"
+  ]
 }

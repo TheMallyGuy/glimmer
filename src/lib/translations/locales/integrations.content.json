@@ -2,47 +2,311 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "integrations",
   "content": {
-    "presetGameIcon": "Game icon",
-    "presetAurora" : "Aurora",
-    "presetGameIsLife": "GAME IS LIFE!!!11",
-    "presetJobInterview": "i accidentally said [GAME NAME] in a job interview",
-    "presetHopOn": "bro hop on [GAME NAME]",
-    "presetCustom": "Custom",
-    "activityWatching": "Activity watching",
-    "activityWatchingDescription": "Let Glimmer see what you're playing right now.",
-    "serverLocationNotifier": "Server location notifier",
-    "serverLocationNotifierDescription": "Notify the current server's location.",
-    "discordRichPresence": "Discord Rich Presence",
-    "discordRichPresenceDescription": "Show off what you're playing on Roblox!",
-    "largeImagePreset": "Large image preset",
-    "largeImagePresetDescription": "What shows as the big image on your profile.",
-    "customImageSettings": "Custom image settings",
-    "customImageSettingsDescription": "Set a template URL and options for this preset.",
-    "shareAccount": "Show account on Discord",
-    "requiresDiscordRpc": "Discord Rich Presence is required turned on",
-    "allowFriendsToJoin": "Joinable button",
-    "friendsGroup": "Friends",
-    "linkTitle": "Muntal Games",
-    "linkDescription": "Find out the kinds of games you and your friends like to play.",
-    "systemGroup": "System",
-    "closeCrashHandler": "Close crash handler",
-    "closeCrashHandlerDescription": "Kills Roblox crash handler on launch",
-    "trimMemory": "TASX Optimizer",
-    "trimMemoryDescription": "An Roblox optimizer by 8damon. It is not useless. C++ Source code [8damon/TASX-Roblox-Optimizer/]",
-    "inGameMenu": "GlimmerBoard",
-    "inGameMenuDescription": "Quick access stuff using GlimmerBoard. Hold Alt + G to open it in game.",
-    "offWithFleasion": "Off while Fleasion is on. Fleasion took roblox from us and its will have some conflicts if these features are enabled.",
-    "fleasion" : "Fleasion with Glimmer",
-    "fleasionDescription" : "FLEASION IS BANNABLE. USE AT YOUR ON RISK. GLIMMER CONTRIBUTORS (or developer) ACCEPT NO LIABILITY." ,
-    "boardEditor": "Edit GlimmerBoard",
-    "boardEditorDescription": "Choose what each slice of the menu does.",
-    "windowControl": "Window manipulation",
-    "windowControlDescription": "Let the game control the window for you! (Funkstrap feature)",
-    "disableSystemTray": "Disable system tray icon",
-    "disableSystemTrayDescription": "Disable Roblox's that annoying system tray icon",
-    "disableFullscreenOptimization": "Disable fullscreen optimization",
-    "disableFullscreenOptimizationDescription": "[SUPER DUPER EVIL DARK MAGIC] Disable fullscreen optimization!",
-    "disableLaunchAtStartup": "Disable launch at startup",
-    "disableLaunchAtStartupDescription": "Prevent Roblox from launching when you first start up your computer"
-  }
+    "presetGameIcon": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Game icon",
+        "vi": "Biểu tượng trò chơi"
+      }
+    },
+    "presetAurora": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Aurora",
+        "vi": "Aurora"
+      }
+    },
+    "presetGameIsLife": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "GAME IS LIFE!!!11",
+        "vi": "TRÒ CHƠI LÀ CUỘC ĐỜI!!!11"
+      }
+    },
+    "presetJobInterview": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "i accidentally said [GAME NAME] in a job interview",
+        "vi": "Tôi vô tình nói [TÊN TRÒ CHƠI] trong một cuộc phỏng vấn việc làm"
+      }
+    },
+    "presetHopOn": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "bro hop on [GAME NAME]",
+        "vi": "Bro tham gia [TÊN TRÒ CHƠI] ngay"
+      }
+    },
+    "presetCustom": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom",
+        "vi": "Tùy chỉnh"
+      }
+    },
+    "activityWatching": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Activity watching",
+        "vi": "Theo dõi hoạt động"
+      }
+    },
+    "activityWatchingDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Let Glimmer see what you're playing right now.",
+        "vi": "Để Glimmer thấy bạn đang chơi gì ngay bây giờ."
+      }
+    },
+    "serverLocationNotifier": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Server location notifier",
+        "vi": "Thông báo vị trí máy chủ"
+      }
+    },
+    "serverLocationNotifierDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Notify the current server's location.",
+        "vi": "Thông báo vị trí máy chủ hiện tại."
+      }
+    },
+    "discordRichPresence": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Discord Rich Presence",
+        "vi": "Discord Rich Presence"
+      }
+    },
+    "discordRichPresenceDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Show off what you're playing on Roblox!",
+        "vi": "Trưng bày trò chơi bạn đang chơi trên Roblox!"
+      }
+    },
+    "largeImagePreset": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Large image preset",
+        "vi": "Bản đặt hình ảnh lớn"
+      }
+    },
+    "largeImagePresetDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "What shows as the big image on your profile.",
+        "vi": "Điều gì hiện ra dưới dạng hình ảnh lớn trên hồ sơ của bạn."
+      }
+    },
+    "customImageSettings": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom image settings",
+        "vi": "Cài đặt hình ảnh tùy chỉnh"
+      }
+    },
+    "customImageSettingsDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Set a template URL and options for this preset.",
+        "vi": "Đặt URL mẫu và các tùy chọn cho bản đặt này."
+      }
+    },
+    "shareAccount": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Show account on Discord",
+        "vi": "Hiển thị tài khoản trên Discord"
+      }
+    },
+    "requiresDiscordRpc": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Discord Rich Presence is required turned on",
+        "vi": "Yêu cầu bật Discord Rich Presence"
+      }
+    },
+    "allowFriendsToJoin": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Joinable button",
+        "vi": "Nút tham gia"
+      }
+    },
+    "friendsGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Friends",
+        "vi": "Bạn bè"
+      }
+    },
+    "linkTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Muntal Games",
+        "vi": "Muntal Games"
+      }
+    },
+    "linkDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Find out the kinds of games you and your friends like to play.",
+        "vi": "Tìm hiểu các thể loại trò chơi mà bạn và bạn bè thích chơi."
+      }
+    },
+    "systemGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "System",
+        "vi": "Hệ thống"
+      }
+    },
+    "closeCrashHandler": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Close crash handler",
+        "vi": "Đóng trình xử lý sự cố"
+      }
+    },
+    "closeCrashHandlerDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Kills Roblox crash handler on launch",
+        "vi": "Dừng trình xử lý sự cố của Roblox khi khởi động"
+      }
+    },
+    "trimMemory": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "TASX Optimizer",
+        "vi": "TASX Optimizer"
+      }
+    },
+    "trimMemoryDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "An Roblox optimizer by 8damon. It is not useless. C++ Source code [8damon/TASX-Roblox-Optimizer/]",
+        "vi": "Một bộ tối ưu hóa Roblox bởi 8damon. Nó không vô dụng. Mã nguồn C++ [8damon/TASX-Roblox-Optimizer/]"
+      }
+    },
+    "inGameMenu": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "GlimmerBoard",
+        "vi": "GlimmerBoard"
+      }
+    },
+    "inGameMenuDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Quick access stuff using GlimmerBoard. Hold Alt + G to open it in game.",
+        "vi": "Truy cập nhanh thông qua GlimmerBoard. Giữ Alt + G để mở trong trò chơi."
+      }
+    },
+    "offWithFleasion": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Off while Fleasion is on. Fleasion took roblox from us and its will have some conflicts if these features are enabled.",
+        "vi": "Tắt khi Fleasion đang bật. Fleasion đã lấy Roblox từ chúng ta và có thể gây xung đột nếu những tính năng này được bật."
+      }
+    },
+    "fleasion": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fleasion with Glimmer",
+        "vi": "Fleasion kết hợp với Glimmer"
+      }
+    },
+    "fleasionDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "FLEASION IS BANNABLE. USE AT YOUR ON RISK. GLIMMER CONTRIBUTORS (or developer) ACCEPT NO LIABILITY.",
+        "vi": "VIỆC SỬ DỤNG FLEASION CÓ THỂ BỊ CẤM. SỬ DỤNG TẠI RỦI RÃNH CỦA BẠN. NHÀ PHÁT TRIỂN HOẶC NGƯỜI ĐÓNG GÓP GLIMMER KHÔNG CHỊU TRÁH NẬP."
+      }
+    },
+    "boardEditor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Edit GlimmerBoard",
+        "vi": "Chỉnh sửa GlimmerBoard"
+      }
+    },
+    "boardEditorDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Choose what each slice of the menu does.",
+        "vi": "Chọn chức năng của từng phần của menu."
+      }
+    },
+    "windowControl": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Window manipulation",
+        "vi": "Điều khiển cửa sổ"
+      }
+    },
+    "windowControlDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Let the game control the window for you! (Funkstrap feature)",
+        "vi": "Để trò chơi điều khiển cửa sổ cho bạn! (Tính năng của Funkstrap)"
+      }
+    },
+    "disableSystemTray": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable system tray icon",
+        "vi": "Vô hiệu hóa biểu tượng thanh hệ thống"
+      }
+    },
+    "disableSystemTrayDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable Roblox's that annoying system tray icon",
+        "vi": "Vô hiệu hóa biểu tượng thanh hệ thống gây khó chịu của Roblox"
+      }
+    },
+    "disableFullscreenOptimization": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable fullscreen optimization",
+        "vi": "Vô hiệu hóa tối ưu hóa màn hình đầy"
+      }
+    },
+    "disableFullscreenOptimizationDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "[SUPER DUPER EVIL DARK MAGIC] Disable fullscreen optimization!",
+        "vi": "[PHÉP MƯỢT ĐÂN HẲN] Vô hiệu hóa tối ưu hóa màn hình đầy!"
+      }
+    },
+    "disableLaunchAtStartup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable launch at startup",
+        "vi": "Vô hiệu hóa khởi động cùng hệ thống"
+      }
+    },
+    "disableLaunchAtStartupDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Prevent Roblox from launching when you first start up your computer",
+        "vi": "Ngăn Roblox khởi động khi bạn bật máy tính."
+      }
+    }
+  },
+  "location": "local",
+  "title": "Integrations settings",
+  "description": "Content declarations for Glimmer's integration features including Discord Rich Presence, activity watching, custom image presets, system optimizations (TASX, crash handler, window control), in-game menu (GlimmerBoard), and Fleasion compatibility settings.",
+  "tags": [
+    "integrations",
+    "settings",
+    "discord rich presence",
+    "roblox",
+    "glimmer",
+    "system optimization",
+    "in-game menu"
+  ]
 }

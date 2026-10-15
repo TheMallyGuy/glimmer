@@ -2,8 +2,23 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "tray",
   "content": {
-    "tooltip": "Glimmer",
-    "openSelector": "Open selector",
-    "quit": "Quit"
+    "tooltip": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer"
+      }
+    },
+    "openSelector": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Open selector"
+      }
+    },
+    "quit": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Quit"
+      }
+    }
   }
 }

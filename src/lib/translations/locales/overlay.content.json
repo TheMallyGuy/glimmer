@@ -2,39 +2,187 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "overlay",
   "content": {
-    "menuLabel": "Quick actions",
-    "idleName": "Quick actions",
-    "idleDescription": "Move your cursor to an action",
-    "idleOffline": "Join a game to use these",
-    "hintHold": "Hold",
-    "keyAlt": "Alt",
-    "keyG": "G",
-    "hintPoint": "point at an action",
-    "hintRelease": "release to run",
-    "keyEsc": "Esc",
-    "hintCancel": "to cancel",
+    "menuLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Quick actions",
+        "vi": "Hành động nhanh"
+      }
+    },
+    "idleName": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Quick actions",
+        "vi": "Hành động nhanh"
+      }
+    },
+    "idleDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Move your cursor to an action",
+        "vi": "Di chuyển con trỏ đến một hành động"
+      }
+    },
+    "idleOffline": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Join a game to use these",
+        "vi": "Tham gia trò chơi để sử dụng những điều này"
+      }
+    },
+    "hintHold": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Hold",
+        "vi": "Giữ"
+      }
+    },
+    "keyAlt": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Alt",
+        "vi": "Alt"
+      }
+    },
+    "keyG": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "G",
+        "vi": "G"
+      }
+    },
+    "hintPoint": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "point at an action",
+        "vi": "chỉ vào một hành động"
+      }
+    },
+    "hintRelease": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "release to run",
+        "vi": "nhả để thực hiện"
+      }
+    },
+    "keyEsc": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Esc",
+        "vi": "Esc"
+      }
+    },
+    "hintCancel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "to cancel",
+        "vi": "để hủy bỏ"
+      }
+    },
     "actions": {
       "copyInvite": {
-        "name": "Copy invite link",
-        "description": "Copy a link to this server",
-        "result": "Copied to clipboard"
+        "name": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Copy invite link",
+            "vi": "Sao chép liên kết mời"
+          }
+        },
+        "description": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Copy a link to this server",
+            "vi": "Sao chép liên kết đến máy chủ này"
+          }
+        },
+        "result": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Copied to clipboard",
+            "vi": "Đã sao chép vào bộ đệm"
+          }
+        }
       },
       "game": {
-        "name": "Join a game",
-        "description": "Join this game",
-        "result": "Joining the game…"
+        "name": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Join a game",
+            "vi": "Tham gia trò chơi"
+          }
+        },
+        "description": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Join this game",
+            "vi": "Tham gia trò chơi này"
+          }
+        },
+        "result": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Joining the game…",
+            "vi": "Đang tham gia trò chơi…"
+          }
+        }
       },
       "hop": {
-        "name": "Hop server",
-        "description": "Join a different server",
-        "result": "Finding a server…"
+        "name": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Hop server",
+            "vi": "Chuyển máy chủ khác"
+          }
+        },
+        "description": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Join a different server",
+            "vi": "Tham gia một máy chủ khác"
+          }
+        },
+        "result": {
+          "nodeType": "translation",
+          "translation": {
+            "en": "Finding a server…",
+            "vi": "Đang tìm kiếm máy chủ…"
+          }
+        }
       }
     },
     "errors": {
-      "notInGame": "You’re not in a game?",
-      "noOtherServers": "No other servers have space",
-      "unreachable": "Couldn’t reach Roblox",
-      "failed": "Something went wrong..."
+      "notInGame": {
+        "nodeType": "translation",
+        "translation": {
+          "en": "You’re not in a game?",
+          "vi": "Bạn không có trong trò chơi?"
+        }
+      },
+      "noOtherServers": {
+        "nodeType": "translation",
+        "translation": {
+          "en": "No other servers have space",
+          "vi": "Không máy chủ nào khác còn chỗ trống"
+        }
+      },
+      "unreachable": {
+        "nodeType": "translation",
+        "translation": {
+          "en": "Couldn’t reach Roblox",
+          "vi": "Không thể kết nối với Roblox"
+        }
+      },
+      "failed": {
+        "nodeType": "translation",
+        "translation": {
+          "en": "Something went wrong...",
+          "vi": "Đã xảy ra lỗi..."
+        }
+      }
     }
-  }
+  },
+  "location": "local",
+  "title": "Overlay",
+  "description": "Content declarations for the overlay, includes quick actions menu, hints, and error messages that are displayed while interacting with avatar layers or game overlays.",
+  "tags": []
 }

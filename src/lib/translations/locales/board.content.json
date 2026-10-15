@@ -2,29 +2,136 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "board",
   "content": {
-    "backToIntegrations": "Back to integrations",
-    "blurb": "Pick a slice, then choose what it does. Changes apply once you save!",
-    "ringLabel": "GlimmerBoard slots",
+    "backToIntegrations": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Back to integrations",
+        "vi": "Quay lại tích hợp"
+      }
+    },
+    "blurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Pick a slice, then choose what it does. Changes apply once you save!",
+        "vi": "Chọn một mốc, sau đó chọn chức năng của nó. Các thay đổi sẽ được áp dụng khi bạn lưu!"
+      }
+    },
+    "ringLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "GlimmerBoard slots",
+        "vi": "Các slot GlimmerBoard"
+      }
+    },
     "slotLabel": {
-      "nodeType": "insertion",
-      "insertion": "Slot {{number}}: {{action}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Slot {{number}}: {{action}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Cánh {{number}}: {{action}}"
+        }
+      }
     },
     "slotEmptyLabel": {
-      "nodeType": "insertion",
-      "insertion": "Slot {{number}}: empty"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Slot {{number}}: empty"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Cánh {{number}}: trống"
+        }
+      }
     },
     "chooseTitle": {
-      "nodeType": "insertion",
-      "insertion": "Slot {{number}} does"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Slot {{number}} does"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Cánh {{number}} làm"
+        }
+      }
     },
-    "nothingName": "Nothing",
-    "nothingDescription": "Leave this slice blank",
-    "gameLabel": "Or join a game",
-    "gameHint": "Paste a game link from roblox.com, or its place id. The slice joins that game from anywhere.",
-    "gameUse": "Use this game",
-    "gameLooking": "Looking it up…",
-    "gameInvalid": "That is not a game link or place id. Paste the link of the game's page.",
-    "gameMissing": "Could not find that game. Check the link and your connection.",
-    "reset": "Reset to default"
-  }
+    "nothingName": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Nothing",
+        "vi": "Không có gì"
+      }
+    },
+    "nothingDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Leave this slice blank",
+        "vi": "Giữ mốc này trống"
+      }
+    },
+    "gameLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Or join a game",
+        "vi": "Hoặc tham gia một game"
+      }
+    },
+    "gameHint": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Paste a game link from roblox.com, or its place id. The slice joins that game from anywhere.",
+        "vi": "Nhập đường link game từ roblox.com, hoặc ID vị trí. Móc sẽ gia nhập game từ mọi nơi."
+      }
+    },
+    "gameUse": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Use this game",
+        "vi": "Sử dụng game này"
+      }
+    },
+    "gameLooking": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Looking it up…",
+        "vi": "Đang tìm kiếm..."
+      }
+    },
+    "gameInvalid": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "That is not a game link or place id. Paste the link of the game's page.",
+        "vi": "Đây không phải là đường link game hoặc ID vị trí. Vui nhập đường link trang game."
+      }
+    },
+    "gameMissing": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Could not find that game. Check the link and your connection.",
+        "vi": "Không thể tìm thấy game đó. Vui kiểm tra đường link và kết nối."
+      }
+    },
+    "reset": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Reset to default",
+        "vi": "Khôi phục mặc định"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Pricing | Intlayer",
+  "description": "Discover our pricing plans and get access to premium features with Intlayer. Choose the plan that suits you best.",
+  "tags": [
+    "pricing",
+    "subscription",
+    "intlayer"
+  ]
 }

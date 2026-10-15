@@ -2,17 +2,82 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "about",
   "content": {
-    "glimmer": "Glimmer",
-    "version": "[v0.0.0]",
-    "webBuild": {
-      "nodeType": "insertion",
-      "insertion": "OTA {{build}}"
+    "glimmer": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer",
+        "vi": "Glimmer"
+      }
     },
-    "logs" : "Logs",
-    "logsCopied" : "Logs copied to clipboard!",
-    "sourceCode": "Source code",
-    "funGroup": "fun",
-    "redRings": "Evil red rings",
-    "redRingsDescription": "if youre from crush. yes you know what this is. its back."
-  }
+    "version": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "[v0.0.0]",
+        "vi": "[v0.0.0]"
+      }
+    },
+    "webBuild": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "OTA {{build}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "OTA {{build}}"
+        }
+      }
+    },
+    "logs": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Logs",
+        "vi": "Logs"
+      }
+    },
+    "logsCopied": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Logs copied to clipboard!",
+        "vi": "Logs đã được sao chép vào bộ nhớ tạm!"
+      }
+    },
+    "sourceCode": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Source code",
+        "vi": "Mã nguồn"
+      }
+    },
+    "funGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "fun",
+        "vi": "Vui vẻ"
+      }
+    },
+    "redRings": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Evil red rings",
+        "vi": "Vòng tròn đỏ ác quỷ"
+      }
+    },
+    "redRingsDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "if youre from crush. yes you know what this is. its back.",
+        "vi": "nếu bạn đến từ crush. vâng, bạn biết đây là gì rồi. nó đã trở lại."
+      }
+    }
+  },
+  "location": "local",
+  "title": "Pricing page metadata",
+  "description": "Metadata for the pricing page, including title, description, and keywords to support SEO and content organization.",
+  "tags": [
+    "pricing",
+    "subscription",
+    "metadata"
+  ]
 }

@@ -23,6 +23,7 @@ export default defineConfig((): UserConfig => ({
   server: {
     port: 1420,
     strictPort: true,
+    cors: { origin: ["https://app.intlayer.org", /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/] },
     // intlayer's generated dictionaries live outside src
     fs: { allow: [resolve("./.intlayer")] },
     host: host || "127.0.0.1",

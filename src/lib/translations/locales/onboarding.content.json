@@ -3,45 +3,220 @@
   "key": "onboarding",
   "content": {
     "stepOf": {
-      "nodeType": "insertion",
-      "insertion": "Step {{current}} of {{total}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Step {{current}} of {{total}}"
+        }
+      }
     },
-    "welcomeTitle": "Welcome to Glimmer",
-    "welcomeBlurb": "Glimmer is an Roblox booststrapper! This onboard will guide you to setup Glimmer on Android.",
-    "getStarted": "Get started",
-    "skip": "Skip setup",
-    "back": "Back",
-    "next": "Next",
-    "continue": "Continue",
-    "checkAgain": "Check again",
-    "shizukuTitle": "Start Shizuku",
-    "shizukuBlurb": "Glimmer needs the Shizuku service to work with Roblox",
-    "shizukuStep1": "Open Shizuku",
-    "shizukuStep2": "Start it with wireless debugging (Android 11 and up) or with adb from a computer",
-    "shizukuStep3": "Come back here, Glimmer checks by itself!",
-    "openShizuku": "Open Shizuku",
-    "shizukuStatus": "Shizuku service",
-    "running": "Running",
-    "notRunning": "Not running",
-    "permissionTitle": "Allow Glimmer",
-    "permissionBlurb": "Shizuku asks you to confirm that Glimmer may use it",
-    "permissionStatus": "Permission",
-    "allowed": "Allowed",
-    "waiting": "Not allowed yet",
-    "needsShizuku": "Start Shizuku first",
-    "allow": "Allow Glimmer",
-    "robloxTitle": "Find Roblox",
-    "robloxBlurb": "Glimmer needs the Roblox app installed on this phone",
-    "robloxStatus": "Roblox",
-    "installed": "Installed",
-    "missing": "Not installed",
-    "unknown": "Not checked yet",
+    "welcomeTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Welcome to Glimmer"
+      }
+    },
+    "welcomeBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer is an Roblox booststrapper! This onboard will guide you to setup Glimmer on Android."
+      }
+    },
+    "getStarted": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Get started"
+      }
+    },
+    "skip": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Skip setup"
+      }
+    },
+    "back": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Back"
+      }
+    },
+    "next": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Next"
+      }
+    },
+    "continue": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Continue"
+      }
+    },
+    "checkAgain": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Check again"
+      }
+    },
+    "shizukuTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Start Shizuku"
+      }
+    },
+    "shizukuBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer needs the Shizuku service to work with Roblox"
+      }
+    },
+    "shizukuStep1": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Open Shizuku"
+      }
+    },
+    "shizukuStep2": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Start it with wireless debugging (Android 11 and up) or with adb from a computer"
+      }
+    },
+    "shizukuStep3": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Come back here, Glimmer checks by itself!"
+      }
+    },
+    "openShizuku": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Open Shizuku"
+      }
+    },
+    "shizukuStatus": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Shizuku service"
+      }
+    },
+    "running": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Running"
+      }
+    },
+    "notRunning": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Not running"
+      }
+    },
+    "permissionTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Allow Glimmer"
+      }
+    },
+    "permissionBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Shizuku asks you to confirm that Glimmer may use it"
+      }
+    },
+    "permissionStatus": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Permission"
+      }
+    },
+    "allowed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Allowed"
+      }
+    },
+    "waiting": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Not allowed yet"
+      }
+    },
+    "needsShizuku": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Start Shizuku first"
+      }
+    },
+    "allow": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Allow Glimmer"
+      }
+    },
+    "robloxTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Find Roblox"
+      }
+    },
+    "robloxBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer needs the Roblox app installed on this phone"
+      }
+    },
+    "robloxStatus": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Roblox"
+      }
+    },
+    "installed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Installed"
+      }
+    },
+    "missing": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Not installed"
+      }
+    },
+    "unknown": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Not checked yet"
+      }
+    },
     "robloxVersion": {
-      "nodeType": "insertion",
-      "insertion": "Version {{version}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Version {{version}}"
+        }
+      }
     },
-    "getRoblox": "Get Roblox on Google Play",
-    "doneTitle": "You are ready",
-    "doneBlurb": "Shizuku and Roblox are set up. Pick a game and play."
+    "getRoblox": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Get Roblox on Google Play"
+      }
+    },
+    "doneTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "You are ready"
+      }
+    },
+    "doneBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Shizuku and Roblox are set up. Pick a game and play."
+      }
+    }
   }
 }

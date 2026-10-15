@@ -2,58 +2,235 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "link",
   "content": {
-    "backToIntegrations": "Back to integrations",
-    "noGames": "No games collected yet",
+    "backToIntegrations": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Back to integrations",
+        "vi": "Quay lại tích hợp"
+      }
+    },
+    "noGames": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "No games collected yet",
+        "vi": "Chưa có game nào được thu thập"
+      }
+    },
     "gamesTitle": {
-      "nodeType": "enumeration",
-      "enumeration": {
-        "1": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} game collected"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} game collected"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} games collected"
+            }
+          }
         },
-        "fallback": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} games collected"
+        "vi": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} game đã thu thập"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} games đã thu thập"
+            }
+          }
         }
       }
     },
-    "gamesDescription": "Glimmer remembers the games you join. They stay on this computer until you share them with a link code!",
-    "clear": "Clear games",
-    "clearTitle": "Clear collected games",
-    "clearBody": "Forget every game Glimmer collected? Games you joined before are not shared again unless you play them again.",
-    "recentTitle": "Recently played",
+    "gamesDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer remembers the games you join. They stay on this computer until you share them with a link code!",
+        "vi": "Glimmer nhớ các game bạn tham gia. Chúng sẽ ở trên máy này khi bạn chia sẻ qua mã liên kết!"
+      }
+    },
+    "clear": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Clear games",
+        "vi": "Xóa game"
+      }
+    },
+    "clearTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Clear collected games",
+        "vi": "Xóa các game đã thu thập"
+      }
+    },
+    "clearBody": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Forget every game Glimmer collected? Games you joined before are not shared again unless you play them again.",
+        "vi": "Quên tất cả game Glimmer đã thu thập? Các game bạn tham gia trước không được chia sẻ lại trừ khi bạn chơi chúng lại."
+      }
+    },
+    "recentTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Recently played",
+        "vi": "Chơi gần đây"
+      }
+    },
     "playCount": {
-      "nodeType": "enumeration",
-      "enumeration": {
-        "1": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} play"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} play"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} plays"
+            }
+          }
         },
-        "fallback": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} plays"
+        "vi": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} lượt chơi"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} lần chơi"
+            }
+          }
         }
       }
     },
-    "shareTitle": "Share with a link code",
-    "shareDescription": "Run /link create in our Discord, then paste the code here to find the games you and your friends have in common.",
-    "codeLabel": "Link code",
-    "codePlaceholder": "Paste the code from Discord",
-    "usernameLabel": "Roblox username",
-    "usernameHint": "Shown to the others in the link.",
-    "share": "Share my games",
-    "needGames": "Nothing to share yet. Join a game in Roblox and Glimmer will remember it.",
-    "needCode": "Paste the link code from Discord to share.",
-    "needUsername": "Enter your Roblox username to share.",
-    "sharing": "Sharing…",
+    "shareTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Share with a link code",
+        "vi": "Chia sẻ qua mã liên kết"
+      }
+    },
+    "shareDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Run /link create in our Discord, then paste the code here to find the games you and your friends have in common.",
+        "vi": "Chạy /link tạo trong Discord, sau đó dán mã đây để tìm game bạn và bạn bè có chung."
+      }
+    },
+    "codeLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Link code",
+        "vi": "Mã liên kết"
+      }
+    },
+    "codePlaceholder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Paste the code from Discord",
+        "vi": "Dán mã từ Discord"
+      }
+    },
+    "usernameLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Roblox username",
+        "vi": "Tên đăng nhập Roblox"
+      }
+    },
+    "usernameHint": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Shown to the others in the link.",
+        "vi": "Hiển thị cho các người khác trong liên kết."
+      }
+    },
+    "share": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Share my games",
+        "vi": "Chia sẻ game của tôi"
+      }
+    },
+    "needGames": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Nothing to share yet. Join a game in Roblox and Glimmer will remember it.",
+        "vi": "Chưa có gì để chia sẻ. Tham gia game trên Roblox và Glimmer sẽ nhớ nó."
+      }
+    },
+    "needCode": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Paste the link code from Discord to share.",
+        "vi": "Dán mã liên kết từ Discord để chia sẻ."
+      }
+    },
+    "needUsername": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Enter your Roblox username to share.",
+        "vi": "Nhập tên đăng nhập Roblox của bạn để chia sẻ."
+      }
+    },
+    "sharing": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Sharing…",
+        "vi": "Đang chia sẻ..."
+      }
+    },
     "shared": {
-      "nodeType": "insertion",
-      "insertion": "Shared your games as {{name}}. Run /link result in Discord."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Shared your games as {{name}}. Run /link result in Discord."
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Bạn đã chia sẻ game như {{name}}. Chạy /link kết quả trong Discord."
+        }
+      }
     },
     "shareFailed": {
-      "nodeType": "insertion",
-      "insertion": "Couldn't share your games. {{error}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Couldn't share your games. {{error}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Không thể chia sẻ game của bạn. {{error}}"
+        }
+      }
     },
-    "cleared": "Collected games cleared."
-  }
+    "cleared": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Collected games cleared.",
+        "vi": "Các game đã thu thập đã xóa."
+      }
+    }
+  },
+  "location": "local",
+  "title": "Link component",
+  "description": "Handles linking and sharing of collected games locally, providing UI for viewing, sharing, and clearing game collections with link codes.",
+  "tags": [
+    "link",
+    "share",
+    "games",
+    "local"
+  ]
 }

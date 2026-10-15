@@ -100,6 +100,7 @@ export const appState = $state({
     /** the account the next launch signs in as */
     activeId: null as string | null,
   },
+  language: "en",
   onboarded: false,
   page: "/mods/manage",
   android: false

@@ -2,44 +2,224 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "appearance",
   "content": {
-    "accentGroup": "Accent colour",
-    "accentTitle": "Accent colour",
-    "accentDescription": "Used for the main action, the selected tab, switches and focus rings. It changes as you pick it. Save to keep it.",
+    "accentGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Accent colour",
+        "vi": "Màu sắc nhấn mạnh"
+      }
+    },
+    "accentTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Accent colour",
+        "vi": "Màu sắc nhấn mạnh"
+      }
+    },
+    "accentDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Used for the main action, the selected tab, switches and focus rings. It changes as you pick it. Save to keep it.",
+        "vi": "Dùng cho hành động chính, thang tab được chọn, công tắc và vòng tròn tập trung. Nó thay đổi khi bạn chọn nó. Lưu để giữ nguyên."
+      }
+    },
     "swatchLabel": {
-      "nodeType": "insertion",
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Accent {{color}}"
+        }
+      },
       "insertion": "Accent {{color}}"
     },
-    "customColor": "Custom colour",
-    "customHint": "A hex colour like #ffe54e.",
-    "invalidColor": "That's not a hex colour. Use 3 or 6 digits, like #ffe54e.",
-    "tooDark": "Too dark to read on the dark background. Pick a lighter colour.",
-    "reset": "Reset to yellow",
-    "backgroundGroup": "Background",
-    "backgroundColorTitle": "Background colour",
-    "backgroundColorDescription": "Tints every surface. Only dark colours work, so text stays readable.",
+    "customColor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom colour",
+        "vi": "Màu sắc tùy chỉnh"
+      }
+    },
+    "customHint": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "A hex colour like #ffe54e.",
+        "vi": "Một màu hex như #ffe54e."
+      }
+    },
+    "invalidColor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "That's not a hex colour. Use 3 or 6 digits, like #ffe54e.",
+        "vi": "Đó không phải là màu hex. Dùng 3 hoặc 6 chữ số, như #ffe54e."
+      }
+    },
+    "tooDark": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Too dark to read on the dark background. Pick a lighter colour.",
+        "vi": "Quá tối để đọc trên nền tĩnh tối. Chọn một màu sáng hơn."
+      }
+    },
+    "reset": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Reset to yellow",
+        "vi": "Nhập lại sang vàng"
+      }
+    },
+    "backgroundGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Background",
+        "vi": "Nền"
+      }
+    },
+    "backgroundColorTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Background colour",
+        "vi": "Màu nền"
+      }
+    },
+    "backgroundColorDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Tints every surface. Only dark colours work, so text stays readable.",
+        "vi": "Làm nhạt mọi bề mặt. Chỉ các màu tối mới hoạt động, để văn bản vẫn dễ đọc."
+      }
+    },
     "backgroundSwatchLabel": {
-      "nodeType": "insertion",
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Background {{color}}"
+        }
+      },
       "insertion": "Background {{color}}"
     },
-    "backgroundCustomColor": "Custom background colour",
-    "backgroundTooLight": "Too light for the text. Pick a darker colour.",
-    "imageTitle": "Background picture",
-    "imageDescription": "Shows behind everything, under a dark layer. Glimmer keeps its own copy, so the original can move.",
-    "chooseImage": "Choose picture",
-    "changeImage": "Change picture",
-    "removeImage": "Remove picture",
-    "imagePickerTitle": "Choose a background picture",
-    "imageFilter": "Pictures",
+    "backgroundCustomColor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom background colour",
+        "vi": "Màu nền tùy chỉnh"
+      }
+    },
+    "backgroundTooLight": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Too light for the text. Pick a darker colour.",
+        "vi": "Quá sáng cho văn bản. Chọn một màu tối hơn."
+      }
+    },
+    "imageTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Background picture",
+        "vi": "Hình ảnh nền"
+      }
+    },
+    "imageDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Shows behind everything, under a dark layer. Glimmer keeps its own copy, so the original can move.",
+        "vi": "Hiển thị phía sau mọi thứ, dưới một lớp tối. Glimmer giữ bản sao của nó, để bản gốc có thể di chuyển."
+      }
+    },
+    "chooseImage": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Choose picture",
+        "vi": "Chọn hình ảnh"
+      }
+    },
+    "changeImage": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Change picture",
+        "vi": "Thay đổi hình ảnh"
+      }
+    },
+    "removeImage": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Remove picture",
+        "vi": "Xóa hình ảnh"
+      }
+    },
+    "imagePickerTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Choose a background picture",
+        "vi": "Chọn hình ảnh nền"
+      }
+    },
+    "imageFilter": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Pictures",
+        "vi": "Hình ảnh"
+      }
+    },
     "imageFailed": {
-      "nodeType": "insertion",
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Couldn't use that picture. {{error}}"
+        }
+      },
       "insertion": "Couldn't use that picture. {{error}}"
     },
-    "dimTitle": "Darkening",
-    "dimDescription": "How much of the picture the dark layer hides. More makes text easier to read.",
-    "dimLabel": "Darkening",
+    "dimTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Darkening",
+        "vi": "Làm tối"
+      }
+    },
+    "dimDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "How much of the picture the dark layer hides. More makes text easier to read.",
+        "vi": "Mức độ mà lớp tối che khuất hình ảnh. Càng nhiều thì văn bản dễ đọc hơn."
+      }
+    },
+    "dimLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Darkening",
+        "vi": "Làm tối"
+      }
+    },
     "dimValue": {
-      "nodeType": "insertion",
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "{{percent}}%"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "{{percent}}%"
+        }
+      },
       "insertion": "{{percent}}%"
     }
-  }
+  },
+  "title": "Appearance settings",
+  "description": "UI strings for customizing the application appearance, including accent colour, background colour, background image, and darkening level.",
+  "tags": [],
+  "creatorId": "6ad080ebd42776c07e727539",
+  "environmentId": null,
+  "location": "local",
+  "createdAt": "2026-10-15T07:54:43.982Z",
+  "updatedAt": "2026-10-15T07:54:43.982Z",
+  "__v": 0,
+  "id": "6ad086c3d42776c07e7277ac",
+  "version": "v1",
+  "versionList": [
+    "v1"
+  ]
 }

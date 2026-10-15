@@ -2,15 +2,90 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "common",
   "content": {
-    "close": "Close",
-    "cancel": "Cancel",
-    "minimize": "Minimize",
-    "discard": "Discard",
-    "save": "Save",
-    "tryAgain": "Try again",
-    "remove": "Remove",
-    "default": "Default",
-    "player": "Player",
-    "studio": "Studio"
-  }
+    "close": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Close",
+        "vi": "Đóng"
+      }
+    },
+    "cancel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Cancel",
+        "vi": "Hủy"
+      }
+    },
+    "minimize": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Minimize",
+        "vi": "Thu nhỏ"
+      }
+    },
+    "discard": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Discard",
+        "vi": "Loại bỏ"
+      }
+    },
+    "save": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Save",
+        "vi": "Lưu"
+      }
+    },
+    "tryAgain": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Try again",
+        "vi": "Thử lại"
+      }
+    },
+    "remove": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Remove",
+        "vi": "Xóa"
+      }
+    },
+    "default": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Default",
+        "vi": "Mặc định"
+      }
+    },
+    "player": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Player",
+        "vi": "Người chơi"
+      }
+    },
+    "studio": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Studio",
+        "vi": "Studio"
+      }
+    },
+    "language": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Language",
+        "vi": "Ngôn ngữ"
+      }
+    },
+    "languageEnglish": "English",
+    "languageVietnamese": "Tiếng Việt"
+  },
+  "location": "local",
+  "title": "Common translations",
+  "description": "Common UI strings and translations used across the application.",
+  "tags": [
+    "common"
+  ]
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Check } from "@lucide/svelte";
   import { open } from "@tauri-apps/plugin-dialog";
-  import { Button, SettingGroup, SettingRow, TextField, cn } from "$lib";
+  import { Button, LanguageDropdown, SettingGroup, SettingRow, TextField, cn } from "$lib";
   import { appState } from "$lib/appState.svelte";
   import { ACCENT_PRESETS, AccentTheme, DEFAULT_ACCENT } from "$ts/glimmer/theme";
   import {
@@ -13,6 +13,7 @@
   } from "$ts/glimmer/background";
   import { useIntlayer } from "svelte-intlayer";
   const appearanceContent = useIntlayer("appearance");
+  const commonContent = useIntlayer("common");
 
   const appearance = appState.appearance;
 
@@ -124,6 +125,14 @@
 {/snippet}
 
 <div class="flex flex-col gap-7">
+  <SettingGroup>
+    <SettingRow title={$commonContent.language.value}>
+      {#snippet control()}
+        <LanguageDropdown />
+      {/snippet}
+    </SettingRow>
+  </SettingGroup>
+
   <SettingGroup label={$appearanceContent.accentGroup.value}>
     <SettingRow
       title={$appearanceContent.accentTitle.value}

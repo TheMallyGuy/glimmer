@@ -2,24 +2,152 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "appLayout",
   "content": {
-    "tabIntegrations": "Integrations",
-    "tabMods": "Mods",
-    "tabFastFlags": "Fast Flags",
-    "tabInstallations": "Installations",
-    "tabAccounts": "Accounts",
-    "tabAppearance": "Appearance",
-    "tabAbout": "About",
-    "integrationsBlurb": "Do stuff that the Roblox Client can't do!",
-    "modsBlurb": "Swap client assets. Changes apply the next time the client launches",
-    "flagsBlurb": "Modify Roblox's fastflags!",
-    "installationsBlurb": "Manage installed Roblox versions and configured & how new ones are downloaded",
-    "accountsBlurb": "Conveniently add and switch between multiple Roblox accounts!",
-    "appearanceBlurb": "Make Glimmer your own!",
-    "aboutBlurb": "Everything you need to know about Glimmer",
-    "searchAllSettings": "Search all settings",
-    "settingsSections": "Settings sections",
-    "saveAndLaunch": "Save and launch",
-    "launchGame": "Launch the game",
-    "launchStudioDescription": "Open Studio with your mods applied"
-  }
+    "tabIntegrations": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Integrations",
+        "vi": "Tích hợp"
+      }
+    },
+    "tabMods": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Mods",
+        "vi": "Mods"
+      }
+    },
+    "tabFastFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fast Flags",
+        "vi": "Cờ Nhanh"
+      }
+    },
+    "tabInstallations": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Installations",
+        "vi": "Cài đặt"
+      }
+    },
+    "tabAccounts": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Accounts",
+        "vi": "Tài khoản"
+      }
+    },
+    "tabAppearance": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Appearance",
+        "vi": ""
+      }
+    },
+    "tabAbout": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "About",
+        "vi": ""
+      }
+    },
+    "integrationsBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Do stuff that the Roblox Client can't do!",
+        "vi": ""
+      }
+    },
+    "modsBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Swap client assets. Changes apply the next time the client launches",
+        "vi": "Hoán đổi tài sản của Client. Các thay đổi sẽ áp dụng vào lần tiếp theo khi Client khởi chạy"
+      }
+    },
+    "flagsBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Modify Roblox's fastflags!",
+        "vi": "Sửa đổi fastflags của Roblox!"
+      }
+    },
+    "installationsBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Manage installed Roblox versions and configured & how new ones are downloaded",
+        "vi": "Quản lý các phiên bản Roblox đã cài đặt và cấu hình cách tải xuống các phiên bản mới"
+      }
+    },
+    "accountsBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Conveniently add and switch between multiple Roblox accounts!",
+        "vi": "Thêm và chuyển đổi giữa nhiều tài khoản Roblox một cách thuận tiện!"
+      }
+    },
+    "appearanceBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Make Glimmer your own!",
+        "vi": "Hãy làm Glimmer trở nên riêng của bạn!"
+      }
+    },
+    "aboutBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Everything you need to know about Glimmer",
+        "vi": "Mọi thứ bạn cần biết về Glimmer"
+      }
+    },
+    "searchAllSettings": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Search all settings",
+        "vi": "Tìm kiếm tất cả cài đặt"
+      }
+    },
+    "settingsSections": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Settings sections",
+        "vi": "Mục cài đặt"
+      }
+    },
+    "saveAndLaunch": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Save and launch",
+        "vi": "Lưu và khởi chạy"
+      }
+    },
+    "launchGame": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Launch the game",
+        "vi": "Khởi chạy trò chơi"
+      }
+    },
+    "launchStudioDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Open Studio with your mods applied",
+        "vi": "Mở Studio với các mod của bạn đã được áp dụng"
+      }
+    }
+  },
+  "title": "",
+  "description": "",
+  "tags": [],
+  "creatorId": "6ad080ebd42776c07e727539",
+  "environmentId": null,
+  "location": "remote",
+  "createdAt": "2026-10-15T07:54:43.995Z",
+  "updatedAt": "2026-10-15T07:54:43.995Z",
+  "__v": 0,
+  "id": "6ad086c3d42776c07e7277b0",
+  "version": "v1",
+  "versionList": [
+    "v1"
+  ]
 }

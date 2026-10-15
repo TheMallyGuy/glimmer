@@ -2,25 +2,140 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "installations",
   "content": {
-    "parallelDownloads": "Parallel downloads",
-    "parallelDownloadsDescription": "How many packages to download at once, CPU usage is proportional to this number",
-    "forceReinstallRoblox": "Force reinstall Roblox",
-    "forceReinstallRobloxDescription": "Redownload the client fresh next time it launches.",
-    "disableRobloxUpgrades": "Disable Roblox upgrades",
-    "disableRobloxUpgradesDescription": "Keep the currently installed client version.",
-    "vngDistribution": "Roblox VNG",
-    "vngDistributionDescription": "DO NOT ENABLE THIS UNLESS YOUR ACCOUNT IS VNG. YOU WILL LOOSE YOUR ACCOUNT IF YOUR ROBLOX ACCOUNT IS NOT VNG.",
-    "vngWarningStepLabel": {
-      "nodeType": "insertion",
-      "insertion": "{{step}}/3"
+    "parallelDownloads": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Parallel downloads",
+        "vi": "Tải xuống song song"
+      }
     },
-    "vngWarningTitle1": "Read this carefully",
-    "vngWarning1": "This is roblox VNG, a Vietnamese distribution of Roblox. Its was meant for Vietnamese users, If you logged your account in Roblox VNG. You will loose your account forever.",
-    "vngWarningTitle2": "Read this extra carefully",
-    "vngWarning2": "Are you sure your account is VNG? You can check by logging in your account and press buy robux, if you got redirect to an VNG payment website. Thats mean your account is VNG.",
-    "vngWarningTitle3": "Em chac chua?",
-    "vngWarning3": "Are you really sure? You can't undo if your account is in VNG.",
-    "vngWarningContinue": "Next",
-    "vngWarningConfirm": "Enable Roblox VNG"
-  }
+    "parallelDownloadsDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "How many packages to download at once, CPU usage is proportional to this number",
+        "vi": "Số lượng gói tải về cùng lúc, mức sử dụng CPU tỉ lệ thuận với số này"
+      }
+    },
+    "forceReinstallRoblox": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Force reinstall Roblox",
+        "vi": "Cài lại Roblox"
+      }
+    },
+    "forceReinstallRobloxDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Redownload the client fresh next time it launches.",
+        "vi": "Tải lại client hoàn toàn mới lần sau khởi động."
+      }
+    },
+    "disableRobloxUpgrades": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable Roblox upgrades",
+        "vi": "Vô hiệu hóa nâng cấp Roblox"
+      }
+    },
+    "disableRobloxUpgradesDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Keep the currently installed client version.",
+        "vi": "Giữ lại phiên bản client hiện tại."
+      }
+    },
+    "vngDistribution": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Roblox VNG",
+        "vi": "Roblox VNG"
+      }
+    },
+    "vngDistributionDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "DO NOT ENABLE THIS UNLESS YOUR ACCOUNT IS VNG. YOU WILL LOOSE YOUR ACCOUNT IF YOUR ROBLOX ACCOUNT IS NOT VNG.",
+        "vi": "ĐỪNG BẤT KỲ KHI TÀI KHOẢN CỦA BẠN KHÔNG PHẢI LÀ VNG. BẠN SẼ MẤT TÀI KHOẢN CỦA BẠN NẾU TÀI KHOẢN ROBLOX CỦA BẠN KHÔNG PHẢI LÀ VNG."
+      }
+    },
+    "vngWarningStepLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "{{step}}/3"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "{{step}}/3"
+        }
+      }
+    },
+    "vngWarningTitle1": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Read this carefully",
+        "vi": "Đọc kỹ điều này"
+      }
+    },
+    "vngWarning1": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "This is roblox VNG, a Vietnamese distribution of Roblox. Its was meant for Vietnamese users, If you logged your account in Roblox VNG. You will loose your account forever.",
+        "vi": "Đây là Roblox VNG, một bản phân phối của Roblox dành cho người dùng Việt Nam. Nó được thiết kế cho người dùng Việt Nam, nếu bạn đăng nhập tài khoản của bạn trên Roblox VNG, bạn sẽ mất tài khoản mãi mãi."
+      }
+    },
+    "vngWarningTitle2": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Read this extra carefully",
+        "vi": "Đọc kỹ thêm lần nữa"
+      }
+    },
+    "vngWarning2": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Are you sure your account is VNG? You can check by logging in your account and press buy robux, if you got redirect to an VNG payment website. Thats mean your account is VNG.",
+        "vi": "Bạn có chắc chắn rằng tài khoản của bạn là VNG không? Bạn có thể kiểm tra bằng cách đăng nhập vào tài khoản của bạn và nhấn mua robux, nếu bạn bị chuyển hướng đến một trang web thanh toán của VNG. Điều đó có nghĩa là tài khoản của bạn là VNG."
+      }
+    },
+    "vngWarningTitle3": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Em chac chua?",
+        "vi": "Em chac chua?"
+      }
+    },
+    "vngWarning3": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Are you really sure? You can't undo if your account is in VNG.",
+        "vi": "Bạn thực sự chắc chắn không? Bạn không thể hoàn tác nếu tài khoản của bạn nằm trong VNG."
+      }
+    },
+    "vngWarningContinue": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Next",
+        "vi": "Tiếp theo"
+      }
+    },
+    "vngWarningConfirm": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Enable Roblox VNG",
+        "vi": "Kích hoạt Roblox VNG"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Roblox VNG Installation Settings",
+  "description": "Provides configuration options for installing Roblox with VNG distribution, including parallel downloads, forced reinstall, disabling upgrades, and safety warnings for VNG accounts.",
+  "tags": [
+    "roblox",
+    "vng",
+    "installations",
+    "settings",
+    "advanced"
+  ]
 }

@@ -2,9 +2,41 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "modsLayout",
   "content": {
-    "yourMods": "Your mods",
-    "builtIn": "Built-in",
-    "community": "Community",
-    "modViewsNav": "Mod views"
-  }
+    "yourMods": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Your mods",
+        "vi": "Các mod của bạn"
+      }
+    },
+    "builtIn": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Built-in",
+        "vi": "Có sẵn"
+      }
+    },
+    "community": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Community",
+        "vi": "Cộng đồng"
+      }
+    },
+    "modViewsNav": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Mod views",
+        "vi": "Xem mod"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Mods page layout",
+  "description": "Translations for displaying different sections of the Mods page, such as your own, built-in, and community modules.",
+  "tags": [
+    "Mods",
+    "Navigation",
+    "Translations"
+  ]
 }

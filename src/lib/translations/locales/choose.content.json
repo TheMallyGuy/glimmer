@@ -2,22 +2,103 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "choose",
   "content": {
-    "play": "Play",
-    "makeGames": "Make Games",
+    "play": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Play",
+        "vi": "Chơi"
+      }
+    },
+    "makeGames": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Make Games",
+        "vi": "Tạo Game"
+      }
+    },
     "openRoblox": {
-      "nodeType": "insertion",
-      "insertion": "Open Roblox {{target}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Open Roblox {{target}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Mở Roblox {{target}}"
+        }
+      }
     },
-    "settings": "Settings",
-    "configureRoblox": "Configure Roblox",
-    "community": "Community",
-    "discussWithCommunity": "Discuss with our Community",
-    "launchAs": "Launch as",
-    "signInAs": "Sign in as",
+    "settings": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Settings",
+        "vi": "Cài đặt"
+      }
+    },
+    "configureRoblox": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Configure Roblox",
+        "vi": "Cấu Hình Roblox"
+      }
+    },
+    "community": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Community",
+        "vi": "Cộng Đồng"
+      }
+    },
+    "discussWithCommunity": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Discuss with our Community",
+        "vi": "Thảo luận với Cộng Đồng của chúng tôi"
+      }
+    },
+    "launchAs": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Launch as",
+        "vi": "Khởi động dưới dạng"
+      }
+    },
+    "signInAs": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Sign in as",
+        "vi": "Đăng nhập dưới dạng"
+      }
+    },
     "signInAsName": {
-      "nodeType": "insertion",
-      "insertion": "Sign in as: {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Sign in as: {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Đăng nhập dưới dạng: {{name}}"
+        }
+      }
     },
-    "robloxLogin": "non-Forced"
-  }
+    "robloxLogin": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "non-Forced",
+        "vi": "Không Bắt Buộc"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Choose Roblox experience",
+  "description": "Content declarations for the choose component, including options to play games, make games, open Roblox, configure settings, community features, launch options, and sign-in functionality for Roblox integration.",
+  "tags": [
+    "choose component",
+    "roblox integration",
+    "game launcher",
+    "authentication"
+  ]
 }

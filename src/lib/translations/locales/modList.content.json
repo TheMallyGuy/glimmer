@@ -2,25 +2,89 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "modList",
   "content": {
-    "yourModsList": "Your mods, highest priority first",
-    "newModName": "New mod name",
-    "newModNamePlaceholder": "Mod name, then press Enter",
+    "yourModsList": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Your mods, highest priority first",
+        "vi": "Các mod của bạn, ưu tiên cao nhất đứng đầu"
+      }
+    },
+    "newModName": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "New mod name",
+        "vi": "Tên mod mới"
+      }
+    },
+    "newModNamePlaceholder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Mod name, then press Enter",
+        "vi": "Tên mod, sau đó nhấn phím Enter"
+      }
+    },
     "enableMod": {
-      "nodeType": "insertion",
-      "insertion": "Enable {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Enable {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Bật {{name}}"
+        }
+      }
     },
     "reorderMod": {
-      "nodeType": "insertion",
-      "insertion": "Reorder {{name}}. Use the up and down arrow keys."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Reorder {{name}}. Use the up and down arrow keys."
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Sắp xếp lại {{name}}. Sử dụng các phím mũi tên lên và xuống."
+        }
+      }
     },
     "renameMod": {
-      "nodeType": "insertion",
-      "insertion": "Rename {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Rename {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Đặt tên lại {{name}}"
+        }
+      }
     },
-    "clickToRename": "Click to rename",
+    "clickToRename": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Click to rename",
+        "vi": "Nhấp để đặt tên lại"
+      }
+    },
     "moreForMod": {
-      "nodeType": "insertion",
-      "insertion": "More for {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "More for {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Cài đặt bổ sung cho {{name}}"
+        }
+      }
     }
-  }
+  },
+  "location": "local",
+  "title": "Mod list",
+  "description": "Content and translations for UI text related to the mod list. This includes labels, actions, accessibility text and placeholder for mod management components (e.g. 'your mods list', 'enable/disable', 'rename mod', 'reorder mod', etc).",
+  "tags": []
 }

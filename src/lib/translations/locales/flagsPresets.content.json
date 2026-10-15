@@ -2,36 +2,191 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "flagsPresets",
   "content": {
-    "geometryGroup": "Geometry",
-    "lowMeshQuality": "Low mesh quality",
-    "lowMeshQualityDescription": "Switch to lower-detail CSG meshes sooner, at every distance.",
-    "pauseVoxelizer": "Pause voxelizer",
-    "pauseVoxelizerDescription": "Stop terrain/CSG voxelization while it's running.",
-    "renderingGroup": "Rendering",
-    "preferredGraphicsApi": "Preferred graphics API",
-    "preferredGraphicsApiDescription": "Force a specific rendering backend instead of Roblox's own choice.",
-    "graphicsApiDirect3D11": "Direct3D 11",
-    "graphicsApiVulkan": "Vulkan",
-    "graphicsApiOpenGL": "OpenGL",
-    "msaaSamples": "MSAA samples",
-    "msaaSamplesDescription": "Anti-aliasing sample count.",
-    "textureQualityOverride": "Texture quality override",
-    "textureQualityOverrideDescription": "Force a texture quality level instead of Roblox's automatic setting.",
-    "graySky": "Gray sky",
-    "graySkyDescription": "Replace the sky with flat gray, for debugging or lower-end GPUs.",
-    "disableDpiScaling": "Disable DPI scaling",
-    "disableDpiScalingDescription": "Render at 1:1 pixel scale, ignoring Windows display scaling.",
-    "renderQualityLevelOverride": "Render quality level override",
-    "renderQualityLevelOverrideDescription": "Force render manager (FRM) quality level, 0 for automatic.",
-    "grassGroup": "Grass",
-    "maxGrassDistance": "Max grass render distance",
-    "maxGrassDistanceDescription": "Studs from the camera grass keeps rendering out to.",
-    "minGrassDistance": "Min grass render distance",
-    "minGrassDistanceDescription": "Studs from the camera grass always renders within.",
-    "grassMotionFactor": "Grass movement reduced-motion factor",
-    "grassMotionFactorDescription": "Scales down how much grass sways; higher is stiller.",
-    "windowGroup": "Window",
-    "handleAltEnter": "Handle Alt+Enter fullscreen manually",
-    "handleAltEnterDescription": "Let Roblox itself handle the Alt+Enter fullscreen toggle."
+    "geometryGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Geometry"
+      }
+    },
+    "lowMeshQuality": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Low mesh quality"
+      }
+    },
+    "lowMeshQualityDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Switch to lower-detail CSG meshes sooner, at every distance."
+      }
+    },
+    "pauseVoxelizer": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Pause voxelizer"
+      }
+    },
+    "pauseVoxelizerDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Stop terrain/CSG voxelization while it's running."
+      }
+    },
+    "renderingGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Rendering"
+      }
+    },
+    "preferredGraphicsApi": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Preferred graphics API"
+      }
+    },
+    "preferredGraphicsApiDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Force a specific rendering backend instead of Roblox's own choice."
+      }
+    },
+    "graphicsApiDirect3D11": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Direct3D 11"
+      }
+    },
+    "graphicsApiVulkan": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Vulkan"
+      }
+    },
+    "graphicsApiOpenGL": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "OpenGL"
+      }
+    },
+    "msaaSamples": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "MSAA samples"
+      }
+    },
+    "msaaSamplesDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Anti-aliasing sample count."
+      }
+    },
+    "textureQualityOverride": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Texture quality override"
+      }
+    },
+    "textureQualityOverrideDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Force a texture quality level instead of Roblox's automatic setting."
+      }
+    },
+    "graySky": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Gray sky"
+      }
+    },
+    "graySkyDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Replace the sky with flat gray, for debugging or lower-end GPUs."
+      }
+    },
+    "disableDpiScaling": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable DPI scaling"
+      }
+    },
+    "disableDpiScalingDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Render at 1:1 pixel scale, ignoring Windows display scaling."
+      }
+    },
+    "renderQualityLevelOverride": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Render quality level override"
+      }
+    },
+    "renderQualityLevelOverrideDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Force render manager (FRM) quality level, 0 for automatic."
+      }
+    },
+    "grassGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Grass"
+      }
+    },
+    "maxGrassDistance": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Max grass render distance"
+      }
+    },
+    "maxGrassDistanceDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Studs from the camera grass keeps rendering out to."
+      }
+    },
+    "minGrassDistance": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Min grass render distance"
+      }
+    },
+    "minGrassDistanceDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Studs from the camera grass always renders within."
+      }
+    },
+    "grassMotionFactor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Grass movement reduced-motion factor"
+      }
+    },
+    "grassMotionFactorDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Scales down how much grass sways; higher is stiller."
+      }
+    },
+    "windowGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Window"
+      }
+    },
+    "handleAltEnter": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Handle Alt+Enter fullscreen manually"
+      }
+    },
+    "handleAltEnterDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Let Roblox itself handle the Alt+Enter fullscreen toggle."
+      }
+    }
   }
 }

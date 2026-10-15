@@ -2,108 +2,507 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "flagTable",
   "content": {
-    "filterFlags": "Filter flags",
-    "importJson": "Import JSON",
-    "addFlag": "Add flag",
-    "fastFlagsTable": "Fast Flags",
-    "columnName": "Name",
-    "columnValue": "Value",
-    "columnType": "Type",
-    "columnActions": "Actions",
-    "flagName": "Flag name",
-    "flagNamePlaceholder": "FFlagName",
+    "filterFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Filter flags",
+        "vi": "Lọc cờ"
+      }
+    },
+    "importJson": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Import JSON",
+        "vi": "Nhập JSON"
+      }
+    },
+    "addFlag": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Add flag",
+        "vi": " Thêm cờ"
+      }
+    },
+    "fastFlagsTable": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fast Flags",
+        "vi": "Fast Flags"
+      }
+    },
+    "columnName": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Name",
+        "vi": "Tên"
+      }
+    },
+    "columnValue": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Value",
+        "vi": "Giá trị"
+      }
+    },
+    "columnType": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Type",
+        "vi": "Loại"
+      }
+    },
+    "columnActions": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Actions",
+        "vi": "Thao tác"
+      }
+    },
+    "flagName": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Flag name",
+        "vi": "Tên cờ"
+      }
+    },
+    "flagNamePlaceholder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "FFlagName",
+        "vi": "FFlagName"
+      }
+    },
     "valueForFlag": {
-      "nodeType": "insertion",
-      "insertion": "Value for {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Value for {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Giá trị cho {{name}}"
+        }
+      }
     },
-    "newFlagFallback": "new flag",
-    "valuePlaceholder": "Value",
+    "newFlagFallback": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "new flag",
+        "vi": "cờ mới"
+      }
+    },
+    "valuePlaceholder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Value",
+        "vi": "Giá trị"
+      }
+    },
     "removeFlag": {
-      "nodeType": "insertion",
-      "insertion": "Remove {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Remove {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Xóa {{name}}"
+        }
+      }
     },
-    "removeFlagFallback": "flag",
-    "typeDuplicate": "Duplicate",
-    "typeBoolean": "Boolean",
-    "typeInteger": "Integer",
-    "typeString": "String",
-    "typeLog": "Log",
-    "typeUnknownPrefix": "Unknown prefix",
-    "typeEmpty": "—",
-    "emptyNoFlags": "No flags yet. Add one or import a JSON file.",
-    "emptyNoMatch": "No flags match that filter.",
+    "removeFlagFallback": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "flag",
+        "vi": "cờ"
+      }
+    },
+    "typeDuplicate": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Duplicate",
+        "vi": "Nhân bản"
+      }
+    },
+    "typeBoolean": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Boolean",
+        "vi": "Boolean"
+      }
+    },
+    "typeInteger": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Integer",
+        "vi": "Số nguyên"
+      }
+    },
+    "typeString": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "String",
+        "vi": "Chuỗi"
+      }
+    },
+    "typeLog": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Log",
+        "vi": "Log"
+      }
+    },
+    "typeUnknownPrefix": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Unknown prefix",
+        "vi": "Tiền tố không xác định"
+      }
+    },
+    "typeEmpty": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "—",
+        "vi": "—"
+      }
+    },
+    "emptyNoFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "No flags yet. Add one or import a JSON file.",
+        "vi": "Chưa có cờ nào. Thêm một cờ hoặc nhập một tệp JSON."
+      }
+    },
+    "emptyNoMatch": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "No flags match that filter.",
+        "vi": "Không có cờ nào trùng với bộ lọc đó."
+      }
+    },
     "flagCount": {
-      "nodeType": "enumeration",
-      "enumeration": {
-        "1": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} flag"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} flag"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} flags"
+            }
+          }
         },
-        "fallback": {
-          "nodeType": "insertion",
-          "insertion": "{{count}} flags"
+        "vi": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} cờ"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "{{count}} cờ"
+            }
+          }
         }
       }
     },
-    "exportJson": "Export JSON",
-    "resetAll": "Reset all",
-    "resetDialogTitle": "Reset all Fast Flags?",
-    "resetDialogBody": "This removes every flag you have set and restores the client defaults. You can’t undo this.",
-    "resetFlags": "Reset flags",
+    "exportJson": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Export JSON",
+        "vi": "Xuất JSON"
+      }
+    },
+    "resetAll": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Reset all",
+        "vi": "Đặt lại tất cả"
+      }
+    },
+    "resetDialogTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Reset all Fast Flags?",
+        "vi": "Đặt lại tất cả Fast Flags?"
+      }
+    },
+    "resetDialogBody": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "This removes every flag you have set and restores the client defaults. You can’t undo this.",
+        "vi": "Thao tác này sẽ xóa tất cả các cờ bạn đã đặt và khôi phục các giá trị mặc định của client. Bạn không thể hoàn tác điều này."
+      }
+    },
+    "resetFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Reset flags",
+        "vi": "Đặt lại các cờ"
+      }
+    },
     "importErrorPrefix": {
-      "nodeType": "insertion",
-      "insertion": "Couldn’t import {{file}}"
-    },
-    "importErrorFallback": "the file isn’t valid JSON.",
-    "pasteJson": "Paste JSON",
-    "pasteDialogTitle": "Paste Fast Flags",
-    "pasteLabel": "JSON with one flag per key, as Bloxstrap and Glimmer export it",
-    "importFlags": "Import flags",
-    "imported": {
-      "nodeType": "insertion",
-      "insertion": "{{added}} added, {{updated}} updated"
-    },
-    "loadFromRoblox": "Load from Roblox",
-    "applyNow": "Apply now",
-    "loaded": {
-      "nodeType": "insertion",
-      "insertion": "Loaded from Roblox: {{added}} added, {{updated}} updated!"
-    },
-    "loadedNothing": "Roblox has no Fast Flags set.",
-    "noShizuku": "Shizuku isn’t ready. Start it and allow Glimmer, then try again.",
-    "loadFailedNoInstall": "No Roblox version is installed yet. Install one first.",
-    "loadFailedInvalid": "The Fast Flags file of Roblox isn’t valid JSON...? Apply your flags to replace it.",
-    "applied": {
-      "nodeType": "enumeration",
-      "enumeration": {
-        "1": { "nodeType": "insertion", "insertion": "Applied {{count}} flag to Roblox!" },
-        "fallback": { "nodeType": "insertion", "insertion": "Applied {{count}} flags to Roblox!" }
-      }
-    },
-    "applyFailed": "Couldn’t write the flags to Roblox",
-    "copyJson": "Copy JSON",
-    "copied": "Copied the flags as JSON.",
-    "copyFailed": "Couldn’t copy. Use Export JSON instead.",
-    "exported": {
-      "nodeType": "enumeration",
-      "enumeration": {
-        "1": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
           "nodeType": "insertion",
-          "insertion": "Exported {{count}} flag."
+          "insertion": "Couldn’t import {{file}}"
         },
-        "fallback": {
+        "vi": {
           "nodeType": "insertion",
-          "insertion": "Exported {{count}} flags."
+          "insertion": "Không thể nhập {{file}}"
         }
       }
     },
-    "exportFailed": "Couldn’t save the file",
-    "removedFlag": {
-      "nodeType": "insertion",
-      "insertion": "Removed {{name}}"
+    "importErrorFallback": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "the file isn’t valid JSON.",
+        "vi": "tệp tin không phải là JSON hợp lệ."
+      }
     },
-    "undo": "Undo",
-    "valueNotBoolean": "Not true or false",
-    "valueNotInteger": "Not a whole number"
-  }
+    "pasteJson": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Paste JSON",
+        "vi": "Dán JSON"
+      }
+    },
+    "pasteDialogTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Paste Fast Flags",
+        "vi": "Dán Fast Flags"
+      }
+    },
+    "pasteLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "JSON with one flag per key, as Bloxstrap and Glimmer export it",
+        "vi": "JSON với một cờ trên mỗi khóa, như Bloxstrap và Glimmer xuất khẩu"
+      }
+    },
+    "importFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Import flags",
+        "vi": "Nhập các cờ"
+      }
+    },
+    "imported": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "{{added}} added, {{updated}} updated"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "{{added}} đã thêm, {{updated}} đã cập nhật"
+        }
+      }
+    },
+    "loadFromRoblox": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Load from Roblox",
+        "vi": "Tải từ Roblox"
+      }
+    },
+    "applyNow": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Apply now",
+        "vi": "Áp dụng ngay"
+      }
+    },
+    "loaded": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Loaded from Roblox: {{added}} added, {{updated}} updated!"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Đã tải từ Roblox: {{added}} đã thêm, {{updated}} đã cập nhật!"
+        }
+      }
+    },
+    "loadedNothing": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Roblox has no Fast Flags set.",
+        "vi": "Roblox không có Fast Flags nào được đặt."
+      }
+    },
+    "noShizuku": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Shizuku isn’t ready. Start it and allow Glimmer, then try again.",
+        "vi": "Shizuku chưa sẵn sàng. Khởi động nó và cho phép Glimmer, sau đó thử lại."
+      }
+    },
+    "loadFailedNoInstall": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "No Roblox version is installed yet. Install one first.",
+        "vi": "Chưa có phiên bản Roblox nào được cài đặt. Hãy cài đặt một phiên bản trước."
+      }
+    },
+    "loadFailedInvalid": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "The Fast Flags file of Roblox isn’t valid JSON...? Apply your flags to replace it.",
+        "vi": "Tệp Fast Flags của Roblox không phải là JSON hợp lệ...? Áp dụng các cờ của bạn để thay thế nó."
+      }
+    },
+    "applied": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "Applied {{count}} flag to Roblox!"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "Applied {{count}} flags to Roblox!"
+            }
+          }
+        },
+        "vi": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "Đã áp dụng {{count}} cờ cho Roblox!"
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "Đã áp dụng {{count}} cờ cho Roblox!"
+            }
+          }
+        }
+      }
+    },
+    "applyFailed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Couldn’t write the flags to Roblox",
+        "vi": "Không thể ghi cờ vào Roblox"
+      }
+    },
+    "copyJson": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Copy JSON",
+        "vi": "Sao chép JSON"
+      }
+    },
+    "copied": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Copied the flags as JSON.",
+        "vi": "Đã sao chép các cờ dưới dạng JSON."
+      }
+    },
+    "copyFailed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Couldn’t copy. Use Export JSON instead.",
+        "vi": "Không thể sao chép. Hãy sử dụng Xuất JSON thay thế."
+      }
+    },
+    "exported": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "Exported {{count}} flag."
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "Exported {{count}} flags."
+            }
+          }
+        },
+        "vi": {
+          "nodeType": "enumeration",
+          "enumeration": {
+            "1": {
+              "nodeType": "insertion",
+              "insertion": "Đã xuất {{count}} cờ."
+            },
+            "fallback": {
+              "nodeType": "insertion",
+              "insertion": "Đã xuất {{count}} cờ."
+            }
+          }
+        }
+      }
+    },
+    "exportFailed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Couldn’t save the file",
+        "vi": "Không thể lưu tệp."
+      }
+    },
+    "removedFlag": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Removed {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Đã xóa {{name}}"
+        }
+      }
+    },
+    "undo": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Undo",
+        "vi": "Hoàn tác"
+      }
+    },
+    "valueNotBoolean": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Not true or false",
+        "vi": "Không phải là true hoặc false"
+      }
+    },
+    "valueNotInteger": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Not a whole number",
+        "vi": "Không phải là số nguyên"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Fast Flags Table",
+  "description": "Manage and configure Fast Flags for Roblox with import/export, editing, resetting, and live application features.",
+  "tags": [
+    "fast flags",
+    "roblox",
+    "settings",
+    "management"
+  ]
 }

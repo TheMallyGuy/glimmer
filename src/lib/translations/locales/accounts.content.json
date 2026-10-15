@@ -2,44 +2,196 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "accounts",
   "content": {
-    "intro": "Pick the Roblox account to sign in with. It's used the next time you launch.",
-    "addAccount": "Add account",
-    "waitingForLogin": "Waiting for you to log in…",
-    "cancelLogin": "Cancel",
+    "intro": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Pick the Roblox account to sign in with. It's used the next time you launch.",
+        "vi": "Chọn tài khoản Roblox để đăng nhập. Nó sẽ được sử dụng lần sau khi bạn khởi chạy."
+      }
+    },
+    "addAccount": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Add account",
+        "vi": "Thêm tài khoản"
+      }
+    },
+    "waitingForLogin": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Waiting for you to log in…",
+        "vi": "Đang chờ bạn đăng nhập…"
+      }
+    },
+    "cancelLogin": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Cancel",
+        "vi": "Hủy"
+      }
+    },
     "loginFailed": {
-      "nodeType": "insertion",
-      "insertion": "Couldn't add the account. {{error}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Couldn't add the account. {{error}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Không thể thêm tài khoản. {{error}}"
+        }
+      }
     },
-    "emptyTitle": "No accounts yet",
-    "emptyBody": "Conveniently add accounts and switch to it with one click!, Uses keyrings to secure your credentials.",
+    "emptyTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "No accounts yet",
+        "vi": "Chưa có tài khoản nào"
+      }
+    },
+    "emptyBody": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Conveniently add accounts and switch to it with one click!, Uses keyrings to secure your credentials.",
+        "vi": "Thêm tài khoản một cách thuận tiện và chuyển đổi với một cú nhấn!, Sử dụng keyring để bảo mật thông tin đăng nhập của bạn."
+      }
+    },
     "forcedTitle": {
-      "nodeType": "insertion",
-      "insertion": "Logging in as {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Logging in as {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Đang đăng nhập với {{name}}"
+        }
+      }
     },
-    "forcedDescription": "This account will be the next account that Roblox will signed in as! You can click stop to stop forcing.",
-    "useRobloxLogin": "Stop forcing an account",
-    "unforcedTitle": "Select an account!",
-    "unforcedDescription": "In the next launch, We'll forcfully sign in as the account you pick.",
-    "useAccount": "Use this account",
-    "selected": "Logged in next launch",
-    "expired": "Login expired. Remove this account and add it again.",
+    "forcedDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "This account will be the next account that Roblox will signed in as! You can click stop to stop forcing.",
+        "vi": "Tài khoản này sẽ là tài khoản mà Roblox sẽ đăng nhập vào lần sau! Bạn có thể nhấn dừng để dừng ép buộc."
+      }
+    },
+    "useRobloxLogin": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Stop forcing an account",
+        "vi": "Dừng ép buộc một tài khoản"
+      }
+    },
+    "unforcedTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Select an account!",
+        "vi": "Chọn một tài khoản!"
+      }
+    },
+    "unforcedDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "In the next launch, We'll forcfully sign in as the account you pick.",
+        "vi": "Trong lần khởi chạy tiếp theo, chúng tôi sẽ ép buộc đăng nhập bằng tài khoản bạn chọn."
+      }
+    },
+    "useAccount": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Use this account",
+        "vi": "Sử dụng tài khoản này"
+      }
+    },
+    "selected": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Logged in next launch",
+        "vi": "Đăng nhập lần sau"
+      }
+    },
+    "expired": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Login expired. Remove this account and add it again.",
+        "vi": "Đăng nhập đã hết hạn. Xóa tài khoản này và thêm lại."
+      }
+    },
     "usernameLine": {
-      "nodeType": "insertion",
-      "insertion": "@{{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "@{{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "@{{name}}"
+        }
+      }
     },
     "removeAccount": {
-      "nodeType": "insertion",
-      "insertion": "Remove {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Remove {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Xóa {{name}}"
+        }
+      }
     },
-    "removeTitle": "Remove account",
+    "removeTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Remove account",
+        "vi": "Xóa tài khoản"
+      }
+    },
     "removeBody": {
-      "nodeType": "insertion",
-      "insertion": "Remove {{name}} from Glimmer? Their saved login is deleted. You can add the account again later."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Remove {{name}} from Glimmer? Their saved login is deleted. You can add the account again later."
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Xóa {{name}} khỏi Glimmer? Đăng nhập đã lưu của họ sẽ bị xóa. Bạn có thể thêm lại tài khoản này sau này."
+        }
+      }
     },
-    "remove": "Remove account",
+    "remove": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Remove account",
+        "vi": "Xóa tài khoản"
+      }
+    },
     "avatarAlt": {
-      "nodeType": "insertion",
-      "insertion": "Avatar of {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Avatar of {{name}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Ảnh đại diện của {{name}}"
+        }
+      }
     }
-  }
+  },
+  "location": "local",
+  "title": "Accounts",
+  "description": "Multilingual content declarations for account management and sign-in flows.",
+  "tags": [
+    "accounts",
+    "authentication",
+    "localization"
+  ]
 }

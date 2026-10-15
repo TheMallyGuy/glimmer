@@ -2,12 +2,32 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "updater",
   "content": {
-    "title": "Update available!",
-    "body": {
-      "nodeType": "insertion",
-      "insertion": "Glimmer {{version}} is ready to install. Glimmer restarts to finish the update."
+    "title": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Update available!"
+      }
     },
-    "install": "Update and restart",
-    "later": "Not now"
+    "body": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Glimmer {{version}} is ready to install. Glimmer restarts to finish the update."
+        }
+      }
+    },
+    "install": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Update and restart"
+      }
+    },
+    "later": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Not now"
+      }
+    }
   }
 }

@@ -2,12 +2,47 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "toast",
   "content": {
-    "region": "Notifications",
-    "dismiss": "Dismiss notification",
-    "saved": "Settings saved.",
+    "region": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Notifications",
+        "vi": "Thông báo"
+      }
+    },
+    "dismiss": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Dismiss notification",
+        "vi": "Đóng thông báo"
+      }
+    },
+    "saved": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Settings saved.",
+        "vi": "Đã lưu cài đặt."
+      }
+    },
     "saveFailed": {
-      "nodeType": "insertion",
-      "insertion": "Couldn't save your settings. {{error}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Couldn't save your settings. {{error}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Không thể lưu cài đặt của bạn. {{error}}"
+        }
+      }
     }
-  }
+  },
+  "location": "local",
+  "title": "Toast notifications",
+  "description": "Dictionary of toast messages used for user notifications, including region label, dismiss action, save success and failure messages.",
+  "tags": [
+    "notifications",
+    "toast",
+    "ui"
+  ]
 }

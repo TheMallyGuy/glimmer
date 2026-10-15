@@ -2,10 +2,34 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "splitButton",
   "content": {
-    "launchTarget": "Launch target",
+    "launchTarget": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Launch target",
+        "vi": "Khởi chạy mục tiêu"
+      }
+    },
     "launchTargetWithValue": {
-      "nodeType": "insertion",
-      "insertion": "Launch target: {{target}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Launch target: {{target}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Khởi chạy mục tiêu: {{target}}"
+        }
+      }
     }
-  }
+  },
+  "location": "local",
+  "title": "Split button",
+  "description": "Content declaration for the SplitButton component, defining translation strings such as \"Launch target\" and a dynamic insertion string for displaying the target.",
+  "tags": [
+    "component",
+    "button",
+    "splitButton",
+    "i18n"
+  ]
 }

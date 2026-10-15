@@ -2,18 +2,82 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "tour",
   "content": {
-    "welcomeTitle": "Welcome to Glimmer",
-    "welcomeBlurb": "This a guide to quickly configure Glimmer and get going!",
-    "getStarted": "Get started",
-    "skip": "Skip",
-    "back": "Back",
-    "next": "Next",
-    "languageTitle": "Language",
-    "languageBlurb": "Glimmer is in English for now.",
-    "languageLabel": "Language",
-    "english": "English",
-    "doneTitle": "Finished",
-    "doneBlurb": "Glimmer is ready. Pick Player or Studio in the next window.",
-    "finish": "Open Glimmer"
+    "welcomeTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Welcome to Glimmer",
+        "vi": "Chào mừng đến với Glimmer"
+      }
+    },
+    "welcomeBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "A Roblox bootstrapper. Two quick steps and you are in.",
+        "vi": "Đây là hướng dẫn để nhanh chóng cấu hình Glimmer và bắt đầu!"
+      }
+    },
+    "getStarted": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Get started",
+        "vi": "Bắt đầu"
+      }
+    },
+    "skip": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Skip",
+        "vi": "Bỏ qua"
+      }
+    },
+    "back": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Back",
+        "vi": "Quay lại"
+      }
+    },
+    "next": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Next",
+        "vi": "Tiếp theo"
+      }
+    },
+    "languageTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Language",
+        "vi": "Ngôn ngữ"
+      }
+    },
+    "languageBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Pick the language Glimmer is shown in. You can change it later in Appearance.",
+        "vi": "Chọn ngôn ngữ hiển thị của Glimmer. Bạn có thể đổi lại sau trong Appearance."
+      }
+    },
+    "doneTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Finished",
+        "vi": "Hoàn thành"
+      }
+    },
+    "doneBlurb": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer is ready. Pick Player or Studio in the next window.",
+        "vi": "Glimmer đã sẵn sàng. Chọn Player hoặc Studio trong cửa sổ tiếp theo."
+      }
+    },
+    "finish": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Open Glimmer",
+        "vi": "Mở Glimmer"
+      }
+    }
   }
 }

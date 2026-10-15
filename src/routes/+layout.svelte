@@ -18,7 +18,10 @@
   let { children }: { children: Snippet } = $props();
 
   // starts the intlayer editor client (a no-op unless the editor is enabled)
-  setupIntlayer("en");
+  const { setLocale } = setupIntlayer("en");
+
+  // the saved language, once the settings are loaded, and again when it is changed on a page
+  $effect(() => setLocale(appState.language));
 
   // the settings window previews a new accent as it is picked; other windows get the saved one when they load
   $effect(() => AccentTheme.apply(appState.appearance.accent));

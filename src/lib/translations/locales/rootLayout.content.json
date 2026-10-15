@@ -2,6 +2,19 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "rootLayout",
   "content": {
-    "uninstallBubblestrap": "Please uninstall Bubblestrap to launch glimmer."
-  }
+    "uninstallBubblestrap": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Please uninstall Bubblestrap to launch glimmer.",
+        "vi": "Vui lòng gỡ bỏ Bubblestrap để khởi động glimmer."
+      }
+    }
+  },
+  "location": "local",
+  "title": "Root layout translations",
+  "description": "Translations for the root layout, such as messages that appear in the header or footer.",
+  "tags": [
+    "layout",
+    "root"
+  ]
 }

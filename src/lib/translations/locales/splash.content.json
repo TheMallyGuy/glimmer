@@ -2,48 +2,143 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "splash",
   "content": {
-    "checkingForUpdates": "Checking for updates",
-    "fetchingManifest": "Fetching manifest",
+    "checkingForUpdates": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Checking for updates"
+      }
+    },
+    "fetchingManifest": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fetching manifest"
+      }
+    },
     "downloadingClient": {
-      "nodeType": "insertion",
-      "insertion": "Downloading client ({{done}}/{{total}})"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Downloading client ({{done}}/{{total}})"
+        }
+      }
     },
     "extractingClient": {
-      "nodeType": "insertion",
-      "insertion": "Extracting client ({{done}}/{{total}})"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Extracting client ({{done}}/{{total}})"
+        }
+      }
     },
-    "finishingInstallation": "Finishing installation",
-    "applyingMods": "Applying mods",
+    "finishingInstallation": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Finishing installation"
+      }
+    },
+    "applyingMods": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Applying mods"
+      }
+    },
     "downloadingModOriginals": {
-      "nodeType": "insertion",
-      "insertion": "Downloading mod originals ({{done}}/{{total}})"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Downloading mod originals ({{done}}/{{total}})"
+        }
+      }
     },
-    "applyingFlags": "Applying flags",
+    "applyingFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Applying flags"
+      }
+    },
     "launching": {
-      "nodeType": "insertion",
-      "insertion": "Launching {{version}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Launching {{version}}"
+        }
+      }
     },
-    "genericError": "Something went wrong. Please try again.",
-    "launchProgress": "Launch progress",
-    "prepare": "Preparing...",
-    "stoppingFleasion": "Closing Fleasion",
-    "startingFleasion": "Starting Fleasion",
+    "genericError": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Something went wrong. Please try again."
+      }
+    },
+    "launchProgress": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Launch progress"
+      }
+    },
+    "prepare": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Preparing..."
+      }
+    },
+    "stoppingFleasion": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Closing Fleasion"
+      }
+    },
+    "startingFleasion": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Starting Fleasion"
+      }
+    },
     "signingIn": {
-      "nodeType": "insertion",
-      "insertion": "Signing in as {{name}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Signing in as {{name}}"
+        }
+      }
     },
-    "accountNeeded": "Joining a game link needs an account. Add one in the Accounts tab.",
+    "accountNeeded": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Joining a game link needs an account. Add one in the Accounts tab."
+      }
+    },
     "accountExpired": {
-      "nodeType": "insertion",
-      "insertion": "{{name}}'s login expired. Remove the account in the Accounts tab and add it again."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "{{name}}'s login expired. Remove the account in the Accounts tab and add it again."
+        }
+      }
     },
     "accountMissing": {
-      "nodeType": "insertion",
-      "insertion": "The saved login for {{name}} is missing. Remove the account in the Accounts tab and add it again."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "The saved login for {{name}} is missing. Remove the account in the Accounts tab and add it again."
+        }
+      }
     },
     "accountFailed": {
-      "nodeType": "insertion",
-      "insertion": "Couldn't sign in as {{name}}. {{error}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Couldn't sign in as {{name}}. {{error}}"
+        }
+      }
     }
   }
 }

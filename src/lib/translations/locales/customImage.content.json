@@ -2,16 +2,91 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "customImage",
   "content": {
-    "backToIntegrations": "Back to integrations",
-    "groupLabel": "Custom large image",
-    "templateUrl": "Template URL",
-    "templateUrlDescription": "An template. You can make an template by exporting an SVG having an element named GAME_THUMBNAIL. (For figma users, please check the box include 'id' attribute in export in order to work.)",
-    "templateUrlPlaceholder": "https://example.com/template.svg",
-    "badgeColour": "Glimmer badge colour",
-    "badgeColourDescription": "Fill colour for the Glimmer badge stamped on the image.",
-    "colourWhite": "White",
-    "colourBlack": "Black",
-    "outputSize": "Output size",
-    "outputSizeDescription": "Rendered size in pixels, 16-1024."
-  }
+    "backToIntegrations": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Back to integrations",
+        "vi": "Quay về các tích hợp"
+      }
+    },
+    "groupLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom large image",
+        "vi": "Hình ảnh lớn tùy chỉnh"
+      }
+    },
+    "templateUrl": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Template URL",
+        "vi": "URL mẫu"
+      }
+    },
+    "templateUrlDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "An template. You can make an template by exporting an SVG having an element named GAME_THUMBNAIL. (For figma users, please check the box include 'id' attribute in export in order to work.)",
+        "vi": "Một mẫu. Bạn có thể tạo một mẫu bằng cách xuất file SVG có phần tử tên GAME_THUMBNAIL. (Vui lòng kiểm tra ô 'id' attribute khi xuất để hoạt động với người dùng Figma.)"
+      }
+    },
+    "templateUrlPlaceholder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "https://example.com/template.svg",
+        "vi": "https://example.com/template.svg"
+      }
+    },
+    "badgeColour": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Glimmer badge colour",
+        "vi": "Màu badge Glimmer"
+      }
+    },
+    "badgeColourDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fill colour for the Glimmer badge stamped on the image.",
+        "vi": "Màu tô cho badge Glimmer được bấm trên hình ảnh."
+      }
+    },
+    "colourWhite": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "White",
+        "vi": "Trắng"
+      }
+    },
+    "colourBlack": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Black",
+        "vi": "Đen"
+      }
+    },
+    "outputSize": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Output size",
+        "vi": "Kích thước đầu ra"
+      }
+    },
+    "outputSizeDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Rendered size in pixels, 16-1024.",
+        "vi": "Kích thước đã render trong pixels, 16-1024."
+      }
+    }
+  },
+  "location": "local",
+  "title": "Custom Image Generator",
+  "description": "Content declarations for the custom image generator feature, including template URL, badge colour, output size settings, and related UI labels.",
+  "tags": [
+    "custom image",
+    "integration",
+    "generator",
+    "ui"
+  ]
 }

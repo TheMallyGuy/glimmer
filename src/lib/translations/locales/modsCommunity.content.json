@@ -2,33 +2,163 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "modsCommunity",
   "content": {
-    "filterAll": "All",
-    "filterMods": "Mods",
-    "filterThemes": "Bootstrapper themes",
-    "loading": "Loading community mods…",
-    "loadError": "Couldn’t reach the Froststrap or Kliko libraries. Check your internet connection and try again",
-    "searchCommunityMods": "Search community mods",
-    "filterGroupLabel": "Filter",
+    "filterAll": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "All",
+        "vi": "Tất cả"
+      }
+    },
+    "filterMods": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Mods",
+        "vi": "Mods"
+      }
+    },
+    "filterThemes": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Bootstrapper themes",
+        "vi": "Chủ đề Bootstrapper"
+      }
+    },
+    "loading": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Loading community mods…",
+        "vi": "Đang tải mods cộng đồng…"
+      }
+    },
+    "loadError": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Couldn’t reach the Froststrap or Kliko libraries. Check your internet connection and try again",
+        "vi": "Không thể truy cập thư viện Froststrap hoặc Kliko. Vui lòng kiểm tra kết nối internet và thử lại."
+      }
+    },
+    "searchCommunityMods": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Search community mods",
+        "vi": "Tìm kiếm mods cộng đồng"
+      }
+    },
+    "filterGroupLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Filter",
+        "vi": "Bộ lọc"
+      }
+    },
     "shownOfAll": {
-      "nodeType": "insertion",
-      "insertion": "{{shown}} of {{all}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "{{shown}} of {{all}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "{{shown}} trên {{all}}"
+        }
+      }
     },
     "failedToLoad": {
-      "nodeType": "insertion",
-      "insertion": "The {{libraries}} didn’t load, so its mods are missing."
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "The {{libraries}} didn’t load, so its mods are missing."
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Không tải được {{libraries}}, do đó các mod của nó bị thiếu."
+        }
+      }
     },
-    "emptyNoMatch": "No mods match that. Try another filter or search.",
-    "themeBadge": "Theme",
+    "emptyNoMatch": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "No mods match that. Try another filter or search.",
+        "vi": "Không có mod nào phù hợp. Hãy thử bộ lọc hoặc tìm kiếm khác."
+      }
+    },
+    "themeBadge": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Theme",
+        "vi": "Chủ đề"
+      }
+    },
     "byAuthor": {
-      "nodeType": "insertion",
-      "insertion": "by {{author}}"
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "by {{author}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "bởi {{author}}"
+        }
+      }
     },
-    "unknownAuthor": "Unknown author",
-    "installedAriaLabel": "Installed",
-    "installAriaLabel": "Install",
-    "installing": "Installing…",
-    "installed": "Installed",
-    "retryInstall": "Retry install",
-    "install": "Install"
-  }
+    "unknownAuthor": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Unknown author",
+        "vi": "Tác giả không xác định"
+      }
+    },
+    "installedAriaLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Installed",
+        "vi": "Đã cài đặt"
+      }
+    },
+    "installAriaLabel": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Install",
+        "vi": "Cài đặt"
+      }
+    },
+    "installing": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Installing…",
+        "vi": "Đang cài đặt…"
+      }
+    },
+    "installed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Installed",
+        "vi": "Đã cài đặt"
+      }
+    },
+    "retryInstall": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Retry install",
+        "vi": "Thử cài đặt lại"
+      }
+    },
+    "install": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Install",
+        "vi": "Cài đặt"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Community mods",
+  "description": "Translations used on the Mods Community page, including search, filter and installation messages.",
+  "tags": [
+    "community",
+    "navigation"
+  ]
 }

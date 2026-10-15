@@ -2,11 +2,55 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "modContextMenu",
   "content": {
-    "modActions": "Mod actions",
-    "rename": "Rename",
-    "openFolder": "Open folder",
-    "moveToTop": "Move to top",
-    "moveToBottom": "Move to bottom",
-    "delete": "Delete"
-  }
+    "modActions": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Mod actions",
+        "vi": "Các thao tác mod"
+      }
+    },
+    "rename": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Rename",
+        "vi": "Đặt tên lại"
+      }
+    },
+    "openFolder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Open folder",
+        "vi": "Mở thư mục"
+      }
+    },
+    "moveToTop": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Move to top",
+        "vi": "Di chuyển lên đầu"
+      }
+    },
+    "moveToBottom": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Move to bottom",
+        "vi": "Di chuyển xuống cuối"
+      }
+    },
+    "delete": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Delete",
+        "vi": "Xóa"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Mod Context Menu",
+  "description": "A collection of actions and settings for configuring the mod context menu",
+  "tags": [
+    "mod context menu",
+    "ui controls",
+    "configuration"
+  ]
 }

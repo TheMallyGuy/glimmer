@@ -4,7 +4,7 @@
   import { Hand, Languages, CircleCheck, X } from "@lucide/svelte";
   import {
     Button,
-    Dropdown,
+    LanguageDropdown,
     GlimmerLogo,
     IconButton,
     SettingRow,
@@ -20,7 +20,6 @@
   const LAST = 2;
   // 0 welcome, 1 language, 2 done
   let step = $state(0);
-  let language = $state("en");
 
   const icons = [Hand, Languages, CircleCheck];
   const Icon = $derived(icons[step]);
@@ -98,14 +97,9 @@
 
         {#if step === 1}
           <div class="flex flex-col gap-0.5">
-            <SettingRow title={$t.languageLabel.value}>
+            <SettingRow title={$common.language.value}>
               {#snippet control()}
-                <Dropdown
-                  label={$t.languageLabel.value}
-                  width="200px"
-                  options={[{ value: "en", label: $t.english.value }]}
-                  bind:value={language}
-                />
+                <LanguageDropdown />
               {/snippet}
             </SettingRow>
           </div>

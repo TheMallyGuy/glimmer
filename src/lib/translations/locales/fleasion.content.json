@@ -2,22 +2,133 @@
   "$schema": "https://intlayer.org/schema.json",
   "key": "fleasion",
   "content": {
-    "backToIntegrations" : "Back to integration",
-    "fleasionWarn" : "Fleasion is bannable but theres currently there's no way to detect it. We're providing this option for a user-friendly experience",
-    "enableFleasion" : "Enable and let Glimmer manage Fleasion",
-    "enableFleasionDescription" : "remember folks: this is bannable",
-    "multiInstance" : "Enable Multi-instance",
-    "mirrorFastFlags" : "Mirror Glimmer's fast-flags to Fleasion",
-    "deVngPreset" : "De-VNG",
-    "deVngPresetDescription" : "Disable VNG related fflags",
-    "mirrorFastFlagsDescription" : "Do notice that this option will use proxy fastflag stuff. [danger]Non-whitelisted fast-flag will able to work when this option is enabled.",
-    "clientSidedGroup" : "Client sided modification",
-    "verifySelf" : "I'm verified!",
-    "verifySelfDescription" : "Verifies yourself. Only you can see it",
-    "gameCreator" : "I'm the game creator!",
-    "gameCreatorDescription" :"Makes you the game creator. Only you can see it",
-    "spoofName": "Names",
-    "spoofNameHint": "Fleasion keeps verified and game creator off without a name. Leave empty to use the username of your active account.",
-    "spoofNamePlaceholder": "Your username"
-  }
+    "backToIntegrations": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Back to integration",
+        "vi": "Quay lại tích hợp"
+      }
+    },
+    "fleasionWarn": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fleasion is bannable but theres currently there's no way to detect it. We're providing this option for a user-friendly experience",
+        "vi": "Fleasion có thể bị ban nhưng hiện tại không có cách nào phát hiện được nó. Chúng tôi cung cấp tùy chọn này để mang đến trải nghiệm người dùng thân thiện hơn"
+      }
+    },
+    "enableFleasion": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Enable and let Glimmer manage Fleasion",
+        "vi": "Bật và để Glimmer quản lý Fleasion"
+      }
+    },
+    "enableFleasionDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "remember folks: this is bannable",
+        "vi": "lưu ý mọi người: điều này có thể bị ban"
+      }
+    },
+    "multiInstance": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Enable Multi-instance",
+        "vi": "Bật đa bản"
+      }
+    },
+    "mirrorFastFlags": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Mirror Glimmer's fast-flags to Fleasion",
+        "vi": "Phản chiếu fast-flags của Glimmer sang Fleasion"
+      }
+    },
+    "deVngPreset": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "De-VNG",
+        "vi": "De-VNG"
+      }
+    },
+    "deVngPresetDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Disable VNG related fflags",
+        "vi": "Tắt các fflag liên quan đến VNG"
+      }
+    },
+    "mirrorFastFlagsDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Do notice that this option will use proxy fastflag stuff. [danger]Non-whitelisted fast-flag will able to work when this option is enabled.",
+        "vi": "Lưu ý rằng tùy chọn này sẽ sử dụng phần mềm fastflag qua trung gian. [cảnh báo] Fast-flag không được phép trong danh sách sẽ có thể hoạt động khi tùy chọn này được bật."
+      }
+    },
+    "clientSidedGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Client sided modification",
+        "vi": "Thay đổi ở phía khách hàng"
+      }
+    },
+    "verifySelf": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "I'm verified!",
+        "vi": "Tôi đã được xác thực!"
+      }
+    },
+    "verifySelfDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Verifies yourself. Only you can see it",
+        "vi": "Tự xác minh. Chỉ bạn mới có thể thấy"
+      }
+    },
+    "gameCreator": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "I'm the game creator!",
+        "vi": "Tôi là nhà sáng tạo trò chơi!"
+      }
+    },
+    "gameCreatorDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Makes you the game creator. Only you can see it",
+        "vi": "Giúp bạn trở thành nhà sáng tạo trò chơi. Chỉ bạn mới có thể thấy"
+      }
+    },
+    "spoofName": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Names",
+        "vi": "Tên"
+      }
+    },
+    "spoofNameHint": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Fleasion keeps verified and game creator off without a name. Leave empty to use the username of your active account.",
+        "vi": "Fleasion giữ cho trạng thái đã xác thực và nhà sáng tạo trò chơi tắt đi mà không cần tên. Để trống để sử dụng tên tài khoản đang hoạt động của bạn."
+      }
+    },
+    "spoofNamePlaceholder": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Your username",
+        "vi": "Tên người dùng của bạn"
+      }
+    }
+  },
+  "location": "local",
+  "title": "Fleasion integration settings",
+  "description": "Configuration options for Fleasion integration including enable/disable, multi-instance, fast flags mirroring, de-VNG preset, client-sided modifications, verification badges, and username spoofing settings.",
+  "tags": [
+    "integration",
+    "settings",
+    "fleasion",
+    "configuration"
+  ]
 }
