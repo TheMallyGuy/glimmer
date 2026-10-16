@@ -50,6 +50,10 @@
         "en": {
           "nodeType": "insertion",
           "insertion": "Pin {{version}}: launches use it and skip updates"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Ghim {{version}}: các lần khởi chạy dùng bản này và bỏ qua cập nhật"
         }
       }
     },
@@ -59,6 +63,10 @@
         "en": {
           "nodeType": "insertion",
           "insertion": "Unpin {{version}}: launches update again"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Bỏ ghim {{version}}: khởi chạy cập nhật lại"
         }
       }
     },
@@ -68,6 +76,10 @@
         "en": {
           "nodeType": "insertion",
           "insertion": "Launches stay on {{version}} and skip updates until you unpin it."
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Các lần khởi chạy giữ ở {{version}} và bỏ qua cập nhật cho đến khi bạn bỏ ghim."
         }
       }
     },

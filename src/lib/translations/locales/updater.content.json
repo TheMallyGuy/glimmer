@@ -14,6 +14,10 @@
         "en": {
           "nodeType": "insertion",
           "insertion": "Glimmer {{version}} is ready to install. Glimmer restarts to finish the update."
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Glimmer {{version}} đã sẵn sàng để cài đặt. Glimmer sẽ khởi động lại để hoàn tất cập nhật."
         }
       }
     },

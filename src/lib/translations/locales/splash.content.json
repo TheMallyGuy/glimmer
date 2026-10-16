@@ -20,6 +20,10 @@
         "en": {
           "nodeType": "insertion",
           "insertion": "Downloading client ({{done}}/{{total}})"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Đang tải xuống ứng dụng khách ({{done}}/{{total}})"
         }
       }
     },
@@ -29,6 +33,10 @@
         "en": {
           "nodeType": "insertion",
           "insertion": "Extracting client ({{done}}/{{total}})"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Đang trích xuất ứng dụng khách ({{done}}/{{total}})"
         }
       }
     },
