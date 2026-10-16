@@ -13,6 +13,7 @@ src/
 │   ├── configuration.ts           Configuration: config.json in the app data dir (plugin-store + raw read/write)
 │   ├── theme.ts                   AccentTheme class: derives accent shades from a colour and applies them as CSS variables (accent colour setting)
 │   ├── background.ts              BackgroundTheme (background colour -> surface tokens, see-through over a picture) and BackgroundImage (picture copy kept in app data)
+│   ├── glimmer/customSplash.ts    CustomSplash (the person's own splash HTML, copied into app data, Appearance > Launch screen) and drawSplash()/wireSplash(): the splash shows it in an iframe sandboxed without scripts and fills in the ids status, percent, progress-bar, progress-track, retry-btn, cancel-btn itself
 │   ├── rings.ts                   RingsEffect class: raw WebGL port of crush's red rings (the opt-in "Evil red rings" fun setting; shown by RingsOverlay)
 │   ├── toast.ts                   ToastQueue class: the toasts on screen, auto-dismiss with pause/resume (shown bottom left by ToastHost)
 │   ├── deepLink.ts                DeepLinkHandler class: links that open Glimmer (roblox-player:, and any roblox:// link: a game, a profile...; all go to the player through the splash), handed over by single-instance; started in the background window

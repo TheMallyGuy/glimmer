@@ -55,7 +55,15 @@
       "./resources/Mods/**/*.png",
       "./resources/Mods/**/*.mp3",
       "./resources/Mods/**/*.rbxl"
-    ]
+    ],
+    "windows": {
+      "allowDowngrades": true,
+      "webviewInstallMode": {
+        "silent": true,
+        "type": "offlineInstaller"
+      },
+      "wix": null
+    }
   },
   "plugins": {
     "ota-updater": {
