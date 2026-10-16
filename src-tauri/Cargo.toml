@@ -77,9 +77,10 @@ ndk-context = "0.1"
 tauri-plugin-shizuku = "0.1.1"
 
 # Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
+# No LTO and 16 codegen units: about 1.5 MB bigger than fat LTO, but a rebuild takes ~1 min instead of ~5
 [profile.release]
-codegen-units = 1
-lto = true
+codegen-units = 16
+incremental = true
 opt-level = 3
 panic = "abort"
 strip = true
