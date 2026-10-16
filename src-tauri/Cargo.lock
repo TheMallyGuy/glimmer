@@ -2091,8 +2091,7 @@ dependencies = [
  "sysinfo 0.39.6",
  "tauri",
  "tauri-build",
- "tauri-helper 0.1.4",
- "tauri-helper 0.2.1",
+ "tauri-helper",
  "tauri-plugin-clipboard-manager",
  "tauri-plugin-deep-link",
  "tauri-plugin-dialog",
@@ -5609,20 +5608,6 @@ dependencies = [
 
 [[package]]
 name = "tauri-helper"
-version = "0.1.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23ae4af86dd350c557a181712491d0620d2d6919321d684aa5c9a23a38d8e9e7"
-dependencies = [
- "serde",
- "syn 2.0.119",
- "tauri_helper_core 0.1.1",
- "tauri_helper_macros",
- "toml 0.8.23",
- "walkdir",
-]
-
-[[package]]
-name = "tauri-helper"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6b6ed54c4a04e658f8f1c57513abbeb5e2493c9db1d31987c9cc6db6c19a245c"
@@ -5630,7 +5615,7 @@ dependencies = [
  "rayon",
  "serde",
  "syn 2.0.119",
- "tauri_helper_core 0.2.1",
+ "tauri_helper_core",
  "tauri_helper_macros",
  "toml 0.9.12+spec-1.1.0",
  "walkdir",
@@ -6099,16 +6084,6 @@ dependencies = [
 
 [[package]]
 name = "tauri_helper_core"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e36200a4913ca9d2f5a150960e7d91150d53a4f1790089a826f079b7b4be434c"
-dependencies = [
- "serde",
- "toml 0.8.23",
-]
-
-[[package]]
-name = "tauri_helper_core"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6da0ac433082491b94f3ba7f5087ee888608917bd371bb213ac16bc722547541"
@@ -6128,7 +6103,7 @@ dependencies = [
  "quote",
  "serde",
  "syn 2.0.119",
- "tauri_helper_core 0.2.1",
+ "tauri_helper_core",
  "thiserror 2.0.21",
  "toml 0.9.12+spec-1.1.0",
  "walkdir",
@@ -6419,7 +6394,6 @@ dependencies = [
  "serde",
  "serde_spanned 0.6.9",
  "toml_datetime 0.6.11",
- "toml_write",
  "winnow 0.7.15",
 ]
 
@@ -6443,12 +6417,6 @@ checksum = "1d38ac1cf9b95face32296c0a3ede1fdc270627c9d9c02a7274dd6d960dc4d56"
 dependencies = [
  "winnow 1.0.4",
 ]
-
-[[package]]
-name = "toml_write"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5d99f8c9a7727884afe522e9bd5edbfc91a3312b36a77b5fb8926e4c31a41801"
 
 [[package]]
 name = "toml_writer"

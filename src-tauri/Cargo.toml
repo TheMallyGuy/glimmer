@@ -15,7 +15,7 @@ name = "glimmer_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]
-tauri-helper = "0.1.4"
+tauri-helper = "0.2.1"
 tauri-build = { version = "2", features = [] }
 
 [target.'cfg(windows)'.dependencies]
@@ -32,6 +32,9 @@ windows = { version = "0.62", features = [
     "Win32_UI_Shell",
 ] }
 
+[profile.dev]
+debug = "line-tables-only"
+strip = "debuginfo"
 
 [dependencies]
 tauri = { version = "2", features = ["tray-icon"] }
@@ -58,7 +61,6 @@ rayon = "1.12.0"
 keyring = { version = "3", features = ["windows-native"] }
 tauri-plugin-deep-link = "2"
 tauri-plugin-clipboard-manager = "2.4.1"
-tauri-plugin-shizuku = "0.1.1"
 
 [target."cfg(any(target_os = \"macos\", windows, target_os = \"linux\"))".dependencies]
 tauri-plugin-single-instance = { version = "2.0.0", features = ["deep-link"] }
