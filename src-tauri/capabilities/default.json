@@ -243,6 +243,7 @@
     "process:default",
     "process:allow-restart",
     "notification:default",
+    "clipboard-manager:allow-write-text",
     "deep-link:default"
   ]
 }

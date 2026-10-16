@@ -6,8 +6,8 @@
   import { getVersion } from "@tauri-apps/api/app";
     import { join } from "@tauri-apps/api/path";
     import { writeText } from "@tauri-apps/plugin-clipboard-manager";
+    import { message } from "@tauri-apps/plugin-dialog";
     import { readTextFile } from "@tauri-apps/plugin-fs";
-    import { info } from "@tauri-apps/plugin-log";
     import { openPath } from "@tauri-apps/plugin-opener";
   import { onMount } from "svelte";
   import { useIntlayer } from "svelte-intlayer";
@@ -23,9 +23,9 @@
     const logsFolder = await pm.getLogsFolder()
     
     if (isAndroid()) {
-      const content = await readTextFile(logsFolder)
+      const content = await readTextFile(await join(logsFolder, "glimmer.log"))
       await writeText(content)
-      info($aboutContent.logsCopied.value)
+      message($aboutContent.logsCopied.value)
     } else {
       await openPath(logsFolder)
     }
