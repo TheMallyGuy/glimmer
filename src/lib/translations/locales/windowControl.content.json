@@ -14,6 +14,10 @@
         "en": {
           "nodeType": "insertion",
           "insertion": "{{game}} wants to move your Roblox window. You can turn this off for every game in Integrations."
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "{{game}} muốn di chuyển cửa sổ Roblox của bạn. Bạn có thể tắt tính năng này cho mọi game trong Integrations."
         }
       }
     },

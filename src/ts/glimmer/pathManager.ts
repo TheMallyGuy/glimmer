@@ -70,6 +70,11 @@ export class PathManager {
         return join(await appDataDir(), "backgrounds");
     }
 
+    /** the custom splash page (CustomSplash) */
+    async getSplashDir(): Promise<string> {
+        return join(await appDataDir(), "splash");
+    }
+
     /** where Fleasion keeps its configs: %LOCALAPPDATA%\FleasionNT (not ours, so it is the one folder outside the app data that the fs scope opens) */
     async getFleasionDir(): Promise<string> {
         return join(await localDataDir(), "FleasionNT");

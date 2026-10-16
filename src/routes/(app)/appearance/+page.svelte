@@ -11,6 +11,7 @@
     IMAGE_EXTENSIONS,
     MAX_DIM,
   } from "$ts/glimmer/background";
+  import { CustomSplash } from "$ts/glimmer/customSplash";
   import { useIntlayer } from "svelte-intlayer";
   const appearanceContent = useIntlayer("appearance");
   const commonContent = useIntlayer("common");
@@ -83,6 +84,35 @@
         error: e instanceof Error ? e.message : String(e),
       }).value;
     }
+  }
+
+  //  custom splash
+  const splashes = new CustomSplash();
+  let splashError = $state("");
+
+  async function chooseSplash() {
+    splashError = "";
+    const picked = await open({
+      title: $appearanceContent.splashPickerTitle.value,
+      multiple: false,
+      filters: [{ name: "HTML", extensions: ["html", "htm"] }],
+    });
+    if (typeof picked !== "string") return;
+
+    try {
+      await splashes.save(picked);
+      appearance.splash = picked.split(/[\\/]/).pop() ?? picked;
+    } catch (e) {
+      splashError = $appearanceContent.splashFailed({
+        error: e instanceof Error ? e.message : String(e),
+      }).value;
+    }
+  }
+
+  async function removeSplash() {
+    appearance.splash = "";
+    splashError = "";
+    await splashes.remove();
   }
 
   async function removeImage() {
@@ -249,5 +279,28 @@
         {/snippet}
       </SettingRow>
     {/if}
+  </SettingGroup>
+
+  <SettingGroup label={$appearanceContent.splashGroup.value}>
+    <SettingRow
+      title={$appearanceContent.splashTitle.value}
+      description={appearance.splash || $appearanceContent.splashDescription.value}
+      note={splashError}
+    >
+      {#snippet control()}
+        <div class="flex items-center gap-1">
+          {#if appearance.splash}
+            <Button variant="ghost" size="sm" onclick={removeSplash}>
+              {$appearanceContent.removeSplash.value}
+            </Button>
+          {/if}
+          <Button variant="secondary" size="sm" onclick={chooseSplash}>
+            {appearance.splash
+              ? $appearanceContent.changeSplash.value
+              : $appearanceContent.chooseSplash.value}
+          </Button>
+        </div>
+      {/snippet}
+    </SettingRow>
   </SettingGroup>
 </div>

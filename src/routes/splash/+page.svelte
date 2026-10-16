@@ -6,7 +6,8 @@
   import { page } from "$app/state";
   import { sizeWindow } from "$lib/window";
   import { cn } from "$lib";
-  import { loadAppState } from "$lib/appState.svelte";
+  import { appState, loadAppState } from "$lib/appState.svelte";
+  import { CustomSplash, drawSplash, wireSplash } from "$ts/glimmer/customSplash";
   import { launch, LaunchError, type LaunchStatus } from "$ts/glimmer/launch";
   import { app } from "@tauri-apps/api";
   import { useIntlayer } from "svelte-intlayer";
@@ -21,6 +22,26 @@
   let status = $state($splashContent.checkingForUpdates.value);
   let progress = $state<number | null>(null);
   let error = $state<string | null>(null);
+  // the person's own splash page (Appearance), or null for the built-in one
+  let customHtml = $state<string | null>(null);
+  let customDoc = $state<Document | null>(null);
+
+  $effect(() => {
+    if (customDoc)
+      drawSplash(customDoc, {
+        status: error ?? `${status}…`,
+        progress,
+        failed: error !== null,
+        cancelLabel: error ? $commonContent.close.value : $commonContent.cancel.value,
+      });
+  });
+
+  function customLoaded(e: Event) {
+    const doc = (e.currentTarget as HTMLIFrameElement).contentDocument;
+    if (!doc) return;
+    wireSplash(doc, { retry, cancel, drag: () => appWindow?.startDragging() });
+    customDoc = doc;
+  }
 
   // there is no window outside Tauri (e.g. in the intlayer editor)
   const appWindow = isTauri() ? getCurrentWindow() : null;
@@ -101,6 +122,8 @@
     // the root layout also calls this, but its onMount races this page's --
     // load explicitly so settings like the VNG switch are in before we check
     await loadAppState();
+    if (appState.appearance.splash)
+      customHtml = await new CustomSplash().load().catch(() => null);
     await checkAndLaunch();
   });
 
@@ -124,6 +147,16 @@
   }
 </script>
 
+{#if customHtml}
+  <!-- no allow-scripts: nothing in the file runs; this page fills it in (drawSplash) -->
+  <iframe
+    title={$splashContent.launchProgress.value}
+    sandbox="allow-same-origin"
+    srcdoc={customHtml}
+    class="block h-screen w-screen border-0"
+    onload={customLoaded}
+  ></iframe>
+{:else}
 <div
   data-tauri-drag-region
   class="relative flex h-screen w-screen flex-col overflow-hidden bg-app text-fg"
@@ -206,3 +239,4 @@
     {/if}
   </div>
 </div>
+{/if}

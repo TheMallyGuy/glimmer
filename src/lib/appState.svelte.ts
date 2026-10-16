@@ -98,6 +98,8 @@ export const appState = $state({
       /** how much the picture is darkened, 0 to 0.9 */
       dim: DEFAULT_DIM,
     },
+    /** name of the HTML file the custom splash was made from, or "" for the built-in splash */
+    splash: "",
   },
   accounts: {
     list: [] as Account[],

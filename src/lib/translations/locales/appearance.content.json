@@ -172,6 +172,68 @@
       },
       "insertion": "Couldn't use that picture. {{error}}"
     },
+    "splashGroup": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Launch screen",
+        "vi": "Màn hình khởi chạy"
+      }
+    },
+    "splashTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Custom launch screen",
+        "vi": "Màn hình khởi chạy tùy chỉnh"
+      }
+    },
+    "splashDescription": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Use your own HTML file while Roblox starts. Glimmer fills in the elements with the ids [mono]status[/mono], [mono]percent[/mono], [mono]progress-bar[/mono], [mono]progress-track[/mono], [mono]retry-btn[/mono] and [mono]cancel-btn[/mono]. Scripts in the file don't run.",
+        "vi": "Dùng tệp HTML của bạn khi Roblox khởi động. Glimmer điền vào các phần tử có id [mono]status[/mono], [mono]percent[/mono], [mono]progress-bar[/mono], [mono]progress-track[/mono], [mono]retry-btn[/mono] và [mono]cancel-btn[/mono]. Script trong tệp không chạy."
+      }
+    },
+    "chooseSplash": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Choose file",
+        "vi": "Chọn tệp"
+      }
+    },
+    "changeSplash": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Change file",
+        "vi": "Đổi tệp"
+      }
+    },
+    "removeSplash": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Use built-in",
+        "vi": "Dùng mặc định"
+      }
+    },
+    "splashPickerTitle": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Choose a launch screen",
+        "vi": "Chọn màn hình khởi chạy"
+      }
+    },
+    "splashFailed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": {
+          "nodeType": "insertion",
+          "insertion": "Couldn't use that file. {{error}}"
+        },
+        "vi": {
+          "nodeType": "insertion",
+          "insertion": "Không dùng được tệp đó. {{error}}"
+        }
+      }
+    },
     "dimTitle": {
       "nodeType": "translation",
       "translation": {
