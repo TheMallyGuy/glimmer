@@ -1,11 +1,14 @@
-<script>
-    import { flagsToObject } from "$lib";
+<script lang="ts">
+    import { flagsToObject, toast } from "$lib";
     import { appState } from "$lib/appState.svelte";
     import Button from "$lib/components/Button.svelte";
     import SettingGroup from "$lib/components/SettingGroup.svelte";
     import SettingRow from "$lib/components/SettingRow.svelte";
     import TextBox from "$lib/components/TextBox.svelte";
     import { launchOnAndroid } from "$ts/glimmer/android/launch";
+    import { isAndroid } from "$ts/glimmer/android/platform";
+    import { save } from "$lib/settings.svelte";
+    import { goto } from "$app/navigation";
 
     let launchArgs = $state("");
 
@@ -16,6 +19,12 @@
                 ? flagsToObject(appState.fastflags.flags)
                 : null,
         });
+    }
+
+    async function resetOnboard() {
+        appState.onboarded = false;
+        await save();
+        toast.success("onboarding shows on the next launch");
     }
 </script>
 
@@ -39,6 +48,12 @@ dev page for testing
                     launch
                 </Button>
             </div>
+        {/snippet}
+    </SettingRow>
+
+    <SettingRow title="reset onbroading">
+        {#snippet control()}
+            <Button variant="primary" onclick={resetOnboard}>click me</Button>
         {/snippet}
     </SettingRow>
 </SettingGroup>
