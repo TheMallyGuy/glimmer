@@ -10,7 +10,6 @@ import { setActivity, addActivity } from "../discordRpc";
 import {
   getAssetThumbnail,
   getGameInfo,
-  getGameThumbnail,
   getUserHeadShot,
   getUserName,
 } from "../generalRobloxApis";
@@ -23,6 +22,8 @@ import { Configuration } from "$ts/glimmer/configuration";
 import { WindowControl, type WindowPrompt } from "../windowControl";
 import { BloxstrapRpc, PRESENCE_COMMANDS } from "../bloxstrapRpc";
 import { GameLink } from "../game";
+import { isAndroid } from "$ts/glimmer/android/platform";
+import { movedToNearbyServer } from "$ts/glimmer/android/nearbyJoin";
 
 let windowPrompt: ((game: string) => WindowPrompt) | undefined;
 
@@ -175,6 +176,9 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
       const [, gameId, place, position] = m;
       info(`game join: gameId=${gameId} place=${place} position=${position}`);
       const placeId = Number(place);
+
+      if (isAndroid() && (await movedToNearbyServer(placeId, gameId))) return;
+
       setGameState({ gameId: placeId, gameServer: gameId });
       await loadAppState();
 

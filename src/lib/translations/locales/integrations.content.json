@@ -86,6 +86,13 @@
         "vi": "Vào máy chủ ở quốc gia của bạn, hoặc gần nhất, để ping thấp hơn. Dùng danh sách máy chủ của [shimmer]RoValra[/shimmer]. Khi không tìm thấy máy chủ gần, Roblox chọn như bình thường."
       }
     },
+     "nearbyServerAdditionalDescriptionAndroid": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "This is experimental on Android. Glimmer can't 100% guaranteed this will work everytime.",
+        "vi": "Tùy chọn này là một thử nghiệm trên Android. Glimmer không chắc chắn 100% là nó sẽ hoạt động mỗi lần dùng."
+      }
+    },
     "nearbyServerRandomize": {
       "nodeType": "translation",
       "translation": {

@@ -126,6 +126,7 @@ export interface GameState {
   gameServer?: string;
   serverIp?: string;
   serverUptime?: string;
+  serverJoinedTmp?: boolean;
 }
 
 export const gameState: GameState = $state({
@@ -134,6 +135,7 @@ export const gameState: GameState = $state({
   gameServer: "", // server instance
   serverIp: "",
   serverUptime: "",
+  serverJoinedTmp: false, // android only : state for checking if the user has join a game or not after rovalra nearby server
 });
 
 export function setGameState(inf: GameState) {
