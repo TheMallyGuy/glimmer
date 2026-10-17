@@ -43,6 +43,13 @@
         "vi": "Logs đã được sao chép vào bộ nhớ tạm!"
       }
     },
+    "logsCopyFailed": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Could not read the log file. Restart Glimmer and try again.",
+        "vi": "Không đọc được tệp log. Hãy khởi động lại Glimmer rồi thử lại."
+      }
+    },
     "sourceCode": {
       "nodeType": "translation",
       "translation": {

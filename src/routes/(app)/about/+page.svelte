@@ -1,13 +1,11 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-  import { SettingGroup, SettingRow, Switch } from "$lib";
+  import { SettingGroup, SettingRow, Switch, toast } from "$lib";
   import { appState } from "$lib/appState.svelte";
     import { isAndroid } from "$ts/glimmer/android/platform";
     import { PathManager } from "$ts/glimmer/pathManager";
   import { getVersion } from "@tauri-apps/api/app";
-    import { join } from "@tauri-apps/api/path";
     import { writeText } from "@tauri-apps/plugin-clipboard-manager";
-    import { message } from "@tauri-apps/plugin-dialog";
     import { readTextFile } from "@tauri-apps/plugin-fs";
     import { openPath } from "@tauri-apps/plugin-opener";
   import { onMount } from "svelte";
@@ -21,14 +19,17 @@
 
   async function openLogs() {
     const pm = new PathManager()
-    const logsFolder = await pm.getLogsFolder()
-    
+
     if (isAndroid()) {
-      const content = await readTextFile(await join(logsFolder, "glimmer.log"))
-      await writeText(content)
-      message($aboutContent.logsCopied.value)
+      try {
+        await writeText(await readTextFile(await pm.getGlimmerLog()))
+        toast.success($aboutContent.logsCopied.value)
+      } catch (e) {
+        console.error("failed to copy the logs:", e)
+        toast.error($aboutContent.logsCopyFailed.value)
+      }
     } else {
-      await openPath(logsFolder)
+      await openPath(await pm.getLogsFolder())
     }
   }
 </script>
@@ -41,7 +42,7 @@
     />
     <SettingRow title={$aboutContent.logs.value} onclick={openLogs} href="#" />
     <SettingRow title={$aboutContent.sourceCode.value} href="#" />
-    <SettingRow title="Dev Page" onclick={goto("/about/dev")} href="#" />
+    <SettingRow title="Dev Page" href="/about/dev"/>
   </SettingGroup>
 
   <SettingGroup label={$aboutContent.funGroup.value}>

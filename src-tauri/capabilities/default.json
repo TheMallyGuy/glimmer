@@ -60,6 +60,9 @@
         },
         {
           "path": "$LOCALDATA/FleasionNT/logs/fleasion.log"
+        },
+        {
+          "path": "$APPLOG/**/*"
         }
       ]
     },

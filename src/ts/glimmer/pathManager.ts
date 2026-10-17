@@ -104,4 +104,9 @@ export class PathManager {
     async getLogsFolder(): Promise<string> {
         return await appLogDir()
     }
+
+    /** Glimmer's own log; tauri-plugin-log names it after `productName`, and Android paths are case-sensitive */
+    async getGlimmerLog(): Promise<string> {
+        return join(await this.getLogsFolder(), "Glimmer.log");
+    }
 }
