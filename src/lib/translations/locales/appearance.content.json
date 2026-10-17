@@ -182,8 +182,8 @@
     "splashTitle": {
       "nodeType": "translation",
       "translation": {
-        "en": "Custom launch screen",
-        "vi": "Màn hình khởi chạy tùy chỉnh"
+        "en": "Launch screen",
+        "vi": "Màn hình khởi chạy"
       }
     },
     "splashDescription": {
@@ -193,25 +193,25 @@
         "vi": "Dùng tệp HTML của bạn khi Roblox khởi động. Glimmer điền vào các phần tử có id [mono]status[/mono], [mono]percent[/mono], [mono]progress-bar[/mono], [mono]progress-track[/mono], [mono]retry-btn[/mono] và [mono]cancel-btn[/mono]. Script trong tệp không chạy."
       }
     },
-    "chooseSplash": {
+    "splashBuiltIn": {
       "nodeType": "translation",
       "translation": {
-        "en": "Choose file",
-        "vi": "Chọn tệp"
+        "en": "Default",
+        "vi": "Mặc định"
       }
     },
-    "changeSplash": {
+    "splashCustom": {
       "nodeType": "translation",
       "translation": {
-        "en": "Change file",
-        "vi": "Đổi tệp"
+        "en": "Your own file…",
+        "vi": "Tệp của bạn…"
       }
     },
-    "removeSplash": {
+    "splashPreview": {
       "nodeType": "translation",
       "translation": {
-        "en": "Use built-in",
-        "vi": "Dùng mặc định"
+        "en": "Preview",
+        "vi": "Xem trước"
       }
     },
     "splashPickerTitle": {
@@ -232,6 +232,27 @@
           "nodeType": "insertion",
           "insertion": "Không dùng được tệp đó. {{error}}"
         }
+      }
+    },
+    "splashThemeBlush": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Blush",
+        "vi": "Hồng phấn"
+      }
+    },
+    "splashThemeEmber": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Ember",
+        "vi": "Than hồng"
+      }
+    },
+    "splashThemeCrimson": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Crimson",
+        "vi": "Đỏ thẫm"
       }
     },
     "dimTitle": {

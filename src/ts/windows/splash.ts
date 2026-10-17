@@ -6,7 +6,15 @@ import { isAndroid } from "$ts/glimmer/android/platform";
 const LABEL = "splash";
 
 export async function openSplashWindow(target = "player", link?: string) {
-  const url = `/splash?target=${encodeURIComponent(target)}${link ? `&link=${encodeURIComponent(link)}` : ""}`;
+  return openSplash(`/splash?target=${encodeURIComponent(target)}${link ? `&link=${encodeURIComponent(link)}` : ""}`);
+}
+
+/** the splash with made-up progress and no launch, showing the built-in screen or the stored custom one */
+export async function openSplashPreview(custom: boolean) {
+  return openSplash(`/splash?preview=${custom ? "custom" : "builtin"}`);
+}
+
+async function openSplash(url: string) {
   if (!isTauri() || isAndroid()) return goto(url);
 
   const existing = await WebviewWindow.getByLabel(LABEL);

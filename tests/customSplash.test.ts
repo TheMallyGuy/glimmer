@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { CustomSplash, drawSplash, type SplashView } from "$ts/glimmer/customSplash";
+import { readFileSync } from "node:fs";
+import { CustomSplash, drawSplash, SPLASH_THEMES, type SplashView } from "$ts/glimmer/customSplash";
 import { fakeFs } from "./helpers/fakeFs";
 
 /** the bits of an element that drawSplash touches */
@@ -32,6 +33,7 @@ const view = (over: Partial<SplashView> = {}): SplashView => ({
     progress: null,
     failed: false,
     cancelLabel: "Cancel",
+    retryLabel: "Try again",
     ...over,
 });
 
@@ -73,6 +75,7 @@ describe("drawSplash", () => {
         expect(els["progress-bar"].style.width).toBe("100%");
         expect(els.percent.hidden).toBe(true);
         expect(els["retry-btn"].hidden).toBe(false);
+        expect(els["retry-btn"].textContent).toBe("Try again");
         expect(els["cancel-btn"].textContent).toBe("Close");
     });
 
@@ -104,5 +107,30 @@ describe("CustomSplash", () => {
         fakeFs.seed("/big.html", "x".repeat(2 * 1024 * 1024 + 1));
 
         await expect(new CustomSplash().save("/big.html")).rejects.toThrow("2 MB");
+    });
+});
+
+describe("bundled themes", () => {
+    beforeEach(() => fakeFs.reset());
+
+    test.each([...SPLASH_THEMES])("%s has every id Glimmer fills in", (theme) => {
+        const html = readFileSync(`static/splash-themes/${theme}.html`, "utf8");
+
+        for (const id of IDS) expect(html).toContain(`id="${id}"`);
+        expect(html).not.toContain("<script");
+    });
+
+    test("saveTheme keeps a copy of the bundled file", async () => {
+        const fetched: string[] = [];
+        globalThis.fetch = (async (url: string) => {
+            fetched.push(url);
+            return new Response("<p id='status'></p>");
+        }) as typeof fetch;
+        const splash = new CustomSplash();
+
+        await splash.saveTheme("ember");
+
+        expect(fetched).toEqual(["/splash-themes/ember.html"]);
+        expect(await splash.load()).toBe("<p id='status'></p>");
     });
 });

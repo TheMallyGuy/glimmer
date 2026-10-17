@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Check } from "@lucide/svelte";
   import { open } from "@tauri-apps/plugin-dialog";
-  import { Button, LanguageDropdown, SettingGroup, SettingRow, TextField, cn } from "$lib";
+  import { Button, Dropdown, LanguageDropdown, SettingGroup, SettingRow, TextField, cn } from "$lib";
   import { appState } from "$lib/appState.svelte";
   import { ACCENT_PRESETS, AccentTheme, DEFAULT_ACCENT } from "$ts/glimmer/theme";
   import {
@@ -11,7 +11,9 @@
     IMAGE_EXTENSIONS,
     MAX_DIM,
   } from "$ts/glimmer/background";
-  import { CustomSplash } from "$ts/glimmer/customSplash";
+  import { CustomSplash, SPLASH_THEMES, type SplashTheme } from "$ts/glimmer/customSplash";
+  import { isAndroid } from "$ts/glimmer/android/platform";
+  import { openSplashPreview } from "$ts/windows/splash";
   import { useIntlayer } from "svelte-intlayer";
   const appearanceContent = useIntlayer("appearance");
   const commonContent = useIntlayer("common");
@@ -90,29 +92,41 @@
   const splashes = new CustomSplash();
   let splashError = $state("");
 
-  async function chooseSplash() {
-    splashError = "";
-    const picked = await open({
-      title: $appearanceContent.splashPickerTitle.value,
-      multiple: false,
-      filters: [{ name: "HTML", extensions: ["html", "htm"] }],
-    });
-    if (typeof picked !== "string") return;
+  /** the dropdown entry for a saved `appearance.splash`: built-in, a bundled theme, or the person's file */
+  const splashChoiceOf = (splash: string) =>
+    !splash
+      ? "builtin"
+      : (SPLASH_THEMES.find((theme) => splash === `${theme}.html`) ?? "custom");
+  let splashChoice = $state(splashChoiceOf(appearance.splash));
 
+  async function pickSplash(choice: string) {
+    splashError = "";
     try {
-      await splashes.save(picked);
-      appearance.splash = picked.split(/[\\/]/).pop() ?? picked;
+      if (choice === "builtin") {
+        appearance.splash = "";
+        await splashes.remove();
+      } else if (choice === "custom") {
+        const picked = await open({
+          title: $appearanceContent.splashPickerTitle.value,
+          multiple: false,
+          filters: [{ name: "HTML", extensions: ["html", "htm"] }],
+        });
+        if (typeof picked !== "string") {
+          splashChoice = splashChoiceOf(appearance.splash);
+          return;
+        }
+        await splashes.save(picked);
+        appearance.splash = picked.split(/[\\/]/).pop() ?? picked;
+      } else {
+        await splashes.saveTheme(choice as SplashTheme);
+        appearance.splash = `${choice}.html`;
+      }
     } catch (e) {
+      splashChoice = splashChoiceOf(appearance.splash);
       splashError = $appearanceContent.splashFailed({
         error: e instanceof Error ? e.message : String(e),
       }).value;
     }
-  }
-
-  async function removeSplash() {
-    appearance.splash = "";
-    splashError = "";
-    await splashes.remove();
   }
 
   async function removeImage() {
@@ -281,26 +295,41 @@
     {/if}
   </SettingGroup>
 
-  <SettingGroup label={$appearanceContent.splashGroup.value}>
-    <SettingRow
-      title={$appearanceContent.splashTitle.value}
-      description={appearance.splash || $appearanceContent.splashDescription.value}
-      note={splashError}
-    >
-      {#snippet control()}
-        <div class="flex items-center gap-1">
-          {#if appearance.splash}
-            <Button variant="ghost" size="sm" onclick={removeSplash}>
-              {$appearanceContent.removeSplash.value}
+  {#if !isAndroid()}
+    <SettingGroup label={$appearanceContent.splashGroup.value}>
+      <SettingRow
+        title={$appearanceContent.splashTitle.value}
+        description={splashChoice === "custom"
+          ? appearance.splash
+          : $appearanceContent.splashDescription.value}
+        note={splashError}
+      >
+        {#snippet control()}
+          <div class="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onclick={() => openSplashPreview(splashChoice !== "builtin")}
+            >
+              {$appearanceContent.splashPreview.value}
             </Button>
-          {/if}
-          <Button variant="secondary" size="sm" onclick={chooseSplash}>
-            {appearance.splash
-              ? $appearanceContent.changeSplash.value
-              : $appearanceContent.chooseSplash.value}
-          </Button>
-        </div>
-      {/snippet}
-    </SettingRow>
-  </SettingGroup>
+            <Dropdown
+              size="sm"
+              width="180px"
+              label={$appearanceContent.splashTitle.value}
+              bind:value={splashChoice}
+              options={[
+                { value: "builtin", label: $appearanceContent.splashBuiltIn.value },
+                { value: "blush", label: $appearanceContent.splashThemeBlush.value },
+                { value: "ember", label: $appearanceContent.splashThemeEmber.value },
+                { value: "crimson", label: $appearanceContent.splashThemeCrimson.value },
+                { value: "custom", label: $appearanceContent.splashCustom.value },
+              ]}
+              onchange={pickSplash}
+            />
+          </div>
+        {/snippet}
+      </SettingRow>
+    </SettingGroup>
+  {/if}
 </div>

@@ -18,6 +18,8 @@
   const isStudio = page.url.searchParams.get("target") === "studio";
   // a link from the Roblox website or a deep link, to launch with as Roblox's own launcher would
   const link = page.url.searchParams.get("link");
+  // Appearance's Preview button: "builtin" or "custom", made-up progress and no launch
+  const preview = page.url.searchParams.get("preview");
 
   let status = $state($splashContent.checkingForUpdates.value);
   let progress = $state<number | null>(null);
@@ -33,6 +35,7 @@
         progress,
         failed: error !== null,
         cancelLabel: error ? $commonContent.close.value : $commonContent.cancel.value,
+        retryLabel: $commonContent.tryAgain.value,
       });
   });
 
@@ -112,12 +115,34 @@
     }
   }
 
+  /** walks through checking, downloading and a failure, so every state of the screen shows */
+  async function runPreview() {
+    const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+    error = null;
+    progress = null;
+    status = $splashContent.checkingForUpdates.value;
+    await wait(1500);
+    for (let done = 0; done <= 20; done++) {
+      status = $splashContent.downloadingClient({ done, total: 20 }).value;
+      progress = done * 5;
+      await wait(150);
+    }
+    error = $splashContent.genericError.value;
+  }
+
   onMount(async () => {
     // outside Tauri (e.g. the intlayer editor) there is nothing to install or launch
     if (!isTauri()) return;
 
     sizeWindow(671, 329);
     appWindow?.setResizable(false);
+
+    if (preview) {
+      if (preview === "custom")
+        customHtml = await new CustomSplash().load().catch(() => null);
+      runPreview();
+      return;
+    }
 
     // the root layout also calls this, but its onMount races this page's --
     // load explicitly so settings like the VNG switch are in before we check
@@ -143,7 +168,8 @@
     error = null;
     progress = null;
     status = $splashContent.checkingForUpdates.value;
-    checkAndLaunch();
+    if (preview) runPreview();
+    else checkAndLaunch();
   }
 </script>
 

@@ -14,12 +14,27 @@ export interface SplashView {
   failed: boolean;
   /** the text of the cancel button: Cancel, or Close once the launch failed */
   cancelLabel: string;
+  retryLabel: string;
 }
+
+/** the launch screens shipped in `static/splash-themes/` */
+export const SPLASH_THEMES = ["blush", "ember", "crimson"] as const;
+export type SplashTheme = (typeof SPLASH_THEMES)[number];
 
 export class CustomSplash {
   /** copies the HTML file at `sourcePath` into the app data folder */
   async save(sourcePath: string) {
-    const html = await readTextFile(sourcePath);
+    await this.saveHtml(await readTextFile(sourcePath));
+  }
+
+  /** copies one of the bundled themes into the app data folder */
+  async saveTheme(theme: SplashTheme) {
+    const response = await fetch(`/splash-themes/${theme}.html`);
+    if (!response.ok) throw new Error(`The ${theme} theme is missing.`);
+    await this.saveHtml(await response.text());
+  }
+
+  async saveHtml(html: string) {
     if (html.length > MAX_SPLASH_BYTES) throw new Error("That file is bigger than 2 MB.");
 
     const dir = await new PathManager().getSplashDir();
@@ -69,7 +84,10 @@ export function drawSplash(doc: Document, view: SplashView) {
   else track?.removeAttribute("aria-valuenow");
 
   const retry = el("retry-btn");
-  if (retry) retry.hidden = !view.failed;
+  if (retry) {
+    retry.hidden = !view.failed;
+    retry.textContent = view.retryLabel;
+  }
 
   const cancel = el("cancel-btn");
   if (cancel) cancel.textContent = view.cancelLabel;

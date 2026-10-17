@@ -6,4 +6,6 @@ export const toast = new ToastQueue();
 /** the toasts on screen, for the host component to draw */
 export const toasts = $state({ items: [] as Toast[] });
 
-toast.subscribe((items) => (toasts.items = items));
+toast.subscribe((items) => {
+  toasts.items = items;
+});
