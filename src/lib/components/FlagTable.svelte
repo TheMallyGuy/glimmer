@@ -8,6 +8,7 @@
   import IconButton from './IconButton.svelte';
   import SearchField from './SearchField.svelte';
   import Dialog from './Dialog.svelte';
+  import TextBox from './TextBox.svelte';
   import { flagType, flagValueProblem, mergeFlags, newFlag, parseFlagsJson, flagsToObject, type Flag } from '../flags';
   import { toast } from '../toasts.svelte';
   import { cn } from '../utils';
@@ -31,7 +32,6 @@
 
   let { flags = $bindable([]), exportName = 'fastflags.json', class: className = '', onchange, onload, onapply, applyDisabled = false }: Props = $props();
 
-  const uid = $props.id();
   let query = $state('');
   let error = $state('');
   let confirmReset = $state(false);
@@ -290,27 +290,16 @@
 </div>
 
 <Dialog bind:open={pasteOpen} title={$flagTableContent.pasteDialogTitle.value} width="520px">
-  <div class="flex flex-col gap-1.5">
-    <label for="{uid}-paste" class="text-[13px] text-muted">{$flagTableContent.pasteLabel.value}</label>
-    <textarea
-      id="{uid}-paste"
-      bind:value={pasteText}
-      rows="10"
-      spellcheck="false"
-      autocomplete="off"
-      placeholder={'{ "FFlagName": "True" }'}
-      aria-invalid={pasteError ? true : undefined}
-      aria-describedby={pasteError ? `${uid}-paste-error` : undefined}
-      class={cn(
-        'w-full resize-y rounded-gl border-0 bg-field p-3.5 font-mono text-[13px] text-fg placeholder:text-subtle',
-        'focus:outline-2 focus:outline-offset-2 focus:outline-accent',
-        pasteError && 'outline-2 outline-offset-2 outline-danger',
-      )}
-    ></textarea>
-    {#if pasteError}
-      <p id="{uid}-paste-error" class="m-0 text-[13px] text-danger" role="alert">{pasteError}</p>
-    {/if}
-  </div>
+  <TextBox
+    label={$flagTableContent.pasteLabel.value}
+    bind:value={pasteText}
+    rows={10}
+    mono
+    spellcheck="false"
+    autocomplete="off"
+    placeholder={'{ "FFlagName": "True" }'}
+    error={pasteError}
+  />
   {#snippet actions()}
     <Button variant="ghost" onclick={() => (pasteOpen = false)}>{$commonContent.cancel.value}</Button>
     <Button variant="primary" onclick={importPasted} disabled={!pasteText.trim()}>{$flagTableContent.importFlags.value}</Button>

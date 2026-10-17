@@ -199,6 +199,7 @@ Use these instead of writing new markup for the same job.
 | `Dropdown` | Choosing one value from a short list. |
 | `SearchField` | Search and filter inputs. |
 | `TextField` | Labelled text input with `error` and `hint`. |
+| `TextBox` | Labelled multi-line text (`<textarea>`) with `error`, `hint`, `rows` and `mono` (Geist Mono, for pasted code). |
 | `SettingRow` | Title, description, optional yellow `note`, and a control passed as the `control` snippet. Pass `href` to make it a link row. |
 | `SettingGroup` | Stack of rows with an optional sentence-case label. |
 | `Dialog` | Confirmations and small forms. Uses native `<dialog>`. Buttons go in the `actions` snippet: ghost Cancel first, then the action. |
