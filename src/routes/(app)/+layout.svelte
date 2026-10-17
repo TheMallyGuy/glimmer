@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Snippet } from "svelte";
-  import { onMount, onDestroy } from "svelte";
+  import { onMount, onDestroy, tick } from "svelte";
   import { page } from "$app/state";
   import { afterNavigate, goto } from "$app/navigation";
   import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -29,6 +29,7 @@
     type Tab,
   } from "$lib";
   import { prefs, save, discard, launch } from "$lib/settings.svelte";
+  import { search } from "$lib/search.svelte";
   import { dictText } from "$lib/utils";
   import { installationsState } from "$lib/installations.svelte";
   import { watchInstallations } from "$ts/roblox/installation/watcher";
@@ -153,8 +154,25 @@
 
   onDestroy(() => stopWatching?.());
 
+  // the search hid every setting of this tab: say so, and offer to clear it. Tabs with no settings rows (flags, mods) are left alone.
+  let content = $state<HTMLElement>();
+  let nothingFound = $state(false);
+
+  async function checkSearch() {
+    await tick();
+    const rows = content?.querySelectorAll("[data-setting]");
+    nothingFound = !!search.query.trim() && !!rows?.length && !content?.querySelector("[data-setting]:not(.hidden)");
+  }
+
+  $effect(() => {
+    search.query;
+    void checkSearch();
+  });
+
   afterNavigate(() => {
     rememberPage(page.url.pathname);
+    // the new tab draws its rows after the navigation
+    setTimeout(checkSearch, 0);
   });
 </script>
 
@@ -168,7 +186,7 @@
       <div data-tauri-drag-region class="h-full grow"></div>
       <SearchField
         label={$appLayoutContent.searchAllSettings.value}
-        bind:value={prefs.query}
+        bind:value={search.query}
       />
       {#if !isAndroid()}
         <IconButton
@@ -208,7 +226,13 @@
       </p>
       <!-- keyed on the tab, so switching tabs plays the entrance but moving inside one does not reload it -->
       {#key section}
-        <div class="animate-fade-up">
+        <div class="animate-fade-up" bind:this={content}>
+          {#if nothingFound}
+            <div class="flex flex-col items-start gap-3 bg-row px-[18px] py-4">
+              <span class="text-[13px] text-muted">{$appLayoutContent.noSettingsFound({ query: search.query.trim() }).value}</span>
+              <Button variant="secondary" size="sm" onclick={() => (search.query = "")}>{$appLayoutContent.clearSearch.value}</Button>
+            </div>
+          {/if}
           {@render children()}
         </div>
       {/key}

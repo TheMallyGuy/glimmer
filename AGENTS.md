@@ -82,9 +82,9 @@ src/
 └── routes/
     ├── layout.css                 @import 'tailwindcss' + lib/theme.css
     ├── +layout.svelte             root layout
-    ├── +page.ts                   redirects / to /choose, to /onboarding/desktop on the first launch, or to /onboarding/mobile on Android
-    ├── onboarding/mobile/                Android only, the first screen, as steps: welcome, start Shizuku, allow Glimmer, find Roblox, done (progress bars, one step per screen, Back / Next). It checks again when the person comes back from Shizuku or Google Play, moves forward by itself when the step is met, and goes straight to /choose when the phone is already set up (Skip leaves early)
-    ├── onboarding/desktop/        desktop only, the first-launch tour in the chooser window: welcome, language (English only for now), finished. `/` sends there while `appState.onboarded` is false; finishing or skipping saves it as true
+    ├── +page.ts                   redirects / to /choose, or on the first launch (`appState.onboarded` false) to /onboarding/desktop or /onboarding/mobile. On Android, once onboarded, a Shizuku that is stopped or not allowed sends the person to that one step instead
+    ├── onboarding/mobile/                Android only, the first screen, one route per step: welcome (`+page`), `shizuku`, `permission`, `roblox`, `done` (progress bars and the checks in `+layout`, shared state in `onboarding.svelte.ts`, Back / Next go between the routes). It checks again when the person comes back from Shizuku or Google Play, moves forward by itself when the step is met, and goes straight to /choose when the phone is already set up (Skip leaves early)
+    ├── onboarding/desktop/        desktop only, the first-launch tour in the chooser window, one route per step: welcome (`+page`), `language` (English only for now), `done`; `tour.ts` has the step list and leave(). Both onboardings draw each step with `onboarding/Step.svelte`. `/` sends there while `appState.onboarded` is false; finishing or skipping saves it as true
     ├── choose/                    Player/Studio chooser window
     ├── splash/                    launch progress window (only shows what `launch()` from `$ts/launch` reports)
     ├── background/                hidden window: log watching and Discord RPC

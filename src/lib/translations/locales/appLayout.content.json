@@ -107,6 +107,20 @@
         "vi": "Tìm kiếm tất cả cài đặt"
       }
     },
+    "noSettingsFound": {
+      "nodeType": "translation",
+      "translation": {
+        "en": { "nodeType": "insertion", "insertion": "No setting on this tab matches \"{{query}}\". Try another word, or clear the search." },
+        "vi": { "nodeType": "insertion", "insertion": "Không có cài đặt nào trong tab này khớp với \"{{query}}\". Hãy thử từ khác, hoặc xóa tìm kiếm." }
+      }
+    },
+    "clearSearch": {
+      "nodeType": "translation",
+      "translation": {
+        "en": "Clear search",
+        "vi": "Xóa tìm kiếm"
+      }
+    },
     "settingsSections": {
       "nodeType": "translation",
       "translation": {

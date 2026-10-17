@@ -3,6 +3,8 @@
   import { ChevronRight } from '@lucide/svelte';
   import { cn } from '../utils';
   import RichText from './RichText.svelte';
+  import { matchesQuery } from '../search';
+  import { search } from '../search.svelte';
 
   interface Props {
     title: string;
@@ -22,6 +24,9 @@
 
   let { title, description, note, disabled = false, href, value, control, class: className = '', onclick }: Props = $props();
 
+  // the settings search hides the rows that do not match
+  const shown = $derived(matchesQuery(search.query, title, description, note, value));
+
   const row = 'flex items-center gap-6 bg-row px-[18px] py-4 text-fg no-underline max-sm:flex-wrap max-sm:gap-x-4 max-sm:gap-y-3';
 </script>
 
@@ -39,14 +44,15 @@
   <a
     {href}
     {onclick}
-    class={cn(row, 'cursor-pointer transition-colors hover:bg-hover focus-visible:-outline-offset-2 motion-reduce:transition-none', className)}
+    data-setting
+    class={cn(row, !shown && 'hidden', 'cursor-pointer transition-colors hover:bg-hover focus-visible:-outline-offset-2 motion-reduce:transition-none', className)}
   >
     {@render text()}
     {#if value}<span class="shrink-0 text-sm text-muted">{value}</span>{/if}
     <ChevronRight size={18} strokeWidth={1.75} class="shrink-0 text-muted" aria-hidden="true" />
   </a>
 {:else}
-  <div class={cn(row, className)} aria-disabled={disabled || undefined}>
+  <div class={cn(row, !shown && 'hidden', className)} data-setting aria-disabled={disabled || undefined}>
     {@render text()}
     {#if control}<div class="flex shrink-0 items-center">{@render control()}</div>{/if}
   </div>

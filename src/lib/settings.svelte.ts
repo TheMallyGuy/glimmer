@@ -18,7 +18,6 @@ import { openSplashWindow } from "$ts/windows/splash";
 /** Window-local preferences that aren't part of the saved app state. */
 export const prefs = $state({
   target: "player",
-  query: "",
 });
 
 export async function save() {
