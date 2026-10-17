@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
   import { SettingGroup, SettingRow, Switch } from "$lib";
   import { appState } from "$lib/appState.svelte";
     import { isAndroid } from "$ts/glimmer/android/platform";
@@ -40,6 +41,7 @@
     />
     <SettingRow title={$aboutContent.logs.value} onclick={openLogs} href="#" />
     <SettingRow title={$aboutContent.sourceCode.value} href="#" />
+    <SettingRow title="Dev Page" onclick={goto("/about/dev")} href="#" />
   </SettingGroup>
 
   <SettingGroup label={$aboutContent.funGroup.value}>

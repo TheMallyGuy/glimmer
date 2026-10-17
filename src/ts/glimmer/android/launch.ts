@@ -14,6 +14,8 @@ export type AndroidLaunchResult =
 export interface AndroidLaunchOptions {
   /** the Fast Flags to write first, none to leave Roblox's alone */
   flags: Record<string, string> | null;
+  /** roblox deeplinks n stuff */
+  deeplink? : string | undefined;
 }
 
 export interface AndroidLaunchDeps {
@@ -62,7 +64,7 @@ export async function launchOnAndroid(
     // the watcher first: a log file that is already there when it starts counts as history and is not read
     await deps.watchLogs(ANDROID_LOGS_DIR);
     await deps.roblox.startLogging();
-    await deps.roblox.start(pkg);
+    await deps.roblox.start(pkg, options.deeplink ?? undefined);
   } catch {
     return "failed";
   }

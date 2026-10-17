@@ -1,7 +1,6 @@
 import { ROBLOX_PACKAGE } from "../setup";
 import { Shizuku } from "./shizukuCom";
 
-
 export const ANDROID_LOGS_DIR = "/sdcard/Android/data/com.mally.glimmer/files/logs";
 
 /** how many log files stay in that folder; the watcher only follows the newest few anyway */
@@ -11,6 +10,10 @@ export type RobloxShizuku = Pick<Shizuku, "executeAdb" | "listPackages">;
 
 function checkPackage(pkg: string) {
   if (!/^[A-Za-z0-9_.]+$/.test(pkg)) throw new Error(`not a package name: ${pkg}`);
+}
+
+export function shellQuote(text: string): string {
+  return `'${text.replaceAll("'", `'\\''`)}'`;
 }
 
 /**
@@ -46,12 +49,16 @@ export class AndroidRoblox {
     if (result.exitCode !== 0) throw new Error(result.stderr.trim() || "could not start the log");
   }
 
-  /** opens the app, as pressing its icon does */
-  async start(pkg: string) {
+  /** opens the app, as pressing its icon does; with a link, restarts it on that link (a running Roblox ignores new links) */
+  async start(pkg: string, deeplink?: string) {
     checkPackage(pkg);
+
     const result = await this.shizuku.executeAdb(
-      `am start -n "$(cmd package resolve-activity --brief -c android.intent.category.LAUNCHER ${pkg} | tail -n 1)" 2>&1\n`,
+      deeplink
+        ? `am force-stop ${pkg} && am start -a android.intent.action.VIEW -p ${pkg} -d ${shellQuote(deeplink)} 2>&1\n`
+        : `am start -n "$(cmd package resolve-activity --brief -c android.intent.category.LAUNCHER ${pkg} | tail -n 1)" 2>&1\n`,
     );
+
     // am start prints "Error: ..." and still exits 0 when there is nothing to start
     if (result.exitCode !== 0 || /^Error/m.test(result.stdout)) {
       throw new Error(result.stdout.trim() || result.stderr.trim() || "could not start Roblox");
