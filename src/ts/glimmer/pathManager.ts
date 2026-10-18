@@ -60,6 +60,11 @@ export class PathManager {
     return name ? join(root, name) : root;
   }
 
+  /** where a community mod zip waits while it is extracted (kept apart from the package cache, which prunes its root) */
+  async getCommunityDownloadsDir(): Promise<string> {
+    return join(await appCacheDir(), "glimmer-community");
+  }
+
   /** the games joined across sessions (see GameHistory) */
   async getGameHistoryFile(): Promise<string> {
     return join(await appDataDir(), "games.json");

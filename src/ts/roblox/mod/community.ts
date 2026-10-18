@@ -1,5 +1,11 @@
 // from https://github.com/TheMallyGuy/crush/blob/master/src/lib/communityAdapter.ts
 
+import { join } from "@tauri-apps/api/path";
+import { exists, mkdir, readDir, remove, rename, writeFile } from "@tauri-apps/plugin-fs";
+import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
+import { commands } from "$ts/glimmer/bindings";
+import { PathManager } from "$ts/glimmer/pathManager";
+
 export type CommunitySource = "froststrap" | "kliko";
 
 export interface CommunityMod {
@@ -107,4 +113,52 @@ export async function fetchCommunityMods(force = false) {
 
   cache = { mods, failed };
   return cache;
+}
+
+/**
+ * Downloads a community mod's zip and extracts it into `modDir`. Both libraries ship zips with the
+ * mod files (content/, PlatformContent/...) at the root, so they go straight into the mod folder.
+ */
+export async function downloadCommunityMod(mod: CommunityMod, modDir: string) {
+  const res = await tauriFetch(mod.download);
+  if (!res.ok) throw new Error(`Failed to download ${mod.name}: ${res.status} ${res.statusText}`);
+
+  const dir = await new PathManager().getCommunityDownloadsDir();
+  await mkdir(dir, { recursive: true });
+  const zip = await join(dir, `${mod.id.replace(/[^\w-]/g, "_")}.zip`);
+  await writeFile(zip, new Uint8Array(await res.arrayBuffer()));
+
+  try {
+    const result = await commands.extractZip(zip, modDir);
+    if (result.status === "error") throw new Error(`Failed to extract ${mod.name}: ${result.error}`);
+  } finally {
+    await remove(zip);
+  }
+  await unwrapModFolder(modDir);
+}
+
+/** top folders of a mod as Roblox lays them out; a lone folder with any other name is a wrapper */
+const MOD_ROOTS = new Set(["content", "platformcontent", "extracontent", "shaders", "ssl"]);
+
+/**
+ * Some zips put the mod in a folder of its own (`VC Robloxian/PlatformContent/...`). Moves the
+ * files of such a wrapper up into `modDir`, as many levels as there are.
+ */
+export async function unwrapModFolder(modDir: string) {
+  const macJunk = await join(modDir, "__MACOSX"); // zips made on a Mac carry it next to the wrapper
+  if (await exists(macJunk)) await remove(macJunk, { recursive: true });
+
+  for (;;) {
+    const entries = await readDir(modDir);
+    const [only] = entries;
+    if (entries.length !== 1 || !only.isDirectory || MOD_ROOTS.has(only.name.toLowerCase())) return;
+
+    // renamed first, so a child with the wrapper's own name can move up next to it
+    const wrapper = await join(modDir, ".glimmer-unwrap");
+    await rename(await join(modDir, only.name), wrapper);
+    for (const child of await readDir(wrapper)) {
+      await rename(await join(wrapper, child.name), await join(modDir, child.name));
+    }
+    await remove(wrapper, { recursive: true });
+  }
 }

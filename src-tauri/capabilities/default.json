@@ -151,6 +151,17 @@
       ]
     },
     {
+      "identifier": "fs:allow-rename",
+      "allow": [
+        {
+          "path": "$HOME"
+        },
+        {
+          "path": "$HOME/**/*"
+        }
+      ]
+    },
+    {
       "identifier": "fs:read-dirs",
       "allow": [
         {
@@ -226,6 +237,12 @@
         },
         {
           "url": "https://users.roblox.com"
+        },
+        {
+          "url": "https://github.com/*"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/*"
         }
       ],
       "deny": [

@@ -59,7 +59,7 @@ src/
 │           ├── manager.ts         ModificationManager: mod folders and index
 │           ├── apply.ts           Applier: copies mods into an install, tracks hashes
 │           ├── stock.ts           StockRestorer class: restores stock files by extracting just those files from the cached packages (no full backup copy)
-│           ├── community.ts       Froststrap + Kliko library loader
+│           ├── community.ts       Froststrap + Kliko library loader; downloadCommunityMod() fetches a mod zip (http scope: github.com, raw.githubusercontent.com) and extracts it into the mod folder
 │           └── presets/           one file per prebuilt mod (cursor, sounds, fonts, avatar background)
 ├── lib/
 │   ├── theme.css                  design tokens (@theme) and base styles

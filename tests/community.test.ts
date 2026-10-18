@@ -1,192 +1,98 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
-import { fetchCommunityMods } from "$ts/roblox/mod/community";
-import { jsonResponse } from "./helpers/tauri";
-
-const FROSTSTRAP = "RealMeddsam/config";
-const KLIKO = "klikos-modloader/marketplace";
-
-type Route = () => ReturnType<typeof jsonResponse> | Promise<never>;
+import { downloadCommunityMod, unwrapModFolder, type CommunityMod } from "$ts/roblox/mod/community";
+import { fakeFs } from "./helpers/fakeFs";
+import { invokeCalls, invokeHandlers, resetTauri } from "./helpers/tauri";
 
 const realFetch = globalThis.fetch;
-let calls: string[];
 
-/** answer the two library URLs from `routes`, matched by a substring of the url */
-function stubFetch(routes: { froststrap: Route; kliko: Route }) {
-  globalThis.fetch = (async (input: RequestInfo | URL) => {
-    const url = String(input);
-    calls.push(url);
-    if (url.includes(FROSTSTRAP)) return routes.froststrap();
-    if (url.includes(KLIKO)) return routes.kliko();
-    throw new Error(`unexpected url ${url}`);
-  }) as typeof fetch;
-}
-
-const froststrapMod = {
-  id: "1",
-  name: "Cool mod",
-  download: "https://example.com/1.zip",
-  author: "me",
-  description: "does a thing",
-  thumbnail: "https://example.com/1.png",
+const mod: CommunityMod = {
+  id: "kliko:klikos-mod",
+  name: "Kliko's mod",
+  download: "https://github.com/klikos-modloader/marketplace/raw/refs/heads/main/mods/klikos-mod.zip",
+  source: "kliko",
 };
 
+const ZIP = "/cache/glimmer-community/kliko_klikos-mod.zip";
+
 beforeEach(() => {
-  calls = [];
+  fakeFs.reset();
+  resetTauri();
 });
 
 afterEach(() => {
   globalThis.fetch = realFetch;
 });
 
-describe("fetchCommunityMods", () => {
-  test("merges both libraries and prefixes ids with the source", async () => {
-    stubFetch({
-      froststrap: () => jsonResponse({ communityMods: [froststrapMod] }),
-      kliko: () =>
-        jsonResponse([{ id: "k1", name: "Kliko mod", download: "https://example.com/k.zip" }]),
-    });
+describe("downloadCommunityMod", () => {
+  test("extracts the downloaded zip into the mod folder and deletes the zip", async () => {
+    globalThis.fetch = (async () => new Response(new Uint8Array([1, 2, 3]))) as unknown as typeof fetch;
+    let zipSeen = false;
+    invokeHandlers.extract_zip = () => {
+      zipSeen = fakeFs.has(ZIP);
+      fakeFs.seed("/appdata/mods/[Kliko] Kliko's mod/Kliko's mod/content/a.png", "a");
+      return null;
+    };
 
-    const { mods, failed } = await fetchCommunityMods(true);
+    await downloadCommunityMod(mod, "/appdata/mods/[Kliko] Kliko's mod");
 
-    expect(failed).toEqual([]);
-    expect(mods.map((m) => m.id)).toEqual(["froststrap:1", "kliko:k1"]);
-    expect(mods[0]).toMatchObject({
-      name: "Cool mod",
-      author: "me",
-      description: "does a thing",
-      download: "https://example.com/1.zip",
-      thumbnail: "https://example.com/1.png",
-      source: "froststrap",
+    expect(zipSeen).toBe(true);
+    expect(invokeCalls.find((c) => c.cmd === "extract_zip")?.args).toEqual({
+      zipPath: ZIP,
+      dest: "/appdata/mods/[Kliko] Kliko's mod",
     });
-    expect(mods[1]).toMatchObject({ name: "Kliko mod", source: "kliko" });
+    expect(fakeFs.has(ZIP)).toBe(false);
+    expect(fakeFs.text("/appdata/mods/[Kliko] Kliko's mod/content/a.png")).toBe("a");
   });
 
-  test("skips Froststrap theme entries (modtype 5)", async () => {
-    stubFetch({
-      froststrap: () =>
-        jsonResponse({
-          communityMods: [
-            { ...froststrapMod, id: "mod", modtype: 1 },
-            { ...froststrapMod, id: "theme", modtype: 5 },
-            { ...froststrapMod, id: "untyped" },
-          ],
-        }),
-      kliko: () => jsonResponse([]),
-    });
+  test("throws on a failed download without extracting", async () => {
+    globalThis.fetch = (async () => new Response("", { status: 404 })) as unknown as typeof fetch;
 
-    const { mods } = await fetchCommunityMods(true);
-    expect(mods.map((m) => m.id)).toEqual(["froststrap:mod", "froststrap:untyped"]);
+    await expect(downloadCommunityMod(mod, "/appdata/mods/x")).rejects.toThrow("404");
+    expect(invokeCalls.some((c) => c.cmd === "extract_zip")).toBe(false);
   });
 
-  test("tolerates a Froststrap payload without communityMods", async () => {
-    stubFetch({ froststrap: () => jsonResponse({}), kliko: () => jsonResponse([]) });
+  test("throws when extraction fails and still deletes the zip", async () => {
+    globalThis.fetch = (async () => new Response(new Uint8Array([1]))) as unknown as typeof fetch;
+    invokeHandlers.extract_zip = () => {
+      throw "bad zip";
+    };
 
-    const { mods, failed } = await fetchCommunityMods(true);
-    expect(mods).toEqual([]);
-    expect(failed).toEqual([]);
+    await expect(downloadCommunityMod(mod, "/appdata/mods/x")).rejects.toThrow("bad zip");
+    expect(fakeFs.has(ZIP)).toBe(false);
+  });
+});
+
+describe("unwrapModFolder", () => {
+  const DIR = "/appdata/mods/[Froststrap] VC Robloxian";
+
+  test("lifts a wrapper folder's files into the mod folder", async () => {
+    fakeFs.seed(`${DIR}/VC Robloxian/PlatformContent/pc/a.png`, "a");
+    fakeFs.seed(`${DIR}/VC Robloxian/content/b.png`, "b");
+
+    await unwrapModFolder(DIR);
+
+    expect(fakeFs.text(`${DIR}/PlatformContent/pc/a.png`)).toBe("a");
+    expect(fakeFs.text(`${DIR}/content/b.png`)).toBe("b");
+    expect(fakeFs.has(`${DIR}/VC Robloxian`)).toBe(false);
+    expect(fakeFs.has(`${DIR}/.glimmer-unwrap`)).toBe(false);
   });
 
-  describe("gradients", () => {
-    const withGradient = (
-      angle: number | undefined,
-      gradient: { offset: number; color: string }[] | undefined,
-    ) =>
-      stubFetch({
-        froststrap: () => jsonResponse({ communityMods: [{ ...froststrapMod, angle, gradient }] }),
-        kliko: () => jsonResponse([]),
-      });
+  test("handles nested wrappers, one named like its parent, and drops __MACOSX", async () => {
+    fakeFs.seed(`${DIR}/x/x/content/c.png`, "c");
+    fakeFs.seed(`${DIR}/__MACOSX/x/._c.png`, "junk");
 
-    test("builds a linear-gradient from the stops", async () => {
-      withGradient(45, [
-        { offset: 0, color: "#ff0000" },
-        { offset: 0.5, color: "#00ff00" },
-        { offset: 1, color: "#0000ff" },
-      ]);
+    await unwrapModFolder(DIR);
 
-      const { mods } = await fetchCommunityMods(true);
-      expect(mods[0].gradient).toBe(
-        "linear-gradient(45deg, #ff0000 0%, #00ff00 50%, #0000ff 100%)",
-      );
-    });
-
-    test("defaults the angle to 90 degrees", async () => {
-      withGradient(undefined, [
-        { offset: 0, color: "#111" },
-        { offset: 1, color: "#222" },
-      ]);
-
-      const { mods } = await fetchCommunityMods(true);
-      expect(mods[0].gradient).toBe("linear-gradient(90deg, #111 0%, #222 100%)");
-    });
-
-    test("needs at least two stops", async () => {
-      withGradient(90, [{ offset: 0, color: "#111" }]);
-      expect((await fetchCommunityMods(true)).mods[0].gradient).toBeUndefined();
-
-      withGradient(90, undefined);
-      expect((await fetchCommunityMods(true)).mods[0].gradient).toBeUndefined();
-    });
+    expect(fakeFs.text(`${DIR}/content/c.png`)).toBe("c");
+    expect(fakeFs.has(`${DIR}/x`)).toBe(false);
+    expect(fakeFs.has(`${DIR}/__MACOSX`)).toBe(false);
   });
 
-  describe("failures", () => {
-    test("one failing source does not drop the other", async () => {
-      stubFetch({
-        froststrap: () => jsonResponse({}, { status: 500, statusText: "Server Error" }),
-        kliko: () => jsonResponse([{ id: "k1", name: "Kliko mod", download: "d" }]),
-      });
+  test("leaves a mod that starts at a Roblox folder alone", async () => {
+    fakeFs.seed(`${DIR}/content/textures/d.png`, "d");
 
-      const { mods, failed } = await fetchCommunityMods(true);
-      expect(failed).toEqual(["froststrap"]);
-      expect(mods.map((m) => m.id)).toEqual(["kliko:k1"]);
-    });
+    await unwrapModFolder(DIR);
 
-    test("a network error counts as a failure", async () => {
-      stubFetch({
-        froststrap: () => jsonResponse({ communityMods: [froststrapMod] }),
-        kliko: () => Promise.reject(new Error("offline")),
-      });
-
-      const { mods, failed } = await fetchCommunityMods(true);
-      expect(failed).toEqual(["kliko"]);
-      expect(mods).toHaveLength(1);
-    });
-
-    test("reports both when everything fails", async () => {
-      stubFetch({
-        froststrap: () => jsonResponse({}, { status: 404 }),
-        kliko: () => jsonResponse({}, { status: 404 }),
-      });
-
-      const { mods, failed } = await fetchCommunityMods(true);
-      expect(mods).toEqual([]);
-      expect(failed).toEqual(["froststrap", "kliko"]);
-    });
-  });
-
-  describe("caching", () => {
-    const ok = () =>
-      stubFetch({
-        froststrap: () => jsonResponse({ communityMods: [froststrapMod] }),
-        kliko: () => jsonResponse([]),
-      });
-
-    test("reuses the previous result", async () => {
-      ok();
-      await fetchCommunityMods(true);
-      const requestsAfterFirst = calls.length;
-
-      const again = await fetchCommunityMods();
-      expect(calls).toHaveLength(requestsAfterFirst);
-      expect(again.mods).toHaveLength(1);
-    });
-
-    test("force refetches", async () => {
-      ok();
-      await fetchCommunityMods(true);
-      const requestsAfterFirst = calls.length;
-
-      await fetchCommunityMods(true);
-      expect(calls.length).toBe(requestsAfterFirst * 2);
-    });
+    expect(fakeFs.text(`${DIR}/content/textures/d.png`)).toBe("d");
   });
 });

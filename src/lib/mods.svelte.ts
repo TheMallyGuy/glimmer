@@ -18,7 +18,7 @@ import {
   setOldAvatarBackground,
 } from "$ts/roblox/mod/presets/oldAvatarBackground";
 import type { CommunityMod } from "$ts/roblox/mod/community";
-import { sourceNames } from "$ts/roblox/mod/community";
+import { downloadCommunityMod, sourceNames } from "$ts/roblox/mod/community";
 
 export interface Mod {
   id: string;
@@ -276,10 +276,18 @@ export async function installCommunityMod(mod: CommunityMod) {
   if (installs[mod.id] === "installing") return;
   installs[mod.id] = "installing";
 
+  const name = `[${sourceNames[mod.source].replace(" library", "")}] ${mod.name}`;
   try {
-    // TODO: download mod.download and extract it into the new mod's folder.
-    const name = `[${sourceNames[mod.source].replace(" library", "")}] ${mod.name}`;
-    if (!nameTaken(name)) await createMod(name);
+    if (!nameTaken(name)) {
+      await createMod(name);
+      const m = await getManager();
+      try {
+        await downloadCommunityMod(mod, await join(m.modificationPath, name));
+      } catch (err) {
+        await deleteMod(name); // no empty or half-extracted mod left behind
+        throw err;
+      }
+    }
     await applyMods(); // an install takes effect right away
     installs[mod.id] = "installed";
   } catch (err) {
