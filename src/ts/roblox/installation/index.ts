@@ -25,10 +25,7 @@ export type InstallProgress =
  * the folder/index name a version is installed under. VNG installs get a `-VNG` suffix so a
  * Global and a VNG install of the same version hash don't collide or get picked up as each other.
  */
-export function installName(
-  version: string,
-  distribution: Distribution,
-): string {
+export function installName(version: string, distribution: Distribution): string {
   return distribution === "vng" ? `${version}-VNG` : version;
 }
 

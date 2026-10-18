@@ -34,9 +34,5 @@
   "location": "local",
   "title": "Mods page layout",
   "description": "Translations for displaying different sections of the Mods page, such as your own, built-in, and community modules.",
-  "tags": [
-    "Mods",
-    "Navigation",
-    "Translations"
-  ]
+  "tags": ["Mods", "Navigation", "Translations"]
 }

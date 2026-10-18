@@ -12,10 +12,7 @@ export interface CustomIconOptions {
   size?: number;
 }
 
-export async function getCustomGameIcon(
-  gameId: number,
-  opts: CustomIconOptions = {},
-) {
+export async function getCustomGameIcon(gameId: number, opts: CustomIconOptions = {}) {
   const params = new URLSearchParams();
   if (opts.svgUrl) params.set("url_svg", opts.svgUrl);
   if (opts.overlay) params.set("overlay", opts.overlay);

@@ -60,7 +60,7 @@ export class BloxstrapRpc {
   /** what a game set with `SetLaunchData` in this session */
   launchData: string | undefined;
 
-  constructor(private readonly options: BloxstrapRpcOptions) { }
+  constructor(private readonly options: BloxstrapRpcOptions) {}
 
   /**
    * a game was joined and Glimmer set `original` as the activity. `buttons` makes the buttons of an activity, given
@@ -111,7 +111,7 @@ export class BloxstrapRpc {
 
   private run<T>(task: () => Promise<T>): Promise<T> {
     const next = this.tail.then(task);
-    this.tail = next.catch(() => { });
+    this.tail = next.catch(() => {});
     return next;
   }
 
@@ -121,9 +121,12 @@ export class BloxstrapRpc {
   }
 
   private async setLaunchData(data: unknown) {
-    if (typeof data !== "string") return this.options.log("BloxstrapRPC: launch data is not a string");
+    if (typeof data !== "string")
+      return this.options.log("BloxstrapRPC: launch data is not a string");
     if (data.length > MAX_LAUNCH_DATA) {
-      return this.options.log(`BloxstrapRPC: launch data cannot be longer than ${MAX_LAUNCH_DATA} characters`);
+      return this.options.log(
+        `BloxstrapRPC: launch data cannot be longer than ${MAX_LAUNCH_DATA} characters`,
+      );
     }
 
     this.launchData = data;
@@ -140,13 +143,16 @@ export class BloxstrapRpc {
     for (const key of ["details", "state"] as const) {
       const value = data[key];
       if (typeof value !== "string") continue;
-      if (value.length > MAX_TEXT) this.options.log(`BloxstrapRPC: ${key} cannot be longer than ${MAX_TEXT} characters`);
+      if (value.length > MAX_TEXT)
+        this.options.log(`BloxstrapRPC: ${key} cannot be longer than ${MAX_TEXT} characters`);
       else patch[key] = value === "<reset>" ? original[key] : value;
     }
 
     // a time of 0 takes the timestamp away. Games send seconds, Discord activity here is in ms
-    if (typeof data.timeStart === "number") patch.startTimestamp = data.timeStart === 0 ? undefined : data.timeStart * 1000;
-    if (typeof data.timeEnd === "number") patch.endTimestamp = data.timeEnd === 0 ? undefined : data.timeEnd * 1000;
+    if (typeof data.timeStart === "number")
+      patch.startTimestamp = data.timeStart === 0 ? undefined : data.timeStart * 1000;
+    if (typeof data.timeEnd === "number")
+      patch.endTimestamp = data.timeEnd === 0 ? undefined : data.timeEnd * 1000;
 
     // the person's own picture stays when their account is shown, as it makes no sense to replace it
     const loading: Promise<void>[] = [];
@@ -161,8 +167,16 @@ export class BloxstrapRpc {
   }
 
   /** `image` of a message, as the fields it changes in `patch` */
-  private async image(image: PresenceImage, size: "small" | "large", original: ActivityOptions, patch: Partial<ActivityOptions>) {
-    const [key, text] = size === "small" ? (["smallImage", "smallText"] as const) : (["largeImage", "largeText"] as const);
+  private async image(
+    image: PresenceImage,
+    size: "small" | "large",
+    original: ActivityOptions,
+    patch: Partial<ActivityOptions>,
+  ) {
+    const [key, text] =
+      size === "small"
+        ? (["smallImage", "smallText"] as const)
+        : (["largeImage", "largeText"] as const);
 
     if (image.clear) {
       patch[key] = undefined;
@@ -182,7 +196,9 @@ export class BloxstrapRpc {
       try {
         url = (await this.options.thumbnail(image.assetId)) ?? undefined;
       } catch (err) {
-        this.options.log(`BloxstrapRPC: could not load the picture of asset ${image.assetId}: ${err}`);
+        this.options.log(
+          `BloxstrapRPC: could not load the picture of asset ${image.assetId}: ${err}`,
+        );
       }
       if (url) this.thumbnails.set(image.assetId, url);
     }

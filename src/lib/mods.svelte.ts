@@ -6,23 +6,13 @@ import { warn } from "@tauri-apps/plugin-log";
 import { ModificationManager } from "$ts/roblox/mod/manager";
 import { Applier } from "$ts/roblox/mod/apply";
 import type { FillProgress } from "$ts/roblox/installation/packageCache";
-import {
-  cursorModName,
-  isCursorVersion,
-  setCursor,
-} from "$ts/roblox/mod/presets/mouseCursor";
-import {
-  oldSoundsModName,
-  setOldSounds,
-} from "$ts/roblox/mod/presets/oldCharsSounds";
+import { cursorModName, isCursorVersion, setCursor } from "$ts/roblox/mod/presets/mouseCursor";
+import { oldSoundsModName, setOldSounds } from "$ts/roblox/mod/presets/oldCharsSounds";
 import {
   customDeathSoundModName,
   setCustomDeathSound,
 } from "$ts/roblox/mod/presets/customDeathSound";
-import {
-  customFontModName,
-  setCustomFont,
-} from "$ts/roblox/mod/presets/customFont";
+import { customFontModName, setCustomFont } from "$ts/roblox/mod/presets/customFont";
 import {
   oldAvatarBackgroundModName,
   setOldAvatarBackground,
@@ -40,9 +30,7 @@ export interface Mod {
 export const mods = $state({ list: [] as Mod[] });
 
 /** Install state per community mod id. */
-export const installs = $state<
-  Record<string, "installing" | "installed" | "failed">
->({});
+export const installs = $state<Record<string, "installing" | "installed" | "failed">>({});
 
 /** Built-in mod choices. */
 export const prebuilt = $state({
@@ -196,9 +184,7 @@ export async function reorderMods(newOrder: Mod[]) {
 
 export async function openModFolder(mod?: Mod) {
   const m = await getManager();
-  const path = mod
-    ? await join(m.modificationPath, mod.name)
-    : m.modificationPath;
+  const path = mod ? await join(m.modificationPath, mod.name) : m.modificationPath;
   await openPath(path);
 }
 
@@ -217,8 +203,7 @@ export async function applyCursor(value: string) {
 
   for (const version of ["2013", "2006"] as const) {
     const name = cursorModName(version);
-    if (m.modificationPathIndex.some((e) => e.name === name))
-      await m.deleteMod(name);
+    if (m.modificationPathIndex.some((e) => e.name === name)) await m.deleteMod(name);
   }
 
   if (value !== "default") await setCursor(value);
@@ -247,9 +232,7 @@ export async function applyOldAvatarBackground(enabled: boolean) {
   const m = await getManager();
   await m.reIndex();
 
-  if (
-    m.modificationPathIndex.some((e) => e.name === oldAvatarBackgroundModName)
-  ) {
+  if (m.modificationPathIndex.some((e) => e.name === oldAvatarBackgroundModName)) {
     await m.deleteMod(oldAvatarBackgroundModName);
   }
 

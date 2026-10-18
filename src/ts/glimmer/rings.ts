@@ -158,11 +158,7 @@ export class RingsEffect {
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(
-      gl.ARRAY_BUFFER,
-      new Float32Array([-1, -1, 3, -1, -1, 3]),
-      gl.STATIC_DRAW,
-    ); // one triangle that covers the screen
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW); // one triangle that covers the screen
     const position = gl.getAttribLocation(program, "position");
     gl.enableVertexAttribArray(position);
     gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
@@ -172,11 +168,7 @@ export class RingsEffect {
   }
 
   /** one animation step: the pointer position eases toward where it is, and a click's flash fades */
-  static step(
-    mouse: Vec2,
-    smooth: Vec2,
-    burst: number,
-  ): { smooth: Vec2; burst: number } {
+  static step(mouse: Vec2, smooth: Vec2, burst: number): { smooth: Vec2; burst: number } {
     const nextBurst = burst * BURST_DECAY;
     return {
       smooth: [
@@ -225,12 +217,7 @@ export class RingsEffect {
   };
 
   private readonly onMove = (e: MouseEvent) => {
-    this.mouse = RingsEffect.pointer(
-      e.clientX,
-      e.clientY,
-      window.innerWidth,
-      window.innerHeight,
-    );
+    this.mouse = RingsEffect.pointer(e.clientX, e.clientY, window.innerWidth, window.innerHeight);
   };
 
   private readonly onClick = () => {
@@ -253,9 +240,7 @@ export class RingsEffect {
 
   /** "#rrggbb" as 0 to 1 red, green and blue */
   private static rgb(hex: string): [number, number, number] {
-    const [r, g, b] = AccentTheme.parse(
-      AccentTheme.normalize(hex) ?? "#ffffff",
-    );
+    const [r, g, b] = AccentTheme.parse(AccentTheme.normalize(hex) ?? "#ffffff");
     return [r / 255, g / 255, b / 255];
   }
 

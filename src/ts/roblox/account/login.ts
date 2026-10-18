@@ -26,9 +26,7 @@ const AUTHENTICATED_URL = "https://users.roblox.com/v1/users/authenticated";
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 /** who a login belongs to, or null when Roblox does not accept it */
-export async function authenticatedUser(
-  cookie: string,
-): Promise<Account | null> {
+export async function authenticatedUser(cookie: string): Promise<Account | null> {
   const response = await fetch(AUTHENTICATED_URL, {
     headers: { Cookie: `${COOKIE_NAME}=${cookie}` },
   });
@@ -129,10 +127,7 @@ export async function removeLogin(id: string, keyring = new Keyring()) {
 }
 
 /** whether Roblox still accepts an account's saved login. A failed check counts as valid, so being offline never marks accounts as expired. */
-export async function loginStillValid(
-  id: string,
-  keyring = new Keyring(),
-): Promise<boolean> {
+export async function loginStillValid(id: string, keyring = new Keyring()): Promise<boolean> {
   try {
     const cookie = await keyring.get(id);
     if (!cookie) return false;

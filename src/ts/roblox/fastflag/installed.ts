@@ -18,7 +18,10 @@ export class InstalledFlagsError extends Error {
 async function androidFlags(): Promise<AndroidFlags> {
   const status = await new Shizuku().getStatus().catch(() => null);
   if (!status?.serviceAvailable || !status.permissionGranted) {
-    throw new InstalledFlagsError("noShizuku", "Shizuku is not running or Glimmer is not allowed to use it");
+    throw new InstalledFlagsError(
+      "noShizuku",
+      "Shizuku is not running or Glimmer is not allowed to use it",
+    );
   }
   return new AndroidFlags();
 }

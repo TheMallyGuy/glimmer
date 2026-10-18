@@ -13,8 +13,5 @@
   "location": "local",
   "title": "Root layout translations",
   "description": "Translations for the root layout, such as messages that appear in the header or footer.",
-  "tags": [
-    "layout",
-    "root"
-  ]
+  "tags": ["layout", "root"]
 }

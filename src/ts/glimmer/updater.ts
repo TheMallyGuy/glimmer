@@ -17,7 +17,10 @@ interface PendingUpdate {
 
 export interface UpdaterDeps {
   check(): Promise<PendingUpdate | null>;
-  ask(body: string, options: { title: string; okLabel: string; cancelLabel: string }): Promise<boolean>;
+  ask(
+    body: string,
+    options: { title: string; okLabel: string; cancelLabel: string },
+  ): Promise<boolean>;
   relaunch(): Promise<void>;
 }
 
@@ -44,7 +47,7 @@ export async function checkForUpdate(
     await deps.relaunch();
     return true;
   } catch (e) {
-    warn(`update check skipped: ${e}`); 
+    warn(`update check skipped: ${e}`);
     return false;
   }
 }

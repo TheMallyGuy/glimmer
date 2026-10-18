@@ -499,10 +499,5 @@
   "location": "local",
   "title": "Fast Flags Table",
   "description": "Manage and configure Fast Flags for Roblox with import/export, editing, resetting, and live application features.",
-  "tags": [
-    "fast flags",
-    "roblox",
-    "settings",
-    "management"
-  ]
+  "tags": ["fast flags", "roblox", "settings", "management"]
 }

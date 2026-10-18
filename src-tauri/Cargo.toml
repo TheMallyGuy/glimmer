@@ -22,14 +22,14 @@ tauri-build = { version = "2", features = [] }
 windows-result = "0.4.1"
 winreg = "0.56.0"
 windows = { version = "0.62", features = [
-    "Win32_Foundation",
-    "Win32_UI_WindowsAndMessaging",
-    "Win32_Graphics_Dwm",
-    "Win32_Graphics_Gdi",
-    "Win32_System_Threading",
-    "Win32_System_Diagnostics_ToolHelp",
-    "Win32_System_LibraryLoader",
-    "Win32_UI_Shell",
+  "Win32_Foundation",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Graphics_Dwm",
+  "Win32_Graphics_Gdi",
+  "Win32_System_Threading",
+  "Win32_System_Diagnostics_ToolHelp",
+  "Win32_System_LibraryLoader",
+  "Win32_UI_Shell",
 ] }
 
 [profile.dev]
@@ -86,6 +86,4 @@ panic = "abort"
 strip = true
 
 [workspace]
-members = [
-    ".",
-]
+members = ["."]

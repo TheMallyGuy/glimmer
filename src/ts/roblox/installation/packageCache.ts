@@ -5,11 +5,7 @@ import type { PackageSource } from "$ts/glimmer/bindings";
 import { EXTRACT_ROOTS, type Downloader } from "./download";
 
 /** `done` of `total` packages downloaded, `percent` of the bytes */
-export type FillProgress = (
-  done: number,
-  total: number,
-  percent: number,
-) => void;
+export type FillProgress = (done: number, total: number, percent: number) => void;
 
 /**
  * downloaded package zips, one folder per install name. They stay after an install so stock

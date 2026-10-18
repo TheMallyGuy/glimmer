@@ -66,8 +66,8 @@ export const appState = $state({
         multiInstance: false,
         deVng: true,
         name: "",
-      }
-    }
+      },
+    },
   },
   installations: {
     parallelDownloader: {
@@ -109,7 +109,7 @@ export const appState = $state({
   language: "en",
   onboarded: false,
   page: "/mods/manage",
-  android: false
+  android: false,
 });
 
 export const fleasionState = $state({ installed: false });
@@ -144,10 +144,7 @@ export function setGameState(inf: GameState) {
   if (isTauri()) emit("game-state", inf);
 }
 
-function deepMerge(
-  target: Record<string, unknown>,
-  source: Record<string, unknown>,
-) {
+function deepMerge(target: Record<string, unknown>, source: Record<string, unknown>) {
   for (const key in source) {
     const value = source[key];
     if (
@@ -158,10 +155,7 @@ function deepMerge(
       target[key] !== null &&
       !Array.isArray(target[key])
     ) {
-      deepMerge(
-        target[key] as Record<string, unknown>,
-        value as Record<string, unknown>,
-      );
+      deepMerge(target[key] as Record<string, unknown>, value as Record<string, unknown>);
     } else {
       target[key] = value;
     }

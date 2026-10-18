@@ -12,7 +12,8 @@ import type { LaunchReport } from "./types";
  */
 export async function pickVersion(isStudio: boolean, report: LaunchReport) {
   // VNG only distributes the player, so Studio always uses the global CDN
-  const distribution = !isStudio && appState.installations.vngDistribution.enabled ? "vng" : "global";
+  const distribution =
+    !isStudio && appState.installations.vngDistribution.enabled ? "vng" : "global";
   const binaryType = isStudio ? "WindowsStudio64" : "WindowsPlayer";
 
   const d = await Downloader.create(DEFAULT_BASE_URLS, distribution);

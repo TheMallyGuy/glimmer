@@ -3,7 +3,11 @@ import { appState } from "$lib/appState.svelte";
 import { save } from "$lib/settings.svelte";
 
 /** one page per step: 0 welcome, 1 language, 2 done */
-export const STEPS = ["/onboarding/desktop", "/onboarding/desktop/language", "/onboarding/desktop/done"];
+export const STEPS = [
+  "/onboarding/desktop",
+  "/onboarding/desktop/language",
+  "/onboarding/desktop/done",
+];
 
 export function stepOf(path: string): number {
   return Math.max(0, STEPS.indexOf(path.replace(/\/+$/, "")));

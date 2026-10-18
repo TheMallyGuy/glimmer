@@ -26,10 +26,5 @@
   "location": "local",
   "title": "Split button",
   "description": "Content declaration for the SplitButton component, defining translation strings such as \"Launch target\" and a dynamic insertion string for displaying the target.",
-  "tags": [
-    "component",
-    "button",
-    "splitButton",
-    "i18n"
-  ]
+  "tags": ["component", "button", "splitButton", "i18n"]
 }

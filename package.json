@@ -2,6 +2,7 @@
   "name": "glimmer",
   "version": "0.1.0",
   "description": "",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -11,11 +12,12 @@
     "check": "intlayer build && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "intlayer build && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "test": "bun test",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
     "test:watch": "bun test --watch",
     "tauri": "tauri",
     "editor": "node node_modules/intlayer-editor/server/dist/index.mjs"
   },
-  "license": "MIT",
   "dependencies": {
     "@crabnebula/plugin-ota-updater": "^2.0.1",
     "@intlayer/ai": "^9.7.0",
@@ -47,6 +49,7 @@
     "@tailwindcss/vite": "^4.3.3",
     "@tauri-apps/cli": "^2.12.0",
     "@types/bun": "^1.4.2",
+    "oxfmt": "^0.73.0",
     "svelte": "^5.57.1",
     "svelte-check": "^4.7.6",
     "tailwindcss": "^4.3.3",

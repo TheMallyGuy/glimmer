@@ -1,12 +1,6 @@
 import { join } from "@tauri-apps/api/path";
 import { PathManager } from "./pathManager";
-import {
-  exists,
-  mkdir,
-  readFile,
-  remove,
-  writeFile,
-} from "@tauri-apps/plugin-fs";
+import { exists, mkdir, readFile, remove, writeFile } from "@tauri-apps/plugin-fs";
 import { AccentTheme, type Rgb } from "./theme";
 
 /** the app's default background, the canvas in theme.css */
@@ -64,9 +58,7 @@ const DEFAULT_LEVEL = 13;
 const MUTED_TEXT = "#8f8f8f";
 
 const rgbCss = (rgb: Rgb, alpha = 1) =>
-  alpha === 1
-    ? AccentTheme.hex(rgb)
-    : `rgb(${rgb.map(Math.round).join(" ")} / ${alpha})`;
+  alpha === 1 ? AccentTheme.hex(rgb) : `rgb(${rgb.map(Math.round).join(" ")} / ${alpha})`;
 
 /**
  * Turns a background colour into the surface tokens of theme.css: each surface keeps its place
@@ -90,25 +82,13 @@ export class BackgroundTheme {
   }
 
   /** sets the background variables on `root`. `imageUrl` is a picture to show behind everything, `dim` how much it is darkened. */
-  static apply(
-    root: HTMLElement,
-    color: string,
-    imageUrl: string | null,
-    dim: number,
-  ) {
+  static apply(root: HTMLElement, color: string, imageUrl: string | null, dim: number) {
     const normalized = AccentTheme.normalize(color) ?? DEFAULT_BACKGROUND;
     const base = AccentTheme.parse(normalized);
-    const set = (name: string, value: string) =>
-      root.style.setProperty(name, value);
+    const set = (name: string, value: string) => root.style.setProperty(name, value);
 
     for (const [token, level] of Object.entries(SURFACES)) {
-      set(
-        token,
-        rgbCss(
-          BackgroundTheme.level(base, level),
-          imageUrl ? OVER_IMAGE_ALPHA : 1,
-        ),
-      );
+      set(token, rgbCss(BackgroundTheme.level(base, level), imageUrl ? OVER_IMAGE_ALPHA : 1));
     }
     // the sticky bars and the like keep an opaque canvas; only the window's own background turns see-through
     set("--color-canvas", normalized);
@@ -116,10 +96,7 @@ export class BackgroundTheme {
 
     if (imageUrl) {
       const shade = rgbCss(base, Math.min(MAX_DIM, Math.max(0, dim)));
-      set(
-        "--app-background-image",
-        `linear-gradient(${shade}, ${shade}), url("${imageUrl}")`,
-      );
+      set("--app-background-image", `linear-gradient(${shade}, ${shade}), url("${imageUrl}")`);
     } else {
       root.style.removeProperty("--app-background-image");
     }
@@ -128,16 +105,8 @@ export class BackgroundTheme {
   /** the colour `base` has when the default canvas (13) moves to `level`: lighter ones mix toward white, darker ones toward black */
   private static level(base: Rgb, level: number): Rgb {
     return level >= DEFAULT_LEVEL
-      ? AccentTheme.mix(
-          base,
-          [255, 255, 255],
-          (level - DEFAULT_LEVEL) / (255 - DEFAULT_LEVEL),
-        )
-      : AccentTheme.mix(
-          base,
-          [0, 0, 0],
-          (DEFAULT_LEVEL - level) / DEFAULT_LEVEL,
-        );
+      ? AccentTheme.mix(base, [255, 255, 255], (level - DEFAULT_LEVEL) / (255 - DEFAULT_LEVEL))
+      : AccentTheme.mix(base, [0, 0, 0], (DEFAULT_LEVEL - level) / DEFAULT_LEVEL);
   }
 }
 
@@ -145,8 +114,7 @@ export class BackgroundTheme {
 export class BackgroundImage {
   /** the extension of a picture path, lowercase without the dot, or null when it is not a supported picture */
   static extensionOf(path: string): string | null {
-    const ext =
-      path.split(/[\\/]/).pop()?.split(".").pop()?.toLowerCase() ?? "";
+    const ext = path.split(/[\\/]/).pop()?.split(".").pop()?.toLowerCase() ?? "";
     return ext in IMAGE_TYPES ? ext : null;
   }
 
@@ -156,14 +124,12 @@ export class BackgroundImage {
     if (!ext) throw new Error(`Use one of: ${IMAGE_EXTENSIONS.join(", ")}.`);
 
     const bytes = await readFile(sourcePath);
-    if (bytes.byteLength > MAX_IMAGE_BYTES)
-      throw new Error("That picture is bigger than 20 MB.");
+    if (bytes.byteLength > MAX_IMAGE_BYTES) throw new Error("That picture is bigger than 20 MB.");
 
     const dir = await this.dir();
     await mkdir(dir, { recursive: true });
     // one background at a time: a new picture replaces whatever was there, whatever its format
-    for (const old of IMAGE_EXTENSIONS)
-      await this.removeFile(`background.${old}`);
+    for (const old of IMAGE_EXTENSIONS) await this.removeFile(`background.${old}`);
 
     const name = `background.${ext}`;
     await writeFile(await join(dir, name), bytes);

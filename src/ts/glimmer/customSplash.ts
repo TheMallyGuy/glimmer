@@ -93,7 +93,10 @@ export function drawSplash(doc: Document, view: SplashView) {
   if (cancel) cancel.textContent = view.cancelLabel;
 }
 
-export function wireSplash(doc: Document, on: { retry: () => void; cancel: () => void; drag: () => void }) {
+export function wireSplash(
+  doc: Document,
+  on: { retry: () => void; cancel: () => void; drag: () => void },
+) {
   doc.getElementById("retry-btn")?.addEventListener("click", on.retry);
   doc.getElementById("cancel-btn")?.addEventListener("click", on.cancel);
   doc.addEventListener("mousedown", (e) => {

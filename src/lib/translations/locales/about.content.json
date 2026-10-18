@@ -82,9 +82,5 @@
   "location": "local",
   "title": "Pricing page metadata",
   "description": "Metadata for the pricing page, including title, description, and keywords to support SEO and content organization.",
-  "tags": [
-    "pricing",
-    "subscription",
-    "metadata"
-  ]
+  "tags": ["pricing", "subscription", "metadata"]
 }

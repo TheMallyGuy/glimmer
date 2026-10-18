@@ -38,13 +38,14 @@ export function writeScript(json: string): string {
 export const READ_SCRIPT = `if [ -e ${ANDROID_FLAGS_PATH} ]; then cat ${ANDROID_FLAGS_PATH}; fi\n`;
 
 export class AndroidFlags {
-  constructor(private readonly shizuku: Pick<Shizuku, "executeAdb"> = new Shizuku()) { }
+  constructor(private readonly shizuku: Pick<Shizuku, "executeAdb"> = new Shizuku()) {}
 
   /** the flags Roblox has now; none when the file is not there. Throws when it is not a flag object. */
   async read(): Promise<Flag[]> {
     const result = await this.shizuku.executeAdb(READ_SCRIPT);
 
-    if (result.exitCode !== 0) throw new AndroidFlagsError("failed", result.stderr.trim() || "could not read the flags");
+    if (result.exitCode !== 0)
+      throw new AndroidFlagsError("failed", result.stderr.trim() || "could not read the flags");
 
     if (result.stdout.trim() === "") return [];
     return parseFlagsJson(result.stdout);
@@ -54,10 +55,12 @@ export class AndroidFlags {
   async write(flags: Record<string, string>) {
     const json = JSON.stringify(flags);
 
-    if (json.length > MAX_FLAGS_CHARS) throw new AndroidFlagsError("tooLarge", "too many Fast Flags to send at once");
+    if (json.length > MAX_FLAGS_CHARS)
+      throw new AndroidFlagsError("tooLarge", "too many Fast Flags to send at once");
 
     const result = await this.shizuku.executeAdb(writeScript(json));
 
-    if (result.exitCode !== 0) throw new AndroidFlagsError("failed", result.stderr.trim() || "could not write the flags");
+    if (result.exitCode !== 0)
+      throw new AndroidFlagsError("failed", result.stderr.trim() || "could not write the flags");
   }
 }

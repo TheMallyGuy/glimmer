@@ -3,12 +3,7 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "i18n-ally.localesPaths": [
-    "src/lib/translations"
-  ],
+  "i18n-ally.localesPaths": ["src/lib/translations"],
   "i18n-ally.keystyle": "nested",
-  "cSpell.words": [
-    "fleasion",
-    "Shizuku"
-  ],
+  "cSpell.words": ["fleasion", "Shizuku"]
 }

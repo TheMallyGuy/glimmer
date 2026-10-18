@@ -54,9 +54,7 @@ export class Applier {
     ];
     if (previousPaths.length) {
       try {
-        const stock = await StockRestorer.create(
-          this.manager.activeVersionName,
-        );
+        const stock = await StockRestorer.create(this.manager.activeVersionName);
         const restored = await stock.restore(
           this.manager.modificationVerPath,
           previousPaths,
@@ -69,19 +67,14 @@ export class Applier {
     }
     this.appliedIndex = {};
 
-    const known = new Set(
-      this.manager.modificationPathIndex.map((m) => m.name),
-    );
+    const known = new Set(this.manager.modificationPathIndex.map((m) => m.name));
     const toApply = order.filter((name) => known.has(name)).reverse();
 
     for (const name of toApply) {
       const modPath = await join(this.manager.modificationPath, name);
       info(`applying mod ${name}`);
 
-      const result = await commands.applyMod(
-        modPath,
-        this.manager.modificationVerPath,
-      );
+      const result = await commands.applyMod(modPath, this.manager.modificationVerPath);
       if (result.status === "error") {
         warn(`failed to apply mod ${name}: ${result.error}`);
         continue;

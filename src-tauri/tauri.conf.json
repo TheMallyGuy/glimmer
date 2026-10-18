@@ -79,10 +79,7 @@
     },
     "deep-link": {
       "desktop": {
-        "schemes": [
-          "roblox-player",
-          "roblox"
-        ]
+        "schemes": ["roblox-player", "roblox"]
       }
     }
   }

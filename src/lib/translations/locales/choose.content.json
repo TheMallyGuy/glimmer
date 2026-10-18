@@ -95,10 +95,5 @@
   "location": "local",
   "title": "Choose Roblox experience",
   "description": "Content declarations for the choose component, including options to play games, make games, open Roblox, configure settings, community features, launch options, and sign-in functionality for Roblox integration.",
-  "tags": [
-    "choose component",
-    "roblox integration",
-    "game launcher",
-    "authentication"
-  ]
+  "tags": ["choose component", "roblox integration", "game launcher", "authentication"]
 }

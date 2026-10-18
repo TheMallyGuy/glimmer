@@ -21,8 +21,7 @@ const DISTRIBUTION_CONFIG: Record<
     cdnExtension: "",
   },
   vng: {
-    clientSettingsUrl:
-      "https://clientsettingscdn.robloxapp.vnggames.com/v2/client-version",
+    clientSettingsUrl: "https://clientsettingscdn.robloxapp.vnggames.com/v2/client-version",
     cdnExtension: "/vng",
   },
 };
@@ -65,8 +64,7 @@ export const EXTRACT_ROOTS = {
     "content-models.zip": "content/models/",
 
     "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
-    "content-platform-dictionaries.zip":
-      "PlatformContent/pc/shared_compression_dictionaries/",
+    "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
     "content-terrain.zip": "PlatformContent/pc/terrain/",
     "content-textures3.zip": "PlatformContent/pc/textures/",
 
@@ -109,8 +107,7 @@ export const EXTRACT_ROOTS = {
     "content-studio_svg_textures.zip": "content/studio_svg_textures/",
 
     "content-platform-fonts.zip": "PlatformContent/pc/fonts/",
-    "content-platform-dictionaries.zip":
-      "PlatformContent/pc/shared_compression_dictionaries/",
+    "content-platform-dictionaries.zip": "PlatformContent/pc/shared_compression_dictionaries/",
     "content-terrain.zip": "PlatformContent/pc/terrain/",
     "content-textures3.zip": "PlatformContent/pc/textures/",
 
@@ -200,19 +197,14 @@ export class Downloader {
     info("begging to extract packages");
 
     const root =
-      binaryType === "WindowsStudio64"
-        ? this.extractRoots.studio
-        : this.extractRoots.player;
+      binaryType === "WindowsStudio64" ? this.extractRoots.studio : this.extractRoots.player;
     const entries = Object.entries(root);
 
     let done = 0;
     for (const [filename, url] of entries) {
       debug(`extracting ${filename} to ${url}`);
 
-      await commands.extractZip(
-        await join(src, filename),
-        await join(dist, url),
-      );
+      await commands.extractZip(await join(src, filename), await join(dist, url));
       done++;
       onProgress?.(done, entries.length, filename);
     }
@@ -243,16 +235,12 @@ export class Downloader {
     const packages: PackageEntry[] = [];
 
     for (let i = 0; i < rest.length; i += 4) {
-      const [fileName, md5, compressedSizeStr, uncompressedSizeStr] =
-        rest.slice(i, i + 4);
+      const [fileName, md5, compressedSizeStr, uncompressedSizeStr] = rest.slice(i, i + 4);
 
       const compressedSize = Number(compressedSizeStr);
       const uncompressedSize = Number(uncompressedSizeStr);
 
-      if (
-        !Number.isFinite(compressedSize) ||
-        !Number.isFinite(uncompressedSize)
-      ) {
+      if (!Number.isFinite(compressedSize) || !Number.isFinite(uncompressedSize)) {
         error(
           `Malformed size fields for entry "${fileName}": ${compressedSizeStr}, ${uncompressedSizeStr}`,
         );
@@ -282,21 +270,15 @@ export class Downloader {
       const response = await fetch(url);
 
       if (!response.ok) {
-        error(
-          `Failed to fetch version info: ${response.status} ${response.statusText}`,
-        );
-        throw new Error(
-          `Failed to fetch version info: ${response.status} ${response.statusText}`,
-        );
+        error(`Failed to fetch version info: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to fetch version info: ${response.status} ${response.statusText}`);
       }
 
       const versionData: ClientVersionResponse = await response.json();
 
       if (!versionData.clientVersionUpload) {
         error("Invalid version response: missing clientVersionUpload");
-        throw new Error(
-          "Invalid version response: missing clientVersionUpload",
-        );
+        throw new Error("Invalid version response: missing clientVersionUpload");
       }
 
       return versionData.clientVersionUpload;
@@ -305,9 +287,7 @@ export class Downloader {
         error("Failed to parse version response: Invalid JSON");
         throw new Error("Failed to parse version response: Invalid JSON");
       }
-      error(
-        `Version fetch failed: ${errorr instanceof Error ? errorr.message : "Unknown error"}`,
-      );
+      error(`Version fetch failed: ${errorr instanceof Error ? errorr.message : "Unknown error"}`);
       throw new Error(
         `Version fetch failed: ${errorr instanceof Error ? errorr.message : "Unknown error"}`,
       );
@@ -323,20 +303,14 @@ export class Downloader {
     channel: string = "LIVE",
   ): Promise<string> {
     const channelPath =
-      channel === "LIVE"
-        ? this.baseUrl
-        : joinUrl(this.baseUrl, `channel/${channel}`);
+      channel === "LIVE" ? this.baseUrl : joinUrl(this.baseUrl, `channel/${channel}`);
     const url = joinUrl(channelPath, "DeployHistory.txt");
 
     const response = await fetch(url);
 
     if (!response.ok) {
-      error(
-        `Failed to fetch deploy history: ${response.status} ${response.statusText}`,
-      );
-      throw new Error(
-        `Failed to fetch deploy history: ${response.status} ${response.statusText}`,
-      );
+      error(`Failed to fetch deploy history: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to fetch deploy history: ${response.status} ${response.statusText}`);
     }
 
     const history = await response.text();
@@ -358,10 +332,7 @@ export class Downloader {
   }
 
   async fetchManifest(version: string): Promise<ParsedManifest> {
-    const url = joinUrl(
-      this.baseUrl,
-      `${this.cdnExtension}/${version}-rbxPkgManifest.txt`,
-    );
+    const url = joinUrl(this.baseUrl, `${this.cdnExtension}/${version}-rbxPkgManifest.txt`);
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -384,10 +355,7 @@ export class Downloader {
 \t<BaseUrl>http://www.roblox.com</BaseUrl>
 </Settings>`;
 
-    await writeFile(
-      await join(dest, "AppSettings.xml"),
-      new TextEncoder().encode(xml),
-    );
+    await writeFile(await join(dest, "AppSettings.xml"), new TextEncoder().encode(xml));
     debug("wrote AppSettings.xml");
   }
 
@@ -404,16 +372,11 @@ export class Downloader {
     onChunk?: (receivedBytes: number, totalBytes: number) => void,
   ): Promise<string> {
     info("beginning to download package");
-    const url = joinUrl(
-      this.baseUrl,
-      `${this.cdnExtension}/${version}-${pkg.fileName}`,
-    );
+    const url = joinUrl(this.baseUrl, `${this.cdnExtension}/${version}-${pkg.fileName}`);
     const response = await fetch(url);
 
     if (!response.ok) {
-      error(
-        `Failed to download ${pkg.fileName}: ${response.status} ${response.statusText}`,
-      );
+      error(`Failed to download ${pkg.fileName}: ${response.status} ${response.statusText}`);
       throw new Error(
         `Failed to download ${pkg.fileName}: ${response.status} ${response.statusText}`,
       );
@@ -463,10 +426,7 @@ export class Downloader {
 
     try {
       const result = await commands.md5File(dest);
-      return (
-        result.status === "ok" &&
-        result.data.toLowerCase() === pkg.md5.toLowerCase()
-      );
+      return result.status === "ok" && result.data.toLowerCase() === pkg.md5.toLowerCase();
     } catch {
       return false;
     }
@@ -483,12 +443,7 @@ export class Downloader {
     manifest: ParsedManifest,
     destDir: string,
     concurrency: number = 4,
-    onProgress?: (
-      done: number,
-      total: number,
-      pkg: PackageEntry,
-      percent: number,
-    ) => void,
+    onProgress?: (done: number, total: number, pkg: PackageEntry, percent: number) => void,
   ): Promise<string[]> {
     info(
       `beginning to download packages with parallel with params : ${version}, ${destDir}, ${concurrency}`,
@@ -497,10 +452,7 @@ export class Downloader {
     const total = manifest.packages.length;
     const paths: string[] = new Array(total);
     const receivedByIndex: number[] = new Array(total).fill(0);
-    const totalBytes = manifest.packages.reduce(
-      (sum, pkg) => sum + pkg.compressedSize,
-      0,
-    );
+    const totalBytes = manifest.packages.reduce((sum, pkg) => sum + pkg.compressedSize, 0);
 
     const percentDone = () => {
       const bytesDone = receivedByIndex.reduce((sum, b) => sum + b, 0);
@@ -526,24 +478,17 @@ export class Downloader {
           continue;
         }
 
-        paths[index] = await this.downloadPackage(
-          version,
-          pkg,
-          destDir,
-          (receivedBytes) => {
-            receivedByIndex[index] = receivedBytes;
-            onProgress?.(done, total, pkg, percentDone());
-          },
-        );
+        paths[index] = await this.downloadPackage(version, pkg, destDir, (receivedBytes) => {
+          receivedByIndex[index] = receivedBytes;
+          onProgress?.(done, total, pkg, percentDone());
+        });
 
         receivedByIndex[index] = pkg.compressedSize;
         done++;
       }
     };
 
-    const workers = Array.from({ length: Math.min(concurrency, total) }, () =>
-      worker(),
-    );
+    const workers = Array.from({ length: Math.min(concurrency, total) }, () => worker());
     await Promise.all(workers);
 
     info(

@@ -32,9 +32,7 @@ async function persist() {
   } catch {
     // no config yet
   }
-  await configuration.saveRaw(
-    withAccounts(raw, $state.snapshot(appState.accounts)),
-  );
+  await configuration.saveRaw(withAccounts(raw, $state.snapshot(appState.accounts)));
 }
 
 /** opens the Roblox login window and saves the account once the person has logged in */

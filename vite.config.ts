@@ -8,7 +8,18 @@ import { execSync } from "node:child_process";
 
 const host = process.env.TAURI_DEV_HOST;
 
-const buildId = (process.env.GITHUB_SHA ?? (() => { try { return execSync("git rev-parse HEAD").toString(); } catch { return "dev"; } })()).trim().slice(0, 7);
+const buildId = (
+  process.env.GITHUB_SHA ??
+  (() => {
+    try {
+      return execSync("git rev-parse HEAD").toString();
+    } catch {
+      return "dev";
+    }
+  })()
+)
+  .trim()
+  .slice(0, 7);
 
 // https://vite.dev/config/
 export default defineConfig((): UserConfig => ({
@@ -35,8 +46,8 @@ export default defineConfig((): UserConfig => ({
         "**/*.crdownload",
         "**/*.tmp",
         "**/Unconfirmed*",
-      ]
-    }
+      ],
+    },
   },
   // the webviews (WebView2, Android System WebView) are current, so nothing is transpiled down, and the
   // bundle is minified with Oxc (JS) and Lightning CSS (CSS) with no sourcemaps and no modulepreload polyfill
@@ -53,7 +64,6 @@ export default defineConfig((): UserConfig => ({
     alias: {
       $lib: resolve("./src/lib"),
       $ts: resolve("./src/ts"),
-
-    }
-  }
+    },
+  },
 }));

@@ -157,8 +157,5 @@
   "location": "local",
   "title": "Community mods",
   "description": "Translations used on the Mods Community page, including search, filter and installation messages.",
-  "tags": [
-    "community",
-    "navigation"
-  ]
+  "tags": ["community", "navigation"]
 }

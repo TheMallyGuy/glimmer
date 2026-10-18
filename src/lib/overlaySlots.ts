@@ -20,8 +20,20 @@ export interface RadialSlot {
 
 /** every action a slot can hold */
 export const actionSlots: Record<ActionId, RadialSlot> = {
-  copyInvite: { id: "copyInvite", needsGame: true, notify: "done", icon: Link, run: (actions) => actions.copyInvite() },
-  hop: { id: "hop", needsGame: true, notify: "start", icon: Shuffle, run: (actions) => actions.hop() },
+  copyInvite: {
+    id: "copyInvite",
+    needsGame: true,
+    notify: "done",
+    icon: Link,
+    run: (actions) => actions.copyInvite(),
+  },
+  hop: {
+    id: "hop",
+    needsGame: true,
+    notify: "start",
+    icon: Shuffle,
+    run: (actions) => actions.hop(),
+  },
 };
 
 /** the slots of the saved board (blank slots are null): a new action goes in `actionSlots` and `ACTION_IDS` */

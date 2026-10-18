@@ -129,9 +129,5 @@
   "location": "local",
   "title": "Pricing | Intlayer",
   "description": "Discover our pricing plans and get access to premium features with Intlayer. Choose the plan that suits you best.",
-  "tags": [
-    "pricing",
-    "subscription",
-    "intlayer"
-  ]
+  "tags": ["pricing", "subscription", "intlayer"]
 }

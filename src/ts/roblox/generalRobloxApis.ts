@@ -14,14 +14,10 @@ export interface GameInfo {
 
 /** placeId -> universeId. Most Roblox game info APIs only accept universeId. */
 export async function resolveUniverseId(placeId: number): Promise<number> {
-  const res = await getRobloxUrl(
-    `https://apis.roblox.com/universes/v1/places/${placeId}/universe`,
-  );
+  const res = await getRobloxUrl(`https://apis.roblox.com/universes/v1/places/${placeId}/universe`);
 
   if (!res.ok) {
-    error(
-      `Failed to resolve universeId for placeId ${placeId}: ${res.status} ${res.statusText}`,
-    );
+    error(`Failed to resolve universeId for placeId ${placeId}: ${res.status} ${res.statusText}`);
     throw new Error(`Failed to resolve universeId for placeId ${placeId}`);
   }
 
@@ -36,9 +32,7 @@ export async function resolveUniverseId(placeId: number): Promise<number> {
 export async function getGameInfo(placeId: number): Promise<GameInfo> {
   const universeId = await resolveUniverseId(placeId);
 
-  const res = await getRobloxUrl(
-    `https://games.roblox.com/v1/games?universeIds=${universeId}`,
-  );
+  const res = await getRobloxUrl(`https://games.roblox.com/v1/games?universeIds=${universeId}`);
   if (!res.ok) {
     error(
       `Failed to fetch game info for universeId ${universeId}: ${res.status} ${res.statusText}`,
@@ -76,9 +70,7 @@ export async function getGameName(placeId: number): Promise<string> {
   return (await getGameInfo(placeId)).name;
 }
 
-export async function getGameThumbnail(
-  placeId: number,
-): Promise<string | null> {
+export async function getGameThumbnail(placeId: number): Promise<string | null> {
   const universeId = await resolveUniverseId(placeId);
 
   const res = await getRobloxUrl(
@@ -88,17 +80,13 @@ export async function getGameThumbnail(
     error(
       `Failed to fetch game thumbnail for universeId ${universeId}: ${res.status} ${res.statusText}`,
     );
-    throw new Error(
-      `Failed to fetch game thumbnail for universeId ${universeId}`,
-    );
+    throw new Error(`Failed to fetch game thumbnail for universeId ${universeId}`);
   }
 
   const json = (await res.json()) as {
     data?: { thumbnails?: { state: string; imageUrl: string }[] }[];
   };
-  const thumbnail = json.data?.[0]?.thumbnails?.find(
-    (t) => t.state === "Completed",
-  );
+  const thumbnail = json.data?.[0]?.thumbnails?.find((t) => t.state === "Completed");
   return thumbnail?.imageUrl ?? null;
 }
 
@@ -128,9 +116,7 @@ export async function getAssetThumbnail(assetId: number): Promise<string | null>
     `https://thumbnails.roblox.com/v1/assets?assetIds=${assetId}&size=512x512&format=Png&isCircular=false`,
   );
   if (!res.ok) {
-    error(
-      `Failed to fetch the thumbnail of asset ${assetId}: ${res.status} ${res.statusText}`,
-    );
+    error(`Failed to fetch the thumbnail of asset ${assetId}: ${res.status} ${res.statusText}`);
     throw new Error(`Failed to fetch the thumbnail of asset ${assetId}`);
   }
 
@@ -153,17 +139,12 @@ const PUBLIC_SERVERS_TIMEOUT_MS = 10_000;
 
 /** the first page of the public servers of a game, which is as many as one request gives (100) */
 export async function getPublicServers(placeId: number): Promise<PublicServer[]> {
-  const res = await fetch(
-    `https://games.roblox.com/v1/games/${placeId}/servers/Public?limit=100`,
-    { signal: AbortSignal.timeout(PUBLIC_SERVERS_TIMEOUT_MS) },
-  );
+  const res = await fetch(`https://games.roblox.com/v1/games/${placeId}/servers/Public?limit=100`, {
+    signal: AbortSignal.timeout(PUBLIC_SERVERS_TIMEOUT_MS),
+  });
   if (!res.ok) {
-    error(
-      `Failed to fetch public servers for placeId ${placeId}: ${res.status} ${res.statusText}`,
-    );
-    throw new Error(
-      `Roblox answered ${res.status} when asked for the servers of place ${placeId}`,
-    );
+    error(`Failed to fetch public servers for placeId ${placeId}: ${res.status} ${res.statusText}`);
+    throw new Error(`Roblox answered ${res.status} when asked for the servers of place ${placeId}`);
   }
 
   const json = (await res.json()) as { data?: PublicServer[] };
@@ -174,9 +155,7 @@ export async function getUserName(userId: number) {
   const res = await getRobloxUrl(`https://users.roblox.com/v1/users/${userId}/`);
 
   if (!res.ok) {
-    error(
-      `Failed to resolve user info for id ${userId}: ${res.status} ${res.statusText}`,
-    );
+    error(`Failed to resolve user info for id ${userId}: ${res.status} ${res.statusText}`);
     throw new Error(
       `Failed to resolve user info for id ${userId}: ${res.status} ${res.statusText}`,
     );
@@ -197,9 +176,7 @@ export async function getUserHeadShot(userId: number) {
   );
 
   if (!res.ok) {
-    error(
-      `Failed to resolve user headshot for id ${userId}: ${res.status} ${res.statusText}`,
-    );
+    error(`Failed to resolve user headshot for id ${userId}: ${res.status} ${res.statusText}`);
     throw new Error(
       `Failed to resolve user headshot for id ${userId}: ${res.status} ${res.statusText}`,
     );

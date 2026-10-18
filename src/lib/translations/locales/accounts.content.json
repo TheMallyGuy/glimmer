@@ -189,9 +189,5 @@
   "location": "local",
   "title": "Accounts",
   "description": "Multilingual content declarations for account management and sign-in flows.",
-  "tags": [
-    "accounts",
-    "authentication",
-    "localization"
-  ]
+  "tags": ["accounts", "authentication", "localization"]
 }

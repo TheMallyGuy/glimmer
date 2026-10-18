@@ -11,7 +11,6 @@ export interface NearbyJoinDeps {
   launch: typeof launchOnAndroid;
 }
 
-
 export async function movedToNearbyServer(
   placeId: number,
   joinedServer: string,
@@ -28,10 +27,10 @@ export async function movedToNearbyServer(
 
   // set before the restart, so the next join line can't come in first
   setGameState({ serverJoinedTmp: true });
-  info("changing server onto a better one")
+  info("changing server onto a better one");
   // the flags were written at launch and stay on the phone, so they are left alone
   const result = await deps.launch({ deeplink: GameLink.format({ placeId, jobId }), flags: null });
-  await notify({"title" :  "Server Changed", body: "We're moved you to a better server!"})
+  await notify({ title: "Server Changed", body: "We're moved you to a better server!" });
   if (result === "started" || result === "startedNoFlags") return true;
 
   setGameState({ serverJoinedTmp: false });

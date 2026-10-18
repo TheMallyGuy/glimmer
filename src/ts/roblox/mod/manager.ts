@@ -2,14 +2,7 @@ import { join } from "@tauri-apps/api/path";
 import { PathManager } from "$ts/glimmer/pathManager";
 import { Installation } from "../installation/installation";
 import { debug, info, warn } from "@tauri-apps/plugin-log";
-import {
-  exists,
-  mkdir,
-  readDir,
-  remove,
-  rename,
-  writeFile,
-} from "@tauri-apps/plugin-fs";
+import { exists, mkdir, readDir, remove, rename, writeFile } from "@tauri-apps/plugin-fs";
 
 interface ModEntry {
   name: string;
@@ -106,9 +99,7 @@ export class ModificationManager {
 
     await remove(path, { recursive: true });
 
-    this.modificationPathIndex = this.modificationPathIndex.filter(
-      (m) => m.name !== name,
-    );
+    this.modificationPathIndex = this.modificationPathIndex.filter((m) => m.name !== name);
     await this.writeIndex();
 
     info(`deleted mod ${name}`);
@@ -123,9 +114,7 @@ export class ModificationManager {
     }
 
     const mods = await readDir(this.modificationPath);
-    const previousActive = this.modificationPathIndex.find(
-      (v) => v.active,
-    )?.name;
+    const previousActive = this.modificationPathIndex.find((v) => v.active)?.name;
 
     this.modificationPathIndex = [];
 

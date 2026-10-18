@@ -126,27 +126,27 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/`. The intlayer 
 
 ## Tokens (lib/theme.css)
 
-| Use | Class | Value |
-|---|---|---|
-| Window background | `bg-canvas` | #0d0d0d |
-| Header, tab bar | `bg-surface` | #111111 |
-| Setting rows, cards | `bg-row` | #151515 |
-| Inputs | `bg-field` | #161616 |
-| Row or ghost hover | `bg-hover` | #1a1a1a |
-| Dropdown hover | `bg-field-hover` | #222222 |
-| Secondary button | `bg-tonal` / `bg-tonal-hover` | #1f1f1f / #292929 |
-| Menus | `bg-menu` / `bg-menu-active` | #1c1c1c / #262626 |
-| Switch off, disabled fill | `bg-track` | #2a2a2a |
-| Footer | `bg-footer` | #0b0b0b |
-| Text | `text-fg` / `text-fg-2` / `text-fg-3` | #f2f2f2 / #b4b4b4 / #a8a8a8 |
-| Icon-only buttons at rest | `text-icon` | #d6d6d6 |
-| Secondary text | `text-muted` | #8f8f8f |
-| Placeholders, hints | `text-subtle` | #7c7c7c |
-| Disabled text | `text-off` | #6b6b6b |
-| Disabled description, disabled knob or arrow | `text-off-dim` / `bg-off-faint` | #5e5e5e / #4a4a4a |
-| Accent | `bg-accent` `text-accent` (+ `-hover`, `-press`) | #ffe54e |
-| Text on accent | `text-on-accent` | #0d0d0d |
-| Danger | `text-danger` / `bg-danger-bg` | #ff8f80 / #2a1a1a |
+| Use                                          | Class                                            | Value                       |
+| -------------------------------------------- | ------------------------------------------------ | --------------------------- |
+| Window background                            | `bg-canvas`                                      | #0d0d0d                     |
+| Header, tab bar                              | `bg-surface`                                     | #111111                     |
+| Setting rows, cards                          | `bg-row`                                         | #151515                     |
+| Inputs                                       | `bg-field`                                       | #161616                     |
+| Row or ghost hover                           | `bg-hover`                                       | #1a1a1a                     |
+| Dropdown hover                               | `bg-field-hover`                                 | #222222                     |
+| Secondary button                             | `bg-tonal` / `bg-tonal-hover`                    | #1f1f1f / #292929           |
+| Menus                                        | `bg-menu` / `bg-menu-active`                     | #1c1c1c / #262626           |
+| Switch off, disabled fill                    | `bg-track`                                       | #2a2a2a                     |
+| Footer                                       | `bg-footer`                                      | #0b0b0b                     |
+| Text                                         | `text-fg` / `text-fg-2` / `text-fg-3`            | #f2f2f2 / #b4b4b4 / #a8a8a8 |
+| Icon-only buttons at rest                    | `text-icon`                                      | #d6d6d6                     |
+| Secondary text                               | `text-muted`                                     | #8f8f8f                     |
+| Placeholders, hints                          | `text-subtle`                                    | #7c7c7c                     |
+| Disabled text                                | `text-off`                                       | #6b6b6b                     |
+| Disabled description, disabled knob or arrow | `text-off-dim` / `bg-off-faint`                  | #5e5e5e / #4a4a4a           |
+| Accent                                       | `bg-accent` `text-accent` (+ `-hover`, `-press`) | #ffe54e                     |
+| Text on accent                               | `text-on-accent`                                 | #0d0d0d                     |
+| Danger                                       | `text-danger` / `bg-danger-bg`                   | #ff8f80 / #2a1a1a           |
 
 Never hard-code a hex value when a token exists. Add new colours to `theme.css` first.
 
@@ -162,13 +162,13 @@ The surface tokens (`canvas`, `surface`, `row`, ... `track`) follow the user's b
 
 Sizes:
 
-| Element | Style |
-|---|---|
-| Page title | `text-[32px]` |
-| Dialog title | `text-[22px]` |
-| Row title | `text-[15px] font-medium` |
-| Descriptions, labels | `text-[13px] text-muted` |
-| Small meta | `text-xs` |
+| Element              | Style                     |
+| -------------------- | ------------------------- |
+| Page title           | `text-[32px]`             |
+| Dialog title         | `text-[22px]`             |
+| Row title            | `text-[15px] font-medium` |
+| Descriptions, labels | `text-[13px] text-muted`  |
+| Small meta           | `text-xs`                 |
 
 ## Sizes and spacing
 
@@ -177,12 +177,12 @@ Sizes:
 - Setting row: `px-[18px] py-4`, stacked with `gap-0.5`.
 - Control heights:
 
-  | Control | Height |
-  |---|---|
-  | Small button, dropdown in a row | 36px (`h-9`) |
+  | Control                         | Height        |
+  | ------------------------------- | ------------- |
+  | Small button, dropdown in a row | 36px (`h-9`)  |
   | Inputs, search, toolbar buttons | 40px (`h-10`) |
-  | Standard buttons | 44px (`h-11`) |
-  | Tabs | 48px (`h-12`) |
+  | Standard buttons                | 44px (`h-11`) |
+  | Tabs                            | 48px (`h-12`) |
 
 - Click targets must be at least 36px. Window buttons are 44px.
 
@@ -190,25 +190,25 @@ Sizes:
 
 Use these instead of writing new markup for the same job.
 
-| Component | Use for |
-|---|---|
-| `Button` | Actions. Variants: `primary` (yellow, one per screen), `secondary` (tonal), `ghost` (text only: Cancel, Discard), `danger` (destructive). Sizes: `sm` / `md` / `lg`. `arrow` adds a trailing arrow for launch actions. |
-| `IconButton` | Icon-only actions. `label` is required (it becomes `aria-label` and the tooltip). |
-| `SplitButton` | Save and launch with a Player/Studio target menu. |
-| `Switch` | On/off settings. Always pass `label`. |
-| `TabBar` | Top-level sections. Lucide icon plus label, with a yellow underline and icon on the selected tab. |
-| `Dropdown` | Choosing one value from a short list. |
-| `SearchField` | Search and filter inputs. |
-| `TextField` | Labelled text input with `error` and `hint`. |
-| `TextBox` | Labelled multi-line text (`<textarea>`) with `error`, `hint`, `rows` and `mono` (Geist Mono, for pasted code). |
-| `SettingRow` | Title, description, optional yellow `note`, and a control passed as the `control` snippet. Pass `href` to make it a link row. |
-| `SettingGroup` | Stack of rows with an optional sentence-case label. |
-| `Dialog` | Confirmations and small forms. Uses native `<dialog>`. Buttons go in the `actions` snippet: ghost Cancel first, then the action. |
-| `Menu` | Context and popup menus (`MenuItem[]`), with arrow keys and focus return. |
-| `FlagTable` | Fast Flag editor (optional `onload` / `onapply` add Load from Roblox and Apply now): import from a file or pasted JSON (merged, with an added/updated toast), copy or export (save dialog) as JSON, undo on remove, and a type column that also marks duplicates and values that don't fit the type (`flagValueProblem` in `lib/flags.ts`). |
-| `InspiredBanner` | Froststrap credit at the bottom of the Mods pages. |
-| `RichText` | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]`, `[shimmer]…[/shimmer]` or `[aurora]…[/aurora]` in it, drawn in that look (danger shimmers red in a loop, shimmer does the same in grey, aurora drifts through three light hues in a slow loop, accent fades in once; reduced motion stops all of it). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
-| `ToastHost` | Bottom-left toasts. Already mounted in the root layout; show one with `toast.success(text)`, `toast.error(text)` or `toast.show(text, { action })` from `$lib`. Use for the result of an action, not for state that stays on screen. |
+| Component        | Use for                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Button`         | Actions. Variants: `primary` (yellow, one per screen), `secondary` (tonal), `ghost` (text only: Cancel, Discard), `danger` (destructive). Sizes: `sm` / `md` / `lg`. `arrow` adds a trailing arrow for launch actions.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `IconButton`     | Icon-only actions. `label` is required (it becomes `aria-label` and the tooltip).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `SplitButton`    | Save and launch with a Player/Studio target menu.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `Switch`         | On/off settings. Always pass `label`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `TabBar`         | Top-level sections. Lucide icon plus label, with a yellow underline and icon on the selected tab.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `Dropdown`       | Choosing one value from a short list.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| `SearchField`    | Search and filter inputs.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `TextField`      | Labelled text input with `error` and `hint`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `TextBox`        | Labelled multi-line text (`<textarea>`) with `error`, `hint`, `rows` and `mono` (Geist Mono, for pasted code).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `SettingRow`     | Title, description, optional yellow `note`, and a control passed as the `control` snippet. Pass `href` to make it a link row.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `SettingGroup`   | Stack of rows with an optional sentence-case label.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `Dialog`         | Confirmations and small forms. Uses native `<dialog>`. Buttons go in the `actions` snippet: ghost Cancel first, then the action.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `Menu`           | Context and popup menus (`MenuItem[]`), with arrow keys and focus return.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `FlagTable`      | Fast Flag editor (optional `onload` / `onapply` add Load from Roblox and Apply now): import from a file or pasted JSON (merged, with an added/updated toast), copy or export (save dialog) as JSON, undo on remove, and a type column that also marks duplicates and values that don't fit the type (`flagValueProblem` in `lib/flags.ts`).                                                                                                                                                                                                                                                                                                                                                                             |
+| `InspiredBanner` | Froststrap credit at the bottom of the Mods pages.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| `RichText`       | Text with `[danger]…[/danger]` (a tag with no closing tag runs to the end of the string), `[accent]…[/accent]`, `[muted]…[/muted]` or `[mono]…[/mono]`, `[shimmer]…[/shimmer]` or `[aurora]…[/aurora]` in it, drawn in that look (danger shimmers red in a loop, shimmer does the same in grey, aurora drifts through three light hues in a slow loop, accent fades in once; reduced motion stops all of it). `SettingRow` (description, note), `TextField` (error, hint) and toasts already use it, so those strings, dictionary entries included, take the tags as they are. Use it for any other string that may carry tags; use `stripRichText` where a plain string is needed. No HTML is ever made from the text. |
+| `ToastHost`      | Bottom-left toasts. Already mounted in the root layout; show one with `toast.success(text)`, `toast.error(text)` or `toast.show(text, { action })` from `$lib`. Use for the result of an action, not for state that stays on screen.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 
 ## Writing Svelte here
 
@@ -266,10 +266,13 @@ Use these instead of writing new markup for the same job.
 3. It has no `<style>` blocks and no Svelte 4 syntax.
 4. `bun run check` passes.
 5. `bun test` passes, and new logic in `src/ts` or `src/lib` has a test file in `tests/`.
+
 <!-- caveman-begin -->
+
 Respond terse like smart caveman. All technical substance stay. Only fluff die.
 
 Rules:
+
 - Answer first: Answer, then reason, then next step.
 - Kill ceremony: No greeting, hedging, pleasantries, recap, or closer.
 - Short word: "fix" not "implement a solution for".

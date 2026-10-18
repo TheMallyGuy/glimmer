@@ -15,7 +15,7 @@ export interface PlayedGame {
 export const MAX_GAMES = 1000;
 
 export class GameHistory {
-  constructor(private readonly paths = new PathManager()) { }
+  constructor(private readonly paths = new PathManager()) {}
 
   /** the games, last played first */
   async list(): Promise<PlayedGame[]> {

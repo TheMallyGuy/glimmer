@@ -6,7 +6,9 @@ import { isAndroid } from "$ts/glimmer/android/platform";
 const LABEL = "splash";
 
 export async function openSplashWindow(target = "player", link?: string) {
-  return openSplash(`/splash?target=${encodeURIComponent(target)}${link ? `&link=${encodeURIComponent(link)}` : ""}`);
+  return openSplash(
+    `/splash?target=${encodeURIComponent(target)}${link ? `&link=${encodeURIComponent(link)}` : ""}`,
+  );
 }
 
 /** the splash with made-up progress and no launch, showing the built-in screen or the stored custom one */

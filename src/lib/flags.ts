@@ -4,8 +4,7 @@ export interface Flag {
   value: string;
 }
 
-export type FlagType =
-  "Boolean" | "Integer" | "String" | "Log" | "Unknown prefix" | "Empty";
+export type FlagType = "Boolean" | "Integer" | "String" | "Log" | "Unknown prefix" | "Empty";
 
 export function flagType(name: string): FlagType {
   if (!name.trim()) return "Empty";
@@ -67,10 +66,7 @@ export type FlagValueProblem = "notBoolean" | "notInteger";
  * what is wrong with a value for the type its name says, or null. A blank value is left alone,
  * since it is usually still being typed
  */
-export function flagValueProblem(
-  name: string,
-  value: string,
-): FlagValueProblem | null {
+export function flagValueProblem(name: string, value: string): FlagValueProblem | null {
   const v = value.trim();
   if (!v) return null;
 
@@ -95,11 +91,7 @@ export function getFlagValue(flags: Flag[], name: string): string | undefined {
   return flags.find((f) => f.name === name)?.value;
 }
 
-export function setFlagValue(
-  flags: Flag[],
-  name: string,
-  value: string | undefined,
-) {
+export function setFlagValue(flags: Flag[], name: string, value: string | undefined) {
   const existing = flags.find((f) => f.name === name);
 
   if (value === undefined) {

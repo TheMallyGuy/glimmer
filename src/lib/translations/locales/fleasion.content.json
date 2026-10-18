@@ -125,10 +125,5 @@
   "location": "local",
   "title": "Fleasion integration settings",
   "description": "Configuration options for Fleasion integration including enable/disable, multi-instance, fast flags mirroring, de-VNG preset, client-sided modifications, verification badges, and username spoofing settings.",
-  "tags": [
-    "integration",
-    "settings",
-    "fleasion",
-    "configuration"
-  ]
+  "tags": ["integration", "settings", "fleasion", "configuration"]
 }

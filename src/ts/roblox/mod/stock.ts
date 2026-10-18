@@ -26,11 +26,7 @@ export class StockRestorer {
    * the paths that exist in stock. A missing cache is downloaded first; a corrupt one is
    * re-verified against the manifest md5s, then retried once.
    */
-  async extract(
-    paths: string[],
-    destDir: string,
-    onProgress?: FillProgress,
-  ): Promise<string[]> {
+  async extract(paths: string[], destDir: string, onProgress?: FillProgress): Promise<string[]> {
     if (paths.length === 0) return [];
 
     let sources = await this.cache.sources(this.name);
@@ -43,9 +39,7 @@ export class StockRestorer {
     try {
       return await this.run(sources, paths, destDir);
     } catch (e) {
-      warn(
-        `cached packages for ${this.name} failed to extract (${e}), verifying them`,
-      );
+      warn(`cached packages for ${this.name} failed to extract (${e}), verifying them`);
       await this.fillCache(onProgress);
       return this.run(await this.cache.sources(this.name), paths, destDir);
     }
@@ -55,14 +49,8 @@ export class StockRestorer {
    * puts the install back to stock for `paths`: stock files are re-extracted over the modded ones,
    * and files a mod added (not in any package) are deleted
    */
-  async restore(
-    installPath: string,
-    paths: string[],
-    onProgress?: FillProgress,
-  ): Promise<number> {
-    const restored = new Set(
-      await this.extract(paths, installPath, onProgress),
-    );
+  async restore(installPath: string, paths: string[], onProgress?: FillProgress): Promise<number> {
+    const restored = new Set(await this.extract(paths, installPath, onProgress));
 
     for (const path of paths) {
       if (restored.has(path) || KEEP.has(path.toLowerCase())) continue;
@@ -80,11 +68,7 @@ export class StockRestorer {
     await this.cache.fill(d, version, this.name, undefined, onProgress);
   }
 
-  private async run(
-    sources: PackageSource[],
-    paths: string[],
-    destDir: string,
-  ): Promise<string[]> {
+  private async run(sources: PackageSource[], paths: string[], destDir: string): Promise<string[]> {
     const result = await commands.extractPackageFiles(sources, destDir, paths);
     if (result.status === "error") throw new Error(result.error);
     return result.data;

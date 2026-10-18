@@ -11,11 +11,12 @@ export interface ExitWatcherOptions {
 
 function shellIsRunning(shizuku = new Shizuku()) {
   return async () => {
-    const result = await shizuku.executeAdb(`pidof ${ROBLOX_PACKAGE.join(" ")} >/dev/null && echo 1 || echo 0\n`);
+    const result = await shizuku.executeAdb(
+      `pidof ${ROBLOX_PACKAGE.join(" ")} >/dev/null && echo 1 || echo 0\n`,
+    );
     return result.stdout.trim() === "1";
   };
 }
-
 
 export function watchRobloxExit(onExit: () => void, options: ExitWatcherOptions = {}): () => void {
   const { isRunning = shellIsRunning(), intervalMs = 3000, startupMs = 60000 } = options;

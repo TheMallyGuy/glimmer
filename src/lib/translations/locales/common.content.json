@@ -85,7 +85,5 @@
   "location": "local",
   "title": "Common translations",
   "description": "Common UI strings and translations used across the application.",
-  "tags": [
-    "common"
-  ]
+  "tags": ["common"]
 }

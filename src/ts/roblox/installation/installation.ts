@@ -1,14 +1,7 @@
 import { isAndroid } from "$ts/glimmer/android/platform";
 import { PathManager } from "$ts/glimmer/pathManager";
 import { join } from "@tauri-apps/api/path";
-import {
-  exists,
-  mkdir,
-  readDir,
-  readTextFile,
-  remove,
-  writeFile,
-} from "@tauri-apps/plugin-fs";
+import { exists, mkdir, readDir, readTextFile, remove, writeFile } from "@tauri-apps/plugin-fs";
 import { debug, error, info } from "@tauri-apps/plugin-log";
 
 export interface InstallEntry {
@@ -22,19 +15,14 @@ export interface InstallEntry {
 
 export type InstallKind = "player" | "studio";
 
-
-
 export class Installation {
   installationPath = "";
   installedVersions: InstallEntry[] = [];
   reIndexVar = false;
   private indexFile = "";
-  constructor(reIndexVar: boolean) { }
+  constructor(reIndexVar: boolean) {}
 
-  static async create(
-    reIndex = true,
-    kind: InstallKind = "player",
-  ): Promise<Installation> {
+  static async create(reIndex = true, kind: InstallKind = "player"): Promise<Installation> {
     const i = new Installation(reIndex);
     const pm = new PathManager();
     i.installationPath = await pm.getRobloxInstallationsDir(kind);
@@ -82,9 +70,7 @@ export class Installation {
 
     const versions = await readDir(this.installationPath);
     const persisted = await this.readPersistedEntries();
-    const previousByVersion = new Map(
-      persisted.map((v) => [v.version, v] as const),
-    );
+    const previousByVersion = new Map(persisted.map((v) => [v.version, v] as const));
     for (const v of this.installedVersions) previousByVersion.set(v.version, v); // in-memory wins
 
     const previousActive =
@@ -131,18 +117,18 @@ export class Installation {
   }
 
   async getActiveVersionExe() {
-    const actIn = this.installedVersions.find((v) => v.active)?.path
+    const actIn = this.installedVersions.find((v) => v.active)?.path;
 
     if (!actIn) {
-      error(`cannot find active version folder`)
-      throw new Error("Cannot find active version folder")
+      error(`cannot find active version folder`);
+      throw new Error("Cannot find active version folder");
     }
 
-    const rbxexePath = await join(actIn, "RobloxPlayerBeta.exe")
+    const rbxexePath = await join(actIn, "RobloxPlayerBeta.exe");
 
     if (!(await exists(rbxexePath))) {
-      error(`cannot find active version exe`)
-      throw new Error("Cannot find active version exe")
+      error(`cannot find active version exe`);
+      throw new Error("Cannot find active version exe");
     }
 
     return rbxexePath;
@@ -191,9 +177,7 @@ export class Installation {
     }
 
     await remove(entry.path, { recursive: true });
-    this.installedVersions = this.installedVersions.filter(
-      (v) => v.version !== version,
-    );
+    this.installedVersions = this.installedVersions.filter((v) => v.version !== version);
 
     await this.writeIndex();
     info(`removed installation ${version}`);

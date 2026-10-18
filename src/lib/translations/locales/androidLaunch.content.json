@@ -10,14 +10,7 @@
   },
   "title": "Android Roblox launch messages",
   "description": "User-facing messages for the Android Roblox launch flow, covering start status, Shizuku dependency checks, missing installation, and failure handling.",
-  "tags": [
-    "android",
-    "roblox",
-    "launch",
-    "shizuku",
-    "mobile",
-    "error messages"
-  ],
+  "tags": ["android", "roblox", "launch", "shizuku", "mobile", "error messages"],
   "creatorId": "6ad080ebd42776c07e727539",
   "environmentId": null,
   "createdAt": "2026-10-15T07:54:44.003Z",
@@ -25,7 +18,5 @@
   "__v": 0,
   "id": "6ad086c4d42776c07e7277b4",
   "version": "v1",
-  "versionList": [
-    "v1"
-  ]
+  "versionList": ["v1"]
 }

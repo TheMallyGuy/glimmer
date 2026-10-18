@@ -1,4 +1,3 @@
-
 export const OUTER_RADIUS = 176;
 export const INNER_RADIUS = 84;
 /** the dark disc behind the ring */
@@ -89,7 +88,11 @@ export function slotCentre(index: number, count: number): [number, number] {
 }
 
 /** where the menu goes: a square of `size` logical px centred on a screen, in screen pixels, for the screen's scale */
-export function menuPlacement(screen: { x: number; y: number; width: number; height: number }, scale: number, size: number) {
+export function menuPlacement(
+  screen: { x: number; y: number; width: number; height: number },
+  scale: number,
+  size: number,
+) {
   const side = Math.round(size * scale);
   return {
     side,

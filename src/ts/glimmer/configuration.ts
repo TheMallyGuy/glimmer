@@ -15,9 +15,7 @@ export class Configuration {
   }
 
   async getAsText(): Promise<string> {
-    const content = await readTextFile(
-      await new PathManager().getConfigFile(),
-    ); // i mean surely nothing can go wrong right?
+    const content = await readTextFile(await new PathManager().getConfigFile()); // i mean surely nothing can go wrong right?
     return content;
   }
 

@@ -48,7 +48,5 @@
   "location": "local",
   "title": "Flags Layout",
   "description": "Content for the flags layout, including labels and descriptions for feature flags and their views.",
-  "tags": [
-    "page metadata"
-  ]
+  "tags": ["page metadata"]
 }

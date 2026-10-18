@@ -10,7 +10,10 @@ import { nearbyServer } from "$ts/glimmer/launch/args";
 export type ServerActionFailure = "notInGame" | "noOtherServers" | "unreachable";
 
 export class ServerActionError extends Error {
-  constructor(readonly failure: ServerActionFailure, message: string) {
+  constructor(
+    readonly failure: ServerActionFailure,
+    message: string,
+  ) {
     super(message);
   }
 }
@@ -49,7 +52,8 @@ export class ServerActions {
     const others = (await this.publicServers(placeId)).filter(
       (server) => server.id !== jobId && server.playing < server.maxPlayers,
     );
-    if (others.length === 0) throw new ServerActionError("noOtherServers", "No other servers have space");
+    if (others.length === 0)
+      throw new ServerActionError("noOtherServers", "No other servers have space");
 
     const next = others[Math.floor(this.options.random() * others.length)];
     await this.launch({ placeId, jobId: next.id });
@@ -66,7 +70,9 @@ export class ServerActions {
     // no re-index (it scans the install folders): the index of the last launch is what is needed
     const installation = await Installation.create(false);
     await installation.listInstallations();
-    const result = await commands.launch(await installation.getActiveVersionExe(), [GameLink.format(target)]);
+    const result = await commands.launch(await installation.getActiveVersionExe(), [
+      GameLink.format(target),
+    ]);
     if (result.status === "error") throw new Error(result.error);
   }
 

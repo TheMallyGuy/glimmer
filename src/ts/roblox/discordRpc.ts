@@ -52,9 +52,7 @@ export async function initDiscordRpc() {
         running = true;
         return;
       }
-      unlisten = await listen<string>("discord-rpc-event", (e) =>
-        handleSidecarLine(e.payload),
-      );
+      unlisten = await listen<string>("discord-rpc-event", (e) => handleSidecarLine(e.payload));
 
       const result = await commands.discordRpcLogin();
       if (result.status === "error") throw new Error(result.error);
@@ -77,7 +75,9 @@ export async function shutdownDiscordRpc() {
   }
 
   try {
-    const result = isAndroid() ? await commands.discordAndroidDisconnect() : await commands.discordRpcStop();
+    const result = isAndroid()
+      ? await commands.discordAndroidDisconnect()
+      : await commands.discordRpcStop();
     if (result.status === "error") throw new Error(result.error);
 
     unlisten?.();
@@ -113,7 +113,9 @@ async function sendAndroidFrame(frame: string) {
   const result = await commands.discordAndroidSend(frame, null);
   if (result.status === "error") return result;
   const failed = result.data.find((f) => f.includes('"evt":"ERROR"'));
-  return failed ? { status: "error" as const, error: failed } : { status: "ok" as const, data: null };
+  return failed
+    ? { status: "error" as const, error: failed }
+    : { status: "ok" as const, data: null };
 }
 
 async function sendActivity(opts: ActivityOptions) {

@@ -55,16 +55,9 @@ export class AccountLauncher {
     try {
       cookie = await this.keyring.get(id);
     } catch (e) {
-      throw new AccountLaunchError(
-        "failed",
-        e instanceof Error ? e.message : String(e),
-      );
+      throw new AccountLaunchError("failed", e instanceof Error ? e.message : String(e));
     }
-    if (!cookie)
-      throw new AccountLaunchError(
-        "missing",
-        "No login is saved for this account.",
-      );
+    if (!cookie) throw new AccountLaunchError("missing", "No login is saved for this account.");
     return cookie;
   }
 
@@ -73,18 +66,12 @@ export class AccountLauncher {
     const first = await this.request(cookie);
     const csrf = first.headers.get("x-csrf-token");
     if (!csrf)
-      throw new AccountLaunchError(
-        "failed",
-        `Roblox sent no CSRF token (HTTP ${first.status})`,
-      );
+      throw new AccountLaunchError("failed", `Roblox sent no CSRF token (HTTP ${first.status})`);
 
     const second = await this.request(cookie, csrf);
     const ticket = second.headers.get("rbx-authentication-ticket");
     if (!ticket)
-      throw new AccountLaunchError(
-        "failed",
-        `Roblox sent no ticket (HTTP ${second.status})`,
-      );
+      throw new AccountLaunchError("failed", `Roblox sent no ticket (HTTP ${second.status})`);
     return ticket;
   }
 
@@ -104,17 +91,11 @@ export class AccountLauncher {
         body: "{}",
       });
     } catch (e) {
-      throw new AccountLaunchError(
-        "failed",
-        e instanceof Error ? e.message : String(e),
-      );
+      throw new AccountLaunchError("failed", e instanceof Error ? e.message : String(e));
     }
 
     if (response.status === 401)
-      throw new AccountLaunchError(
-        "expired",
-        "The saved login is no longer accepted.",
-      );
+      throw new AccountLaunchError("expired", "The saved login is no longer accepted.");
     return response;
   }
 }

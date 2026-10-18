@@ -227,10 +227,5 @@
   "location": "local",
   "title": "Link component",
   "description": "Handles linking and sharing of collected games locally, providing UI for viewing, sharing, and clearing game collections with link codes.",
-  "tags": [
-    "link",
-    "share",
-    "games",
-    "local"
-  ]
+  "tags": ["link", "share", "games", "local"]
 }

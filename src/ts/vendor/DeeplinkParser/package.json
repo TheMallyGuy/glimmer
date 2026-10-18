@@ -1,44 +1,44 @@
 {
-	"name": "roblox-deeplink-parser",
-	"version": "0.1.36",
-	"type": "module",
-	"license": "MIT",
-	"homepage": "https://github.com/RoSeal-Extension/Roblox-DeepLink-Parser",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/RoSeal-Extension/Roblox-DeepLink-Parser.git"
-	},
-	"bugs": {
-		"url": "https://github.com/RoSeal-Extension/Roblox-DeepLink-Parser/issues"
-	},
-	"keywords": [
-		"roblox",
-		"deeplinks"
-	],
-	"files": [
-		"dist"
-	],
-	"exports": {
-		".": {
-			"import": {
-				"types": "./dist/DeepLinkParser.d.ts",
-				"default": "./dist/DeepLinkParser.js"
-			}
-		},
-		"./authedProtocol": {
-			"import": {
-				"types": "./dist/AuthedProtocolParser.d.ts",
-				"default": "./dist/AuthedProtocolParser.js"
-			}
-		},
-		"./package.json": "./package.json"
-	},
-	"devDependencies": {
-		"@types/bun": "latest",
-		"typescript": "latest",
-		"@biomejs/biome": "latest"
-	},
-	"scripts": {
-		"build": "bunx bunup src/DeepLinkParser.ts src/AuthedProtocolParser.ts --silent"
-	}
+  "name": "roblox-deeplink-parser",
+  "version": "0.1.36",
+  "keywords": [
+    "deeplinks",
+    "roblox"
+  ],
+  "homepage": "https://github.com/RoSeal-Extension/Roblox-DeepLink-Parser",
+  "bugs": {
+    "url": "https://github.com/RoSeal-Extension/Roblox-DeepLink-Parser/issues"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RoSeal-Extension/Roblox-DeepLink-Parser.git"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/DeepLinkParser.d.ts",
+        "default": "./dist/DeepLinkParser.js"
+      }
+    },
+    "./authedProtocol": {
+      "import": {
+        "types": "./dist/AuthedProtocolParser.d.ts",
+        "default": "./dist/AuthedProtocolParser.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "bunx bunup src/DeepLinkParser.ts src/AuthedProtocolParser.ts --silent"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "latest",
+    "@types/bun": "latest",
+    "typescript": "latest"
+  }
 }

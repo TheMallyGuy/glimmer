@@ -6,7 +6,8 @@ import { STEPS } from "./onboarding/mobile/onboarding.svelte";
 
 export const load = async () => {
   await loadAppState();
-  if (!appState.onboarded) redirect(307, isAndroid() ? "/onboarding/mobile" : "/onboarding/desktop");
+  if (!appState.onboarded)
+    redirect(307, isAndroid() ? "/onboarding/mobile" : "/onboarding/desktop");
 
   if (isAndroid()) {
     const setup = await checkAndroidSetup();

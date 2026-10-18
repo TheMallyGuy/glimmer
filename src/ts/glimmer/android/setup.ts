@@ -13,7 +13,10 @@ export interface AndroidSetup {
 }
 
 /** the part of `Shizuku` the setup check uses, so a test can stand in for it */
-export type SetupShizuku = Pick<Shizuku, "getStatus" | "listPackages" | "executeAdb" | "requestPermission">;
+export type SetupShizuku = Pick<
+  Shizuku,
+  "getStatus" | "listPackages" | "executeAdb" | "requestPermission"
+>;
 
 /** `versionName` from `dumpsys package` output */
 export function parseVersionName(dump: string): string | null {
@@ -31,11 +34,17 @@ export function isReady(setup: AndroidSetup): boolean {
   return setup.shizuku === "ready" && setup.roblox === true;
 }
 
-export async function checkAndroidSetup(shizuku: SetupShizuku = new Shizuku()): Promise<AndroidSetup> {
+export async function checkAndroidSetup(
+  shizuku: SetupShizuku = new Shizuku(),
+): Promise<AndroidSetup> {
   let state: ShizukuState;
   try {
     const status = await shizuku.getStatus();
-    state = !status.serviceAvailable ? "notRunning" : status.permissionGranted ? "ready" : "needsPermission";
+    state = !status.serviceAvailable
+      ? "notRunning"
+      : status.permissionGranted
+        ? "ready"
+        : "needsPermission";
   } catch {
     state = "notRunning"; // the plugin cannot reach Shizuku at all
   }
@@ -61,7 +70,9 @@ export async function checkAndroidSetup(shizuku: SetupShizuku = new Shizuku()): 
 }
 
 /** asks Shizuku for permission; true when it was granted, false when refused or the request failed */
-export async function requestShizukuAccess(shizuku: SetupShizuku = new Shizuku()): Promise<boolean> {
+export async function requestShizukuAccess(
+  shizuku: SetupShizuku = new Shizuku(),
+): Promise<boolean> {
   try {
     return await shizuku.requestPermission();
   } catch {

@@ -35,7 +35,7 @@ export function loggingScript(dir = ANDROID_LOGS_DIR): string {
 }
 
 export class AndroidRoblox {
-  constructor(private readonly shizuku: RobloxShizuku = new Shizuku()) { }
+  constructor(private readonly shizuku: RobloxShizuku = new Shizuku()) {}
 
   /** the Roblox app on the phone: the global one first, then the VNG one; null when neither is installed */
   async installedPackage(): Promise<string | null> {

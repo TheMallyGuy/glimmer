@@ -3,9 +3,7 @@
   "identifier": "overlay",
   "platforms": ["macOS", "windows", "linux"],
   "description": "The in-game radial menu",
-  "windows": [
-    "overlay"
-  ],
+  "windows": ["overlay"],
   "permissions": [
     "core:default",
     "core:window:allow-show",

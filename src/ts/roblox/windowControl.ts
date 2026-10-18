@@ -4,7 +4,9 @@ import { mkdir, readDir, remove, writeFile } from "@tauri-apps/plugin-fs";
 import { commands } from "$ts/glimmer/bindings";
 
 const FLAGS_PNG = Uint8Array.from(
-  atob("iVBORw0KGgoAAAANSUhEUgAAAAYAAAABCAYAAAD9yd/wAAAADklEQVR4nGP4jwQYkAAA3TsL9WxSRxoAAAAASUVORK5CYII="),
+  atob(
+    "iVBORw0KGgoAAAANSUhEUgAAAAYAAAABCAYAAAD9yd/wAAAADklEQVR4nGP4jwQYkAAA3TsL9WxSRxoAAAAASUVORK5CYII=",
+  ),
   (c) => c.charCodeAt(0),
 );
 
@@ -77,7 +79,7 @@ export class WindowControl {
   /** commands run one after the other, so a move never overtakes the one before it */
   private tail: Promise<unknown> = Promise.resolve();
 
-  constructor(private readonly options: WindowControlOptions) { }
+  constructor(private readonly options: WindowControlOptions) {}
 
   /** a game was joined: lets its scripts see what they may do, and forgets what the last game did */
   join(universeId: number, gameName: string) {
@@ -109,7 +111,7 @@ export class WindowControl {
 
   private run<T>(task: () => Promise<T>): Promise<T> {
     const next = this.tail.then(task);
-    this.tail = next.catch(() => { });
+    this.tail = next.catch(() => {});
     return next;
   }
 
@@ -126,7 +128,12 @@ export class WindowControl {
     // these two work for any game
     if (command === "SetWindowTitle") {
       this.touched = true;
-      return unwrap(await commands.windowSetTitle(await this.window(), typeof data === "string" ? data : "Roblox"));
+      return unwrap(
+        await commands.windowSetTitle(
+          await this.window(),
+          typeof data === "string" ? data : "Roblox",
+        ),
+      );
     }
     if (command === "RequestWindowPermission") return this.request();
     if (!this.allowed) return;
@@ -161,7 +168,12 @@ export class WindowControl {
     this.asked.add(universeId);
 
     const text = this.options.prompt(this.gameName);
-    const yes = await ask(text.body, { title: text.title, kind: "warning", okLabel: text.allow, cancelLabel: text.deny });
+    const yes = await ask(text.body, {
+      title: text.title,
+      kind: "warning",
+      okLabel: text.allow,
+      cancelLabel: text.deny,
+    });
     if (!yes) return;
 
     await this.options.allow(universeId);
@@ -191,7 +203,9 @@ export class WindowControl {
     if (typeof data.y === "number") this.target[1] = Math.trunc(data.y * scaleY);
 
     const [x, y, width, height] = this.target;
-    unwrap(await commands.windowSetRect(hwnd, x + this.screen[0], y + this.screen[1], width, height));
+    unwrap(
+      await commands.windowSetRect(hwnd, x + this.screen[0], y + this.screen[1], width, height),
+    );
   }
 
   private async applyLayer() {
@@ -218,7 +232,11 @@ export class WindowControl {
 
   /** the SDK finds out what it may do from the files in the Roblox install this window belongs to */
   private async writeFlags() {
-    const dir = await join(unwrap(await commands.windowExeDir(await this.window())), "content", "bloxstrap");
+    const dir = await join(
+      unwrap(await commands.windowExeDir(await this.window())),
+      "content",
+      "bloxstrap",
+    );
     await mkdir(dir, { recursive: true });
 
     // other games' files go, so a game never sees what another one was allowed

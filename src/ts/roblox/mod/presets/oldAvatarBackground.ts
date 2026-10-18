@@ -17,9 +17,7 @@ export async function setOldAvatarBackground() {
   );
 
   if (!source) {
-    error(
-      "cannot find OldAvatarBackground.rbxl in resources maybe its deleted?",
-    );
+    error("cannot find OldAvatarBackground.rbxl in resources maybe its deleted?");
     throw new Error("Cannot find OldAvatarBackground.rbxl in resources.");
   }
 

@@ -21,7 +21,7 @@ jobs:
 
       - name: Setup Node
         uses: actions/setup-node@v7
-        with: 
+        with:
           node-version: 26
 
       - name: Setup Bun
@@ -30,8 +30,7 @@ jobs:
       - name: Publish on NPM
         if: github.event_name == 'release' && github.repository == 'RoSeal-Extension/Roblox-DeepLink-Parser'
         run: bun run build && npm publish --access public --provenance
-        
+
       - name: Publish on JSR
         if: github.event_name == 'release' && github.repository == 'RoSeal-Extension/Roblox-DeepLink-Parser'
         run: bunx jsr publish --allow-slow-types --allow-dirty
-      

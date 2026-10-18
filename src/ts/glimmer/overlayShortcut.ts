@@ -1,4 +1,9 @@
-import { isRegistered, register, unregister, type ShortcutEvent } from "@tauri-apps/plugin-global-shortcut";
+import {
+  isRegistered,
+  register,
+  unregister,
+  type ShortcutEvent,
+} from "@tauri-apps/plugin-global-shortcut";
 
 /** hold this anywhere (Roblox included) to open the in-game menu */
 export const OVERLAY_SHORTCUT = "Alt+G";
@@ -36,7 +41,8 @@ export class OverlayShortcut {
 
   /** turns the shortcut on or off. Turning it on again is fine: the handler of this page replaces an older one. */
   async set(enabled: boolean) {
-    if (await this.plugin.isRegistered(OVERLAY_SHORTCUT)) await this.plugin.unregister(OVERLAY_SHORTCUT);
+    if (await this.plugin.isRegistered(OVERLAY_SHORTCUT))
+      await this.plugin.unregister(OVERLAY_SHORTCUT);
     this.down = false;
     if (enabled) await this.plugin.register(OVERLAY_SHORTCUT, (event) => this.handle(event));
   }

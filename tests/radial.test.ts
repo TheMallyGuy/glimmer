@@ -36,7 +36,8 @@ describe("angleToSlot", () => {
   });
 
   test("a slot covers 30 degrees to each side of its middle, so the border between 0 and 1 is at 30", () => {
-    const at = (degrees: number) => angleToSlot(Math.sin((degrees * Math.PI) / 180), -Math.cos((degrees * Math.PI) / 180), 6);
+    const at = (degrees: number) =>
+      angleToSlot(Math.sin((degrees * Math.PI) / 180), -Math.cos((degrees * Math.PI) / 180), 6);
 
     expect(at(29)).toBe(0);
     expect(at(31)).toBe(1);
@@ -131,7 +132,8 @@ describe("slicePath", () => {
     const end = (path: string) => /A \d+ \d+ 0 0 1 (\S+ \S+) L/.exec(path)![1];
     const start = (path: string) => /^M (\S+ \S+) A/.exec(path)![1];
 
-    for (let i = 0; i < 6; i++) expect(end(slicePath(i, 6, 176, 84))).toBe(start(slicePath((i + 1) % 6, 6, 176, 84)));
+    for (let i = 0; i < 6; i++)
+      expect(end(slicePath(i, 6, 176, 84))).toBe(start(slicePath((i + 1) % 6, 6, 176, 84)));
   });
 
   test("uses the radii given", () => {

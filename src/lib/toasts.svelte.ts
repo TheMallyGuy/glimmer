@@ -1,4 +1,4 @@
-import { ToastQueue, type Toast } from '$ts/glimmer/toast';
+import { ToastQueue, type Toast } from "$ts/glimmer/toast";
 
 /** show a message from anywhere: `toast.success('Saved')`, `toast.error('…')`, `toast.show('…', { action })` */
 export const toast = new ToastQueue();

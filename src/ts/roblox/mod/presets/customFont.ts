@@ -1,23 +1,13 @@
 import { join } from "@tauri-apps/api/path";
 import { error } from "@tauri-apps/plugin-log";
-import {
-  copyFile,
-  mkdir,
-  readDir,
-  readTextFile,
-  writeTextFile,
-} from "@tauri-apps/plugin-fs";
+import { copyFile, mkdir, readDir, readTextFile, writeTextFile } from "@tauri-apps/plugin-fs";
 import { ModificationManager } from "../manager";
 
 export const customFontModName = "Custom font";
 
 const FONT_DIR = ["content", "fonts"];
 
-async function processFontFamilies(
-  inputDir: string,
-  outputDir: string,
-  fontFile: string,
-) {
+async function processFontFamilies(inputDir: string, outputDir: string, fontFile: string) {
   const entries = await readDir(inputDir);
   await mkdir(outputDir, { recursive: true });
 
@@ -35,10 +25,7 @@ async function processFontFamilies(
       }
     }
 
-    await writeTextFile(
-      await join(outputDir, entry.name),
-      JSON.stringify(data, null, 2),
-    );
+    await writeTextFile(await join(outputDir, entry.name), JSON.stringify(data, null, 2));
   }
 }
 

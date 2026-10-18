@@ -83,10 +83,5 @@
   "location": "local",
   "title": "Custom Image Generator",
   "description": "Content declarations for the custom image generator feature, including template URL, badge colour, output size settings, and related UI labels.",
-  "tags": [
-    "custom image",
-    "integration",
-    "generator",
-    "ui"
-  ]
+  "tags": ["custom image", "integration", "generator", "ui"]
 }

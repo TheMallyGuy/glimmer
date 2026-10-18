@@ -1,18 +1,8 @@
 import { error, info } from "@tauri-apps/plugin-log";
-import {
-  appState,
-  gameState,
-  setGameState,
-  loadAppState,
-} from "$lib/appState.svelte";
+import { appState, gameState, setGameState, loadAppState } from "$lib/appState.svelte";
 import type { LogLineEvent } from "./watcher";
 import { setActivity, addActivity } from "../discordRpc";
-import {
-  getAssetThumbnail,
-  getGameInfo,
-  getUserHeadShot,
-  getUserName,
-} from "../generalRobloxApis";
+import { getAssetThumbnail, getGameInfo, getUserHeadShot, getUserName } from "../generalRobloxApis";
 import { getCustomGameIcon } from "$ts/svg/api";
 import { GameHistory } from "../gameHistory";
 import { fetchLocation } from "$ts/glimmer/geo";
@@ -45,13 +35,17 @@ async function allowUniverse(universeId: number) {
   }
   config.integrations = {
     ...config.integrations,
-    windowControl: { ...config.integrations?.windowControl, allowedUniverses: [...allowedUniverses] },
+    windowControl: {
+      ...config.integrations?.windowControl,
+      allowedUniverses: [...allowedUniverses],
+    },
   };
   await configuration.saveRaw(JSON.stringify(config));
 }
 
 const windowControl = new WindowControl({
-  isAllowed: (universeId) => appState.integrations.windowControl.allowedUniverses.includes(universeId),
+  isAllowed: (universeId) =>
+    appState.integrations.windowControl.allowedUniverses.includes(universeId),
   allow: allowUniverse,
   prompt: (game) => {
     if (!windowPrompt) throw new Error("the permission question has no text yet");
@@ -65,8 +59,6 @@ const bloxstrapRpc = new BloxstrapRpc({
   accountShown: () => appState.integrations.discordRpc.shareAccount,
   log: (message) => info(message),
 });
-
-
 
 async function getLargeImage(placeId: number): Promise<string | undefined> {
   const discordRpc = appState.integrations.discordRpc;
@@ -118,12 +110,7 @@ let activeSession: {
 } | null = null;
 
 async function applyHeadshot() {
-  if (
-    !activeSession ||
-    !appState.integrations.discordRpc.shareAccount ||
-    !gameState.userId
-  )
-    return;
+  if (!activeSession || !appState.integrations.discordRpc.shareAccount || !gameState.userId) return;
 
   let userHeadshot: string | undefined;
   let user: { displayName: string; username: string } | undefined;
@@ -156,9 +143,7 @@ async function startTasxIfEnabled() {
 
   const hwnd = await commands.getRobloxHwnd();
   if (hwnd.status === "error") {
-    error(
-      `TASX optimizer: failed to get Roblox's window handle: ${hwnd.error}`,
-    );
+    error(`TASX optimizer: failed to get Roblox's window handle: ${hwnd.error}`);
     return;
   }
 
@@ -252,7 +237,9 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
       activeSession = null;
       setGameState({ gameId: 0, gameServer: "" });
       bloxstrapRpc.end();
-      await windowControl.leave().catch((err) => error(`window control could not reset the window: ${err}`));
+      await windowControl
+        .leave()
+        .catch((err) => error(`window control could not reset the window: ${err}`));
       await setActivity({
         state: "In the app",
         largeImage:
@@ -279,7 +266,8 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
 
       // Discord commands are Bloxstrap's, the rest are Funkstrap's window commands
       if (PRESENCE_COMMANDS.includes(message.command)) {
-        if (appState.integrations.discordRpc.enabled) await bloxstrapRpc.handle(message.command, message.data);
+        if (appState.integrations.discordRpc.enabled)
+          await bloxstrapRpc.handle(message.command, message.data);
       } else if (appState.integrations.windowControl.enabled) {
         await windowControl.handle({ command: message.command, data: message.data });
       }
@@ -306,9 +294,7 @@ const rules: { name: string; pattern: RegExp; handler: Handler }[] = [
     handler: (m) => {
       const [, udmuxAddress, rccServerAddress] = m;
       setGameState({ serverIp: udmuxAddress });
-      info(
-        `UDMUX: udmuxAddress=${udmuxAddress} rccServerAddress=${rccServerAddress}`,
-      );
+      info(`UDMUX: udmuxAddress=${udmuxAddress} rccServerAddress=${rccServerAddress}`);
     },
   },
   {

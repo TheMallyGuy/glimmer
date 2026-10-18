@@ -15,7 +15,7 @@ export interface AndroidLaunchOptions {
   /** the Fast Flags to write first, none to leave Roblox's alone */
   flags: Record<string, string> | null;
   /** roblox deeplinks n stuff */
-  deeplink? : string | undefined;
+  deeplink?: string | undefined;
 }
 
 export interface AndroidLaunchDeps {

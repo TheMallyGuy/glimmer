@@ -13,9 +13,5 @@
   "location": "local",
   "title": "Inspired Banner",
   "description": "Banner content inspired from source text, localized for English locale.",
-  "tags": [
-    "banner",
-    "translation",
-    "localization"
-  ]
+  "tags": ["banner", "translation", "localization"]
 }

@@ -40,9 +40,5 @@
   "location": "local",
   "title": "Toast notifications",
   "description": "Dictionary of toast messages used for user notifications, including region label, dismiss action, save success and failure messages.",
-  "tags": [
-    "notifications",
-    "toast",
-    "ui"
-  ]
+  "tags": ["notifications", "toast", "ui"]
 }

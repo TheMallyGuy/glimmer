@@ -1,1 +1,1 @@
-export { default as RobloxDLParser } from "./DeeplinkParser/src/DeepLinkParser"
+export { default as RobloxDLParser } from "./DeeplinkParser/src/DeepLinkParser";

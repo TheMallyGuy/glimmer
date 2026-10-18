@@ -16,7 +16,6 @@ import type { LaunchContext, LaunchOptions, LaunchReport } from "./types";
 export * from "./types";
 export { launchArgs, parseLaunchLink } from "./args";
 
-
 export async function launch(options: LaunchOptions, report: LaunchReport) {
   const isStudio = options.target === "studio";
   const isPlayer = !isStudio;
@@ -35,7 +34,9 @@ export async function launch(options: LaunchOptions, report: LaunchReport) {
     report({ step: "applyingMods" }, null);
     await loadMods();
     await tryStep("apply mods", () =>
-      applyMods((done, total, percent) => report({ step: "downloadingModOriginals", done, total }, percent)),
+      applyMods((done, total, percent) =>
+        report({ step: "downloadingModOriginals", done, total }, percent),
+      ),
     );
   }
 
@@ -54,7 +55,10 @@ export async function launch(options: LaunchOptions, report: LaunchReport) {
   report({ step: "prepare" }, null);
   const exePath = await join(path, isStudio ? "RobloxStudioBeta.exe" : "RobloxPlayerBeta.exe");
   if (isPlayer) {
-    commands.setFullscreenProp(appState.integrations.disableFullscreenOptimization.enabled, exePath);
+    commands.setFullscreenProp(
+      appState.integrations.disableFullscreenOptimization.enabled,
+      exePath,
+    );
     const lca = await LocalAppEditor.create();
     await lca.setMinimizeToTray(appState.integrations.disableSystemTray.enabled);
     await lca.launchAtStartup(!appState.integrations.disableLaunchAtStartup.enabled);
@@ -92,7 +96,9 @@ async function startFleasion(flags: Record<string, string>, report: LaunchReport
   const name = fleasion.settings.name.trim() || account?.name || "";
 
   if (!name && (fleasion.settings.verify || fleasion.settings.gameCreator)) {
-    console.warn("Fleasion keeps its username spoofer off with no name: set one on the Fleasion page");
+    console.warn(
+      "Fleasion keeps its username spoofer off with no name: set one on the Fleasion page",
+    );
   }
 
   await restartFleasion({ ...fleasion.settings, name }, flags, report, {

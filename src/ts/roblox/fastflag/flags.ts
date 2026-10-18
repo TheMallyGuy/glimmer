@@ -14,10 +14,7 @@ export class FastFlagManager {
   static async create(versionPath: string): Promise<FastFlagManager> {
     const ffm = new FastFlagManager(versionPath);
     ffm.clientSettingsDir = await join(versionPath, "ClientSettings");
-    ffm.clientAppSettingsPath = await join(
-      ffm.clientSettingsDir,
-      "ClientAppSettings.json",
-    );
+    ffm.clientAppSettingsPath = await join(ffm.clientSettingsDir, "ClientAppSettings.json");
 
     return ffm;
   }
@@ -27,12 +24,9 @@ export class FastFlagManager {
       await mkdir(this.clientSettingsDir, { recursive: true });
     }
 
-    const merged: Record<string, string> = { ...hiddenFlags, ...flags }; // overwrites flags user stuff thing 
+    const merged: Record<string, string> = { ...hiddenFlags, ...flags }; // overwrites flags user stuff thing
 
-    await writeFile(
-      this.clientAppSettingsPath,
-      new TextEncoder().encode(JSON.stringify(merged)),
-    );
+    await writeFile(this.clientAppSettingsPath, new TextEncoder().encode(JSON.stringify(merged)));
   }
 
   /** the flags in ClientAppSettings.json, none when the file is not there. Throws when it is not a flag object. */

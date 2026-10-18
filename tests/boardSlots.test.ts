@@ -51,12 +51,17 @@ describe("normalizeSlots with game slots", () => {
     expect(normalizeSlots([{ placeId: 5 }])[0]).toEqual({ placeId: 5, name: "5" });
   });
 
-  test.each([[{ placeId: 0, name: "x" }], [{ placeId: -1 }], [{ placeId: "5" }], [{ placeId: 1.5 }], [{ name: "x" }], [{}], [[]]])(
-    "%p is a blank slot",
-    (slot) => {
-      expect(normalizeSlots([slot])[0]).toBeNull();
-    },
-  );
+  test.each([
+    [{ placeId: 0, name: "x" }],
+    [{ placeId: -1 }],
+    [{ placeId: "5" }],
+    [{ placeId: 1.5 }],
+    [{ name: "x" }],
+    [{}],
+    [[]],
+  ])("%p is a blank slot", (slot) => {
+    expect(normalizeSlots([slot])[0]).toBeNull();
+  });
 });
 
 describe("normalizeSlots with a game icon", () => {
@@ -67,12 +72,15 @@ describe("normalizeSlots with a game icon", () => {
     expect(normalizeSlots([{ ...game, iconUrl: icon }])[0]).toEqual({ ...game, iconUrl: icon });
   });
 
-  test.each([["http://tr.rbxcdn.com/a.png"], ["javascript:alert(1)"], ["data:image/png;base64,AAAA"], [42], [null]])(
-    "drops an icon that is %p, and keeps the game",
-    (iconUrl) => {
-      const slot = normalizeSlots([{ ...game, iconUrl }])[0];
-      expect(slot).toEqual(game);
-      expect(slot).not.toHaveProperty("iconUrl");
-    },
-  );
+  test.each([
+    ["http://tr.rbxcdn.com/a.png"],
+    ["javascript:alert(1)"],
+    ["data:image/png;base64,AAAA"],
+    [42],
+    [null],
+  ])("drops an icon that is %p, and keeps the game", (iconUrl) => {
+    const slot = normalizeSlots([{ ...game, iconUrl }])[0];
+    expect(slot).toEqual(game);
+    expect(slot).not.toHaveProperty("iconUrl");
+  });
 });

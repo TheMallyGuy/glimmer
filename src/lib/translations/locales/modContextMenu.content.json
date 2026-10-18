@@ -48,9 +48,5 @@
   "location": "local",
   "title": "Mod Context Menu",
   "description": "A collection of actions and settings for configuring the mod context menu",
-  "tags": [
-    "mod context menu",
-    "ui controls",
-    "configuration"
-  ]
+  "tags": ["mod context menu", "ui controls", "configuration"]
 }

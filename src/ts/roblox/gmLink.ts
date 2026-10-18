@@ -6,14 +6,11 @@ export class GmLink {
   constructor(private readonly base = baseUrl) {}
 
   async share(code: string, username: string, games: number[]) {
-    const res = await fetch(
-      await joinUrl(this.base, `link/${encodeURIComponent(code)}/submit`),
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, games }),
-      },
-    );
+    const res = await fetch(await joinUrl(this.base, `link/${encodeURIComponent(code)}/submit`), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, games }),
+    });
 
     const reply = (await res.json().catch(() => null)) as {
       status?: string;

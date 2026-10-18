@@ -1,8 +1,5 @@
 import { appState } from "$lib/appState.svelte";
-import {
-  AccountLauncher,
-  AccountLaunchError,
-} from "$ts/roblox/account/launcher";
+import { AccountLauncher, AccountLaunchError } from "$ts/roblox/account/launcher";
 import type { GameTarget } from "$ts/roblox/game";
 import { RobloxDLParser } from "$ts/vendor";
 import { RoValra } from "$ts/glimmer/roValra";
@@ -57,7 +54,10 @@ export async function nearbyServer(placeId: number, roValra = new RoValra()): Pr
  * a roblox-player: link from the website's Play button, sent to the server `find` gives for its place.
  * Only a plain game join (RequestGame) is changed: following a friend or a private server keeps its link.
  */
-export async function withServer(link: string, find: (placeId: number) => Promise<string>): Promise<string> {
+export async function withServer(
+  link: string,
+  find: (placeId: number) => Promise<string>,
+): Promise<string> {
   const match = /placelauncherurl:([^+]+)/i.exec(link);
   if (!match) return link;
 
@@ -70,7 +70,10 @@ export async function withServer(link: string, find: (placeId: number) => Promis
 
   launcher.searchParams.set("request", "RequestGameJob");
   launcher.searchParams.set("gameId", jobId);
-  return link.replace(match[0], () => `placelauncherurl:${encodeURIComponent(launcher.toString())}`);
+  return link.replace(
+    match[0],
+    () => `placelauncherurl:${encodeURIComponent(launcher.toString())}`,
+  );
 }
 
 /** a failure of the account launch as one the window can word, anything else as it is */

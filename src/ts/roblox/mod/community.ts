@@ -48,9 +48,7 @@ interface KlikoEntry {
 
 function toGradient(angle = 90, stops: FroststrapEntry["gradient"] = []) {
   if (stops.length < 2) return undefined;
-  const parts = stops
-    .map((s) => `${s.color} ${Math.round(s.offset * 100)}%`)
-    .join(", ");
+  const parts = stops.map((s) => `${s.color} ${Math.round(s.offset * 100)}%`).join(", ");
   return `linear-gradient(${angle}deg, ${parts})`;
 }
 
@@ -61,9 +59,7 @@ async function getJson<T>(url: string): Promise<T> {
 }
 
 async function fetchFroststrap(): Promise<CommunityMod[]> {
-  const data = await getJson<{ communityMods?: FroststrapEntry[] }>(
-    FROSTSTRAP_URL,
-  );
+  const data = await getJson<{ communityMods?: FroststrapEntry[] }>(FROSTSTRAP_URL);
   return (data.communityMods ?? [])
     .filter((m) => m.modtype !== FROSTSTRAP_THEME_TYPE)
     .map((m) => ({

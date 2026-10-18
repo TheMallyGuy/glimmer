@@ -30,9 +30,7 @@ const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export class GeoLocator {
   private readonly cache = new Map<string, Location>();
 
-  constructor(
-    private readonly wait: (ms: number) => Promise<unknown> = delay,
-  ) {}
+  constructor(private readonly wait: (ms: number) => Promise<unknown> = delay) {}
 
   /** where `ip` is, or where this device is when `ip` is empty (both services answer for the caller then) */
   async locate(ip = ""): Promise<Location> {
@@ -66,9 +64,7 @@ export class GeoLocator {
     const data = await res.json();
 
     if (!data.success) {
-      throw new Error(
-        `cannot fetch geolocation for ${ip}: ${data.message ?? "unknown error"}`,
-      );
+      throw new Error(`cannot fetch geolocation for ${ip}: ${data.message ?? "unknown error"}`);
     }
 
     const location = {
@@ -84,7 +80,9 @@ export class GeoLocator {
   }
 
   private async fallback(ip: string): Promise<Location> {
-    const res = await fetch(ip ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : "https://get.geojs.io/v1/ip/geo.json");
+    const res = await fetch(
+      ip ? `https://get.geojs.io/v1/ip/geo/${ip}.json` : "https://get.geojs.io/v1/ip/geo.json",
+    );
     if (!res.ok) throw new Error(`cannot fetch geolocation for ${ip}: ${res.status}`);
 
     const data = await res.json();
@@ -113,5 +111,4 @@ export class GeoLocator {
 
 const shared = new GeoLocator();
 
-export const fetchLocation = (ip?: string): Promise<Location> =>
-  shared.locate(ip);
+export const fetchLocation = (ip?: string): Promise<Location> => shared.locate(ip);

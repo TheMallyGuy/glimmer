@@ -131,11 +131,5 @@
   "location": "local",
   "title": "Roblox VNG Installation Settings",
   "description": "Provides configuration options for installing Roblox with VNG distribution, including parallel downloads, forced reinstall, disabling upgrades, and safety warnings for VNG accounts.",
-  "tags": [
-    "roblox",
-    "vng",
-    "installations",
-    "settings",
-    "advanced"
-  ]
+  "tags": ["roblox", "vng", "installations", "settings", "advanced"]
 }

@@ -1,16 +1,16 @@
 import {
-    appCacheDir,
-    appDataDir,
-    join,
-    appLogDir,
-    localDataDir,
-    resolveResource,
+  appCacheDir,
+  appDataDir,
+  join,
+  appLogDir,
+  localDataDir,
+  resolveResource,
 } from "@tauri-apps/api/path";
 import type { InstallKind } from "$ts/roblox/installation/installation";
 
 const INSTALL_FOLDERS: Record<InstallKind, string> = {
-    player: "versions",
-    studio: "studio-versions",
+  player: "versions",
+  studio: "studio-versions",
 };
 
 /**
@@ -19,94 +19,94 @@ const INSTALL_FOLDERS: Record<InstallKind, string> = {
  * the code that owns the files.
  */
 export class PathManager {
-    /** the settings file */
-    async getConfigFile(): Promise<string> {
-        return join(await appDataDir(), "config.json");
-    }
+  /** the settings file */
+  async getConfigFile(): Promise<string> {
+    return join(await appDataDir(), "config.json");
+  }
 
-    /** the folder that holds every install of a kind */
-    async getRobloxInstallationsDir(kind: InstallKind): Promise<string> {
-        return join(await appDataDir(), INSTALL_FOLDERS[kind]);
-    }
+  /** the folder that holds every install of a kind */
+  async getRobloxInstallationsDir(kind: InstallKind): Promise<string> {
+    return join(await appDataDir(), INSTALL_FOLDERS[kind]);
+  }
 
-    /** the list of installs in a kind's folder, with which one is active */
-    async getInstallationIndexFile(kind: InstallKind): Promise<string> {
-        return join(await this.getRobloxInstallationsDir(kind), "index.json");
-    }
+  /** the list of installs in a kind's folder, with which one is active */
+  async getInstallationIndexFile(kind: InstallKind): Promise<string> {
+    return join(await this.getRobloxInstallationsDir(kind), "index.json");
+  }
 
-    /** the folder with one subfolder per mod */
-    async getModsDir(): Promise<string> {
-        return join(await appDataDir(), "mods");
-    }
+  /** the folder with one subfolder per mod */
+  async getModsDir(): Promise<string> {
+    return join(await appDataDir(), "mods");
+  }
 
-    /** the list of mods in the mods folder */
-    async getModsIndexFile(): Promise<string> {
-        return join(await this.getModsDir(), "index.json");
-    }
+  /** the list of mods in the mods folder */
+  async getModsIndexFile(): Promise<string> {
+    return join(await this.getModsDir(), "index.json");
+  }
 
-    /** which files each mod last wrote into the install */
-    async getAppliedModsFile(): Promise<string> {
-        return join(await this.getModsDir(), "applied.json");
-    }
+  /** which files each mod last wrote into the install */
+  async getAppliedModsFile(): Promise<string> {
+    return join(await this.getModsDir(), "applied.json");
+  }
 
-    /** where older versions kept a full copy of the install, before stock files came from the package cache */
-    async getLegacyOriginalsDir(): Promise<string> {
-        return join(await this.getModsDir(), ".originals");
-    }
+  /** where older versions kept a full copy of the install, before stock files came from the package cache */
+  async getLegacyOriginalsDir(): Promise<string> {
+    return join(await this.getModsDir(), ".originals");
+  }
 
-    /** the downloaded package zips, or one install's folder in it when `name` is given */
-    async getPackageCacheDir(name?: string): Promise<string> {
-        const root = await join(await appCacheDir(), "glimmer-downloads");
-        return name ? join(root, name) : root;
-    }
+  /** the downloaded package zips, or one install's folder in it when `name` is given */
+  async getPackageCacheDir(name?: string): Promise<string> {
+    const root = await join(await appCacheDir(), "glimmer-downloads");
+    return name ? join(root, name) : root;
+  }
 
-    /** the games joined across sessions (see GameHistory) */
-    async getGameHistoryFile(): Promise<string> {
-        return join(await appDataDir(), "games.json");
-    }
+  /** the games joined across sessions (see GameHistory) */
+  async getGameHistoryFile(): Promise<string> {
+    return join(await appDataDir(), "games.json");
+  }
 
-    /** the picture used as the app background */
-    async getBackgroundsDir(): Promise<string> {
-        return join(await appDataDir(), "backgrounds");
-    }
+  /** the picture used as the app background */
+  async getBackgroundsDir(): Promise<string> {
+    return join(await appDataDir(), "backgrounds");
+  }
 
-    /** the custom splash page (CustomSplash) */
-    async getSplashDir(): Promise<string> {
-        return join(await appDataDir(), "splash");
-    }
+  /** the custom splash page (CustomSplash) */
+  async getSplashDir(): Promise<string> {
+    return join(await appDataDir(), "splash");
+  }
 
-    /** where Fleasion keeps its configs: %LOCALAPPDATA%\FleasionNT (not ours, so it is the one folder outside the app data that the fs scope opens) */
-    async getFleasionDir(): Promise<string> {
-        return join(await localDataDir(), "FleasionNT");
-    }
+  /** where Fleasion keeps its configs: %LOCALAPPDATA%\FleasionNT (not ours, so it is the one folder outside the app data that the fs scope opens) */
+  async getFleasionDir(): Promise<string> {
+    return join(await localDataDir(), "FleasionNT");
+  }
 
-    /** Fleasion's own settings (theme, cache clearing, proxy... and the username spoofer) */
-    async getFleasionSettingsFile(): Promise<string> {
-        return join(await this.getFleasionDir(), "settings.json");
-    }
+  /** Fleasion's own settings (theme, cache clearing, proxy... and the username spoofer) */
+  async getFleasionSettingsFile(): Promise<string> {
+    return join(await this.getFleasionDir(), "settings.json");
+  }
 
-    /** the fast flags and replacements Fleasion applies */
-    async getFleasionModificationsFile(): Promise<string> {
-        return join(await this.getFleasionDir(), "modifications.json");
-    }
+  /** the fast flags and replacements Fleasion applies */
+  async getFleasionModificationsFile(): Promise<string> {
+    return join(await this.getFleasionDir(), "modifications.json");
+  }
 
-    /** what Fleasion writes about itself, kept across its runs (read to see when it is ready) */
-    async getFleasionLogFile(): Promise<string> {
-        return join(await this.getFleasionDir(), "logs", "fleasion.log");
-    }
+  /** what Fleasion writes about itself, kept across its runs (read to see when it is ready) */
+  async getFleasionLogFile(): Promise<string> {
+    return join(await this.getFleasionDir(), "logs", "fleasion.log");
+  }
 
-    /** a file shipped with the app, e.g. "resources/Mods/Sounds/x.ogg" */
-    async getBundledResource(relativePath: string): Promise<string> {
-        return resolveResource(relativePath);
-    }
+  /** a file shipped with the app, e.g. "resources/Mods/Sounds/x.ogg" */
+  async getBundledResource(relativePath: string): Promise<string> {
+    return resolveResource(relativePath);
+  }
 
-    /** get logs folder */
-    async getLogsFolder(): Promise<string> {
-        return await appLogDir()
-    }
+  /** get logs folder */
+  async getLogsFolder(): Promise<string> {
+    return await appLogDir();
+  }
 
-    /** Glimmer's own log; tauri-plugin-log names it after `productName`, and Android paths are case-sensitive */
-    async getGlimmerLog(): Promise<string> {
-        return join(await this.getLogsFolder(), "Glimmer.log");
-    }
+  /** Glimmer's own log; tauri-plugin-log names it after `productName`, and Android paths are case-sensitive */
+  async getGlimmerLog(): Promise<string> {
+    return join(await this.getLogsFolder(), "Glimmer.log");
+  }
 }

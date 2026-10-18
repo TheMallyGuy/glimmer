@@ -5,9 +5,7 @@ export interface LogLineEvent {
   line: string;
 }
 
-export async function watchRobloxLogs(
-  onLine: (event: LogLineEvent) => void,
-): Promise<UnlistenFn> {
+export async function watchRobloxLogs(onLine: (event: LogLineEvent) => void): Promise<UnlistenFn> {
   return listen<LogLineEvent>("roblox-log-line", (event) => {
     onLine(event.payload);
   });

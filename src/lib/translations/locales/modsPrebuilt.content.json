@@ -166,9 +166,5 @@
   "location": "local",
   "title": "Mods prebuilt",
   "description": "Content declaration for prebuilt mods UI strings, providing labels and descriptions for various mod options and settings.",
-  "tags": [
-    "mods",
-    "prebuilt",
-    "ui"
-  ]
+  "tags": ["mods", "prebuilt", "ui"]
 }

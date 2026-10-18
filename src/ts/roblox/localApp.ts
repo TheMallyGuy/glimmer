@@ -23,10 +23,7 @@ export class LocalAppEditor {
 
     rootCf.AppConfiguration = JSON.stringify(appCf);
 
-    const writeResult = await commands.writeLocalApp(
-      JSON.stringify(rootCf),
-      this.vng,
-    );
+    const writeResult = await commands.writeLocalApp(JSON.stringify(rootCf), this.vng);
     if (writeResult.status === "error") throw new Error(writeResult.error);
   }
 
@@ -42,10 +39,7 @@ export class LocalAppEditor {
 
     rootCf.AppConfiguration = JSON.stringify(appCf);
 
-    const writeResult = await commands.writeLocalApp(
-      JSON.stringify(rootCf),
-      this.vng,
-    );
+    const writeResult = await commands.writeLocalApp(JSON.stringify(rootCf), this.vng);
     if (writeResult.status === "error") throw new Error(writeResult.error);
   }
 }
