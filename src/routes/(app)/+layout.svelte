@@ -216,17 +216,18 @@
 
   <main class="min-h-0 grow overflow-auto px-8 py-7 max-sm:px-3 max-sm:py-4">
     <div role="tabpanel" aria-labelledby="gl-tab-{section}">
-      <h1
-        class="m-0 mb-1.5 font-display text-[32px] font-normal tracking-[0.01em] max-sm:text-2xl"
-      >
-        {heading}
-      </h1>
-      <p class="m-0 mb-7 max-w-[520px] text-sm text-muted max-sm:mb-4">
-        {blurb}
-      </p>
-      <!-- keyed on the tab, so switching tabs plays the entrance but moving inside one does not reload it -->
+      <!-- keyed on the tab, so switching tabs plays the entrance but moving inside one does not reload it.
+           The title comes first, then the blurb; the content only fades, as its setting rows come in one by one (SettingGroup) -->
       {#key section}
-        <div class="animate-fade-up" bind:this={content}>
+        <h1
+          class="m-0 mb-1.5 animate-fade-up font-display text-[32px] font-normal tracking-[0.01em] max-sm:text-2xl"
+        >
+          {heading}
+        </h1>
+        <p class="m-0 mb-7 max-w-[520px] animate-fade-up text-sm text-muted [animation-delay:30ms] max-sm:mb-4">
+          {blurb}
+        </p>
+        <div class="animate-fade-in [animation-delay:60ms]" bind:this={content}>
           {#if nothingFound}
             <div class="flex flex-col items-start gap-3 bg-row px-[18px] py-4">
               <span class="text-[13px] text-muted">{$appLayoutContent.noSettingsFound({ query: search.query.trim() }).value}</span>

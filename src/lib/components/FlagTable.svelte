@@ -1,5 +1,8 @@
 <script lang="ts">
   import { tick } from 'svelte';
+  import { flip } from 'svelte/animate';
+  import { fade } from 'svelte/transition';
+  import { motionMs } from '../motion';
   import { Plus, Upload, Trash2, ClipboardPaste } from '@lucide/svelte';
   import { isTauri } from '@tauri-apps/api/core';
   import { save } from '@tauri-apps/plugin-dialog';
@@ -214,7 +217,13 @@
     <div class="flex min-h-0 flex-col gap-0.5 overflow-auto" role="rowgroup">
       {#each shown as flag (flag.id)}
         {@const t = typeLabel(flag)}
-        <div class={cn(grid, 'h-13 shrink-0 bg-row pl-2.5 pr-2 max-sm:flex max-sm:h-auto max-sm:flex-wrap max-sm:gap-x-2 max-sm:gap-y-2 max-sm:p-3')} role="row">
+        <!-- a new row fades in, a removed one fades out and the rows under it close the gap -->
+        <div
+          class={cn(grid, 'h-13 shrink-0 animate-fade-in bg-row pl-2.5 pr-2 max-sm:flex max-sm:h-auto max-sm:flex-wrap max-sm:gap-x-2 max-sm:gap-y-2 max-sm:p-3')}
+          role="row"
+          out:fade={{ duration: motionMs(100) }}
+          animate:flip={{ duration: motionMs(200) }}
+        >
           <div role="cell" class="max-sm:basis-full">
             <input
               bind:this={nameInputs[flag.id]}

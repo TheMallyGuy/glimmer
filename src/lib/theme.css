@@ -60,10 +60,20 @@
   --font-display: "Cal Sans", "Geist", system-ui, sans-serif;
   --font-mono: "Geist Mono", Consolas, monospace;
 
-  /* Motion: short, ease-out, and switched off by prefers-reduced-motion (see the base layer) */
-  --animate-fade-in: fade-in 180ms ease-out both;
-  --animate-fade-up: fade-up 260ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
-  --animate-pop-in: pop-in 140ms ease-out both;
+  /* Motion: short, ease-out, and switched off by prefers-reduced-motion (see the base layer).
+     The curves are stronger than the CSS built-ins, so most of the move happens in the first frames.
+     ease-out: things that enter or leave. ease-in-out: things already on screen that move. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --default-transition-duration: 150ms;
+  --default-transition-timing-function: var(--ease-out);
+  /* `backwards`, not `both`: holding the end transform after the animation would make each row its own stacking
+     context, and a later row would then paint over a dropdown opened in an earlier one */
+  --animate-fade-in: fade-in 180ms var(--ease-out) backwards;
+  --animate-fade-up: fade-up 220ms var(--ease-out) backwards;
+  --animate-pop-in: pop-in 140ms var(--ease-out) backwards;
+  /* an error that just showed up: one short side to side, so the eye finds it */
+  --animate-shake: shake 280ms var(--ease-out) backwards;
 
   @keyframes fade-in {
     from {
@@ -76,7 +86,7 @@
   @keyframes fade-up {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(6px);
     }
     to {
       opacity: 1;
@@ -91,6 +101,21 @@
     to {
       opacity: 1;
       transform: scale(1);
+    }
+  }
+  @keyframes shake {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-4px);
+    }
+    45% {
+      transform: translateX(3px);
+    }
+    70% {
+      transform: translateX(-2px);
     }
   }
 
@@ -152,12 +177,68 @@
     background: transparent;
   }
 
+  /* .stagger: each child fades up a beat after the one before, so a screen reads top to bottom.
+     Only the first eight wait; later ones (and rows added afterwards) come with the eighth. */
+  .stagger > * {
+    animation: var(--animate-fade-up);
+  }
+  .stagger > :nth-child(2) {
+    animation-delay: 30ms;
+  }
+  .stagger > :nth-child(3) {
+    animation-delay: 60ms;
+  }
+  .stagger > :nth-child(4) {
+    animation-delay: 90ms;
+  }
+  .stagger > :nth-child(5) {
+    animation-delay: 120ms;
+  }
+  .stagger > :nth-child(6) {
+    animation-delay: 150ms;
+  }
+  .stagger > :nth-child(7) {
+    animation-delay: 180ms;
+  }
+  .stagger > :nth-child(n + 8) {
+    animation-delay: 210ms;
+  }
+
+  /* Dialog (the native <dialog>): scales up from the centre and fades the dim in, and plays it back faster when it
+     closes. Transitions, not keyframes, so closing halfway through an opening turns back from where it is. */
+  dialog.dialog-motion,
+  dialog.dialog-motion::backdrop {
+    opacity: 0;
+    transition:
+      opacity 120ms var(--ease-out),
+      scale 120ms var(--ease-out),
+      overlay 120ms allow-discrete,
+      display 120ms allow-discrete;
+  }
+  dialog.dialog-motion {
+    scale: 0.96;
+  }
+  dialog.dialog-motion[open],
+  dialog.dialog-motion[open]::backdrop {
+    opacity: 1;
+    scale: 1;
+    transition-duration: 200ms;
+  }
+  @starting-style {
+    dialog.dialog-motion[open],
+    dialog.dialog-motion[open]::backdrop {
+      opacity: 0;
+      scale: 0.96;
+    }
+  }
+
+  /* the bar is a quarter of the track wide, so 400% of its own width crosses the track */
   @keyframes splash-slide {
     from {
-      left: -25%;
+      transform: translateX(-100%);
     }
     to {
-      left: 100%;
+      transform: translateX(400%);
     }
   }
   .splash-indeterminate {

@@ -8,6 +8,8 @@
 
 <script lang="ts">
   import { ArrowRight, ChevronDown, Check } from "@lucide/svelte";
+  import { fade } from "svelte/transition";
+  import { motionMs } from "../motion";
   import { cn } from "../utils";
   import { useIntlayer } from "svelte-intlayer";
   const splitButtonContent = useIntlayer("splitButton");
@@ -117,7 +119,15 @@
     class={cn(half, "rounded-r-gl px-2.5")}
     onclick={() => (open ? hide() : show())}
   >
-    <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" />
+    <ChevronDown
+      size={16}
+      strokeWidth={1.75}
+      aria-hidden="true"
+      class={cn(
+        "transition-transform duration-200 ease-in-out motion-reduce:transition-none",
+        open && "rotate-180",
+      )}
+    />
   </button>
 
   {#if open}
@@ -131,6 +141,7 @@
         placement === "up" ? "bottom-[calc(100%+8px)] origin-bottom-right" : "top-[calc(100%+8px)] origin-top-right",
       )}
       onkeydown={onMenuKey}
+      out:fade={{ duration: motionMs(100) }}
     >
       {#each options as opt, i (opt.value)}
         {@const sel = opt.value === value}
