@@ -123,6 +123,8 @@ Other resources: `src-tauri/resources/` holds the bundled `Mods/`. The intlayer 
   - notes and warnings.
 - No emoji, gradient backgrounds, glows or decorative shadows. The only shadows are on floating menus and dialogs.
 - Motion is short (under 300ms), ease-out and never blocks anything: entrances (tab content, rows, popups, dialogs, toasts), the sliding tab underline, press feedback and hovers. Use the animation tokens in `theme.css` (`animate-fade-in`, `animate-fade-up`, `animate-pop-in`) or Svelte transitions with `motionMs()` from `$lib/motion`. Nothing loops except the launch progress and `[danger]` text (see `RichText`), which shimmers. Always add `motion-reduce:transition-none` to transitions: `theme.css` also finishes every animation at once when the system asks for less motion.
+- `theme.css` makes `ease-out` and `ease-in-out` stronger than the CSS built-ins and sets them as the default for every `transition-*`. Use `ease-out` for things that enter or leave, `ease-in-out` for things already on screen that move (tab underline, switch knob), never `ease-in`. Animate `transform` and `opacity`, not `width` or `left` (progress bars scale on X). What opens many times a day or from a key held down (context menus, the overlay) shows at once, with no entrance.
+- Shared motion in `theme.css`: `stagger` on a list fades its children up one after another (`SettingGroup` rows, account, install and community lists); `animate-shake` marks an error that just appeared (`TextField`, `TextBox`, splash); `dialog-motion` (used by `Dialog`) plays the native dialog in and out. Lists whose rows come and go use Svelte `animate:flip` with `out:fade`, durations through `motionMs()`.
 
 ## Tokens (lib/theme.css)
 

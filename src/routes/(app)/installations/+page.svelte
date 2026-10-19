@@ -28,6 +28,9 @@
   import { openPath } from "@tauri-apps/plugin-opener";
   import { error as logError } from "@tauri-apps/plugin-log";
   import { Plus, FolderOpen, Trash2, Pin, PinOff } from "@lucide/svelte";
+  import { flip } from "svelte/animate";
+  import { fade } from "svelte/transition";
+  import { motionMs } from "$lib/motion";
   import { useIntlayer } from "svelte-intlayer";
   const commonContent = useIntlayer("common");
   const installationsContent = useIntlayer("installations");
@@ -213,9 +216,13 @@
         </Button>
       </div>
     {:else}
-      <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
+      <ul class="stagger m-0 flex list-none flex-col gap-0.5 p-0">
         {#each installationsState.versions as entry (entry.version)}
-          <li class="flex animate-fade-up items-center gap-4 bg-row px-[18px] py-4">
+          <li
+            class="flex items-center gap-4 bg-row px-[18px] py-4"
+            out:fade={{ duration: motionMs(120) }}
+            animate:flip={{ duration: motionMs(200) }}
+          >
             <div class="flex min-w-0 grow flex-col gap-[3px]">
               <div class="flex items-center gap-2">
                 <span class="truncate font-mono text-[15px] font-medium text-fg"
@@ -369,8 +376,8 @@
       >
         {#if installProgress !== null}
           <div
-            class="h-full bg-accent transition-[width] duration-200 ease-out motion-reduce:transition-none"
-            style:width="{installProgress}%"
+            class="h-full w-full origin-left bg-accent transition-transform duration-200 ease-out motion-reduce:transition-none"
+            style:transform="scaleX({installProgress / 100})"
           ></div>
         {/if}
       </div>

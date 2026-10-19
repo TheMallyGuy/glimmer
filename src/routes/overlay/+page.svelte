@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import { scale } from "svelte/transition";
   import { isTauri } from "@tauri-apps/api/core";
   import { listen } from "@tauri-apps/api/event";
   import {
@@ -20,7 +19,6 @@
     loadAppState,
     type GameState,
   } from "$lib/appState.svelte";
-  import { motionMs } from "$lib/motion";
   import { SLOT_COUNT } from "$lib/boardSlots";
   import { resolveSlots, type RadialSlot } from "$lib/overlaySlots";
   import {
@@ -268,10 +266,7 @@
 
 <main class="relative size-[420px] overflow-hidden select-none">
   {#if shown}
-    <div
-      class="absolute inset-0"
-      in:scale={{ start: 0.96, duration: motionMs(120) }}
-    >
+    <div class="absolute inset-0">
       <div
         role="menu"
         aria-label={$overlayContent.menuLabel.value}

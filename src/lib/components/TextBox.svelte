@@ -48,7 +48,7 @@
         {...rest}
     ></textarea>
     {#if error}
-        <p id="{uid}-msg" class="m-0 text-[13px] text-danger" role="alert"><RichText text={error} /></p>
+        <p id="{uid}-msg" class="m-0 animate-shake text-[13px] text-danger" role="alert"><RichText text={error} /></p>
     {:else if hint}
         <p id="{uid}-msg" class="m-0 text-[13px] text-muted"><RichText text={hint} /></p>
     {/if}

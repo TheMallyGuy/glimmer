@@ -14,6 +14,9 @@
     selectAccount,
   } from "$lib/accounts.svelte";
   import type { Account } from "$ts/roblox/account/login";
+  import { flip } from "svelte/animate";
+  import { fade } from "svelte/transition";
+  import { motionMs } from "$lib/motion";
   import { useIntlayer } from "svelte-intlayer";
   const commonContent = useIntlayer("common");
   const accountsContent = useIntlayer("accounts");
@@ -120,9 +123,13 @@
       {/if}
     </div>
 
-    <ul class="m-0 flex list-none flex-col gap-0.5 p-0">
+    <ul class="stagger m-0 flex list-none flex-col gap-0.5 p-0">
       {#each appState.accounts.list as account (account.id)}
-        <li class="flex animate-fade-up items-center gap-4 bg-row px-[18px] py-4">
+        <li
+          class="flex items-center gap-4 bg-row px-[18px] py-4"
+          out:fade={{ duration: motionMs(120) }}
+          animate:flip={{ duration: motionMs(200) }}
+        >
           <div
             class="flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-gl bg-field text-muted"
           >

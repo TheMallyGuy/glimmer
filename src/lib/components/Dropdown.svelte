@@ -7,6 +7,8 @@
 
 <script lang="ts">
   import { ChevronDown, Check } from '@lucide/svelte';
+  import { fade } from 'svelte/transition';
+  import { motionMs } from '../motion';
   import { cn } from '../utils';
 
   interface Props {
@@ -115,7 +117,12 @@
     onkeydown={onTriggerKey}
   >
     <span class={cn('min-w-0 truncate', !selected && 'text-muted')}>{selected?.label ?? placeholder}</span>
-    <ChevronDown size={16} strokeWidth={1.75} aria-hidden="true" class="shrink-0 text-muted group-disabled:text-off-faint" />
+    <ChevronDown
+      size={16}
+      strokeWidth={1.75}
+      aria-hidden="true"
+      class={cn('shrink-0 text-muted transition-transform duration-200 ease-in-out group-disabled:text-off-faint motion-reduce:transition-none', open && 'rotate-180')}
+    />
   </button>
 
   {#if open}
@@ -128,6 +135,7 @@
       aria-activedescendant="{uid}-opt-{active}"
       class="absolute left-0 top-[calc(100%+4px)] z-20 m-0 w-full min-w-40 origin-top animate-pop-in list-none rounded-gl bg-menu p-1 shadow-menu outline-none"
       onkeydown={onListKey}
+      out:fade={{ duration: motionMs(100) }}
     >
       {#each options as opt, i (opt.value)}
         <!-- svelte-ignore a11y_click_events_have_key_events (keyboard handled on the listbox) -->

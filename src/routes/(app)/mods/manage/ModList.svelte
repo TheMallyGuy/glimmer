@@ -6,6 +6,8 @@
         dragHandle,
         type DndEvent,
     } from "svelte-dnd-action";
+    import { flip } from "svelte/animate";
+    import { motionMs } from "$lib/motion";
     import { mods, setEnabled, type Mod } from "$lib/mods.svelte";
     import { useIntlayer } from "svelte-intlayer";
     const modListContent = useIntlayer("modList");
@@ -94,6 +96,7 @@
                 "group relative flex h-12 items-center gap-2 pr-1 pl-1 transition-colors motion-reduce:transition-none",
                 editing || menuOpen ? "bg-tonal" : "bg-row hover:bg-hover",
             )}
+            animate:flip={{ duration: motionMs(150) }}
             oncontextmenu={(e) => {
                 e.preventDefault();
                 onOpenMenuAt(e.clientX, e.clientY, mod, nameButtons[mod.id]);

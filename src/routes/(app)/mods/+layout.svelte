@@ -43,8 +43,8 @@
 
             <span
                 class={cn(
-                    "absolute inset-x-3 bottom-0 h-0.5",
-                    current ? "bg-accent" : "bg-transparent",
+                    "absolute inset-x-3 bottom-0 h-0.5 bg-accent transition-transform duration-200 ease-out motion-reduce:transition-none",
+                    current ? "scale-x-100" : "scale-x-0",
                 )}
             ></span>
         </a>
@@ -54,7 +54,10 @@
 </nav>
 
 
-{@render children()}
+<!-- keyed on the view, so moving between views fades the new one in -->
+{#key page.url.pathname}
+    <div class="animate-fade-in">{@render children()}</div>
+{/key}
 
 
 <div class="mt-14 mb-2 flex justify-center">

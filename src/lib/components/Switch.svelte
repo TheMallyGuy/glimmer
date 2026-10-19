@@ -45,7 +45,9 @@
 >
   <span
     class={cn(
-      'absolute top-[3px] left-[3px] rounded-[1px] bg-muted transition-[translate,background-color] duration-150 motion-reduce:transition-none',
+      // pressed, the knob stretches toward the side it is about to go to
+      'absolute top-[3px] left-[3px] origin-left rounded-[1px] bg-muted transition-[translate,scale,background-color] duration-150 ease-in-out motion-reduce:transition-none',
+      'group-aria-checked:origin-right group-enabled:group-active:scale-x-125',
       'group-aria-checked:bg-on-accent group-disabled:bg-off-faint group-disabled:group-aria-checked:bg-track',
       size === 'sm' ? 'size-3 group-aria-checked:translate-x-3' : 'size-4 group-aria-checked:translate-x-4'
     )}

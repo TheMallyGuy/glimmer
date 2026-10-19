@@ -238,7 +238,7 @@
           size={16}
           strokeWidth={1.75}
           aria-hidden="true"
-          class="absolute top-4 right-4 text-subtle"
+          class="absolute top-4 right-4 text-subtle transition-[color,translate] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-fg-2 motion-reduce:transition-none"
         />
         <span class="flex flex-col gap-0.5">
           <span class="font-display text-lg tracking-[0.01em]"

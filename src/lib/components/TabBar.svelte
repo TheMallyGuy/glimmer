@@ -38,10 +38,14 @@
 
   // where the sliding underline sits: under the selected tab, inset like the old per-tab one
   let underline = $state({ left: 0, width: 0 });
+  // the first placement jumps there; only later moves slide, so opening the window does not grow a line from the left
+  let slides = $state(false);
 
   function placeUnderline() {
     const el = buttons[tabs.findIndex((t) => t.id === value)];
-    if (el) underline = { left: el.offsetLeft + 14, width: Math.max(0, el.offsetWidth - 28) };
+    if (!el) return;
+    underline = { left: el.offsetLeft + 14, width: Math.max(0, el.offsetWidth - 28) };
+    if (!slides) requestAnimationFrame(() => (slides = true));
   }
 
   $effect(() => {
@@ -107,8 +111,10 @@
   {/each}
   <span
     aria-hidden="true"
-    class="pointer-events-none absolute bottom-0 h-0.5 bg-accent transition-[left,width] duration-300 ease-out motion-reduce:transition-none"
-    style:left="{underline.left}px"
-    style:width="{underline.width}px"
+    class={cn(
+      'pointer-events-none absolute bottom-0 left-0 h-0.5 w-px origin-left bg-accent',
+      slides && 'transition-transform duration-200 ease-in-out motion-reduce:transition-none'
+    )}
+    style:transform="translateX({underline.left}px) scaleX({underline.width})"
   ></span>
 </div>

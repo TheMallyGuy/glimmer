@@ -122,12 +122,12 @@
             </p>
         {:else}
             <ul
-                class="m-0 grid list-none gap-2 p-0"
+                class="stagger m-0 grid list-none gap-2 p-0"
                 style="grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));"
             >
                 {#each shown as mod (mod.id)}
                     {@const state = installs[mod.id]}
-                    <li class="flex flex-col bg-row">
+                    <li class="group flex flex-col bg-row">
                         <div
                             class="relative aspect-video overflow-hidden bg-tonal"
                             style:background-image={mod.gradient}
@@ -137,7 +137,9 @@
                                     src={mod.thumbnail}
                                     alt=""
                                     loading="lazy"
-                                    class="size-full object-cover"
+                                    class="size-full object-cover opacity-0 transition-[opacity,scale] duration-200 group-hover:scale-[1.03] data-loaded:opacity-100 motion-reduce:transition-none"
+                                    onload={(e) =>
+                                        ((e.currentTarget as HTMLImageElement).dataset.loaded = "")}
                                     onerror={(e) =>
                                         ((
                                             e.currentTarget as HTMLImageElement

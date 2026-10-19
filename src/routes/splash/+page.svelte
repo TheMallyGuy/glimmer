@@ -230,7 +230,12 @@
         error ? "text-danger" : "text-fg-3",
       )}
     >
-      {error ?? `${status}…`}
+      <!-- each new step slides in, so the launch reads as moving on; an error shakes once -->
+      {#key error ?? status}
+        <span class={cn("block truncate", error ? "animate-shake" : "animate-fade-up")}>
+          {error ?? `${status}…`}
+        </span>
+      {/key}
     </p>
     {#if progress !== null && !error}
       <span
@@ -252,15 +257,15 @@
   >
     {#if progress === null && !error}
       <div
-        class="splash-indeterminate absolute inset-y-0 w-1/4 bg-accent motion-reduce:left-0 motion-reduce:animate-none"
+        class="splash-indeterminate absolute inset-y-0 left-0 w-1/4 bg-accent motion-reduce:animate-none"
       ></div>
     {:else}
       <div
         class={cn(
-          "h-full transition-[width] duration-200 ease-out motion-reduce:transition-none",
+          "h-full w-full origin-left transition-transform duration-200 ease-out motion-reduce:transition-none",
           error ? "bg-danger" : "bg-accent",
         )}
-        style:width="{error ? 100 : progress}%"
+        style:transform="scaleX({(error ? 100 : (progress ?? 0)) / 100})"
       ></div>
     {/if}
   </div>
