@@ -11,6 +11,7 @@
   import { checkForUpdate } from "$ts/glimmer/updater";
   import { checkForOta } from "$ts/glimmer/ota";
   import { useIntlayer } from "svelte-intlayer";
+  import { attachConsole } from "@tauri-apps/plugin-log";
   const trayContent = useIntlayer("tray");
   const windowContent = useIntlayer("windowControl");
   const updaterContent = useIntlayer("updater");
@@ -42,12 +43,11 @@
 
     w.__glimmerBgUnlisten.push(await watchRobloxLogs(processLogLine));
 
-    w.__glimmerBgUnlisten.push(
-      await listen("roblox-exited", () => clearActivity()),
-    );
+    w.__glimmerBgUnlisten.push(await listen("roblox-exited", () => clearActivity()));
 
     await loadAppState();
     initDiscordRpc();
+    const detach = await attachConsole();
 
     // a dev build has no release to update to
     if (!import.meta.env.DEV) {

@@ -102,6 +102,9 @@ fn base_builder() -> tauri::Builder<tauri::Wry> {
                 } else {
                     tauri_plugin_log::log::LevelFilter::Info
                 })
+                .target(tauri_plugin_log::Target::new(
+                    tauri_plugin_log::TargetKind::Webview,
+                ))
                 .build(),
         )
         .plugin(tauri_plugin_http::init())
