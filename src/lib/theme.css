@@ -32,9 +32,9 @@
   --color-off-faint: #4a4a4a;
 
   /* Accent */
-  --color-accent: #ffe54e;
-  --color-accent-hover: #fff1a0;
-  --color-accent-press: #e6cc3f;
+  --color-accent: #ffffff;
+  --color-accent-hover: #e6e6e6;
+  --color-accent-press: #cccccc;
   --color-on-accent: #0d0d0d;
 
   /* Danger */
@@ -46,6 +46,12 @@
   --color-aurora-1: #7cf5c8;
   --color-aurora-2: #8fb4ff;
   --color-aurora-3: #d6a6ff;
+
+  /* [metal] text (see RichText): steel from shadow to light, each stop readable on the canvas (4.5:1) */
+  --color-metal-1: #f4f6f9;
+  --color-metal-2: #9aa0a8;
+  --color-metal-3: #7f858d;
+  --color-metal-4: #d3d7dd;
 
   /* The in-game menu: fixed colours, as it floats over the game and is not tinted by the background setting */
   --color-ring-active: #1a1a1a;
@@ -134,6 +140,20 @@
 @keyframes text-aurora {
   to {
     --aurora-t: 360deg;
+  }
+}
+
+@keyframes text-metal {
+  from {
+    background-position:
+      130% 0,
+      0 0;
+  }
+  60%,
+  to {
+    background-position:
+      -30% 0,
+      0 0;
   }
 }
 
@@ -316,8 +336,31 @@
     opacity: 0.85;
     pointer-events: none;
   }
+  /* [metal] text (see RichText): brushed steel, light on top, a dark line through the middle and a lighter edge below, like a chrome letter. A thin white glint sweeps across now and then. */
+  .text-metal {
+    background-image:
+      linear-gradient(105deg, transparent 42%, #ffffff 50%, transparent 58%),
+      linear-gradient(
+        180deg,
+        var(--color-metal-1) 0%,
+        var(--color-metal-2) 48%,
+        var(--color-metal-3) 52%,
+        var(--color-metal-4) 100%
+      );
+    background-size:
+      250% 100%,
+      100% 100%;
+    background-position:
+      130% 0,
+      0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: text-metal 3.6s ease-in-out infinite;
+  }
   @media (forced-colors: active) {
     .text-shimmer,
+    .text-metal,
     .text-aurora {
       background: none;
       -webkit-text-fill-color: currentColor;
@@ -332,6 +375,7 @@
       animation: none;
     }
     .text-shimmer,
+    .text-metal,
     .text-aurora {
       animation: none;
     }

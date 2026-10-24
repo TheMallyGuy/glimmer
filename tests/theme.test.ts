@@ -67,6 +67,12 @@ describe("AccentTheme.shades", () => {
     expect(onAccent).toBe("#0d0d0d");
   });
 
+  test("white gets the darker hover and press of theme.css", () => {
+    const { hover, press } = AccentTheme.shades("#ffffff");
+    expect(hover).toBe("#e6e6e6");
+    expect(press).toBe("#cccccc");
+  });
+
   test("light accents get dark text and dark accents get white text", () => {
     expect(AccentTheme.shades("#6be28a").onAccent).toBe("#0d0d0d");
     expect(AccentTheme.shades("#1a3a8a").onAccent).toBe("#ffffff");

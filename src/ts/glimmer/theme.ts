@@ -1,5 +1,5 @@
-/** the app's default accent, the yellow in theme.css */
-export const DEFAULT_ACCENT = "#ffe54e";
+/** the app's default accent, the white in theme.css */
+export const DEFAULT_ACCENT = "#ffffff";
 
 /** the window background accent text sits on, from theme.css (`--color-canvas`) */
 const CANVAS = "#0d0d0d";
@@ -12,7 +12,8 @@ export const MIN_CONTRAST = 4.5;
 
 /** accent colours offered as one-click swatches. All of them clear MIN_CONTRAST on the canvas. */
 export const ACCENT_PRESETS = [
-  "#ffe54e", // yellow, the default
+  "#ffffff", // white, the default
+  "#ffe54e", // yellow
   "#ffa24e", // orange
   "#ff7a7a", // coral
   "#ff7ac8", // pink
@@ -61,10 +62,14 @@ export class AccentTheme {
   /** the hover and press shades and the text colour for an accent. Hover and press are the default yellow's relation to its own shades. */
   static shades(accent: string): AccentShades {
     const rgb = AccentTheme.parse(accent);
+    // a near-white accent can't get lighter on hover, so it darkens in two steps (#fff -> #e6e6e6 -> #ccc)
+    const veryLight = AccentTheme.luminance(accent) > 0.9;
     return {
       accent,
-      hover: AccentTheme.hex(AccentTheme.mix(rgb, [255, 255, 255], 0.46)),
-      press: AccentTheme.hex(rgb.map((c) => c * 0.9) as Rgb),
+      hover: AccentTheme.hex(
+        veryLight ? (rgb.map((c) => c * 0.9) as Rgb) : AccentTheme.mix(rgb, [255, 255, 255], 0.46),
+      ),
+      press: AccentTheme.hex(rgb.map((c) => c * (veryLight ? 0.8 : 0.9)) as Rgb),
       // whichever of dark or white text stands out more on the accent
       onAccent:
         AccentTheme.contrast(accent, DARK_TEXT) >= AccentTheme.contrast(accent, LIGHT_TEXT)

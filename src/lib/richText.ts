@@ -1,5 +1,5 @@
 /** The looks a string can ask for, e.g. "Never share your [danger]cookie[/danger]". */
-export const RICH_TAGS = ["danger", "accent", "muted", "mono", "aurora", "shimmer"] as const;
+export const RICH_TAGS = ["danger", "accent", "muted", "mono", "aurora", "shimmer", "metal"] as const;
 export type RichTag = (typeof RICH_TAGS)[number];
 
 /** A run of text, with the look it was tagged with (none for plain text). */

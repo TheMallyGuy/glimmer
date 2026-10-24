@@ -38,7 +38,7 @@
   <SettingGroup>
     <SettingRow
       title={$aboutContent.glimmer.value}
-      description={`v${glimmerVer} · ${$aboutContent.webBuild({ build: __BUILD_ID__ }).value} [aurora] AURORA [/aurora]`}
+      description={`v${glimmerVer} · ${$aboutContent.webBuild({ build: __BUILD_ID__ }).value} [metal] METALLIC [/metal]`}
     />
     <SettingRow title={$aboutContent.logs.value} onclick={openLogs} href="#" />
     <SettingRow title={$aboutContent.sourceCode.value} href="#" />
